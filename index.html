@@ -15,7 +15,7 @@ body{
   overflow-x:hidden;
   color:#e8e6e0;
 }
-#spacer{height:1100vh}
+#spacer{height:760vh}
 
 .nebula{
   position:fixed;left:50%;top:40%;transform:translate(-50%,-50%);
@@ -202,9 +202,9 @@ body{
   <div class="inner">
     <h4>Indice</h4>
     <div class="rule"></div>
-    <div class="navItem" data-ps=".60"><span class="n">✦</span><span class="t">Benvenuto</span></div>
-    <div class="navItem" data-ps=".82"><span class="n">I</span><span class="t">Capitolo Primo</span></div>
-    <div class="navItem" data-ps="1"><span class="n">II</span><span class="t">Capitolo Secondo</span><span class="s">presto</span></div>
+    <div class="navItem" data-ps=".44"><span class="n">✦</span><span class="t">Benvenuto</span></div>
+    <div class="navItem" data-ps=".64"><span class="n">I</span><span class="t">Capitolo Primo</span></div>
+    <div class="navItem" data-ps=".92"><span class="n">II</span><span class="t">Capitolo Secondo</span><span class="s">presto</span></div>
     <button id="navClose">Esci</button>
   </div>
 </div>
@@ -408,16 +408,22 @@ function pagesCanvas(w,h,horizontal){
 }
 
 function sampleTitle(){
-  const w=1700,hh=340,c=cv(w,hh),x=c.getContext('2d');
+  const w=1700,hh=360,c=cv(w,hh),x=c.getContext('2d');
   x.fillStyle='#fff'; x.textAlign='center';
   x.font='700 142px Cinzel';
-  x.fillText('Elisa Soul Medium', w/2, 172);
-  x.font='700 64px Cinzel';
-  x.fillText('IL CAMMINO INTERIORE', w/2, 296);
-  const d = x.getImageData(0,0,w,hh).data;
+  x.fillText('Elisa Soul Medium', w/2, 168);
+  const d1 = x.getImageData(0,0,w,hh).data;
   const pts=[];
   for (let py=0;py<hh;py+=2) for (let px=0;px<w;px+=2){
-    if (d[(py*w+px)*4+3] > 120) pts.push([px/w-.5, .5-py/hh]);
+    if (d1[(py*w+px)*4+3] > 120) pts.push([px/w-.5, .5-py/hh]);
+  }
+  /* sottotitolo più grande, campionato a parte per nitidezza */
+  x.clearRect(0,0,w,hh);
+  x.font='700 80px Cinzel';
+  x.fillText('IL CAMMINO INTERIORE', w/2, 304);
+  const d2 = x.getImageData(0,0,w,hh).data;
+  for (let py=0;py<hh;py+=2) for (let px=0;px<w;px+=2){
+    if (d2[(py*w+px)*4+3] > 120) pts.push([px/w-.5, .5-py/hh]);
   }
   return pts;
 }
@@ -609,7 +615,7 @@ async function init(){
   const txtPts = sampleTitle();
   const worldW = 2*Math.tan(35*Math.PI/360)*13.2*camera.aspect;
   const fit = Math.min(1, worldW*.84/10.6);
-  const HN = 4200;
+  const HN = 5200;
   const holoGeo = new THREE.BufferGeometry();
   const hPos = new Float32Array(HN*3);
   const hText = new Float32Array(HN*3);
@@ -619,8 +625,8 @@ async function init(){
   const cosR=Math.cos(-.42), sinR=Math.sin(-.42);
   for (let i=0;i<HN;i++){
     const tp = txtPts[(Math.random()*txtPts.length)|0];
-    hText[i*3]   = tp[0]*10.6*fit + (Math.random()-.5)*.03;
-    hText[i*3+1] = (tp[1]*2.2 + .55)*Math.max(fit,.75) + (Math.random()-.5)*.03;
+    hText[i*3]   = tp[0]*10.6*fit + (Math.random()-.5)*.02;
+    hText[i*3+1] = (tp[1]*2.3 + .55)*Math.max(fit,.75) + (Math.random()-.5)*.02;
     hText[i*3+2] = (Math.random()-.5)*.12;
     const a = Math.random()*TAU, r = 3.5 + Math.random()*4.5;
     hMid[i*3]   = Math.cos(a)*r;
@@ -685,14 +691,14 @@ async function init(){
     const t = clock.getElapsedTime();
     ps += (scrollRaw - ps)*.075;
 
-    const pVortex = ease(ph(.03,.23));
-    const pSolid  = ease(ph(.23,.31));
-    const pOpen   = ease(ph(.36,.46));
-    const pZoom   = ease(ph(.50,.60));
+    const pVortex = ease(ph(.012,.13));
+    const pSolid  = ease(ph(.13,.20));
+    const pOpen   = ease(ph(.23,.33));
+    const pZoom   = ease(ph(.37,.47));
 
     bookGroup.visible = pSolid > .001;
 
-    if (ps < .42){
+    if (ps < .27){
       for (let i=0;i<HN;i++){
         const k = ease(clamp01((pVortex - hStag[i]) / .7));
         const k1 = 1-k;
@@ -732,11 +738,11 @@ async function init(){
     bookGroup.position.x = pOpen*.3;
 
     frontPivot.rotation.y = -2.95*pOpen;
-    setFlip(qSheets[0], ph(.42,.505));
-    setFlip(qSheets[1], ph(.455,.54));
-    setFlip(qSheets[2], ph(.49,.575));
-    setFlip(wSheet,  ph(.68,.74));
-    setFlip(c1Sheet, ph(.92,.975));
+    setFlip(qSheets[0], ph(.29,.37));
+    setFlip(qSheets[1], ph(.32,.40));
+    setFlip(qSheets[2], ph(.35,.43));
+    setFlip(wSheet,  ph(.50,.56));
+    setFlip(c1Sheet, ph(.72,.78));
 
     const pulse = .5 + Math.sin(t*1.6)*.14;
     backlight.style.opacity = ((pulse*(.45+pVortex*.55) + pSolid*.15)*clamp01(pVortex*2)).toFixed(3);
@@ -745,10 +751,10 @@ async function init(){
 
     hint.style.opacity = 1 - ph(.008,.05);
 
-    const inC1 = ps>=.745 && ps<=.915;
+    const inC1 = ps>=.575 && ps<=.71;
     hotzone.classList.toggle('on', inC1);
 
-    const cur = ps < .71 ? 0 : (ps < .945 ? 1 : 2);
+    const cur = ps < .49 ? 0 : (ps < .75 ? 1 : 2);
     navItems.forEach((it,i)=>it.classList.toggle('cur', i===cur));
 
     renderer.render(scene, camera);
