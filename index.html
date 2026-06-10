@@ -15,7 +15,7 @@ body{
   overflow-x:hidden;
   color:#e8e6e0;
 }
-#spacer{height:760vh}
+#spacer{height:560vh}
 
 .nebula{
   position:fixed;left:50%;top:40%;transform:translate(-50%,-50%);
@@ -146,7 +146,7 @@ body{
   transition:transform .45s cubic-bezier(.22,1.25,.36,1);
 }
 #vwrap.open #vmodal{transform:scaleY(1)}
-#vmodal .inner{padding:34px 34px 30px}
+#vmodal .inner{padding:clamp(18px,5vw,34px) clamp(14px,4.5vw,34px) 26px}
 #vmodal h3{
   font-family:'Cinzel',serif;font-size:20px;font-weight:700;
   letter-spacing:.14em;color:#4a3318;text-align:center;
@@ -155,18 +155,20 @@ body{
 #vmodal .rule{height:1px;margin:14px 30px 22px;
   background:linear-gradient(90deg,transparent,rgba(110,80,40,.6),transparent)}
 .vItem{
-  display:flex;align-items:center;gap:16px;text-decoration:none;
+  display:flex;align-items:center;gap:clamp(8px,2.5vw,16px);text-decoration:none;
+  flex-wrap:wrap;
   padding:12px;margin-bottom:12px;border-radius:10px;
   border:1px solid rgba(110,80,40,.32);
   background:rgba(255,250,235,.28);
   transition:transform .25s ease, border-color .25s ease, background .25s ease;
 }
 .vItem:hover{transform:translateX(5px);border-color:rgba(150,110,50,.85);background:rgba(255,250,235,.5)}
-.vItem img{width:108px;border-radius:6px;border:1px solid rgba(110,80,40,.5);flex-shrink:0;filter:brightness(.82) sepia(.12)}
+.vItem img{width:clamp(72px,19vw,108px);border-radius:6px;border:1px solid rgba(110,80,40,.5);flex-shrink:0;filter:brightness(.82) sepia(.12)}
+.vItem > div{flex:1 1 110px;min-width:0}
 .vItem .vt{font-family:'Cinzel',serif;font-size:15px;font-weight:600;color:#4a3318}
 .vItem .vs{font-size:14px;font-style:italic;color:#8a7348;margin-top:3px}
-.vItem .go{margin-left:auto;font-family:'Cinzel',serif;font-size:12px;font-weight:700;
-  letter-spacing:.18em;color:#8a6520;white-space:nowrap}
+.vItem .go{margin-left:auto;font-family:'Cinzel',serif;font-size:11px;font-weight:700;
+  letter-spacing:.1em;color:#8a6520;white-space:nowrap}
 #vClose{
   display:block;margin:8px auto 0;padding:9px 38px;
   font-family:'Cinzel',serif;font-size:12px;font-weight:700;
@@ -202,9 +204,9 @@ body{
   <div class="inner">
     <h4>Indice</h4>
     <div class="rule"></div>
-    <div class="navItem" data-ps=".44"><span class="n">✦</span><span class="t">Benvenuto</span></div>
-    <div class="navItem" data-ps=".64"><span class="n">I</span><span class="t">Capitolo Primo</span></div>
-    <div class="navItem" data-ps=".92"><span class="n">II</span><span class="t">Capitolo Secondo</span><span class="s">presto</span></div>
+    <div class="navItem" data-ps=".45"><span class="n">✦</span><span class="t">Benvenuto</span></div>
+    <div class="navItem" data-ps=".61"><span class="n">I</span><span class="t">Capitolo Primo</span></div>
+    <div class="navItem" data-ps=".90"><span class="n">II</span><span class="t">Capitolo Secondo</span><span class="s">presto</span></div>
     <button id="navClose">Esci</button>
   </div>
 </div>
@@ -615,6 +617,10 @@ async function init(){
   const txtPts = sampleTitle();
   const worldW = 2*Math.tan(35*Math.PI/360)*13.2*camera.aspect;
   const fit = Math.min(1, worldW*.84/10.6);
+  /* il libro non deve mai uscire dai bordi: scala massima dal viewport */
+  let sFit;
+  const calcSFit = ()=>{ sFit = (2*12.1*Math.tan(35*Math.PI/360)*camera.aspect*.93)/W; };
+  calcSFit();
   const HN = 5200;
   const holoGeo = new THREE.BufferGeometry();
   const hPos = new Float32Array(HN*3);
@@ -731,7 +737,7 @@ async function init(){
     const idle = (1-pZoom);
     bookGroup.rotation.y = -.42*(1-pZoom) + Math.sin(t*.3)*.012*idle;
     bookGroup.rotation.x = .055*(1-pZoom) + Math.cos(t*.24)*.008*idle;
-    const s = .55 + pZoom*.27;
+    const s = Math.min(.55 + pZoom*.27, sFit);
     bookGroup.scale.set(s,s,s);
     bookGroup.position.z = pZoom*1.1;
     bookGroup.position.y = Math.sin(t*.5)*.05*idle;
@@ -741,8 +747,8 @@ async function init(){
     setFlip(qSheets[0], ph(.29,.37));
     setFlip(qSheets[1], ph(.32,.40));
     setFlip(qSheets[2], ph(.35,.43));
-    setFlip(wSheet,  ph(.50,.56));
-    setFlip(c1Sheet, ph(.72,.78));
+    setFlip(wSheet,  ph(.50,.54));
+    setFlip(c1Sheet, ph(.70,.74));
 
     const pulse = .5 + Math.sin(t*1.6)*.14;
     backlight.style.opacity = ((pulse*(.45+pVortex*.55) + pSolid*.15)*clamp01(pVortex*2)).toFixed(3);
@@ -751,10 +757,10 @@ async function init(){
 
     hint.style.opacity = 1 - ph(.008,.05);
 
-    const inC1 = ps>=.575 && ps<=.71;
+    const inC1 = ps>=.555 && ps<=.69;
     hotzone.classList.toggle('on', inC1);
 
-    const cur = ps < .49 ? 0 : (ps < .75 ? 1 : 2);
+    const cur = ps < .48 ? 0 : (ps < .73 ? 1 : 2);
     navItems.forEach((it,i)=>it.classList.toggle('cur', i===cur));
 
     renderer.render(scene, camera);
@@ -790,6 +796,7 @@ async function init(){
   addEventListener('resize', ()=>{
     camera.aspect = innerWidth/innerHeight;
     camera.updateProjectionMatrix();
+    calcSFit();
     renderer.setSize(innerWidth, innerHeight);
     updateScroll();
   });
