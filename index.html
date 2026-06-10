@@ -359,47 +359,81 @@ function welcomeCanvas(pg,lg){
   return c;
 }
 
-function chapterCanvas(pg,lg,mods){
-  const w=1024,h=1220,c=cv(w,h),x=c.getContext('2d');
-  pageBase(x,pg);
-  const ink='#4a3318';
-  x.textAlign='center';
-  x.fillStyle='rgba(118,88,44,.9)';
-  x.font='600 23px Cinzel'; x.fillText('CAPITOLO PRIMO',w/2,202);
-  x.fillStyle=ink; x.font='700 40px Cinzel';
-  x.fillText('Le fondamenta del Cammino',w/2,266);
-  x.strokeStyle='rgba(118,88,44,.45)'; x.lineWidth=1.2;
-  x.beginPath(); x.moveTo(w*.36,302); x.lineTo(w*.64,302); x.stroke();
-  x.fillStyle='rgba(118,88,44,.6)'; dia(x,w/2,302,7);
-  const iw=380, ih=222, gx=86, gy=348, sp=24;
-  const tilt=[-.018,.014,-.012,.02];
-  mods.forEach((md,i)=>{
-    const col=i%2, row=(i/2)|0;
-    const px=gx+col*(iw+sp+34), py=gy+row*(ih+sp+58);
-    x.save();
-    x.translate(px+iw/2, py+ih/2);
-    x.rotate(tilt[i]);
-    x.shadowColor='rgba(60,40,15,.45)'; x.shadowBlur=16; x.shadowOffsetY=6;
-    x.fillStyle='#fff'; x.fillRect(-iw/2-3,-ih/2-3,iw+6,ih+6);
-    x.shadowColor='transparent';
-    x.drawImage(md.img,-iw/2,-ih/2,iw,ih);
-    x.fillStyle='rgba(22,13,5,.38)';
-    x.fillRect(-iw/2,-ih/2,iw,ih);
-    x.strokeStyle='rgba(118,88,44,.7)'; x.lineWidth=2.5;
-    x.strokeRect(-iw/2-6,-ih/2-6,iw+12,ih+12);
-    x.fillStyle='#4a3318';
-    x.font='600 19px Cinzel';
-    x.fillText(md.short, 0, ih/2+34);
-    x.restore();
+function makeChapterCanvas(pg,lg,mods){
+  const w=1024,h=1220;
+  const BX=84,BY=296,BW=856,BH=276;
+  /* base statica (tutto tranne il carosello) */
+  const base=cv(w,h),b=base.getContext('2d');
+  pageBase(b,pg);
+  b.textAlign='center';
+  b.fillStyle='rgba(118,88,44,.9)';
+  b.font='600 23px Cinzel'; b.fillText('CAPITOLO PRIMO',w/2,172);
+  b.fillStyle='#3f2c12'; b.font='700 42px Cinzel';
+  b.fillText('Le fondamenta del Cammino',w/2,234);
+  b.strokeStyle='rgba(118,88,44,.45)'; b.lineWidth=1.2;
+  b.beginPath(); b.moveTo(w*.36,266); b.lineTo(w*.64,266); b.stroke();
+  b.fillStyle='rgba(118,88,44,.6)'; dia(b,w/2,266,7);
+  b.strokeStyle='rgba(110,80,40,.65)'; b.lineWidth=3;
+  b.strokeRect(BX-6,BY-6,BW+12,BH+12);
+  b.lineWidth=1; b.strokeStyle='rgba(110,80,40,.35)';
+  b.strokeRect(BX-13,BY-13,BW+26,BH+26);
+  /* lista video: scura e ben leggibile */
+  b.font='600 20px Cinzel'; b.fillStyle='rgba(118,88,44,.95)';
+  b.fillText('I   V I D E O   D E L   C A P I T O L O', w/2, 654);
+  const names=['Introduzione','La Frequenza Nascosta','Lo Spazio Emotivo','L’Osservatorio Interiore'];
+  const ROM=['I','II','III','IV'];
+  b.textAlign='left';
+  let ly=712;
+  names.forEach(function(n,i){
+    b.font='700 27px Cinzel'; b.fillStyle='#8a6c2c';
+    b.fillText(ROM[i]+'.', 196, ly);
+    b.font='600 31px Cinzel'; b.fillStyle='#2e2008';
+    b.fillText(n, 258, ly);
+    b.strokeStyle='rgba(110,80,40,.25)'; b.lineWidth=1;
+    b.beginPath(); b.moveTo(196,ly+18); b.lineTo(828,ly+18); b.stroke();
+    ly+=68;
   });
-  carvedButton(x, w/2, h-216, 390, 66, 'A P R I   L A   L I S T A');
-  x.textAlign='center';
-  x.font='italic 500 23px "Cormorant Garamond"';
-  x.fillStyle='rgba(74,51,24,.5)';
-  x.fillText('continua a scorrere per voltare pagina', w/2, h-140);
-  pageArrow(x, 160, h-86, -1);
-  pageArrow(x, w-160, h-86, 1);
-  drawLogo(x,lg);
+  b.textAlign='center';
+  carvedButton(b, w/2, h-178, 390, 66, 'A P R I   L A   L I S T A');
+  b.font='italic 500 23px "Cormorant Garamond"';
+  b.fillStyle='rgba(74,51,24,.5)';
+  b.fillText('continua a scorrere per voltare pagina', w/2, h-110);
+  pageArrow(b, 160, h-66, -1);
+  pageArrow(b, w-160, h-66, 1);
+  drawLogo(b,lg);
+
+  /* canvas vivo: carosello che scorre da destra a sinistra */
+  const c=cv(w,h), x=c.getContext('2d');
+  const TW=330, TH=196, GAP=18, SPAN=(TW+GAP)*mods.length;
+  function draw(t){
+    x.drawImage(base,0,0);
+    x.save();
+    x.beginPath(); x.rect(BX,BY,BW,BH); x.clip();
+    x.fillStyle='rgba(58,40,18,.08)'; x.fillRect(BX,BY,BW,BH);
+    const off=(t*46)%SPAN;
+    for (let i=-1;i<mods.length+3;i++){
+      const idx=((i%mods.length)+mods.length)%mods.length;
+      const px=BX + i*(TW+GAP) - off;
+      if (px>BX+BW || px+TW<BX) continue;
+      const py=BY+16;
+      x.save();
+      x.shadowColor='rgba(50,32,12,.4)'; x.shadowBlur=10; x.shadowOffsetY=4;
+      x.fillStyle='#fff'; x.fillRect(px-3,py-3,TW+6,TH+6);
+      x.shadowColor='transparent';
+      x.drawImage(mods[idx].img,px,py,TW,TH);
+      x.fillStyle='rgba(22,13,5,.30)'; x.fillRect(px,py,TW,TH);
+      x.strokeStyle='rgba(110,80,40,.7)'; x.lineWidth=2;
+      x.strokeRect(px-3,py-3,TW+6,TH+6);
+      x.fillStyle='#3a2a10'; x.font='600 17px Cinzel'; x.textAlign='center';
+      x.fillText(mods[idx].short, px+TW/2, py+TH+34);
+      x.restore();
+    }
+    x.restore();
+  }
+  draw(0);
+  return {canvas:c, draw:draw};
+}
+function chapterCanvasUnused(x,lg){
   return c;
 }
 
@@ -643,7 +677,9 @@ async function init(){
   const TOTAL = 5;
   const qSheets = [0,1,2].map(i=>makeSheet(blankPageCanvas(im.pg), i, TOTAL));
   const wSheet  = makeSheet(welcomeCanvas(im.pg, im.lg), 3, TOTAL);
-  const c1Sheet = makeSheet(chapterCanvas(im.pg, im.lg, MODS), 4, TOTAL);
+  const chap = makeChapterCanvas(im.pg, im.lg, MODS);
+  const c1Sheet = makeSheet(chap.canvas, 4, TOTAL);
+  const c1Tex = c1Sheet.piv.children[0].material.map;
 
   bookGroup.visible = false;
   scene.add(bookGroup);
@@ -784,16 +820,27 @@ async function init(){
     const idle = (1-pZoom);
     bookGroup.rotation.y = -.42*(1-pZoom) + Math.sin(t*.3)*.012*idle;
     bookGroup.rotation.x = .055*(1-pZoom) + Math.cos(t*.24)*.008*idle;
-    const s = Math.min(.55 + pZoom*.27, sFit);
-    /* da cellulare il libro è più lungo: allungato in verticale */
     const mob = camera.aspect < 1;
-    const sy = mob ? Math.min(s*1.45, .95) : s;
-    bookGroup.scale.set(s, sy, s);
+    let sx, sy, xOff;
+    if (mob){
+      /* mobile: libro verticale allungato, pagina destra centrata */
+      const s = Math.min(.55 + pZoom*.27, sFit);
+      sx = s; sy = Math.min(s*1.45, .95);
+      xOff = pOpen*.1;
+    } else {
+      /* PC: zoom forte sulla pagina, libro più largo,
+         copertina sinistra quasi fuori scena */
+      const visH = 2*12.1*Math.tan(35*Math.PI/360);
+      const syT = Math.min((visH*.9)/H, 1.04);
+      const sxT = syT*1.30;
+      sy = .55 + (syT-.55)*pZoom;
+      sx = .55 + (sxT-.55)*pZoom;
+      xOff = pOpen*.4 + pZoom*.6;
+    }
+    bookGroup.scale.set(sx, sy, sx);
     bookGroup.position.z = pZoom*1.1;
     bookGroup.position.y = Math.sin(t*.5)*.05*idle;
-    /* su schermi stretti: meno spazio alla pagina voltata, più alla destra */
-    /* mobile: pagina destra centrata, copertina sinistra fuori schermo */
-    bookGroup.position.x = pOpen*(mob ? .1 : .3);
+    bookGroup.position.x = xOff;
 
     frontPivot.rotation.y = -2.95*pOpen;
     setFlip(qSheets[0], ph(.29,.37));
@@ -801,6 +848,12 @@ async function init(){
     setFlip(qSheets[2], ph(.35,.43));
     setFlip(wSheet,  ph(.46,.60));
     setFlip(c1Sheet, ph(.70,.86));
+
+    /* carosello dei video: la pagina del capitolo è viva */
+    if (ps > .36 && ps < .92){
+      chap.draw(t);
+      c1Tex.needsUpdate = true;
+    }
 
     const pulse = .5 + Math.sin(t*1.6)*.14;
     backlight.style.opacity = ((pulse*(.45+pVortex*.55) + pSolid*.15)*clamp01(pVortex*2)).toFixed(3);
