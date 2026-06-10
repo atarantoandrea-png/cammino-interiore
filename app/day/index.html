@@ -12,15 +12,14 @@ catch(e){ location.replace('/app/'); }
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:rgba(0,0,0,0)}
 :root{
   --glic:#b9a3e3; --glic-hi:#dccdf6; --glic-deep:#8a6fc0;
   --gold:#c9a84c; --gold-pale:#e8d9ae;
-  --txt:#e6e0ec;            /* testo principale: chiaro, alto contrasto */
-  --txt-soft:#b7aec4;       /* testo secondario */
-  --txt-dim:#8d8499;        /* etichette */
+  --txt:#e6e0ec;
+  --txt-soft:#b7aec4;
+  --txt-dim:#8d8499;
   --card:rgba(22,18,29,.72);
   --card-line:rgba(185,163,227,.16);
   --field:rgba(10,8,14,.55);
@@ -28,7 +27,6 @@ catch(e){ location.replace('/app/'); }
 }
 html{scroll-behavior:smooth}
 body{
-  /* stessa carta scura del sito principale */
   background:
     linear-gradient(180deg, rgba(8,7,11,.95) 0%, rgba(10,9,13,.92) 8%, rgba(11,10,14,.91) 100%),
     url('/src/pagina.jpg') center top/100% auto repeat;
@@ -73,51 +71,41 @@ body{
 }
 .hd p{font-size:15px;color:var(--txt-soft);margin-top:6px}
 
-/* ================= barra azione ================= */
+/* ================= barra info ================= */
 .act{
-  display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;
+  display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap;
   padding:10px 18px;margin:0 14px 4px;
   border-top:1px solid rgba(185,163,227,.14);
   border-bottom:1px solid rgba(185,163,227,.14);
 }
-.act .hint{font-size:14px;color:var(--txt-soft)}
+.act .hint{font-size:14px;color:var(--txt-soft);text-align:center}
 .act .hint b{color:var(--gold-pale);font-weight:600}
-.btn-gold{
-  background:linear-gradient(165deg,#d8b765,#b08c38);
-  color:#2a1d08;border:none;border-radius:40px;
-  padding:12px 24px;cursor:pointer;
-  font-family:'Cinzel',serif;font-size:12px;font-weight:700;
-  letter-spacing:.14em;text-transform:uppercase;white-space:nowrap;
-  box-shadow:0 3px 12px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,240,200,.5);
-}
-.btn-gold:hover{filter:brightness(1.07)}
-.btn-gold[disabled]{opacity:.6;cursor:wait}
 
-/* ================= tabs (sempre visibili) ================= */
+/* ================= tabs ================= */
 .tabs{
   position:sticky;top:0;z-index:30;
-  display:grid;grid-template-columns:repeat(4,1fr);
+  display:grid;grid-template-columns:repeat(5,1fr);
   background:rgba(9,7,12,.96);
   backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
   border-bottom:1px solid rgba(185,163,227,.22);
 }
 .tab{
   background:none;border:none;cursor:pointer;
-  padding:13px 4px 11px;text-align:center;position:relative;
+  padding:13px 2px 11px;text-align:center;position:relative;
   font-family:'Cinzel',serif;
   transition:background .2s;
 }
-.tab .lbl{font-size:12.5px;color:var(--txt-soft);display:block;line-height:1.3;font-weight:600;letter-spacing:.04em}
-.tab .num{font-size:8.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--txt-dim);display:block;margin-bottom:3px}
+.tab .lbl{font-size:12px;color:var(--txt-soft);display:block;line-height:1.3;font-weight:600;letter-spacing:.03em}
+.tab .num{font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:var(--txt-dim);display:block;margin-bottom:3px}
 .tab::after{
-  content:'';position:absolute;left:16%;right:16%;bottom:0;height:2px;
+  content:'';position:absolute;left:14%;right:14%;bottom:0;height:2px;
   background:transparent;transition:background .25s,box-shadow .25s;
 }
 .tab:hover{background:rgba(185,163,227,.07)}
 .tab.on .lbl{color:var(--glic-hi)}
 .tab.on .num{color:var(--glic)}
 .tab.on::after{background:var(--glic);box-shadow:0 0 12px rgba(185,163,227,.8)}
-@media(max-width:430px){.tab .lbl{font-size:10.5px}}
+@media(max-width:470px){.tab .lbl{font-size:9px}.tab .num{font-size:7px}}
 
 /* ================= pannelli ================= */
 .panel{display:none;padding:24px 18px 36px}
@@ -134,7 +122,50 @@ body{
 .tl{font-family:'Cinzel',serif;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--glic);margin-top:4px}
 .tf{font-size:12px;color:var(--txt-soft);margin-top:3px}
 
-.intro{font-size:17px;line-height:1.65;color:var(--txt-soft);margin:14px 2px 22px}
+.intro{font-size:17px;line-height:1.65;color:var(--txt-soft);margin:14px 2px 18px}
+
+/* ================= navigatore del giorno ================= */
+.daynav{
+  display:flex;align-items:center;gap:10px;
+  border:1px solid rgba(185,163,227,.3);border-radius:12px;
+  background:rgba(28,22,38,.85);padding:12px 14px;margin-bottom:10px;
+}
+.dn-btn{background:none;border:1.5px solid var(--glic);color:var(--glic-hi);border-radius:30px;
+  padding:9px 15px;font-family:'Cinzel',serif;font-size:13px;cursor:pointer;white-space:nowrap;
+  transition:background .15s, box-shadow .15s, opacity .2s}
+.dn-btn:hover{background:rgba(185,163,227,.12);box-shadow:0 0 12px rgba(185,163,227,.3)}
+.dn-btn[disabled]{opacity:.25;cursor:default;box-shadow:none;background:none}
+.dn-mid{flex:1;text-align:center}
+.dn-lab{font-family:'Cinzel',serif;font-size:13px;letter-spacing:.08em;color:#f0eaf6;display:block;margin-bottom:5px}
+.dn-mid input{
+  background:var(--field);border:1px solid var(--field-line);border-radius:8px;
+  padding:7px 10px;font-size:15px;font-family:'Cormorant Garamond',serif;
+  color:#f4eefc;outline:none;color-scheme:dark;max-width:170px;
+}
+.dn-mid input:focus{border-color:rgba(205,178,242,.85)}
+
+/* striscia degli ultimi giorni */
+.dots{
+  display:flex;gap:6px;justify-content:space-between;
+  border:1px solid var(--card-line);border-radius:12px;
+  background:var(--card);padding:11px 12px;margin-bottom:20px;
+  overflow-x:auto;-webkit-overflow-scrolling:touch;
+}
+.dot{
+  flex:1;min-width:34px;text-align:center;cursor:pointer;border:none;background:none;
+  font-family:'Cormorant Garamond',serif;padding:2px 0;
+}
+.dot .c{
+  width:13px;height:13px;border-radius:50%;margin:0 auto 5px;
+  border:1.5px solid rgba(185,163,227,.4);background:transparent;
+  transition:box-shadow .3s, background .3s;
+}
+.dot.full .c{background:var(--gold);border-color:var(--gold);box-shadow:0 0 9px rgba(201,168,76,.7)}
+.dot.sel .c{box-shadow:0 0 0 3px rgba(205,178,242,.35), 0 0 12px rgba(170,135,230,.7);border-color:var(--glic-hi)}
+.dot.sel.full .c{background:var(--glic-hi);border-color:var(--glic-hi)}
+.dot .dl{font-size:11.5px;color:var(--txt-dim);display:block;line-height:1.25}
+.dot.sel .dl{color:var(--glic-hi)}
+.dot.today .dl{color:var(--gold-pale)}
 
 /* ================= fase ================= */
 .phase{display:flex;align-items:center;gap:11px;margin:26px 0 12px}
@@ -144,7 +175,7 @@ body{
   background:rgba(185,163,227,.08)}
 .ptxt{font-family:'Cinzel',serif;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--txt);line-height:1.5}
 
-/* ================= blocchi di scrittura (illuminabili) ================= */
+/* ================= blocchi di scrittura ================= */
 .blk{
   border:1px solid var(--card-line);
   background:var(--card);
@@ -175,7 +206,7 @@ body{
 @media(max-width:640px){.qg{grid-template-columns:1fr}}
 .qg .blk{margin-bottom:0}
 
-/* ================= campi: GRANDI e leggibili ================= */
+/* ================= campi ================= */
 input[type=text],input[type=date],input[type=time]{
   width:100%;
   background:var(--field);
@@ -204,9 +235,6 @@ input:focus,textarea:focus{
   box-shadow:0 0 14px rgba(170,135,230,.35), inset 0 0 14px rgba(170,135,230,.07);
 }
 .blk.lit input,.blk.lit textarea{text-shadow:0 0 10px rgba(190,160,240,.3)}
-
-.meta{display:grid;grid-template-columns:150px 130px 1fr;gap:12px;margin:18px 0 4px}
-@media(max-width:640px){.meta{grid-template-columns:1fr 1fr}.meta .blk.grow{grid-column:1/-1}}
 
 /* ================= mantra ================= */
 .mantra{
@@ -274,6 +302,15 @@ input:focus,textarea:focus{
 .tip p{font-size:16px;color:var(--gold-pale);line-height:1.7;text-align:center}
 .tip b{color:#f5e9c8;font-weight:600}
 .gstart{text-align:center;margin-top:22px}
+.btn-gold{
+  background:linear-gradient(165deg,#d8b765,#b08c38);
+  color:#2a1d08;border:none;border-radius:40px;
+  padding:12px 24px;cursor:pointer;
+  font-family:'Cinzel',serif;font-size:12px;font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;white-space:nowrap;
+  box-shadow:0 3px 12px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,240,200,.5);
+}
+.btn-gold:hover{filter:brightness(1.07)}
 
 /* ================= diario ================= */
 .cal-istr{border:1px solid var(--card-line);border-left:3px solid var(--glic);
@@ -340,18 +377,54 @@ input:focus,textarea:focus{
   transition:box-shadow 1.1s ease, border-color 1.1s ease}
 .intenz.lit{border-color:rgba(216,183,101,.9);
   box-shadow:0 0 22px rgba(201,168,76,.4), inset 0 0 26px rgba(201,168,76,.08)}
-.intenz .blab{color:var(--gold)}
+.intenz .blab{font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--gold);display:block;margin-bottom:8px}
 .intenz input{border-color:rgba(201,168,76,.35)}
 .intenz input:focus{border-color:rgba(216,183,101,.85);box-shadow:0 0 14px rgba(201,168,76,.35)}
+
+/* ================= RESOCONTO ================= */
+.statgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:18px 0 16px}
+@media(max-width:640px){.statgrid{grid-template-columns:1fr 1fr}}
+.stat{
+  border:1px solid var(--card-line);background:var(--card);border-radius:12px;
+  padding:16px 10px 14px;text-align:center;
+  transition:box-shadow 1.1s ease, border-color 1.1s ease;
+}
+.stat .sv{
+  font-family:'Cinzel',serif;font-size:clamp(26px,6vw,36px);font-weight:700;
+  color:var(--glic-hi);line-height:1.1;
+  text-shadow:0 0 22px rgba(185,163,227,.55);
+}
+.stat .sv.g{color:var(--gold-pale);text-shadow:0 0 22px rgba(201,168,76,.55)}
+.stat .sl{font-family:'Cinzel',serif;font-size:8.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--txt-dim);margin-top:8px;line-height:1.6}
+
+.chartcard{
+  border:1px solid var(--card-line);background:var(--card);border-radius:12px;
+  padding:16px 14px 10px;margin-bottom:14px;
+  transition:box-shadow 1.1s ease, border-color 1.1s ease, background 1.1s ease;
+}
+.chartcard.lit{
+  border-color:rgba(205,178,242,.9);
+  background:rgba(30,24,40,.92);
+  box-shadow:0 0 22px rgba(170,135,230,.4), 0 0 70px rgba(150,110,215,.18), inset 0 0 30px rgba(170,135,230,.1);
+}
+.cht{font-family:'Cinzel',serif;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--txt);margin-bottom:4px}
+.chs{font-size:14px;color:var(--txt-dim);margin-bottom:10px}
+.chartcard canvas{display:block;width:100%;height:190px}
+.legend{display:flex;gap:18px;justify-content:center;padding:8px 0 6px;flex-wrap:wrap}
+.legend span{font-size:13.5px;color:var(--txt-soft);display:flex;align-items:center;gap:7px}
+.legend i{width:11px;height:11px;border-radius:3px;display:inline-block}
+.legend .lg1{background:var(--gold);box-shadow:0 0 8px rgba(201,168,76,.8)}
+.legend .lg2{background:var(--glic);box-shadow:0 0 8px rgba(185,163,227,.8)}
+.rempty{font-size:15.5px;color:var(--txt-soft);text-align:center;padding:14px 10px;line-height:1.7}
 
 /* ================= nav bassa ================= */
 .bnav{border-top:1px solid rgba(185,163,227,.18);padding:20px 18px 24px;margin-top:8px}
 .bnav-t{text-align:center;font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--txt-dim);margin-bottom:12px}
-.bnav-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-width:560px;margin:0 auto}
+.bnav-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;max-width:620px;margin:0 auto}
 .bnav-btn{background:rgba(185,163,227,.07);color:var(--txt);border:1px solid rgba(185,163,227,.3);border-radius:10px;
-  padding:12px 6px;font-family:'Cinzel',serif;font-size:10.5px;cursor:pointer;text-align:center;line-height:1.5;letter-spacing:.04em}
+  padding:12px 4px;font-family:'Cinzel',serif;font-size:10px;cursor:pointer;text-align:center;line-height:1.5;letter-spacing:.03em}
 .bnav-btn:hover{background:rgba(185,163,227,.15);box-shadow:0 0 12px rgba(185,163,227,.25)}
-.bnav-pdf{text-align:center;margin-top:16px}
 .bnav-foot{text-align:center;margin-top:16px;font-size:14px;color:var(--txt-dim)}
 .bnav-foot a{color:var(--glic-hi);text-decoration:none}
 
@@ -362,23 +435,6 @@ input:focus,textarea:focus{
   z-index:50;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;
   box-shadow:0 0 18px rgba(150,110,215,.3)}
 #saved.show{opacity:1;transform:translateX(-50%) translateY(0)}
-
-/* ================= area pdf nascosta (resa su carta chiara) ================= */
-#pdf-hidden{position:fixed;left:-99999px;top:0;width:900px;background:#f6eed8;z-index:-1;opacity:0;pointer-events:none}
-.pdf-render{width:860px;margin:0 auto;background:#f6eed8;padding:26px 28px 34px;font-family:'Cormorant Garamond',Georgia,serif}
-.pdf-render, .pdf-render *{
-  color:#3a2c16 !important;
-  background:transparent !important;
-  box-shadow:none !important;
-  text-shadow:none !important;
-  border-color:rgba(110,80,40,.4) !important;
-  animation:none !important;
-}
-.pdf-render .pdf-title{font-family:'Cinzel',serif;font-size:24px;font-weight:600;margin-bottom:4px}
-.pdf-render .pdf-sub{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#9a8266 !important;margin-bottom:18px}
-.pdf-render .pdf-field{border-bottom:1px solid rgba(110,80,40,.4);min-height:26px;padding:6px 0;font-size:15px;line-height:1.5;white-space:pre-wrap;word-break:break-word}
-.pdf-render .pdf-field.empty{color:#b3a188 !important}
-.pdf-render .stepn{background:#c9a84c !important;color:#2a1d08 !important}
 </style>
 </head>
 <body>
@@ -394,8 +450,7 @@ input:focus,textarea:focus{
   </header>
 
   <div class="act">
-    <span class="hint"><b>✓ Salvataggio automatico:</b> ciò che scrivi resta su questo dispositivo</span>
-    <button class="btn-gold" onclick="dlPDF(this)">↓ Scarica PDF</button>
+    <span class="hint"><b>✓ Tutto si salva da solo, giorno per giorno:</b> quando torni ritrovi ogni cosa</span>
   </div>
 
   <nav class="tabs">
@@ -403,6 +458,7 @@ input:focus,textarea:focus{
     <button class="tab" onclick="goTab(1)"><span class="num">Scheda 1</span><span class="lbl">Spazio Emotivo</span></button>
     <button class="tab" onclick="goTab(2)"><span class="num">Scheda 2</span><span class="lbl">Osservatorio</span></button>
     <button class="tab" onclick="goTab(3)"><span class="num">Diario</span><span class="lbl">La Settimana</span></button>
+    <button class="tab" onclick="goTab(4)"><span class="num">Resoconto</span><span class="lbl">Il Cammino</span></button>
   </nav>
 
   <!-- ============ PANNELLO 0 · GUIDA ============ -->
@@ -454,19 +510,19 @@ input:focus,textarea:focus{
 
     <div class="alert">
       <span class="ic">✓</span>
-      <span><b>Salvataggio automatico attivo:</b> tutto ciò che scrivi viene conservato su questo dispositivo, anche se chiudi la pagina. Per portare con te una copia — o per usare carta e penna — scarica il PDF.</span>
+      <span><b>Ogni giorno ha la sua pagina:</b> le schede si compilano giorno per giorno e restano salvate nel tuo account. Con il navigatore delle date puoi tornare indietro e rileggere tutto quello che hai scritto.</span>
     </div>
 
     <div class="savegrid">
       <div class="savecard">
-        <span class="ic">📥</span>
-        <h4>Scarica come PDF</h4>
-        <p>Apri la scheda che vuoi conservare e tocca <b>"Scarica PDF"</b>: ricevi un file con tutto quello che hai scritto, da tenere o stampare.</p>
+        <span class="ic">🗓</span>
+        <h4>Giorno per giorno</h4>
+        <p>In cima alle schede trovi la <b>data</b>: oggi è già selezionato. Con le frecce o i pallini torni ai giorni passati e rivedi le tue risposte.</p>
       </div>
       <div class="savecard">
-        <span class="ic">🖨</span>
-        <h4>Preferisci carta e penna?</h4>
-        <p>Scarica il PDF <b>senza compilare nulla</b>: ottieni le schede vuote pronte da stampare e riempire a mano.</p>
+        <span class="ic">📈</span>
+        <h4>Il tuo Resoconto</h4>
+        <p>Nella sezione <b>Resoconto</b> vedi il tuo andamento: i giorni di pratica, l'umore della settimana e i tuoi numeri del Cammino.</p>
       </div>
     </div>
 
@@ -491,25 +547,31 @@ input:focus,textarea:focus{
 
     <p class="intro">Metti una musica rilassante. Portati in uno spazio tranquillo. Prima di iniziare, respira.</p>
 
-    <div class="meta">
-      <div class="blk"><label>Data</label><input type="date" data-k="s1-date"></div>
-      <div class="blk"><label>Ora</label><input type="time" data-k="s1-time"></div>
-      <div class="blk grow"><label>Il pensiero / la frase che è arrivata</label><input type="text" placeholder="Scrivi qui…" data-k="s1-think"></div>
+    <div class="daynav">
+      <button class="dn-btn" onclick="dayGo('s1',-1)">←</button>
+      <div class="dn-mid">
+        <span class="dn-lab" id="s1-daylab">Oggi</span>
+        <input type="date" id="s1-day" onchange="daySet('s1',this.value)">
+      </div>
+      <button class="dn-btn" id="s1-next" onclick="dayGo('s1',1)">→</button>
     </div>
+    <div class="dots" id="s1-dots"></div>
+
+    <div class="blk"><label>Il pensiero / la frase che è arrivata</label><input type="text" placeholder="Scrivi qui…" data-f="think"></div>
 
     <div class="phase"><div class="pnum">1</div><div class="ptxt">Le quattro domande — scrivi la tua risposta</div></div>
     <div class="qg">
-      <div class="blk"><p class="qt">Questo pensiero e questa sensazione sono reali, vengono da me o sono automatici?</p><textarea rows="3" placeholder="La tua risposta…" data-k="s1-q1"></textarea></div>
-      <div class="blk"><p class="qt">Nasce dal presente — da ciò che sto vivendo adesso — o dal mio passato?</p><textarea rows="3" placeholder="La tua risposta…" data-k="s1-q2"></textarea></div>
-      <div class="blk"><p class="qt">Mi sta aiutando o mi sta togliendo la possibilità di fare ciò che sento?</p><textarea rows="3" placeholder="La tua risposta…" data-k="s1-q3"></textarea></div>
-      <div class="blk"><p class="qt">Se al mio posto ci fosse qualcuno che amo, agirei come voglio fare adesso?</p><textarea rows="3" placeholder="La tua risposta…" data-k="s1-q4"></textarea></div>
+      <div class="blk"><p class="qt">Questo pensiero e questa sensazione sono reali, vengono da me o sono automatici?</p><textarea rows="3" placeholder="La tua risposta…" data-f="q1"></textarea></div>
+      <div class="blk"><p class="qt">Nasce dal presente — da ciò che sto vivendo adesso — o dal mio passato?</p><textarea rows="3" placeholder="La tua risposta…" data-f="q2"></textarea></div>
+      <div class="blk"><p class="qt">Mi sta aiutando o mi sta togliendo la possibilità di fare ciò che sento?</p><textarea rows="3" placeholder="La tua risposta…" data-f="q3"></textarea></div>
+      <div class="blk"><p class="qt">Se al mio posto ci fosse qualcuno che amo, agirei come voglio fare adesso?</p><textarea rows="3" placeholder="La tua risposta…" data-f="q4"></textarea></div>
     </div>
 
     <div class="phase"><div class="pnum">2</div><div class="ptxt">3 minuti di respirazione · Dove sento il blocco nel corpo?</div></div>
-    <div class="blk"><textarea rows="3" placeholder="Descrivi dove e come senti il blocco (es. petto, stomaco, gola…)" data-k="s1-body"></textarea></div>
+    <div class="blk"><textarea rows="3" placeholder="Descrivi dove e come senti il blocco (es. petto, stomaco, gola…)" data-f="body"></textarea></div>
 
     <div class="phase"><div class="pnum">3</div><div class="ptxt">Descrivi l'emozione — rabbia, tristezza, frustrazione, dolore…</div></div>
-    <div class="blk"><textarea rows="2" placeholder="Che emozione è? Come la senti?" data-k="s1-emo"></textarea></div>
+    <div class="blk"><textarea rows="2" placeholder="Che emozione è? Come la senti?" data-f="emo"></textarea></div>
 
     <div class="mantra">
       <div class="ml">Il tuo mantra — ripetilo 3 volte ad alta voce</div>
@@ -518,7 +580,7 @@ input:focus,textarea:focus{
 
     <div class="blk">
       <span class="blab">Come mi sento ora →</span>
-      <textarea rows="2" placeholder="Scrivi come ti senti dopo la sessione…" data-k="s1-after"></textarea>
+      <textarea rows="2" placeholder="Scrivi come ti senti dopo la sessione…" data-f="after"></textarea>
     </div>
   </section>
 
@@ -534,28 +596,35 @@ input:focus,textarea:focus{
 
     <p class="intro">Quando arriva un giudizio su di te, fermati. Fai 1–2 respiri lenti. Poi rispondi con onestà.</p>
 
-    <div class="meta" style="grid-template-columns:150px 1fr">
-      <div class="blk"><label>Data</label><input type="date" data-k="s2-date"></div>
-      <div class="blk grow"><label>Il giudizio che sto dando a me stesso</label><input type="text" placeholder="Scrivi il giudizio così com'è…" data-k="s2-j"></div>
+    <div class="daynav">
+      <button class="dn-btn" onclick="dayGo('s2',-1)">←</button>
+      <div class="dn-mid">
+        <span class="dn-lab" id="s2-daylab">Oggi</span>
+        <input type="date" id="s2-day" onchange="daySet('s2',this.value)">
+      </div>
+      <button class="dn-btn" id="s2-next" onclick="dayGo('s2',1)">→</button>
     </div>
+    <div class="dots" id="s2-dots"></div>
+
+    <div class="blk"><label>Il giudizio che sto dando a me stesso</label><input type="text" placeholder="Scrivi il giudizio così com'è…" data-f="j"></div>
 
     <div class="phase"><div class="pnum">1</div><div class="ptxt">Osserva il pensiero</div></div>
     <div class="qg">
-      <div class="blk"><p class="qt">Che tono sto usando verso me stesso? Sono aggressivo, freddo, duro?</p><textarea rows="3" placeholder="La tua risposta…" data-k="s2-q1"></textarea></div>
-      <div class="blk"><p class="qt">Questa voce e queste sensazioni mi appartengono davvero?</p><textarea rows="3" placeholder="La tua risposta…" data-k="s2-q2"></textarea></div>
+      <div class="blk"><p class="qt">Che tono sto usando verso me stesso? Sono aggressivo, freddo, duro?</p><textarea rows="3" placeholder="La tua risposta…" data-f="q1"></textarea></div>
+      <div class="blk"><p class="qt">Questa voce e queste sensazioni mi appartengono davvero?</p><textarea rows="3" placeholder="La tua risposta…" data-f="q2"></textarea></div>
     </div>
 
     <div class="phase"><div class="pnum">2</div><div class="ptxt">Risali alla fonte</div></div>
     <div class="qg">
-      <div class="blk"><p class="qt">Chi o cosa mi ha fatto pensare di essere così? Cosa ho vissuto per arrivare a questo giudizio?</p><textarea rows="3" placeholder="La tua risposta…" data-k="s2-q3"></textarea></div>
-      <div class="blk"><p class="qt">Se al mio posto ci fosse qualcuno che amo, come le parlerei?</p><textarea rows="3" placeholder="La tua risposta…" data-k="s2-q4"></textarea></div>
+      <div class="blk"><p class="qt">Chi o cosa mi ha fatto pensare di essere così? Cosa ho vissuto per arrivare a questo giudizio?</p><textarea rows="3" placeholder="La tua risposta…" data-f="q3"></textarea></div>
+      <div class="blk"><p class="qt">Se al mio posto ci fosse qualcuno che amo, come le parlerei?</p><textarea rows="3" placeholder="La tua risposta…" data-f="q4"></textarea></div>
     </div>
 
     <div class="phase"><div class="pnum">3</div><div class="ptxt">Trasforma il giudizio — da accusatore a osservatore</div></div>
     <div class="trrow">
-      <div class="blk"><label>Il giudizio negativo</label><textarea rows="2" placeholder="Es. Sono sbagliata…" data-k="s2-neg"></textarea></div>
+      <div class="blk"><label>Il giudizio negativo</label><textarea rows="2" placeholder="Es. Sono sbagliata…" data-f="neg"></textarea></div>
       <div class="trarr">→</div>
-      <div class="blk"><label>Visto dall'esterno</label><textarea rows="2" placeholder="Es. C'è una parte di me che oggi…" data-k="s2-pos"></textarea></div>
+      <div class="blk"><label>Visto dall'esterno</label><textarea rows="2" placeholder="Es. C'è una parte di me che oggi…" data-f="pos"></textarea></div>
     </div>
     <p class="trex">esempio: "Sono sbagliata" → <b>"C'è una parte di me che oggi si sente sbagliata"</b></p>
 
@@ -566,13 +635,13 @@ input:focus,textarea:focus{
 
     <div class="blk">
       <span class="blab">♪ Canzone di oggi</span>
-      <input type="text" placeholder="Nome della canzone…" data-k="s2-song">
+      <input type="text" placeholder="Nome della canzone…" data-f="song">
       <p class="qt" style="margin:10px 0 0">Scegli una canzone che ti porta emozioni positive e rispetto verso te stesso.</p>
     </div>
 
     <div class="blk">
       <span class="blab">Come mi sento ora →</span>
-      <textarea rows="2" placeholder="Scrivi come ti senti dopo la sessione…" data-k="s2-after"></textarea>
+      <textarea rows="2" placeholder="Scrivi come ti senti dopo la sessione…" data-f="after"></textarea>
     </div>
   </section>
 
@@ -628,6 +697,44 @@ input:focus,textarea:focus{
     </div>
   </section>
 
+  <!-- ============ PANNELLO 4 · RESOCONTO ============ -->
+  <section class="panel" id="p4">
+    <div class="shdr">
+      <div>
+        <div class="stag">Resoconto · Il tuo andamento</div>
+        <div class="sh1">Il mio<br>Cammino fin qui</div>
+      </div>
+    </div>
+
+    <div class="statgrid">
+      <div class="stat"><div class="sv g" id="st-streak">0</div><div class="sl">Giorni<br>di fila</div></div>
+      <div class="stat"><div class="sv" id="st-s1">0</div><div class="sl">Sessioni<br>Spazio Emotivo</div></div>
+      <div class="stat"><div class="sv" id="st-s2">0</div><div class="sl">Sessioni<br>Osservatorio</div></div>
+      <div class="stat"><div class="sv g" id="st-days">0</div><div class="sl">Giorni<br>di pratica</div></div>
+    </div>
+
+    <div class="chartcard">
+      <div class="cht">Le tue pratiche · ultimi 14 giorni</div>
+      <div class="chs">Ogni colonna è un giorno: più è alta, più hai praticato.</div>
+      <canvas id="ch-act"></canvas>
+      <div class="legend">
+        <span><i class="lg1"></i>Spazio Emotivo</span>
+        <span><i class="lg2"></i>Osservatorio</span>
+      </div>
+    </div>
+
+    <div class="chartcard">
+      <div class="cht">Il tuo umore · ultimi 14 giorni</div>
+      <div class="chs">La linea segue gli umori che hai scelto nel Diario.</div>
+      <canvas id="ch-mood"></canvas>
+      <div class="rempty" id="mood-empty" style="display:none">Scegli gli umori nel Diario e qui apparirà la tua linea dell'anima.</div>
+    </div>
+
+    <div class="tip">
+      <p id="r-msg"><b>Il Cammino ti aspetta:</b> ogni passo che scrivi lascia una traccia di luce.</p>
+    </div>
+  </section>
+
   <!-- ============ NAV BASSA ============ -->
   <footer class="bnav">
     <div class="bnav-t">Vai a un'altra sezione</div>
@@ -636,9 +743,7 @@ input:focus,textarea:focus{
       <button class="bnav-btn" onclick="goTab(1);window.scrollTo({top:0,behavior:'smooth'})">🕊️<br>Scheda 1</button>
       <button class="bnav-btn" onclick="goTab(2);window.scrollTo({top:0,behavior:'smooth'})">🌿<br>Scheda 2</button>
       <button class="bnav-btn" onclick="goTab(3);window.scrollTo({top:0,behavior:'smooth'})">📜<br>Diario</button>
-    </div>
-    <div class="bnav-pdf">
-      <button class="btn-gold" onclick="dlPDF(this)">↓ Scarica PDF della scheda attiva</button>
+      <button class="bnav-btn" onclick="goTab(4);window.scrollTo({top:0,behavior:'smooth'})">📈<br>Resoconto</button>
     </div>
     <div class="bnav-foot">Il Cammino Interiore · <a href="/app/">I miei esercizi</a> · <a href="/">Torna al Libro</a> · <a href="#" onclick="esci();return false">Esci</a></div>
   </footer>
@@ -646,14 +751,50 @@ input:focus,textarea:focus{
 </div>
 
 <div id="saved">✓ Salvato</div>
-<div id="pdf-hidden" aria-hidden="true"></div>
 
 <script>
 (function(){
-  /* ================= PERSISTENZA ================= */
-  var KEY='ovl-strumenti';
+  /* ================= PERSISTENZA PER ACCOUNT ================= */
+  var EMAIL='';
+  try{ EMAIL=(localStorage.getItem('ovl-user')||'').trim().toLowerCase(); }catch(e){}
+  var KEY='ovl-strumenti:'+EMAIL;
+  var LEGACY='ovl-strumenti';
   var store={};
-  try{ store=JSON.parse(localStorage.getItem(KEY)||'{}'); }catch(e){ store={}; }
+  try{
+    store=JSON.parse(localStorage.getItem(KEY)||'null');
+    if(!store){
+      /* primo accesso di questo account su questo dispositivo:
+         eredita i dati scritti prima dell'arrivo degli account */
+      var old={};
+      try{ old=JSON.parse(localStorage.getItem(LEGACY)||'{}'); }catch(e){ old={}; }
+      store=migrate(old);
+      localStorage.setItem(KEY, JSON.stringify(store));
+    }
+  }catch(e){ store={}; }
+
+  function todayIso(){
+    var d=new Date();
+    return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  }
+
+  /* vecchio formato (schede senza data) → nuovo formato datato */
+  function migrate(old){
+    var ns={};
+    for(var k in old) ns[k]=old[k];
+    var F1=['think','q1','q2','q3','q4','body','emo','after'];
+    var F2=['j','q1','q2','q3','q4','neg','pos','song','after'];
+    var d1=/^\d{4}-\d{2}-\d{2}$/.test(old['s1-date']||'')?old['s1-date']:todayIso();
+    var d2=/^\d{4}-\d{2}-\d{2}$/.test(old['s2-date']||'')?old['s2-date']:todayIso();
+    F1.forEach(function(f){
+      if(old['s1-'+f]){ ns['s1:'+d1+':'+f]=old['s1-'+f]; delete ns['s1-'+f]; }
+    });
+    F2.forEach(function(f){
+      if(old['s2-'+f]){ ns['s2:'+d2+':'+f]=old['s2-'+f]; delete ns['s2-'+f]; }
+    });
+    delete ns['s1-date']; delete ns['s1-time']; delete ns['s2-date'];
+    return ns;
+  }
+
   var saveTimer=null, toastTimer=null;
   function persist(){
     try{ localStorage.setItem(KEY, JSON.stringify(store)); }catch(e){}
@@ -667,7 +808,7 @@ input:focus,textarea:focus{
   function applyStored(el){
     var k=el.dataset.k; if(!k)return;
     if(el.type==='checkbox'){ el.checked=!!store[k]; }
-    else if(store[k]!==undefined){ el.value=store[k]; }
+    else el.value=(store[k]!==undefined)?store[k]:'';
   }
   function bindAll(root){
     (root||document).querySelectorAll('[data-k]').forEach(applyStored);
@@ -683,11 +824,82 @@ input:focus,textarea:focus{
     queueSave();
   });
 
+  /* ================= SCHEDE DATATE ================= */
+  var sheetDay={s1:todayIso(), s2:todayIso()};
+  var FIELDS={
+    s1:['think','q1','q2','q3','q4','body','emo','after'],
+    s2:['j','q1','q2','q3','q4','neg','pos','song','after']
+  };
+  var MONTHS_S=['Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov','Dic'];
+
+  function isoAdd(iso,days){
+    var p=iso.split('-');
+    var d=new Date(+p[0],+p[1]-1,+p[2]);
+    d.setDate(d.getDate()+days);
+    return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  }
+  function labelFor(iso){
+    var t=todayIso();
+    if(iso===t)return 'Oggi';
+    if(iso===isoAdd(t,-1))return 'Ieri';
+    var p=iso.split('-');
+    return (+p[2])+' '+MONTHS_S[+p[1]-1]+' '+p[0];
+  }
+  function hasEntry(s,iso){
+    return FIELDS[s].some(function(f){
+      var v=store[s+':'+iso+':'+f];
+      return v && String(v).trim();
+    });
+  }
+
+  function loadSheet(s){
+    var iso=sheetDay[s];
+    var panel=document.getElementById(s==='s1'?'p1':'p2');
+    panel.querySelectorAll('[data-f]').forEach(function(el){
+      el.dataset.k=s+':'+iso+':'+el.dataset.f;
+      applyStored(el);
+    });
+    document.getElementById(s+'-day').value=iso;
+    document.getElementById(s+'-day').max=todayIso();
+    document.getElementById(s+'-daylab').textContent=labelFor(iso);
+    document.getElementById(s+'-next').disabled=(iso>=todayIso());
+    renderDots(s);
+  }
+  function renderDots(s){
+    var box=document.getElementById(s+'-dots');
+    box.innerHTML='';
+    var t=todayIso();
+    for(var i=13;i>=0;i--){
+      var iso=isoAdd(t,-i);
+      var b=document.createElement('button');
+      b.className='dot'+(hasEntry(s,iso)?' full':'')+(iso===sheetDay[s]?' sel':'')+(iso===t?' today':'');
+      var p=iso.split('-');
+      b.innerHTML='<div class="c"></div><span class="dl">'+(+p[2])+'<br>'+MONTHS_S[+p[1]-1]+'</span>';
+      (function(io){ b.onclick=function(){ daySet(s,io); }; })(iso);
+      box.appendChild(b);
+    }
+    box.scrollLeft=box.scrollWidth;
+  }
+  window.daySet=function(s,iso){
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(iso))return;
+    if(iso>todayIso())iso=todayIso();
+    sheetDay[s]=iso;
+    loadSheet(s);
+  };
+  window.dayGo=function(s,dir){
+    daySet(s, isoAdd(sheetDay[s],dir));
+  };
+  /* i pallini si aggiornano mentre scrivi */
+  document.addEventListener('input',function(e){
+    var k=e.target.dataset.k||'';
+    if(k.indexOf('s1:')===0)renderDots('s1');
+    else if(k.indexOf('s2:')===0)renderDots('s2');
+  });
+
   /* ================= LA LUCE GUIDA ================= */
   var lume=document.getElementById('lume');
   var litEl=null;
   function lumeHome(){
-    /* riposo: a lato del titolo */
     var x=Math.max(34, innerWidth/2 - 460);
     moveLume(x, 86 + (document.querySelector('.hd')?document.querySelector('.hd').offsetTop:0));
   }
@@ -702,24 +914,21 @@ input:focus,textarea:focus{
     el.classList.add('lit');
     var r=el.getBoundingClientRect();
     if(el.classList.contains('wcard')){
-      /* il diario: la luce resta FUORI dalla tabella, sopra al centro,
-         e la illumina tutta */
+      /* il diario: la luce resta FUORI dalla tabella e la illumina tutta */
       moveLume(r.left + r.width/2, r.top + scrollY - 32);
       return;
     }
     var docY=r.top + scrollY + Math.min(r.height/2, 70);
-    /* la luce si posa sul bordo sinistro del blocco (o destro se non c'è spazio) */
     var x=r.left - 26;
     if(x < 30) x=Math.min(innerWidth-30, r.right + 26);
     moveLume(x, docY);
   }
-  /* clic o focus su un blocco → la luce lo raggiunge lentamente */
   document.addEventListener('focusin',function(e){
-    var b=e.target.closest('.blk, .gcard, .intenz, .wcard');
+    var b=e.target.closest('.blk, .gcard, .intenz, .wcard, .chartcard');
     if(b)lightUp(b);
   });
   document.addEventListener('click',function(e){
-    var b=e.target.closest('.blk, .gcard, .intenz, .wcard');
+    var b=e.target.closest('.blk, .gcard, .intenz, .wcard, .chartcard');
     if(b)lightUp(b);
   });
   addEventListener('resize',function(){ if(litEl)lightUp(litEl); else lumeHome(); });
@@ -730,6 +939,7 @@ input:focus,textarea:focus{
     document.querySelectorAll('.tabs .tab').forEach(function(b,i){b.classList.toggle('on',i===idx);});
     if(litEl){litEl.classList.remove('lit');litEl=null;}
     lumeHome();
+    if(idx===4)renderReport();
   };
 
   /* ================= DIARIO SETTIMANALE ================= */
@@ -804,82 +1014,201 @@ input:focus,textarea:focus{
     bindAll(cells);
   }
 
-  /* ================= PDF ================= */
-  function pdfMeta(id){
-    if(id==='p0')return{file:'guida-strumenti-cammino.pdf',title:'Come usare questi strumenti',sub:'Guida introduttiva · Il Cammino Interiore'};
-    if(id==='p1')return{file:'spazio-emotivo.pdf',title:'Il mio Spazio Emotivo',sub:'Scheda 1 · Sblocco Emotivo'};
-    if(id==='p2')return{file:'osservatorio-interiore.pdf',title:'Il mio Osservatorio Interiore',sub:'Scheda 2 · Giudizio Interiore'};
-    return{file:'diario-della-settimana.pdf',title:'Il mio Diario della Settimana',sub:'Diario · Il Cammino Interiore'};
+  /* ================= RESOCONTO ================= */
+  function did(s,isoDay){
+    /* praticato = scheda compilata quel giorno O spunta nel diario */
+    return hasEntry(s,isoDay) || !!store['cal-'+isoDay+'-'+s];
   }
-
-  function preparePdf(){
-    var active=document.querySelector('.panel.on');
-    if(!active)return null;
-    var meta=pdfMeta(active.id);
-
-    var wrap=document.createElement('div');
-    wrap.className='pdf-render';
-    var t=document.createElement('div'); t.className='pdf-title'; t.textContent=meta.title;
-    var s=document.createElement('div'); s.className='pdf-sub'; s.textContent=meta.sub;
-    wrap.appendChild(t); wrap.appendChild(s);
-    wrap.appendChild(active.cloneNode(true));
-
-    var clonePanel=wrap.querySelector('.panel');
-    clonePanel.style.display='block'; clonePanel.style.padding='0';
-
-    /* campi → testo */
-    wrap.querySelectorAll('input,textarea,select').forEach(function(el){
-      if(el.type==='checkbox'){
-        var sp=document.createElement('span');
-        sp.style.cssText='display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border:1px solid #8B7B6A;font-size:10px;line-height:1;color:#43301a;';
-        sp.textContent=el.checked?'✓':'';
-        el.parentNode.replaceChild(sp,el); return;
-      }
-      var d=document.createElement('div');
-      d.className='pdf-field';
-      var v=(el.value||'').trim();
-      if(!v){ d.classList.add('empty'); d.textContent=el.getAttribute('placeholder')||' '; }
-      else d.textContent=v;
-      el.parentNode.replaceChild(d,el);
-    });
-
-    /* umore → testo */
-    wrap.querySelectorAll('.dmood').forEach(function(row){
-      var sel=row.querySelector('.mood.on');
-      row.innerHTML='<div class="pdf-field" style="border:none;padding:0;min-height:auto;">'+(sel?'Umore: '+sel.textContent:'—')+'</div>';
-    });
-    /* bottoni via */
-    wrap.querySelectorAll('button').forEach(function(b){b.remove();});
-
-    var hidden=document.getElementById('pdf-hidden');
-    hidden.innerHTML=''; hidden.appendChild(wrap);
-    return {node:wrap, meta:meta};
+  function activeDay(isoDay){
+    return did('s1',isoDay)||did('s2',isoDay)||store['cal-'+isoDay+'-mood']!==undefined;
   }
-
-  window.dlPDF=async function(btn){
-    if(typeof html2pdf==='undefined'){ alert('La libreria PDF non è stata caricata. Controlla la connessione.'); return; }
-    var orig=btn?btn.textContent:'';
-    if(btn){ btn.disabled=true; btn.textContent='Preparazione…'; }
-    try{
-      var p=preparePdf();
-      if(!p)throw new Error('no panel');
-      await new Promise(function(r){setTimeout(r,250);});
-      if(btn)btn.textContent='Creazione PDF…';
-      await html2pdf().set({
-        margin:[10,10,10,10],
-        filename:p.meta.file,
-        image:{type:'jpeg',quality:.95},
-        html2canvas:{scale:2,useCORS:true,backgroundColor:'#f6eed8',scrollX:0,scrollY:0},
-        jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},
-        pagebreak:{mode:['css','legacy']}
-      }).from(p.node).save();
-      if(btn){ btn.textContent='✓ PDF creato'; setTimeout(function(){btn.disabled=false;btn.textContent=orig;},1300); }
-    }catch(err){
-      console.error(err);
-      alert('Problema nella creazione del PDF. Riprova, oppure usa Chrome/Safari aggiornato.');
-      if(btn){ btn.disabled=false; btn.textContent=orig; }
+  function allActiveDays(){
+    var set={};
+    for(var k in store){
+      var v=store[k]; if(v===''||v===false||v===undefined||v===null)continue;
+      var m=k.match(/^s[12]:(\d{4}-\d{2}-\d{2}):/) || k.match(/^cal-(\d{4}-\d{2}-\d{2})-(s1|s2|mood|kw)/);
+      if(m)set[m[1]]=true;
     }
-  };
+    return Object.keys(set);
+  }
+  function countSessions(s){
+    var set={};
+    for(var k in store){
+      var v=store[k]; if(!v||!String(v).trim())continue;
+      var m=k.match(new RegExp('^'+s+':(\\d{4}-\\d{2}-\\d{2}):'));
+      if(m)set[m[1]]=true;
+    }
+    /* più le spunte manuali del diario */
+    for(var k2 in store){
+      var m2=k2.match(/^cal-(\d{4}-\d{2}-\d{2})-(s1|s2)$/);
+      if(m2&&m2[2]===s&&store[k2])set[m2[1]]=true;
+    }
+    return Object.keys(set).length;
+  }
+  function streak(){
+    var n=0, d=todayIso();
+    if(!activeDay(d)){ d=isoAdd(d,-1); }     /* oggi non ancora fatto: parti da ieri */
+    while(activeDay(d)){ n++; d=isoAdd(d,-1); }
+    return n;
+  }
+
+  function setupCanvas(cv){
+    var dpr=Math.min(devicePixelRatio||1,2);
+    var w=cv.clientWidth, h=cv.clientHeight;
+    cv.width=w*dpr; cv.height=h*dpr;
+    var x=cv.getContext('2d');
+    x.setTransform(dpr,0,0,dpr,0,0);
+    return {x:x,w:w,h:h};
+  }
+
+  /* barre 3D estruse con bagliore */
+  function bar3d(x, bx, by, bw, bh, top, side, front, glow){
+    var d=Math.min(9, bw*.4);   /* profondità prospettica */
+    if(bh<1)return;
+    x.save();
+    x.shadowColor=glow; x.shadowBlur=14;
+    /* faccia frontale */
+    x.fillStyle=front;
+    x.fillRect(bx, by-bh, bw, bh);
+    x.shadowBlur=0;
+    /* faccia superiore */
+    x.fillStyle=top;
+    x.beginPath();
+    x.moveTo(bx, by-bh); x.lineTo(bx+d, by-bh-d);
+    x.lineTo(bx+bw+d, by-bh-d); x.lineTo(bx+bw, by-bh);
+    x.closePath(); x.fill();
+    /* fianco destro */
+    x.fillStyle=side;
+    x.beginPath();
+    x.moveTo(bx+bw, by-bh); x.lineTo(bx+bw+d, by-bh-d);
+    x.lineTo(bx+bw+d, by-d); x.lineTo(bx+bw, by);
+    x.closePath(); x.fill();
+    x.restore();
+  }
+
+  function renderActivity(){
+    var cv=document.getElementById('ch-act');
+    var c=setupCanvas(cv), x=c.x, W=c.w, H=c.h;
+    x.clearRect(0,0,W,H);
+    var t=todayIso();
+    var base=H-30, unit=(H-66)/2;
+    var n=14, slot=W/n, bw=Math.min(20, slot*.42);
+
+    /* linee guida */
+    x.strokeStyle='rgba(185,163,227,.12)'; x.lineWidth=1;
+    [0,1,2].forEach(function(lv){
+      x.beginPath(); x.moveTo(6,base-lv*unit); x.lineTo(W-6,base-lv*unit); x.stroke();
+    });
+
+    for(var i=0;i<n;i++){
+      var isoD=isoAdd(t,-(n-1-i));
+      var cx=i*slot+slot/2;
+      var d1=did('s1',isoD), d2=did('s2',isoD);
+      /* S1 oro sotto, S2 glicine sopra */
+      var y=base;
+      if(d1){
+        bar3d(x, cx-bw/2, y, bw, unit-4, '#e8d9ae', '#7a6022', '#c9a84c', 'rgba(201,168,76,.8)');
+        y-=unit;
+      }
+      if(d2){
+        bar3d(x, cx-bw/2, y, bw, unit-4, '#dccdf6', '#5d4a85', '#a98fd6', 'rgba(170,135,230,.8)');
+      }
+      if(!d1&&!d2){
+        x.fillStyle='rgba(185,163,227,.18)';
+        x.beginPath(); x.arc(cx, base-3, 2.4, 0, 7); x.fill();
+      }
+      /* etichetta giorno */
+      var p=isoD.split('-');
+      x.fillStyle=isoD===t?'#e8d9ae':'rgba(141,132,153,.9)';
+      x.font='11px Cinzel, serif'; x.textAlign='center';
+      x.fillText((+p[2]), cx, H-10);
+    }
+  }
+
+  function renderMood(){
+    var cv=document.getElementById('ch-mood');
+    var c=setupCanvas(cv), x=c.x, W=c.w, H=c.h;
+    x.clearRect(0,0,W,H);
+    var t=todayIso(), n=14, slot=(W-58)/(n-1);
+    var top=16, bot=H-30, span=bot-top;
+    var pts=[];
+    for(var i=0;i<n;i++){
+      var isoD=isoAdd(t,-(n-1-i));
+      var v=store['cal-'+isoD+'-mood'];
+      if(v!==undefined&&v!==null&&v!=='')pts.push({i:i, v:+v, iso:isoD});
+    }
+    /* scala emoji a sinistra */
+    x.font='13px serif'; x.textAlign='left';
+    x.globalAlpha=.85;
+    MOODS.forEach(function(m,mi){
+      x.fillText(m, 6, bot - (mi/4)*span + 5);
+    });
+    x.globalAlpha=1;
+    /* griglia */
+    x.strokeStyle='rgba(185,163,227,.1)';
+    for(var g=0;g<5;g++){
+      x.beginPath(); x.moveTo(30, bot-(g/4)*span); x.lineTo(W-6, bot-(g/4)*span); x.stroke();
+    }
+
+    document.getElementById('mood-empty').style.display=pts.length?'none':'block';
+    if(!pts.length)return;
+
+    function px(p){ return 34 + p.i*slot; }
+    function py(p){ return bot - (p.v/4)*span; }
+
+    /* area sotto la linea */
+    if(pts.length>1){
+      var grad=x.createLinearGradient(0,top,0,bot);
+      grad.addColorStop(0,'rgba(170,135,230,.3)');
+      grad.addColorStop(1,'rgba(170,135,230,0)');
+      x.beginPath();
+      x.moveTo(px(pts[0]), bot);
+      pts.forEach(function(p){ x.lineTo(px(p), py(p)); });
+      x.lineTo(px(pts[pts.length-1]), bot);
+      x.closePath();
+      x.fillStyle=grad; x.fill();
+      /* linea luminosa */
+      x.save();
+      x.shadowColor='rgba(186,150,240,.9)'; x.shadowBlur=12;
+      x.strokeStyle='#cdb2f2'; x.lineWidth=2.5; x.lineJoin='round';
+      x.beginPath();
+      pts.forEach(function(p,pi){ pi?x.lineTo(px(p),py(p)):x.moveTo(px(p),py(p)); });
+      x.stroke();
+      x.restore();
+    }
+    /* punti */
+    pts.forEach(function(p){
+      x.save();
+      x.shadowColor='rgba(225,205,255,.95)'; x.shadowBlur=10;
+      x.fillStyle='#ffffff';
+      x.beginPath(); x.arc(px(p), py(p), 3.4, 0, 7); x.fill();
+      x.restore();
+    });
+    /* etichette giorni */
+    x.fillStyle='rgba(141,132,153,.9)'; x.font='11px Cinzel, serif'; x.textAlign='center';
+    for(var i2=0;i2<n;i2+=2){
+      var isoD2=isoAdd(t,-(n-1-i2));
+      x.fillText(+isoD2.split('-')[2], 34+i2*slot, H-10);
+    }
+  }
+
+  function renderReport(){
+    var act=allActiveDays();
+    document.getElementById('st-days').textContent=act.length;
+    document.getElementById('st-s1').textContent=countSessions('s1');
+    document.getElementById('st-s2').textContent=countSessions('s2');
+    var sk=streak();
+    document.getElementById('st-streak').textContent=sk;
+    var msg=document.getElementById('r-msg');
+    if(!act.length) msg.innerHTML='<b>Il Cammino ti aspetta:</b> ogni passo che scrivi lascia una traccia di luce.';
+    else if(sk>=7) msg.innerHTML='<b>'+sk+' giorni di fila:</b> la tua costanza sta diventando luce. Continua così.';
+    else if(sk>=3) msg.innerHTML='<b>'+sk+' giorni di fila:</b> il ritmo c\'è — il Cammino ti sta rispondendo.';
+    else msg.innerHTML='<b>Ogni ritorno conta:</b> riprendi da dove sei, senza giudicarti.';
+    requestAnimationFrame(function(){ renderActivity(); renderMood(); });
+  }
+  addEventListener('resize',function(){
+    if(document.getElementById('p4').classList.contains('on'))renderReport();
+  });
 
   window.esci=function(){
     try{ localStorage.removeItem('ovl-user'); }catch(e){}
@@ -888,6 +1217,8 @@ input:focus,textarea:focus{
 
   /* ================= INIT ================= */
   bindAll(document);
+  loadSheet('s1');
+  loadSheet('s2');
   renderWeek();
   lumeHome();
 })();
