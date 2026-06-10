@@ -45,14 +45,35 @@ body{
   background:radial-gradient(ellipse at 50% 44%,
     transparent 40%, rgba(0,0,0,.4) 78%, rgba(0,0,0,.75) 100%)}
 
-/* ===== LA LUCE GLICINE, ferma a sinistra ===== */
-#spot{
-  position:fixed;inset:0;z-index:2;pointer-events:none;opacity:0;
-  background:
-    radial-gradient(1200px 900px at -10% 40%,
-      rgba(196,168,238,.26) 0%, rgba(160,128,215,.12) 38%,
-      rgba(120,95,180,.05) 58%, transparent 75%);
-  transition:opacity 1.2s ease;
+/* ===== IL FUOCO FATUO: la luce che cammina e rivela ===== */
+/* oscurità con un foro di luce (posizione via JS) */
+#dark{
+  position:fixed;inset:0;z-index:7;pointer-events:none;opacity:0;
+  transition:opacity 1.4s ease;
+}
+/* alone glicine dentro la luce */
+#wisptint{
+  position:fixed;inset:0;z-index:7;pointer-events:none;opacity:0;
+  mix-blend-mode:screen;
+  transition:opacity 1.4s ease;
+}
+/* il corpo della lucina */
+#wisp{
+  position:fixed;left:0;top:0;z-index:8;pointer-events:none;opacity:0;
+  width:18px;height:18px;margin:-9px 0 0 -9px;border-radius:50%;
+  background:radial-gradient(circle at 38% 34%,
+    #ffffff 0%, #efe6ff 28%, #cdb2f2 55%, rgba(160,120,220,.0) 75%);
+  box-shadow:
+    0 0 12px 4px rgba(220,200,255,.85),
+    0 0 36px 14px rgba(186,150,240,.45),
+    0 0 90px 40px rgba(150,110,215,.22);
+  transition:opacity 1.4s ease;
+  animation:wflick 2.8s ease-in-out infinite;
+}
+@keyframes wflick{
+  0%,100%{filter:brightness(1)}
+  40%{filter:brightness(1.25)}
+  62%{filter:brightness(.92)}
 }
 
 #hint{
@@ -133,10 +154,7 @@ body{
 }
 .sez{
   max-width:980px;margin:0 auto 18vh;
-  opacity:.07;transform:translateY(46px);
-  transition:opacity 1.3s ease, transform 1.3s ease;
 }
-.sez.lit{opacity:1;transform:none}
 .sez-eyebrow{
   font-family:'Cinzel',serif;font-size:12px;font-weight:600;
   letter-spacing:.5em;text-indent:.5em;text-transform:uppercase;
@@ -148,7 +166,7 @@ body{
   color:#ece8f2;line-height:1.2;margin-bottom:10px;
   transition:text-shadow 1.3s ease;
 }
-.sez.lit h2{text-shadow:0 0 34px rgba(185,163,227,.45), 0 0 90px rgba(150,120,210,.18)}
+.sez h2{text-shadow:0 0 34px rgba(185,163,227,.35), 0 0 90px rgba(150,120,210,.14)}
 .sez-sub{font-style:italic;font-size:clamp(16px,2.3vmin,21px);color:#9d94ad;
   max-width:560px;line-height:1.6;margin-bottom:5vh}
 .sez-rule{display:flex;align-items:center;gap:13px;margin:0 0 5vh}
@@ -244,7 +262,9 @@ footer .f2{margin-top:1.6vh;font-style:italic;color:#6e6580;font-size:15px}
 
 <div class="nebula"></div>
 <div id="backlight"></div>
-<div id="spot"></div>
+<div id="dark"></div>
+<div id="wisptint"></div>
+<div id="wisp"></div>
 
 <canvas id="bookgl"></canvas>
 <div class="vignette"></div>
@@ -690,12 +710,65 @@ async function init(){
      ================================================================ */
   const hint = document.getElementById('hint');
   const backlight = document.getElementById('backlight');
-  const spot = document.getElementById('spot');
+  const darkEl = document.getElementById('dark');
+  const tintEl = document.getElementById('wisptint');
+  const wispEl = document.getElementById('wisp');
+  const sito = document.getElementById('sito');
   const spacer = document.getElementById('spacer');
+
+  /* ---- il percorso del fuoco fatuo: un'ancora per ogni sezione ---- */
+  let anchors = [];
+  function calcAnchors(){
+    anchors = [];
+    document.querySelectorAll('.sez').forEach((s,i)=>{
+      const r = s.getBoundingClientRect();
+      const docTop = r.top + scrollY;
+      const x = Math.max(innerWidth*.08, r.left - 26) + (i%2 ? innerWidth*.05 : 0);
+      anchors.push({x:x, y:docTop + 60});
+      anchors.push({x:x + innerWidth*.025, y:docTop + r.height*.55});
+    });
+    anchors.push({x:innerWidth*.5, y:sito.offsetTop + sito.offsetHeight - 80});
+  }
+  calcAnchors();
+  addEventListener('load', calcAnchors);
+
+  let wx=-300, wy=-300, wOn=false;
+  function updateWisp(t){
+    const on = ps > .8;
+    if (on !== wOn){
+      wOn = on;
+      darkEl.style.opacity = on?1:0;
+      tintEl.style.opacity = on?1:0;
+      wispEl.style.opacity = on?1:0;
+    }
+    if (!on || anchors.length<2) return;
+    /* progresso lungo il sentiero, guidato dallo scroll */
+    const start = sito.offsetTop - innerHeight*.55;
+    const end = sito.offsetTop + sito.offsetHeight - innerHeight*.85;
+    const p = clamp01((scrollY - start)/Math.max(1,end-start)) * (anchors.length-1);
+    const i = Math.min(anchors.length-2, Math.floor(p));
+    const f = p - i;
+    const A=anchors[i], B=anchors[i+1];
+    /* salta ad arco da un'ancora all'altra */
+    const hop = Math.sin(f*Math.PI) * 48;
+    const tx = A.x + (B.x-A.x)*f + Math.sin(t*1.7)*10;
+    const ty = A.y + (B.y-A.y)*f - hop - scrollY
+             + Math.sin(t*2.6)*6 - Math.abs(Math.sin(t*1.35))*12;
+    wx += (tx-wx)*.07;
+    wy += (ty-wy)*.07;
+    const r = Math.max(270, Math.min(innerWidth,innerHeight)*.5);
+    darkEl.style.background =
+      'radial-gradient(circle '+(r*2|0)+'px at '+(wx|0)+'px '+(wy|0)+'px,'+
+      'rgba(6,5,9,0) 0%, rgba(6,5,9,0) 30%, rgba(6,5,9,.5) 55%, rgba(6,5,9,.94) 82%)';
+    tintEl.style.background =
+      'radial-gradient(circle '+(r|0)+'px at '+(wx|0)+'px '+(wy|0)+'px,'+
+      'rgba(196,168,238,.16) 0%, rgba(160,128,215,.07) 45%, transparent 75%)';
+    wispEl.style.transform = 'translate3d('+wx.toFixed(1)+'px,'+wy.toFixed(1)+'px,0)';
+  }
   const glEl = document.getElementById('bookgl');
   const navItems = [...document.querySelectorAll('.navItem')];
 
-  let scrollRaw = 0, ps = 0, solid = false, spotOn = false;
+  let scrollRaw = 0, ps = 0, solid = false;
   const updateScroll = ()=>{
     const max = spacer.offsetHeight - innerHeight;
     scrollRaw = max>0 ? clamp01(scrollY/max) : 0;
@@ -786,9 +859,8 @@ async function init(){
     const fade = ph(.86,.97);
     glEl.style.opacity = (1-fade).toFixed(3);
 
-    /* la luce glicine si accende col tuffo e resta */
-    const wantSpot = ps > .72;
-    if (wantSpot !== spotOn){ spotOn = wantSpot; spot.style.opacity = wantSpot ? 1 : 0; }
+    /* il fuoco fatuo cammina e rivela ciò che tocca */
+    updateWisp(t);
 
     const pulse = .5 + Math.sin(t*1.6)*.14;
     backlight.style.opacity = ((pulse*(.45+pVortex*.55) + pSolid*.15)
@@ -832,18 +904,13 @@ async function init(){
     });
   });
 
-  /* ---- rivelazione delle sezioni ---- */
-  const obs = new IntersectionObserver(es=>{
-    es.forEach(e=>{ if (e.isIntersecting) e.target.classList.add('lit'); });
-  }, {threshold:.25});
-  document.querySelectorAll('.sez').forEach(s=>obs.observe(s));
-
   addEventListener('resize', ()=>{
     camera.aspect = innerWidth/innerHeight;
     camera.updateProjectionMatrix();
     calcSFit();
     renderer.setSize(innerWidth, innerHeight);
     updateScroll();
+    calcAnchors();
   });
 }
 
