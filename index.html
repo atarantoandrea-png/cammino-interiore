@@ -172,7 +172,7 @@ body{
   transition:text-shadow 1.3s ease;
 }
 .sez h2{text-shadow:0 0 34px rgba(185,163,227,.35), 0 0 90px rgba(150,120,210,.14)}
-.sez-sub{font-style:italic;font-size:clamp(16px,2.3vmin,21px);color:#9d94ad;
+.sez-sub{font-size:clamp(16px,2.3vmin,21px);color:#9d94ad;
   max-width:560px;line-height:1.6;margin-bottom:5vh}
 .sez-rule{display:flex;align-items:center;gap:13px;margin:0 0 5vh}
 .sez-rule .l{width:110px;height:1px;
@@ -221,7 +221,7 @@ body{
   transition:filter .3s ease, transform .3s ease;
 }
 .btn-gl:hover{filter:brightness(1.08);transform:translateY(-2px)}
-.eserc-note{font-style:italic;font-size:15px;color:#7d7490;margin-top:14px}
+.eserc-note{font-size:15px;color:#7d7490;margin-top:14px}
 .mockwrap{flex:0 0 auto;margin:0 auto}
 .mock{
   width:min(230px,56vw);border-radius:30px;
@@ -247,7 +247,7 @@ body{
   background:rgba(20,17,26,.45);
 }
 .soon .moon{font-size:34px;color:#b9a3e3;text-shadow:0 0 24px rgba(185,163,227,.5);margin-bottom:14px}
-.soon p{font-style:italic;font-size:18px;color:#9d94ad}
+.soon p{font-size:18px;color:#9d94ad}
 
 footer{
   border-top:1px solid rgba(185,163,227,.14);
@@ -257,7 +257,7 @@ footer{
 }
 footer .f1{font-family:'Cinzel',serif;font-size:13px;letter-spacing:.3em;
   text-transform:uppercase;color:#b9a3e3}
-footer .f2{margin-top:1.6vh;font-style:italic;color:#6e6580;font-size:15px}
+footer .f2{margin-top:1.6vh;color:#6e6580;font-size:15px}
 
 #fallback{display:none;position:fixed;inset:0;z-index:40;
   align-items:center;justify-content:center;color:#cfccc4;font-size:20px}
@@ -414,14 +414,14 @@ function welcomeCanvas(pg){
   x.strokeStyle='rgba(118,88,44,.45)'; x.lineWidth=1.2;
   x.beginPath(); x.moveTo(w*.34,508); x.lineTo(w*.66,508); x.stroke();
   x.fillStyle='rgba(118,88,44,.6)'; dia(x,w/2,508,7);
-  x.font='italic 500 32px "Cormorant Garamond"'; x.fillStyle=inkSoft;
+  x.font='500 33px "Cormorant Garamond"'; x.fillStyle=inkSoft;
   const lines=['Benvenuta, benvenuto.','','Questo non è un semplice corso:',
     'è un viaggio dentro di te,','oltre il velo delle apparenze,',
     'verso la luce che già possiedi.','','Respira. Rallenta.',
     'E quando sei pronto, continua a scorrere.'];
   let yy=592;
   for (const ln of lines){ if(ln) x.fillText(ln,w/2,yy); yy+=45; }
-  x.font='italic 600 36px "Cormorant Garamond"'; x.fillStyle=ink;
+  x.font='600 36px "Cormorant Garamond"'; x.fillStyle=ink;
   x.fillText('Elisa Soul Medium',w/2,h-188);
   return c;
 }
@@ -657,6 +657,7 @@ async function init(){
   const hText = new Float32Array(HN*3);
   const hMid = new Float32Array(HN*3);
   const hTarget = new Float32Array(HN*3);
+  const hLocal = new Float32Array(HN*3);
   const hStag = new Float32Array(HN);
   const cosR=Math.cos(-.42), sinR=Math.sin(-.42);
   let sFit;
@@ -688,6 +689,7 @@ async function init(){
     hTarget[i*3]   = (X*cosR + Z*sinR)*sForm;
     hTarget[i*3+1] = Y*syForm;
     hTarget[i*3+2] = (-X*sinR + Z*cosR)*sForm;
+    hLocal[i*3]=X; hLocal[i*3+1]=Y; hLocal[i*3+2]=Z;
     hStag[i] = Math.random()*.3;
     hPos[i*3]=hText[i*3]; hPos[i*3+1]=hText[i*3+1]; hPos[i*3+2]=hText[i*3+2];
   }
@@ -757,8 +759,8 @@ async function init(){
   let wx=-300, wy=-300, wOn=false, lightK=0, wOp=0;
   wispEl.style.transition = 'none';
   function updateWisp(t){
-    /* il velo nero si accende già durante il tuffo: si arriva al buio totale */
-    const on = ps > .68;
+    /* il velo nero scende mentre le luci si disperdono: buio totale */
+    const on = ps > .8;
     if (on !== wOn){
       wOn = on;
       darkEl.style.opacity = on?1:0;
@@ -854,9 +856,12 @@ async function init(){
     const pSolid  = ease(ph(.12,.19));
     const pOpen   = ease(ph(.22,.32));
     const pZoom   = ease(ph(.35,.45));
-    const pDive   = ease(ph(.57,.82));
+    const pDive   = ease(ph(.55,.70));   /* zoom finale verso il libro */
+    const pBack   = ease(ph(.60,.72));   /* il libro torna luce */
+    const pScat   = ease(ph(.70,.88));   /* le luci si disperdono */
+    const pGone   = ease(ph(.80,.93));   /* e svaniscono nel buio */
 
-    bookGroup.visible = pSolid > .001 && ps < .985;
+    bookGroup.visible = pSolid > .001 && pBack < .999;
 
     if (ps < .26){
       for (let i=0;i<HN;i++){
@@ -873,10 +878,29 @@ async function init(){
       }
       holoGeo.attributes.position.needsUpdate = true;
       holoMat.color.lerpColors(COL_P, COL_W, clamp01(pVortex*1.4));
+      holo.position.set(0,0,0); holo.rotation.set(0,0,0); holo.scale.set(1,1,1);
     }
-    holoMat.opacity = (1-pSolid) * (.88 + Math.sin(t*2.1)*.08);
+    /* gran finale: il libro si ridissolve in luci che si disperdono */
+    else if (ps > .55 && pGone < .999){
+      holo.position.copy(bookGroup.position);
+      holo.rotation.copy(bookGroup.rotation);
+      holo.scale.copy(bookGroup.scale);
+      for (let i=0;i<HN;i++){
+        const dx=hMid[i*3], dy=hMid[i*3+1]*.6, dz=hMid[i*3+2];
+        const dl=Math.hypot(dx,dy,dz)||1;
+        const k = pScat*(1.6 + hStag[i]*5.5);
+        const sw = Math.sin(t*1.4 + i*.7)*.06*pScat;
+        hPos[i*3]   = hLocal[i*3]   + dx/dl*k + sw;
+        hPos[i*3+1] = hLocal[i*3+1] + dy/dl*k + pScat*hStag[i]*2.2;
+        hPos[i*3+2] = hLocal[i*3+2] + dz/dl*k;
+      }
+      holoGeo.attributes.position.needsUpdate = true;
+      holoMat.color.lerpColors(COL_W, COL_P, clamp01(pScat*1.3));
+    }
+    const lightsBack = pBack*(1-pGone);
+    holoMat.opacity = Math.max(1-pSolid, lightsBack) * (.88 + Math.sin(t*2.1)*.08);
 
-    const op = pSolid;
+    const op = pSolid*(1-pBack);
     if (!solid){
       for (const m of ALLMATS) m.opacity = op;
       if (op >= .999){
@@ -906,7 +930,7 @@ async function init(){
       sx = .55 + (sxT-.55)*pZoom;
       xOff = pOpen*.4 + pZoom*.6;
     }
-    const dive = 1 + pDive*3.4;
+    const dive = 1 + pDive*1.9;
     sx *= dive; sy *= dive;
     xOff = xOff*(1-pDive) - (hingeX+.05+pw/2)*sx*pDive;
     bookGroup.scale.set(sx, sy, sx);
@@ -918,11 +942,10 @@ async function init(){
     setFlip(qSheets[0], ph(.28,.36));
     setFlip(qSheets[1], ph(.31,.39));
     setFlip(qSheets[2], ph(.34,.42));
-    /* benvenuto leggibile .45-.55, poi gira: appare la pagina vuota scura */
-    setFlip(wSheet, ph(.55,.64));
+    /* il benvenuto resta: niente giro di pagina, il libro si dissolve in luce */
 
     /* dissolvenza del canvas dentro il sito (sotto il velo nero) */
-    const fade = ph(.78,.9);
+    const fade = ph(.84,.95);
     glEl.style.opacity = (1-fade).toFixed(3);
 
     /* il fuoco fatuo cammina e rivela ciò che tocca */
