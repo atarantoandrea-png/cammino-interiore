@@ -354,119 +354,166 @@ function welcomeCanvas(pg,lg){
   for (const ln of lines){ if(ln) x.fillText(ln,w/2,yy); yy+=45; }
   x.font='italic 600 36px "Cormorant Garamond"'; x.fillStyle=ink;
   x.fillText('Elisa Soul Medium',w/2,h-188);
-  pageArrow(x, w-160, h-86, 1);
   drawLogo(x,lg);
   return c;
 }
 
-function drawPhone(b, px, py, pw_, ph_, pg){
+function drawPhone(b, cx, cy, pw_, ph_, pg, tilt){
   const rr=(x0,y0,ww,hh,r)=>{b.beginPath();b.roundRect(x0,y0,ww,hh,r);};
   b.save();
-  b.shadowColor='rgba(40,25,8,.45)'; b.shadowBlur=18; b.shadowOffsetY=8;
-  rr(px,py,pw_,ph_,30); b.fillStyle='#241b26'; b.fill();
-  b.shadowColor='transparent';
-  rr(px,py,pw_,ph_,30); b.strokeStyle='rgba(201,168,76,.55)'; b.lineWidth=2.5; b.stroke();
-  /* schermo */
-  const sx0=px+10, sy0=py+12, sw=pw_-20, sh=ph_-24;
+  b.translate(cx,cy); b.rotate(tilt||0);
+  const x0=-pw_/2, y0=-ph_/2;
+  /* ombra a terra */
   b.save();
-  rr(sx0,sy0,sw,sh,20); b.clip();
-  b.drawImage(pg, sx0,sy0,sw,sh);
-  b.fillStyle='rgba(255,250,238,.25)'; b.fillRect(sx0,sy0,sw,sh);
-  /* mini-interfaccia esercizi */
-  b.textAlign='center';
-  b.fillStyle='#3f2c12'; b.font='700 17px Cinzel';
-  b.fillText('I tuoi Esercizi', sx0+sw/2, sy0+38);
-  b.strokeStyle='rgba(110,80,40,.4)'; b.lineWidth=1;
-  b.beginPath(); b.moveTo(sx0+30,sy0+50); b.lineTo(sx0+sw-30,sy0+50); b.stroke();
-  for (let i=0;i<3;i++){
-    const cy0=sy0+68+i*82;
-    rr(sx0+16,cy0,sw-32,68,10);
-    b.fillStyle='rgba(255,250,238,.75)'; b.fill();
-    rr(sx0+16,cy0,sw-32,68,10);
-    b.strokeStyle='rgba(150,110,50,.55)'; b.lineWidth=1.5; b.stroke();
-    b.fillStyle='#8a6c2c'; b.font='700 13px Cinzel'; b.textAlign='left';
-    b.fillText(['🕊','🌿','📜'][i], sx0+28, cy0+30);
-    b.fillStyle='#3f2c12'; b.font='600 13px Cinzel';
-    b.fillText(['Spazio Emotivo','Osservatorio','Diario'][i], sx0+52, cy0+30);
-    b.strokeStyle='rgba(110,80,40,.3)';
-    b.beginPath(); b.moveTo(sx0+28,cy0+46); b.lineTo(sx0+sw-44,cy0+46); b.stroke();
-    b.textAlign='center';
-  }
+  b.rotate(-(tilt||0));
+  b.fillStyle='rgba(40,25,8,.30)';
+  b.beginPath(); b.ellipse(0, ph_/2+16, pw_*.52, 14, 0, 0, TAU); b.fill();
   b.restore();
-  /* tacca */
-  rr(px+pw_/2-26,py+5,52,5,3); b.fillStyle='#0d0a0f'; b.fill();
+  /* corpo metallico */
+  b.save();
+  b.shadowColor='rgba(20,12,4,.5)'; b.shadowBlur=16; b.shadowOffsetY=7;
+  const mg=b.createLinearGradient(x0,y0,x0+pw_,y0+ph_);
+  mg.addColorStop(0,'#544a5e'); mg.addColorStop(.25,'#2c2433');
+  mg.addColorStop(.7,'#1a141f'); mg.addColorStop(1,'#0e0a12');
+  rr(x0,y0,pw_,ph_,38); b.fillStyle=mg; b.fill();
+  b.restore();
+  /* filo luce sul bordo */
+  rr(x0,y0,pw_,ph_,38);
+  b.strokeStyle='rgba(255,255,255,.22)'; b.lineWidth=1.5; b.stroke();
+  rr(x0+2.5,y0+2.5,pw_-5,ph_-5,34);
+  b.strokeStyle='rgba(0,0,0,.6)'; b.lineWidth=2; b.stroke();
+  /* pulsanti laterali */
+  b.fillStyle='#5e5468';
+  rr(x0+pw_-1.5, y0+74, 3.5, 30, 2); b.fill();
+  rr(x0+pw_-1.5, y0+116, 3.5, 50, 2); b.fill();
+  rr(x0-2, y0+92, 3.5, 38, 2); b.fill();
+  /* schermo */
+  const sx0=x0+8, sy0=y0+9, sw=pw_-16, sh=ph_-18;
+  b.save();
+  rr(sx0,sy0,sw,sh,29); b.clip();
+  b.drawImage(pg, sx0,sy0,sw,sh);
+  b.fillStyle='rgba(255,250,238,.18)'; b.fillRect(sx0,sy0,sw,sh);
+  /* barra app scura */
+  b.fillStyle='#241b26'; b.fillRect(sx0,sy0,sw,42);
+  b.fillStyle='#c9a84c'; b.font='600 11px Cinzel'; b.textAlign='center';
+  b.fillText('STRUMENTI DEL CAMMINO', sx0+sw/2, sy0+27);
+  /* card esercizi */
+  const cards=[['Spazio Emotivo','Scheda 1 · 20 min'],
+               ['Osservatorio Interiore','Scheda 2 · 15 min'],
+               ['Diario della Settimana','ogni sera · 2 min']];
+  for (let i=0;i<3;i++){
+    const cy0=sy0+58+i*82;
+    rr(sx0+13,cy0,sw-26,70,10);
+    b.fillStyle='rgba(255,250,238,.86)'; b.fill();
+    b.fillStyle='#c9a84c'; b.fillRect(sx0+13,cy0,4,70);
+    b.fillStyle='#3f2c12'; b.font='700 13.5px Cinzel'; b.textAlign='left';
+    b.fillText(cards[i][0], sx0+30, cy0+29);
+    b.fillStyle='rgba(110,80,40,.85)'; b.font='italic 12px "Cormorant Garamond"';
+    b.fillText(cards[i][1], sx0+30, cy0+50);
+    b.fillStyle='#8a6c2c'; b.font='700 16px Georgia'; b.textAlign='right';
+    b.fillText('›', sx0+sw-26, cy0+42);
+  }
+  /* riflesso vetro diagonale */
+  const gl=b.createLinearGradient(sx0,sy0,sx0+sw*.9,sy0+sh*.55);
+  gl.addColorStop(0,'rgba(255,255,255,.13)');
+  gl.addColorStop(.45,'rgba(255,255,255,.045)');
+  gl.addColorStop(.55,'rgba(255,255,255,0)');
+  b.fillStyle=gl;
+  b.beginPath();
+  b.moveTo(sx0,sy0); b.lineTo(sx0+sw*.62,sy0);
+  b.lineTo(sx0+sw*.18,sy0+sh); b.lineTo(sx0,sy0+sh);
+  b.closePath(); b.fill();
+  b.restore();
+  /* fotocamera punch-hole */
+  b.beginPath(); b.arc(0, y0+22, 4.5, 0, TAU);
+  b.fillStyle='#08060b'; b.fill();
+  b.beginPath(); b.arc(-1.2, y0+20.8, 1.4, 0, TAU);
+  b.fillStyle='rgba(120,140,200,.7)'; b.fill();
   b.restore();
 }
 
 function makeChapterCanvas(pg,lg,mods){
   const w=1024,h=1220;
-  const BX=84,BY=262,BW=856,BH=232;
+  const BX=72,BY=240,BW=880,BH=232;
   /* base statica (tutto tranne il carosello) */
   const base=cv(w,h),b=base.getContext('2d');
   pageBase(b,pg);
+
+  /* ── intestazione ── */
   b.textAlign='center';
   b.fillStyle='rgba(118,88,44,.9)';
-  b.font='600 22px Cinzel'; b.fillText('CAPITOLO PRIMO',w/2,148);
-  b.fillStyle='#3f2c12'; b.font='700 40px Cinzel';
-  b.fillText('Le fondamenta del Cammino',w/2,202);
-  b.strokeStyle='rgba(118,88,44,.45)'; b.lineWidth=1.2;
-  b.beginPath(); b.moveTo(w*.36,232); b.lineTo(w*.64,232); b.stroke();
-  b.fillStyle='rgba(118,88,44,.6)'; dia(b,w/2,232,7);
-  /* cornice carosello */
-  b.strokeStyle='rgba(110,80,40,.65)'; b.lineWidth=3;
-  b.strokeRect(BX-6,BY-6,BW+12,BH+12);
-  b.lineWidth=1; b.strokeStyle='rgba(110,80,40,.35)';
-  b.strokeRect(BX-13,BY-13,BW+26,BH+26);
-  /* lista video: scura e ben leggibile */
+  b.font='600 21px Cinzel'; b.fillText('C A P I T O L O   P R I M O', w/2, 122);
+  b.fillStyle='#3f2c12'; b.font='700 42px Cinzel';
+  b.fillText('Le fondamenta del Cammino', w/2, 176);
+  b.strokeStyle='rgba(118,88,44,.5)'; b.lineWidth=1.2;
+  b.beginPath(); b.moveTo(w*.34,206); b.lineTo(w*.66,206); b.stroke();
+  b.fillStyle='rgba(118,88,44,.65)'; dia(b,w/2,206,7);
+
+  /* ── nastro carosello: solo regole sopra/sotto, da bordo a bordo ── */
+  b.strokeStyle='rgba(110,80,40,.55)'; b.lineWidth=2;
+  b.beginPath(); b.moveTo(BX-4,BY-10); b.lineTo(BX+BW+4,BY-10); b.stroke();
+  b.beginPath(); b.moveTo(BX-4,BY+BH+10); b.lineTo(BX+BW+4,BY+BH+10); b.stroke();
+  b.fillStyle='rgba(110,80,40,.6)';
+  dia(b,BX-4,BY-10,5); dia(b,BX+BW+4,BY-10,5);
+  dia(b,BX-4,BY+BH+10,5); dia(b,BX+BW+4,BY+BH+10,5);
+  b.font='italic 500 21px "Cormorant Garamond"';
+  b.fillStyle='rgba(74,51,24,.6)';
+  b.fillText('i quattro passi del capitolo · tocca per aprire i video', w/2, BY+BH+52);
+
+  /* ── indice dei video con puntini di rimando ── */
   b.font='600 19px Cinzel'; b.fillStyle='rgba(118,88,44,.95)';
-  b.fillText('I   V I D E O   D E L   C A P I T O L O', w/2, 552);
+  b.fillText('I N D I C E   D E I   V I D E O', w/2, 596);
   const names=['Introduzione','La Frequenza Nascosta','Lo Spazio Emotivo','L’Osservatorio Interiore'];
   const ROM=['I','II','III','IV'];
   b.textAlign='left';
-  let ly=600;
+  let ly=648;
   names.forEach(function(n,i){
-    b.font='700 24px Cinzel'; b.fillStyle='#8a6c2c';
-    b.fillText(ROM[i]+'.', 196, ly);
-    b.font='600 28px Cinzel'; b.fillStyle='#2e2008';
-    b.fillText(n, 254, ly);
-    b.strokeStyle='rgba(110,80,40,.25)'; b.lineWidth=1;
-    b.beginPath(); b.moveTo(196,ly+15); b.lineTo(828,ly+15); b.stroke();
-    ly+=53;
+    b.font='700 23px Cinzel'; b.fillStyle='#8a6c2c';
+    b.fillText(ROM[i]+'.', 176, ly);
+    b.font='600 29px Cinzel'; b.fillStyle='#2e2008';
+    b.fillText(n, 236, ly);
+    const tw=b.measureText(n).width;
+    b.save();
+    b.strokeStyle='rgba(110,80,40,.55)'; b.lineWidth=2;
+    b.setLineDash([2,9]);
+    b.beginPath(); b.moveTo(236+tw+22, ly-7); b.lineTo(806, ly-7); b.stroke();
+    b.restore();
+    b.fillStyle='#8a6c2c'; b.font='700 22px Georgia';
+    b.fillText('▸', 824, ly-1);
+    ly+=56;
   });
-  b.textAlign='center';
-  b.font='italic 500 20px "Cormorant Garamond"';
-  b.fillStyle='rgba(74,51,24,.55)';
-  b.fillText('tocca l’elenco per aprire i video', w/2, ly+8);
+
   /* ── sezione ESERCIZI ── */
-  const ey=826;
-  b.strokeStyle='rgba(118,88,44,.45)'; b.lineWidth=1.2;
-  b.beginPath(); b.moveTo(w*.3,ey-32); b.lineTo(w*.7,ey-32); b.stroke();
-  b.fillStyle='rgba(118,88,44,.6)'; dia(b,w/2,ey-32,7);
-  drawPhone(b, 138, ey, 226, 330, pg);
-  const ecx=672;
-  b.fillStyle='rgba(118,88,44,.95)'; b.font='600 19px Cinzel';
-  b.fillText('M E T T I T I   I N   P R A T I C A', ecx, ey+52);
-  b.fillStyle='#3f2c12'; b.font='700 36px Cinzel';
-  b.fillText('Gli Esercizi', ecx, ey+104);
+  b.textAlign='center';
+  const ey=900;
+  b.strokeStyle='rgba(118,88,44,.5)'; b.lineWidth=1.2;
+  b.beginPath(); b.moveTo(w*.3,ey-50); b.lineTo(w*.7,ey-50); b.stroke();
+  b.fillStyle='rgba(118,88,44,.65)'; dia(b,w/2,ey-50,7);
+  drawPhone(b, 240, ey+120, 218, 332, pg, -.055);
+  const ecx=680;
+  b.fillStyle='rgba(118,88,44,.95)'; b.font='600 18px Cinzel';
+  b.fillText('M E T T I T I   I N   P R A T I C A', ecx, ey+8);
+  b.fillStyle='#3f2c12'; b.font='700 38px Cinzel';
+  b.fillText('Gli Esercizi', ecx, ey+58);
   b.font='italic 500 24px "Cormorant Garamond"';
   b.fillStyle='rgba(74,51,24,.8)';
-  b.fillText('Le tue schede del Cammino,', ecx, ey+146);
-  b.fillText('da compilare e conservare.', ecx, ey+178);
-  carvedButton(b, ecx, ey+248, 480, 62, 'A C C E D I   A G L I   E S E R C I Z I', 21);
+  b.fillText('Le schede pratiche del corso,', ecx, ey+100);
+  b.fillText('sempre con te, anche dal telefono.', ecx, ey+132);
+  carvedButton(b, ecx, ey+198, 430, 62, 'A P R I   G L I   E S E R C I Z I', 21);
   b.font='italic 500 19px "Cormorant Garamond"';
   b.fillStyle='rgba(74,51,24,.5)';
-  b.fillText('si apre la tua area pratica', ecx, ey+300);
+  b.fillText('si apre la tua area pratica', ecx, ey+250);
+
   /* fondo pagina */
-  b.font='italic 500 20px "Cormorant Garamond"';
-  b.fillStyle='rgba(74,51,24,.5)';
-  b.fillText('continua a scorrere per voltare pagina', w/2, h-44);
-  pageArrow(b, 150, h-56, -1);
-  pageArrow(b, w-150, h-56, 1);
+  b.textAlign='center';
+  b.font='italic 500 19px "Cormorant Garamond"';
+  b.fillStyle='rgba(74,51,24,.45)';
+  b.fillText('continua a scorrere per voltare pagina', w/2, h-36);
   drawLogo(b,lg);
 
   /* canvas vivo: carosello che scorre da destra a sinistra */
   const c=cv(w,h), x=c.getContext('2d');
-  const TW=320, TH=158, GAP=18, SPAN=(TW+GAP)*mods.length;
+  const TW=372, TH=216, GAP=16, SPAN=(TW+GAP)*mods.length;
   function draw(t){
     x.drawImage(base,0,0);
     x.save();
@@ -477,17 +524,19 @@ function makeChapterCanvas(pg,lg,mods){
       const idx=((i%mods.length)+mods.length)%mods.length;
       const px=BX + i*(TW+GAP) - off;
       if (px>BX+BW || px+TW<BX) continue;
-      const py=BY+14;
+      const py=BY+8;
       x.save();
-      x.shadowColor='rgba(50,32,12,.4)'; x.shadowBlur=10; x.shadowOffsetY=4;
+      x.shadowColor='rgba(50,32,12,.38)'; x.shadowBlur=9; x.shadowOffsetY=4;
       x.fillStyle='#fff'; x.fillRect(px-3,py-3,TW+6,TH+6);
       x.shadowColor='transparent';
       x.drawImage(mods[idx].img,px,py,TW,TH);
-      x.fillStyle='rgba(22,13,5,.30)'; x.fillRect(px,py,TW,TH);
+      x.fillStyle='rgba(22,13,5,.24)'; x.fillRect(px,py,TW,TH);
+      /* nastro col titolo dentro la miniatura */
+      x.fillStyle='rgba(22,13,5,.6)'; x.fillRect(px,py+TH-38,TW,38);
+      x.fillStyle='#e8d9ae'; x.font='600 17px Cinzel'; x.textAlign='center';
+      x.fillText(mods[idx].short, px+TW/2, py+TH-13);
       x.strokeStyle='rgba(110,80,40,.7)'; x.lineWidth=2;
       x.strokeRect(px-3,py-3,TW+6,TH+6);
-      x.fillStyle='#3a2a10'; x.font='600 17px Cinzel'; x.textAlign='center';
-      x.fillText(mods[idx].short, px+TW/2, py+TH+30);
       x.restore();
     }
     x.restore();
@@ -513,7 +562,6 @@ function comingCanvas(pg,lg){
   x.font='italic 500 34px "Cormorant Garamond"';
   x.fillStyle='rgba(74,51,24,.7)';
   x.fillText('Presto disponibile', w/2, 790);
-  pageArrow(x, 160, h-86, -1);
   drawLogo(x,lg);
   return c;
 }
@@ -951,16 +999,15 @@ async function init(){
     hotzone.classList.toggle('on', inC1);
     exzone.classList.toggle('on', inC1);
     if (inC1){
-      placeZone(hotzone, .18, .645);   /* carosello + lista video */
-      placeZone(exzone,  .648, .96);   /* sezione esercizi */
+      placeZone(hotzone, .175, .685);  /* nastro + indice video */
+      placeZone(exzone,  .695, .965);  /* sezione esercizi */
     }
 
     const cur = ps < .53 ? 0 : (ps < .79 ? 1 : 2);
     navItems.forEach((it,i)=>it.classList.toggle('cur', i===cur));
     curIdx = cur;
     const showAr = ps > .42;
-    pgPrev.classList.toggle('on', showAr && cur > 0);
-    pgNext.classList.toggle('on', showAr && cur < 2);
+    /* frecce in pagina rimosse su richiesta */
     dragzone.classList.toggle('on', showAr);
 
     renderer.render(scene, camera);
