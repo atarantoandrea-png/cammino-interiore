@@ -756,7 +756,8 @@ async function init(){
 
   let wx=-300, wy=-300, wOn=false, lightK=0;
   function updateWisp(t){
-    const on = ps > .78;
+    /* il velo nero si accende già durante il tuffo: si arriva al buio totale */
+    const on = ps > .68;
     if (on !== wOn){
       wOn = on;
       darkEl.style.opacity = on?1:0;
@@ -766,8 +767,10 @@ async function init(){
     }
     if (!on || anchors.length<2) return;
 
-    /* la luce NASCE dal buio: il raggio si espande piano */
-    const birth = ease(ph(.88, 1));
+    /* la luce NASCE solo quando la prima sezione è già al suo posto:
+       legata allo scroll reale, non alla regìa del libro */
+    const birth = ease(clamp01(
+      (scrollY - (sito.offsetTop - innerHeight*.25)) / (innerHeight*.75)));
     lightK += (birth - lightK)*.04;
 
     /* progresso lineare lungo il sentiero */
@@ -806,7 +809,7 @@ async function init(){
     const r = Math.max(14, rFull*lightK);
     darkEl.style.background =
       'radial-gradient(circle '+(r*2|0)+'px at '+(wx|0)+'px '+(wy|0)+'px,'+
-      'rgba(6,5,9,0) 0%, rgba(6,5,9,0) 44%, rgba(6,5,9,.34) 62%, rgba(6,5,9,.93) 88%)';
+      'rgba(6,5,9,0) 0%, rgba(6,5,9,0) 44%, rgba(6,5,9,.34) 62%, rgba(6,5,9,1) 88%)';
     tintEl.style.background =
       'radial-gradient(circle '+(r|0)+'px at '+(wx|0)+'px '+(wy|0)+'px,'+
       'rgba(202,176,240,.20) 0%, rgba(166,134,220,.09) 45%, transparent 78%)';
@@ -836,7 +839,7 @@ async function init(){
     const pSolid  = ease(ph(.12,.19));
     const pOpen   = ease(ph(.22,.32));
     const pZoom   = ease(ph(.35,.45));
-    const pDive   = ease(ph(.66,.88));
+    const pDive   = ease(ph(.57,.82));
 
     bookGroup.visible = pSolid > .001 && ps < .985;
 
@@ -903,8 +906,8 @@ async function init(){
     /* benvenuto leggibile .45-.55, poi gira: appare la pagina vuota scura */
     setFlip(wSheet, ph(.55,.64));
 
-    /* dissolvenza del canvas dentro il sito */
-    const fade = ph(.86,.97);
+    /* dissolvenza del canvas dentro il sito (sotto il velo nero) */
+    const fade = ph(.78,.9);
     glEl.style.opacity = (1-fade).toFixed(3);
 
     /* il fuoco fatuo cammina e rivela ciò che tocca */
