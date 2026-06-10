@@ -61,24 +61,22 @@ body{
 }
 #hotzone.on{display:block}
 
-/* frecce volta-pagina */
+/* frecce volta-pagina: disegnate NELLA pergamena, qui solo zone cliccabili invisibili */
 .pgArrow{
-  position:fixed;bottom:7vh;z-index:9;
-  width:54px;height:54px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;user-select:none;
-  font-size:30px;line-height:1;color:#e8d9ae;
-  background:linear-gradient(165deg, rgba(34,30,22,.92), rgba(22,19,14,.92));
-  border:1px solid rgba(201,168,76,.5);
-  box-shadow:0 6px 22px rgba(0,0,0,.6), 0 0 18px rgba(201,168,76,.12);
-  opacity:0;pointer-events:none;
-  transition:opacity .35s ease, transform .25s ease, border-color .25s ease;
+  position:fixed;bottom:8vh;z-index:9;
+  width:120px;height:70px;cursor:pointer;
+  opacity:0;pointer-events:none;font-size:0;
 }
-.pgArrow.on{opacity:1;pointer-events:auto}
-.pgArrow:hover{transform:scale(1.12);border-color:rgba(201,168,76,.9);
-  box-shadow:0 6px 26px rgba(0,0,0,.7), 0 0 30px rgba(201,168,76,.25)}
-#pgPrev{left:clamp(12px, calc(50% - 40vmin), 30vw)}
-#pgNext{right:clamp(12px, calc(50% - 40vmin), 30vw)}
+.pgArrow.on{pointer-events:auto}
+#pgPrev{left:calc(50% - min(34vmin,46vw))}
+#pgNext{right:calc(50% - min(34vmin,46vw))}
+
+/* zona touch sul bordo destro: trascina per girare pagina (mobile) */
+#dragzone{
+  position:fixed;right:0;top:18vh;width:16vw;height:60vh;
+  z-index:8;display:none;touch-action:none;
+}
+#dragzone.on{display:block}
 
 #navBtn{
   position:fixed;top:3vh;right:3vw;z-index:22;
@@ -218,17 +216,18 @@ body{
 
 <div id="hotzone" title="Apri la lista dei video"></div>
 
-<div id="pgPrev" class="pgArrow" title="Pagina precedente">‹</div>
-<div id="pgNext" class="pgArrow" title="Pagina successiva">›</div>
+<div id="pgPrev" class="pgArrow" title="Pagina precedente"></div>
+<div id="pgNext" class="pgArrow" title="Pagina successiva"></div>
+<div id="dragzone"></div>
 
 <div id="navBtn"><span class="ic">☰</span><span class="tx">Indice</span></div>
 <div id="nav">
   <div class="inner">
     <h4>Indice</h4>
     <div class="rule"></div>
-    <div class="navItem" data-ps=".45"><span class="n">✦</span><span class="t">Benvenuto</span></div>
-    <div class="navItem" data-ps=".61"><span class="n">I</span><span class="t">Capitolo Primo</span></div>
-    <div class="navItem" data-ps=".90"><span class="n">II</span><span class="t">Capitolo Secondo</span><span class="s">presto</span></div>
+    <div class="navItem" data-ps=".44"><span class="n">✦</span><span class="t">Benvenuto</span></div>
+    <div class="navItem" data-ps=".655"><span class="n">I</span><span class="t">Capitolo Primo</span></div>
+    <div class="navItem" data-ps=".94"><span class="n">II</span><span class="t">Capitolo Secondo</span><span class="s">presto</span></div>
     <button id="navClose">Esci</button>
   </div>
 </div>
@@ -316,6 +315,20 @@ function carvedButton(x, cx, cy, wd, ht, label){
   x.restore();
 }
 
+/* freccia a inchiostro con ricciolo, integrata nella pagina */
+function pageArrow(x, cx, cy, dir){
+  x.save(); x.translate(cx,cy); if(dir<0) x.scale(-1,1);
+  x.strokeStyle='rgba(104,76,36,.88)'; x.fillStyle='rgba(104,76,36,.88)';
+  x.lineWidth=3.2; x.lineCap='round'; x.lineJoin='round';
+  x.beginPath(); x.moveTo(-52,4); x.quadraticCurveTo(0,-12,54,0); x.stroke();
+  x.beginPath(); x.moveTo(54,0); x.lineTo(34,-12);
+  x.quadraticCurveTo(44,-2,54,0); x.lineTo(36,10);
+  x.quadraticCurveTo(45,2,54,0); x.closePath(); x.fill();
+  x.beginPath(); x.moveTo(-52,4); x.quadraticCurveTo(-66,0,-62,-12); x.stroke();
+  x.beginPath(); x.arc(-62,-15,2.6,0,TAU); x.fill();
+  x.restore();
+}
+
 function welcomeCanvas(pg,lg){
   const w=1024,h=1220,c=cv(w,h),x=c.getContext('2d');
   pageBase(x,pg);
@@ -341,6 +354,7 @@ function welcomeCanvas(pg,lg){
   for (const ln of lines){ if(ln) x.fillText(ln,w/2,yy); yy+=45; }
   x.font='italic 600 36px "Cormorant Garamond"'; x.fillStyle=ink;
   x.fillText('Elisa Soul Medium',w/2,h-188);
+  pageArrow(x, w-160, h-86, 1);
   drawLogo(x,lg);
   return c;
 }
@@ -383,6 +397,8 @@ function chapterCanvas(pg,lg,mods){
   x.font='italic 500 23px "Cormorant Garamond"';
   x.fillStyle='rgba(74,51,24,.5)';
   x.fillText('continua a scorrere per voltare pagina', w/2, h-140);
+  pageArrow(x, 160, h-86, -1);
+  pageArrow(x, w-160, h-86, 1);
   drawLogo(x,lg);
   return c;
 }
@@ -401,6 +417,7 @@ function comingCanvas(pg,lg){
   x.font='italic 500 34px "Cormorant Garamond"';
   x.fillStyle='rgba(74,51,24,.7)';
   x.fillText('Presto disponibile', w/2, 790);
+  pageArrow(x, 160, h-86, -1);
   drawLogo(x,lg);
   return c;
 }
@@ -637,7 +654,7 @@ async function init(){
   const fit = Math.min(1, worldW*.84/10.6);
   /* il libro non deve mai uscire dai bordi: scala massima dal viewport */
   let sFit;
-  const calcSFit = ()=>{ sFit = (2*12.1*Math.tan(35*Math.PI/360)*camera.aspect*.82)/W; };
+  const calcSFit = ()=>{ sFit = (2*12.1*Math.tan(35*Math.PI/360)*camera.aspect*(camera.aspect<1? .95 : .82))/W; };
   calcSFit();
   const HN = 5200;
   const holoGeo = new THREE.BufferGeometry();
@@ -700,6 +717,7 @@ async function init(){
   const navItems = [...document.querySelectorAll('.navItem')];
   const pgPrev = document.getElementById('pgPrev');
   const pgNext = document.getElementById('pgNext');
+  const dragzone = document.getElementById('dragzone');
   let curIdx = 0;
 
   let scrollRaw = 0, ps = 0, solid = false;
@@ -762,14 +780,15 @@ async function init(){
     bookGroup.scale.set(s,s,s);
     bookGroup.position.z = pZoom*1.1;
     bookGroup.position.y = Math.sin(t*.5)*.05*idle;
-    bookGroup.position.x = pOpen*.3;
+    /* su schermi stretti: meno spazio alla pagina voltata, più alla destra */
+    bookGroup.position.x = pOpen*(.3 + Math.max(0,(1.05-camera.aspect))*1.7);
 
     frontPivot.rotation.y = -2.95*pOpen;
     setFlip(qSheets[0], ph(.29,.37));
     setFlip(qSheets[1], ph(.32,.40));
     setFlip(qSheets[2], ph(.35,.43));
-    setFlip(wSheet,  ph(.50,.54));
-    setFlip(c1Sheet, ph(.70,.74));
+    setFlip(wSheet,  ph(.46,.60));
+    setFlip(c1Sheet, ph(.70,.86));
 
     const pulse = .5 + Math.sin(t*1.6)*.14;
     backlight.style.opacity = ((pulse*(.45+pVortex*.55) + pSolid*.15)*clamp01(pVortex*2)).toFixed(3);
@@ -778,15 +797,16 @@ async function init(){
 
     hint.style.opacity = 1 - ph(.008,.05);
 
-    const inC1 = ps>=.555 && ps<=.69;
+    const inC1 = ps>=.615 && ps<=.695;
     hotzone.classList.toggle('on', inC1);
 
-    const cur = ps < .48 ? 0 : (ps < .73 ? 1 : 2);
+    const cur = ps < .53 ? 0 : (ps < .79 ? 1 : 2);
     navItems.forEach((it,i)=>it.classList.toggle('cur', i===cur));
     curIdx = cur;
-    const showAr = ps > .47;
+    const showAr = ps > .42;
     pgPrev.classList.toggle('on', showAr && cur > 0);
     pgNext.classList.toggle('on', showAr && cur < 2);
+    dragzone.classList.toggle('on', showAr);
 
     renderer.render(scene, camera);
   })();
@@ -802,21 +822,58 @@ async function init(){
       goTo(parseFloat(it.dataset.ps));
     });
   });
-  function goTo(psT){
-    const max = spacer.offsetHeight - innerHeight;
-    const from = scrollY, to = psT*max;
-    const t0 = performance.now(), D = 700;
+  function tweenTo(px, D){
+    const from = scrollY, t0 = performance.now(); D = D || 700;
     (function step(n){
       const k = Math.min(1,(n-t0)/D);
       const e = k<.5 ? 2*k*k : 1-Math.pow(-2*k+2,2)/2;
-      window.scrollTo(0, from+(to-from)*e);
+      window.scrollTo(0, from+(px-from)*e);
       if (k<1) requestAnimationFrame(step);
     })(t0);
   }
+  function goTo(psT){
+    tweenTo(psT*(spacer.offsetHeight - innerHeight), 900);
+  }
   /* frecce: voltano pagina con l'animazione dello sfoglio */
-  const ANCH = [.45, .61, .90];
+  const ANCH = [.44, .655, .94];
   pgPrev.addEventListener('click', ()=>goTo(ANCH[Math.max(0, curIdx-1)]));
   pgNext.addEventListener('click', ()=>goTo(ANCH[Math.min(2, curIdx+1)]));
+
+  /* trascina il bordo destro: la pagina segue il dito */
+  const drag = {on:false, sx:0, sy:0, ss:0, horiz:null};
+  dragzone.addEventListener('touchstart', e=>{
+    const t = e.touches[0];
+    drag.on = true; drag.sx = t.clientX; drag.sy = t.clientY;
+    drag.ss = scrollY; drag.horiz = null;
+  }, {passive:true});
+  dragzone.addEventListener('touchmove', e=>{
+    if (!drag.on) return;
+    const t = e.touches[0];
+    const dx = drag.sx - t.clientX, dy = drag.sy - t.clientY;
+    if (drag.horiz === null && (Math.abs(dx)>8 || Math.abs(dy)>8))
+      drag.horiz = Math.abs(dx) > Math.abs(dy);
+    if (drag.horiz){
+      e.preventDefault();
+      const max = spacer.offsetHeight - innerHeight;
+      const next = Math.min(2, curIdx+1);
+      const sec = Math.max(.08, ANCH[next]-ANCH[curIdx]) * max;
+      window.scrollTo(0, Math.max(0, Math.min(max, drag.ss + (dx/(innerWidth*.72))*sec)));
+    }
+  }, {passive:false});
+  const endDrag = ()=>{
+    if (drag.on && drag.horiz){
+      const max = spacer.offsetHeight - innerHeight;
+      let best = ANCH[0]*max, bd = Infinity;
+      for (const a of ANCH){
+        const d = Math.abs(scrollY - a*max);
+        if (d < bd){ bd = d; best = a*max; }
+      }
+      tweenTo(best, 500);
+    }
+    drag.on = false;
+  };
+  dragzone.addEventListener('touchend', endDrag);
+  dragzone.addEventListener('touchcancel', endDrag);
 
   const vwrap = document.getElementById('vwrap');
   hotzone.addEventListener('click', ()=>vwrap.classList.add('open'));
