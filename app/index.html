@@ -3,44 +3,42 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Strumenti del Cammino · Elisa Soul Medium</title>
+<title>I miei Esercizi · Il Cammino Interiore</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:rgba(0,0,0,0)}
 :root{
-  --glic:#b9a3e3; --glic-hi:#dccdf6; --glic-deep:#8a6fc0;
+  --glic:#b9a3e3; --glic-hi:#dccdf6;
   --gold:#c9a84c; --gold-pale:#e8d9ae;
-  --txt:#e6e0ec;            /* testo principale: chiaro, alto contrasto */
-  --txt-soft:#b7aec4;       /* testo secondario */
-  --txt-dim:#8d8499;        /* etichette */
+  --txt:#e6e0ec; --txt-soft:#b7aec4; --txt-dim:#8d8499;
   --card:rgba(22,18,29,.72);
   --card-line:rgba(185,163,227,.16);
-  --field:rgba(10,8,14,.55);
-  --field-line:rgba(185,163,227,.3);
 }
 html{scroll-behavior:smooth}
 body{
-  /* stessa carta scura del sito principale */
   background:
     linear-gradient(180deg, rgba(8,7,11,.95) 0%, rgba(10,9,13,.92) 8%, rgba(11,10,14,.91) 100%),
-    url('../src/pagina.jpg') center top/100% auto repeat;
+    url('/src/pagina.jpg') center top/100% auto repeat;
   background-attachment:fixed;
   font-family:'Cormorant Garamond',Georgia,serif;
   color:var(--txt);
   min-height:100vh;
+  display:flex;flex-direction:column;
 }
 
-/* ================= LA LUCE GUIDA ================= */
+/* ===== la lucina che veglia sulla soglia ===== */
 #lume{
-  position:absolute;left:0;top:0;z-index:40;pointer-events:none;
+  position:fixed;left:50%;top:13%;z-index:1;pointer-events:none;
   width:56px;height:56px;margin:-28px 0 0 -28px;
-  transition:transform 1.7s cubic-bezier(.45,.05,.25,1), opacity .8s ease;
-  animation:lflick 3.1s ease-in-out infinite;
+  animation:lfloat 5.5s ease-in-out infinite;
 }
-@keyframes lflick{0%,100%{filter:brightness(1)}50%{filter:brightness(1.28)}}
+@keyframes lfloat{
+  0%,100%{transform:translate(0,0);filter:brightness(1)}
+  30%{transform:translate(14px,-9px);filter:brightness(1.25)}
+  65%{transform:translate(-12px,6px);filter:brightness(1.1)}
+}
 #lume::after{
   content:'';position:absolute;inset:19px;border-radius:50%;
   background:radial-gradient(circle at 38% 34%,
@@ -51,819 +49,234 @@ body{
     0 0 95px 44px rgba(150,110,215,.22);
 }
 
-/* ================= colonna ================= */
-.page{max-width:880px;margin:0 auto;padding:0 0 30px;position:relative}
-@media(min-width:920px){.page{padding-top:18px}}
+.wrap{width:100%;max-width:760px;margin:0 auto;padding:0 18px 40px;flex:1}
 
-/* ================= header ================= */
-.hd{padding:26px 22px 16px;text-align:center}
-.hd .orn{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:10px}
+header.hd{padding:54px 0 8px;text-align:center;position:relative;z-index:2}
+.hd .orn{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:12px}
 .hd .orn .l{width:80px;height:1px;background:linear-gradient(90deg,transparent,rgba(185,163,227,.6),transparent)}
 .hd .orn .d{width:6px;height:6px;border:1px solid var(--glic);transform:rotate(45deg)}
 .hd h1{
   font-family:'Cinzel',serif;font-weight:600;
-  font-size:clamp(21px,5vw,30px);letter-spacing:.08em;
-  color:#f0eaf6;
-  text-shadow:0 0 30px rgba(185,163,227,.35);
+  font-size:clamp(22px,5.6vw,32px);letter-spacing:.08em;
+  color:#f0eaf6;text-shadow:0 0 30px rgba(185,163,227,.35);
 }
-.hd p{font-size:15px;color:var(--txt-soft);margin-top:6px}
+.hd p{font-size:16px;color:var(--txt-soft);margin-top:8px;line-height:1.6}
 
-/* ================= barra azione ================= */
-.act{
-  display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;
-  padding:10px 18px;margin:0 14px 4px;
-  border-top:1px solid rgba(185,163,227,.14);
-  border-bottom:1px solid rgba(185,163,227,.14);
+/* ================= LOGIN ================= */
+#login{display:none;position:relative;z-index:2}
+#login.on{display:block}
+.lbox{
+  max-width:440px;margin:7vh auto 0;
+  border:1px solid var(--card-line);background:var(--card);
+  border-radius:16px;padding:30px 26px 26px;text-align:center;
+  box-shadow:0 0 40px rgba(150,110,215,.1), 0 18px 50px rgba(0,0,0,.5);
 }
-.act .hint{font-size:14px;color:var(--txt-soft)}
-.act .hint b{color:var(--gold-pale);font-weight:600}
+.lbox h2{font-family:'Cinzel',serif;font-size:19px;font-weight:600;color:#f0eaf6;margin-bottom:8px}
+.lbox .sub{font-size:15.5px;color:var(--txt-soft);line-height:1.65;margin-bottom:22px}
+.lbox label{font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--txt-dim);display:block;text-align:left;margin-bottom:8px}
+.lbox input{
+  width:100%;background:rgba(10,8,14,.55);
+  border:1px solid rgba(185,163,227,.3);border-radius:9px;
+  padding:14px 14px;font-size:17px;font-family:'Cormorant Garamond',serif;font-weight:500;
+  color:#f4eefc;outline:none;-webkit-appearance:none;
+  transition:border-color .4s, box-shadow .4s;
+}
+.lbox input::placeholder{color:#7b7287;opacity:1}
+.lbox input:focus{
+  border-color:rgba(205,178,242,.85);
+  box-shadow:0 0 14px rgba(170,135,230,.35);
+}
+.lerr{font-size:14px;color:#e0a3a3;margin-top:10px;min-height:18px;text-align:left}
 .btn-gold{
+  width:100%;margin-top:14px;
   background:linear-gradient(165deg,#d8b765,#b08c38);
   color:#2a1d08;border:none;border-radius:40px;
-  padding:12px 24px;cursor:pointer;
-  font-family:'Cinzel',serif;font-size:12px;font-weight:700;
-  letter-spacing:.14em;text-transform:uppercase;white-space:nowrap;
+  padding:15px 24px;cursor:pointer;
+  font-family:'Cinzel',serif;font-size:13px;font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;
   box-shadow:0 3px 12px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,240,200,.5);
 }
 .btn-gold:hover{filter:brightness(1.07)}
-.btn-gold[disabled]{opacity:.6;cursor:wait}
+.lnote{font-size:13.5px;color:var(--txt-dim);margin-top:16px;line-height:1.6}
 
-/* ================= tabs (sempre visibili) ================= */
-.tabs{
-  position:sticky;top:0;z-index:30;
-  display:grid;grid-template-columns:repeat(4,1fr);
-  background:rgba(9,7,12,.96);
-  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
-  border-bottom:1px solid rgba(185,163,227,.22);
+/* ================= DASHBOARD ================= */
+#dash{display:none;position:relative;z-index:2}
+#dash.on{display:block}
+.who{
+  display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;
+  padding:12px 16px;margin:18px 0 22px;
+  border:1px solid var(--card-line);border-radius:12px;background:var(--card);
 }
-.tab{
-  background:none;border:none;cursor:pointer;
-  padding:13px 4px 11px;text-align:center;position:relative;
-  font-family:'Cinzel',serif;
-  transition:background .2s;
+.who .wmail{font-size:15.5px;color:var(--txt-soft)}
+.who .wmail b{color:var(--glic-hi);font-weight:600}
+.who button{
+  background:none;border:1px solid rgba(185,163,227,.4);color:var(--txt-soft);
+  border-radius:30px;padding:8px 16px;cursor:pointer;
+  font-family:'Cinzel',serif;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
 }
-.tab .lbl{font-size:12.5px;color:var(--txt-soft);display:block;line-height:1.3;font-weight:600;letter-spacing:.04em}
-.tab .num{font-size:8.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--txt-dim);display:block;margin-bottom:3px}
-.tab::after{
-  content:'';position:absolute;left:16%;right:16%;bottom:0;height:2px;
-  background:transparent;transition:background .25s,box-shadow .25s;
+.who button:hover{border-color:var(--glic);color:var(--glic-hi)}
+
+.dlbl{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--txt-dim);margin:0 0 14px;padding-left:2px}
+
+.exgrid{display:grid;grid-template-columns:1fr;gap:16px}
+@media(min-width:640px){.exgrid{grid-template-columns:1fr 1fr}}
+
+.excard{
+  display:block;text-decoration:none;color:inherit;cursor:pointer;
+  border:1px solid var(--card-line);background:var(--card);
+  border-radius:16px;overflow:hidden;
+  transition:transform .3s ease, box-shadow .9s ease, border-color .9s ease;
 }
-.tab:hover{background:rgba(185,163,227,.07)}
-.tab.on .lbl{color:var(--glic-hi)}
-.tab.on .num{color:var(--glic)}
-.tab.on::after{background:var(--glic);box-shadow:0 0 12px rgba(185,163,227,.8)}
-@media(max-width:430px){.tab .lbl{font-size:10.5px}}
-
-/* ================= pannelli ================= */
-.panel{display:none;padding:24px 18px 36px}
-.panel.on{display:block}
-@media(max-width:520px){.panel{padding:18px 12px 30px}}
-
-/* ================= header scheda ================= */
-.shdr{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;
-  margin-bottom:6px;padding-bottom:14px;border-bottom:1px solid rgba(185,163,227,.3)}
-.stag{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:var(--glic);margin-bottom:7px}
-.sh1{font-family:'Cinzel',serif;font-size:clamp(22px,5.4vw,32px);font-weight:600;line-height:1.2;color:#f0eaf6}
-.tbox{border:1px solid rgba(185,163,227,.4);text-align:center;padding:9px 14px;flex-shrink:0;border-radius:8px;background:rgba(185,163,227,.06)}
-.tn{font-family:'Cinzel',serif;font-size:22px;font-weight:700;color:var(--glic-hi);line-height:1}
-.tl{font-family:'Cinzel',serif;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--glic);margin-top:4px}
-.tf{font-size:12px;color:var(--txt-soft);margin-top:3px}
-
-.intro{font-size:17px;line-height:1.65;color:var(--txt-soft);margin:14px 2px 22px}
-
-/* ================= fase ================= */
-.phase{display:flex;align-items:center;gap:11px;margin:26px 0 12px}
-.pnum{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--glic);
-  display:flex;align-items:center;justify-content:center;flex-shrink:0;
-  font-family:'Cinzel',serif;font-size:14px;font-weight:700;color:var(--glic-hi);
-  background:rgba(185,163,227,.08)}
-.ptxt{font-family:'Cinzel',serif;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--txt);line-height:1.5}
-
-/* ================= blocchi di scrittura (illuminabili) ================= */
-.blk{
-  border:1px solid var(--card-line);
-  background:var(--card);
-  border-radius:12px;
-  padding:16px 16px 14px;
-  margin-bottom:14px;
-  transition:box-shadow 1.1s ease, border-color 1.1s ease, background 1.1s ease;
+.excard:hover{
+  transform:translateY(-4px);
+  border-color:rgba(205,178,242,.8);
+  box-shadow:0 0 0 1px rgba(205,178,242,.3), 0 0 26px rgba(170,135,230,.4),
+    0 0 80px rgba(150,110,215,.18), 0 18px 40px rgba(0,0,0,.5);
 }
-.blk.lit{
-  border-color:rgba(205,178,242,.9);
-  background:rgba(30,24,40,.92);
-  box-shadow:
-    0 0 0 1px rgba(205,178,242,.35),
-    0 0 22px rgba(170,135,230,.4),
-    0 0 70px rgba(150,110,215,.18),
-    inset 0 0 30px rgba(170,135,230,.1);
+.excover{
+  height:150px;position:relative;overflow:hidden;
+  background:
+    radial-gradient(420px 200px at 50% 110%, rgba(150,110,215,.4) 0%, rgba(150,110,215,.08) 55%, transparent 75%),
+    linear-gradient(180deg, rgba(14,11,19,.88), rgba(20,16,27,.84)),
+    url('/src/pagina.jpg') center/cover;
 }
-.blk .qt{font-size:16.5px;line-height:1.55;margin-bottom:10px;color:var(--txt-soft);font-weight:500;
-  transition:color 1.1s ease, text-shadow 1.1s ease}
-.blk.lit .qt{color:var(--glic-hi);text-shadow:0 0 16px rgba(190,160,240,.55)}
-.blk label, .blk .blab{
-  font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;
-  color:var(--txt-dim);display:block;margin-bottom:8px;
-  transition:color 1.1s ease, text-shadow 1.1s ease}
-.blk.lit label, .blk.lit .blab{color:var(--glic);text-shadow:0 0 12px rgba(190,160,240,.6)}
-
-.qg{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:6px}
-@media(max-width:640px){.qg{grid-template-columns:1fr}}
-.qg .blk{margin-bottom:0}
-
-/* ================= campi: GRANDI e leggibili ================= */
-input[type=text],input[type=date],input[type=time]{
-  width:100%;
-  background:var(--field);
-  border:1px solid var(--field-line);
-  border-radius:8px;
-  padding:12px 13px;
-  font-size:17px;font-family:'Cormorant Garamond',serif;font-weight:500;
-  color:#f4eefc;outline:none;-webkit-appearance:none;
-  transition:border-color .4s, box-shadow .4s;
-  color-scheme:dark;
+.excover .sym{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  font-size:46px;line-height:1;
+  filter:drop-shadow(0 0 18px rgba(186,150,240,.8));
 }
-textarea{
-  width:100%;
-  background:var(--field);
-  border:1px solid var(--field-line);
-  border-radius:8px;
-  resize:vertical;
-  font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:500;
-  color:#f4eefc;outline:none;line-height:1.75;
-  padding:12px 13px;min-height:96px;
-  transition:border-color .4s, box-shadow .4s;
+.excover .ring{
+  position:absolute;left:50%;top:50%;width:96px;height:96px;
+  transform:translate(-50%,-50%) rotate(45deg);
+  border:1px solid rgba(185,163,227,.4);
 }
-input::placeholder,textarea::placeholder{color:#7b7287;opacity:1}
-input:focus,textarea:focus{
-  border-color:rgba(205,178,242,.85);
-  box-shadow:0 0 14px rgba(170,135,230,.35), inset 0 0 14px rgba(170,135,230,.07);
+.exbody{padding:18px 18px 20px}
+.exbadge{font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--glic);margin-bottom:7px}
+.excard h3{font-family:'Cinzel',serif;font-size:19px;font-weight:600;color:#f0eaf6;margin-bottom:8px}
+.exdesc{font-size:15.5px;line-height:1.65;color:var(--txt-soft);margin-bottom:14px}
+.exgo{font-family:'Cinzel',serif;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-pale)}
+.excard:hover .exgo{color:#f5e9c8}
+
+.excard.soon{opacity:.55;cursor:default}
+.excard.soon:hover{transform:none;border-color:var(--card-line);box-shadow:none}
+.excard.soon .exgo{color:var(--txt-dim)}
+
+footer{
+  text-align:center;padding:22px 14px 26px;position:relative;z-index:2;
+  border-top:1px solid rgba(185,163,227,.14);
+  font-size:14px;color:var(--txt-dim);
 }
-.blk.lit input,.blk.lit textarea{text-shadow:0 0 10px rgba(190,160,240,.3)}
-
-.meta{display:grid;grid-template-columns:150px 130px 1fr;gap:12px;margin:18px 0 4px}
-@media(max-width:640px){.meta{grid-template-columns:1fr 1fr}.meta .blk.grow{grid-column:1/-1}}
-
-/* ================= mantra ================= */
-.mantra{
-  padding:22px 24px;margin:22px 0 14px;border-radius:12px;text-align:center;
-  border:1px solid rgba(201,168,76,.35);
-  background:linear-gradient(165deg, rgba(34,26,18,.8), rgba(20,16,12,.85));
-}
-.ml{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
-.mt{font-size:18px;line-height:1.85;color:var(--gold-pale);font-weight:500}
-
-/* ================= trasforma ================= */
-.trrow{display:grid;grid-template-columns:1fr auto 1fr;align-items:stretch;gap:10px;margin-bottom:8px}
-@media(max-width:560px){.trrow{grid-template-columns:1fr}.trarr{transform:rotate(90deg);padding:0}}
-.trarr{font-size:24px;color:var(--glic);display:flex;align-items:center;justify-content:center;text-shadow:0 0 12px rgba(185,163,227,.7)}
-.trex{font-size:14.5px;color:var(--txt-soft);text-align:center;margin-bottom:6px;line-height:1.6}
-.trex b{color:var(--glic-hi);font-weight:600}
-
-/* ================= guida ================= */
-.ghero{padding:24px 20px;margin-bottom:20px;text-align:center;border-radius:12px;
-  border:1px solid rgba(185,163,227,.25);
-  background:linear-gradient(165deg, rgba(28,22,38,.85), rgba(16,13,22,.9))}
-.ghero h2{font-family:'Cinzel',serif;font-size:clamp(19px,5vw,25px);font-weight:600;color:#f0eaf6;margin-bottom:8px;
-  text-shadow:0 0 24px rgba(185,163,227,.3)}
-.ghero p{font-size:16px;color:var(--txt-soft);line-height:1.65}
-.gcard{padding:18px 18px 14px;margin-bottom:14px;border-radius:12px;
-  border:1px solid var(--card-line);border-left:3px solid var(--glic);
-  background:var(--card);
-  transition:box-shadow 1.1s ease, border-color 1.1s ease, background 1.1s ease}
-.gcard.lit{
-  border-color:rgba(205,178,242,.9);
-  background:rgba(30,24,40,.92);
-  box-shadow:0 0 22px rgba(170,135,230,.4), 0 0 70px rgba(150,110,215,.18), inset 0 0 30px rgba(170,135,230,.1)}
-.gbadge{font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--glic);margin-bottom:7px}
-.gcard h3{font-family:'Cinzel',serif;font-size:18px;font-weight:600;margin-bottom:6px;color:#f0eaf6}
-.gtiming{font-size:14.5px;color:var(--txt-soft);margin-bottom:12px}
-.steps{list-style:none}
-.steps li{display:flex;gap:12px;font-size:16px;line-height:1.65;color:var(--txt);
-  padding:10px 0;border-bottom:1px solid rgba(185,163,227,.1)}
-.steps li:last-child{border-bottom:none;padding-bottom:4px}
-.steps li:first-child{padding-top:0}
-.steps b{color:var(--glic-hi);font-weight:600}
-.stepn{font-family:'Cinzel',serif;font-size:11px;font-weight:700;min-width:22px;height:22px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:3px;
-  background:var(--glic);color:#1c1426}
-
-.seclbl{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--txt-dim);margin:28px 0 12px;padding-left:2px}
-
-.alert{border:1px solid rgba(185,163,227,.35);padding:14px 16px;margin-bottom:14px;border-radius:12px;
-  font-size:15.5px;color:var(--txt);line-height:1.65;display:flex;gap:10px;align-items:flex-start;
-  background:rgba(185,163,227,.06)}
-.alert .ic{font-size:16px;flex-shrink:0;margin-top:1px;color:var(--glic-hi)}
-.alert b{color:var(--glic-hi);font-weight:600}
-
-.savegrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
-@media(max-width:560px){.savegrid{grid-template-columns:1fr}}
-.savecard{padding:16px 18px;border-radius:12px;border:1px solid var(--card-line);border-left:3px solid var(--gold);background:var(--card)}
-.savecard .ic{font-size:22px;display:block;margin-bottom:6px}
-.savecard h4{font-family:'Cinzel',serif;font-size:15px;font-weight:600;color:#f0eaf6;margin-bottom:6px}
-.savecard p{font-size:15.5px;line-height:1.65;color:var(--txt-soft)}
-.savecard b{color:var(--gold-pale);font-weight:600}
-
-.tip{padding:18px 20px;margin-top:18px;border-radius:12px;
-  border:1px solid rgba(201,168,76,.3);
-  background:linear-gradient(165deg, rgba(34,26,18,.8), rgba(20,16,12,.85))}
-.tip p{font-size:16px;color:var(--gold-pale);line-height:1.7;text-align:center}
-.tip b{color:#f5e9c8;font-weight:600}
-.gstart{text-align:center;margin-top:22px}
-
-/* ================= diario ================= */
-.cal-istr{border:1px solid var(--card-line);border-left:3px solid var(--glic);
-  padding:14px 16px;margin:18px 0 20px;font-size:15.5px;color:var(--txt-soft);line-height:1.7;border-radius:12px;background:var(--card)}
-.cal-istr b{color:var(--glic-hi);font-weight:600}
-.wnav{display:flex;align-items:center;justify-content:space-between;gap:8px;
-  border:1px solid rgba(185,163,227,.3);border-bottom:none;
-  background:rgba(28,22,38,.85);padding:12px 14px;border-radius:12px 12px 0 0}
-.wnav-btn{background:none;border:1.5px solid var(--glic);color:var(--glic-hi);border-radius:30px;
-  padding:9px 16px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:.06em;cursor:pointer;white-space:nowrap;transition:background .15s,box-shadow .15s}
-.wnav-btn:hover{background:rgba(185,163,227,.12);box-shadow:0 0 12px rgba(185,163,227,.3)}
-.wnav-btn:active{background:rgba(185,163,227,.25)}
-.wnav-lbl{font-size:14.5px;color:var(--txt);text-align:center;flex:1;line-height:1.4}
-.wnav-badge{font-family:'Cinzel',serif;font-size:8.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--glic);display:block;margin-top:3px}
-@media(max-width:430px){.wnav-lbl{font-size:12px}.wnav-btn{padding:8px 11px;font-size:10px}}
-
-.wcard{border:1px solid var(--card-line);border-top:none;border-radius:0 0 12px 12px;overflow:hidden;background:var(--card)}
-.scroll-hint{font-size:13px;color:var(--txt-dim);text-align:center;padding:6px;display:none}
-@media(max-width:560px){.scroll-hint{display:block}}
-.cal-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
-.wgrid{display:grid;grid-template-columns:repeat(7,1fr);min-width:560px}
-.dhdr{text-align:center;padding:9px 2px;font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:.14em;font-weight:700;
-  background:rgba(185,163,227,.07);color:var(--txt-soft);border-bottom:1px solid rgba(185,163,227,.25)}
-.dhdr.today{color:var(--glic-hi);border-bottom-color:var(--glic);background:rgba(185,163,227,.14)}
-.dcell{padding:9px 8px;min-height:116px;display:flex;flex-direction:column;gap:6px;
-  border-right:1px solid rgba(185,163,227,.1)}
-.dcell:last-child{border-right:none}
-.dcell.today{background:rgba(185,163,227,.08);box-shadow:inset 2px 0 0 var(--glic)}
-.dtop{display:flex;justify-content:space-between;align-items:flex-start}
-.dnum{font-family:'Cinzel',serif;font-size:15px;font-weight:700;color:var(--txt);line-height:1;min-width:20px}
-.dnum.past{color:var(--txt-dim)}.dnum.future{color:#5f5870}
-.chks{display:flex;flex-direction:column;gap:4px}
-.chk{display:flex;align-items:center;gap:4px;cursor:pointer}
-.chk input{width:15px;height:15px;accent-color:var(--glic)}
-.chkl{font-family:'Cinzel',serif;font-size:8.5px;font-weight:700;letter-spacing:.04em;color:var(--glic)}
-.dkw{flex:1;display:flex;align-items:flex-end}
-.dkw input{background:rgba(10,8,14,.5);border:1px solid rgba(185,163,227,.2);border-radius:6px;width:100%;
-  font-size:13px;font-family:'Cormorant Garamond',serif;color:#f4eefc;outline:none;padding:5px 7px}
-.dkw input:focus{border-color:rgba(205,178,242,.7)}
-.dmood{display:flex;justify-content:space-around;padding:4px 0 1px;gap:1px}
-.mood{font-size:16px;cursor:pointer;opacity:.3;transition:opacity .15s,transform .15s;line-height:1}
-.mood:hover{opacity:.7}
-.mood.on{opacity:1;transform:scale(1.3)}
-.wnote{padding:14px 16px;border-top:1px solid rgba(185,163,227,.15)}
-.wnote-t{font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--txt-dim);margin-bottom:8px}
-
-.fine{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px;margin-bottom:14px}
-@media(max-width:560px){.fine{grid-template-columns:1fr}}
-.fine textarea{min-height:130px}
-
-.intenz{padding:16px 18px;border-radius:12px;
-  border:1px solid rgba(201,168,76,.35);
-  background:linear-gradient(165deg, rgba(34,26,18,.8), rgba(20,16,12,.85));
-  transition:box-shadow 1.1s ease, border-color 1.1s ease}
-.intenz.lit{border-color:rgba(216,183,101,.9);
-  box-shadow:0 0 22px rgba(201,168,76,.4), inset 0 0 26px rgba(201,168,76,.08)}
-.intenz .blab{color:var(--gold)}
-.intenz input{border-color:rgba(201,168,76,.35)}
-.intenz input:focus{border-color:rgba(216,183,101,.85);box-shadow:0 0 14px rgba(201,168,76,.35)}
-
-/* ================= nav bassa ================= */
-.bnav{border-top:1px solid rgba(185,163,227,.18);padding:20px 18px 24px;margin-top:8px}
-.bnav-t{text-align:center;font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--txt-dim);margin-bottom:12px}
-.bnav-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-width:560px;margin:0 auto}
-.bnav-btn{background:rgba(185,163,227,.07);color:var(--txt);border:1px solid rgba(185,163,227,.3);border-radius:10px;
-  padding:12px 6px;font-family:'Cinzel',serif;font-size:10.5px;cursor:pointer;text-align:center;line-height:1.5;letter-spacing:.04em}
-.bnav-btn:hover{background:rgba(185,163,227,.15);box-shadow:0 0 12px rgba(185,163,227,.25)}
-.bnav-pdf{text-align:center;margin-top:16px}
-.bnav-foot{text-align:center;margin-top:16px;font-size:14px;color:var(--txt-dim)}
-.bnav-foot a{color:var(--glic-hi);text-decoration:none}
-
-/* ================= toast ================= */
-#saved{position:fixed;bottom:18px;left:50%;transform:translateX(-50%) translateY(60px);
-  background:rgba(22,17,28,.96);color:var(--glic-hi);border:1px solid rgba(185,163,227,.5);
-  border-radius:30px;padding:9px 20px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:.1em;
-  z-index:50;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;
-  box-shadow:0 0 18px rgba(150,110,215,.3)}
-#saved.show{opacity:1;transform:translateX(-50%) translateY(0)}
-
-/* ================= area pdf nascosta (resa su carta chiara) ================= */
-#pdf-hidden{position:fixed;left:-99999px;top:0;width:900px;background:#f6eed8;z-index:-1;opacity:0;pointer-events:none}
-.pdf-render{width:860px;margin:0 auto;background:#f6eed8;padding:26px 28px 34px;font-family:'Cormorant Garamond',Georgia,serif}
-.pdf-render, .pdf-render *{
-  color:#3a2c16 !important;
-  background:transparent !important;
-  box-shadow:none !important;
-  text-shadow:none !important;
-  border-color:rgba(110,80,40,.4) !important;
-  animation:none !important;
-}
-.pdf-render .pdf-title{font-family:'Cinzel',serif;font-size:24px;font-weight:600;margin-bottom:4px}
-.pdf-render .pdf-sub{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#9a8266 !important;margin-bottom:18px}
-.pdf-render .pdf-field{border-bottom:1px solid rgba(110,80,40,.4);min-height:26px;padding:6px 0;font-size:15px;line-height:1.5;white-space:pre-wrap;word-break:break-word}
-.pdf-render .pdf-field.empty{color:#b3a188 !important}
-.pdf-render .stepn{background:#c9a84c !important;color:#2a1d08 !important}
+footer a{color:var(--glic-hi);text-decoration:none}
 </style>
 </head>
 <body>
 
 <div id="lume"></div>
 
-<div class="page">
+<div class="wrap">
 
   <header class="hd">
     <div class="orn"><div class="l"></div><div class="d"></div><div class="l"></div></div>
-    <h1>Strumenti del Cammino</h1>
-    <p>Il tuo spazio di pratica · Elisa Soul Medium</p>
+    <h1>Il Cammino Interiore</h1>
+    <p>La tua area di pratica personale</p>
   </header>
 
-  <div class="act">
-    <span class="hint"><b>✓ Salvataggio automatico:</b> ciò che scrivi resta su questo dispositivo</span>
-    <button class="btn-gold" onclick="dlPDF(this)">↓ Scarica PDF</button>
-  </div>
-
-  <nav class="tabs">
-    <button class="tab on" onclick="goTab(0)"><span class="num">Guida</span><span class="lbl">Come usare</span></button>
-    <button class="tab" onclick="goTab(1)"><span class="num">Scheda 1</span><span class="lbl">Spazio Emotivo</span></button>
-    <button class="tab" onclick="goTab(2)"><span class="num">Scheda 2</span><span class="lbl">Osservatorio</span></button>
-    <button class="tab" onclick="goTab(3)"><span class="num">Diario</span><span class="lbl">La Settimana</span></button>
-  </nav>
-
-  <!-- ============ PANNELLO 0 · GUIDA ============ -->
-  <section class="panel on" id="p0">
-    <div class="ghero">
-      <h2>Come usare questi strumenti</h2>
-      <p>Tre pratiche semplici per accompagnarti ogni giorno<br>nel tuo percorso di crescita interiore.</p>
-    </div>
-
-    <div class="gcard">
-      <div class="gbadge">Scheda 1 · Sblocco Emotivo</div>
-      <h3>Il mio Spazio Emotivo</h3>
-      <div class="gtiming">⏱ 20 minuti · 3 volte a settimana (es. lunedì, mercoledì, venerdì)</div>
-      <ul class="steps">
-        <li><span class="stepn">1</span><span>Siediti in un posto tranquillo. Metti una musica rilassante.</span></li>
-        <li><span class="stepn">2</span><span>Scrivi il pensiero o la sensazione che senti — senza censurarti.</span></li>
-        <li><span class="stepn">3</span><span>Rispondi alle quattro domande con la prima cosa che ti viene.</span></li>
-        <li><span class="stepn">4</span><span>Fai 3 minuti di respirazione profonda. Descrivi dove senti il blocco nel corpo.</span></li>
-        <li><span class="stepn">5</span><span>Scrivi l'emozione che riconosci: rabbia, tristezza, paura, dolore…</span></li>
-        <li><span class="stepn">6</span><span>Leggi il mantra ad alta voce per 3 volte. Poi scrivi come ti senti.</span></li>
-      </ul>
-    </div>
-
-    <div class="gcard">
-      <div class="gbadge">Scheda 2 · Osservazione del Giudizio</div>
-      <h3>Il mio Osservatorio Interiore</h3>
-      <div class="gtiming">⏱ 15 minuti · ogni giorno — anche quando fai la Scheda 1</div>
-      <ul class="steps">
-        <li><span class="stepn">1</span><span>Quando noti un giudizio verso di te — anche piccolo — fermati.</span></li>
-        <li><span class="stepn">2</span><span>Fai 1–2 respiri profondi. Scrivi il giudizio esattamente come l'hai sentito.</span></li>
-        <li><span class="stepn">3</span><span>Osservalo: che tono usa? Da dove viene? Ti appartiene davvero?</span></li>
-        <li><span class="stepn">4</span><span>Trasformalo: da "Sono sbagliata" a "C'è una parte di me che oggi si sente sbagliata".</span></li>
-        <li><span class="stepn">5</span><span>Chiudi con il mantra e scegli una canzone che ti porta energia positiva.</span></li>
-      </ul>
-    </div>
-
-    <div class="gcard">
-      <div class="gbadge">Diario · La tua settimana</div>
-      <h3>Il mio Diario della Settimana</h3>
-      <div class="gtiming">📜 Aggiornalo ogni sera, bastano 2 minuti</div>
-      <ul class="steps">
-        <li><span class="stepn">1</span><span><b>Ogni giorno:</b> spunta le schede completate, scrivi una parola chiave, scegli il tuo umore.</span></li>
-        <li><span class="stepn">2</span><span><b>Fine settimana:</b> annota cosa hai scoperto su di te.</span></li>
-        <li><span class="stepn">3</span><span><b>Periodicamente:</b> compila le riflessioni in fondo e la tua intenzione.</span></li>
-      </ul>
-    </div>
-
-    <div class="seclbl">Il tuo lavoro è al sicuro</div>
-
-    <div class="alert">
-      <span class="ic">✓</span>
-      <span><b>Salvataggio automatico attivo:</b> tutto ciò che scrivi viene conservato su questo dispositivo, anche se chiudi la pagina. Per portare con te una copia — o per usare carta e penna — scarica il PDF.</span>
-    </div>
-
-    <div class="savegrid">
-      <div class="savecard">
-        <span class="ic">📥</span>
-        <h4>Scarica come PDF</h4>
-        <p>Apri la scheda che vuoi conservare e tocca <b>"Scarica PDF"</b>: ricevi un file con tutto quello che hai scritto, da tenere o stampare.</p>
-      </div>
-      <div class="savecard">
-        <span class="ic">🖨</span>
-        <h4>Preferisci carta e penna?</h4>
-        <p>Scarica il PDF <b>senza compilare nulla</b>: ottieni le schede vuote pronte da stampare e riempire a mano.</p>
-      </div>
-    </div>
-
-    <div class="tip">
-      <p><b>Un consiglio:</b> non serve la perfezione. Anche 5 minuti contano.<br>Ciò che importa è la direzione, non la velocità.</p>
-    </div>
-
-    <div class="gstart">
-      <button class="btn-gold" onclick="goTab(1);window.scrollTo({top:0,behavior:'smooth'})">Inizia dalla Scheda 1 →</button>
+  <!-- ============ LOGIN ============ -->
+  <section id="login">
+    <div class="lbox">
+      <h2>Entra nel tuo spazio</h2>
+      <p class="sub">Scrivi la mail con cui hai acquistato il corso:<br>è la tua chiave per gli esercizi.</p>
+      <label for="mail">La tua email</label>
+      <input id="mail" type="email" autocomplete="email" inputmode="email"
+             placeholder="nome@esempio.it" onkeydown="if(event.key==='Enter')entra()">
+      <div class="lerr" id="lerr"></div>
+      <button class="btn-gold" onclick="entra()">Entra nel Cammino</button>
+      <p class="lnote">Questo dispositivo ricorderà il tuo accesso:<br>non dovrai riscrivere la mail ogni volta.</p>
     </div>
   </section>
 
-  <!-- ============ PANNELLO 1 · SPAZIO EMOTIVO ============ -->
-  <section class="panel" id="p1">
-    <div class="shdr">
-      <div>
-        <div class="stag">Scheda 1 · Sblocco Emotivo</div>
-        <div class="sh1">Il mio<br>Spazio Emotivo</div>
+  <!-- ============ DASHBOARD ============ -->
+  <section id="dash">
+    <div class="who">
+      <span class="wmail">Benvenuta/o, <b id="wmail"></b></span>
+      <button onclick="esci()">Esci</button>
+    </div>
+
+    <div class="dlbl">I tuoi esercizi</div>
+
+    <div class="exgrid">
+
+      <a class="excard" href="/app/day/" id="card-day">
+        <div class="excover">
+          <div class="ring"></div>
+          <span class="sym">📜</span>
+        </div>
+        <div class="exbody">
+          <div class="exbadge">Pratica quotidiana</div>
+          <h3>Il Giornaliero</h3>
+          <p class="exdesc">Le tue schede di pratica: lo Spazio Emotivo, l'Osservatorio Interiore e il Diario della Settimana. Tutto si salva da solo, e puoi scaricare il PDF quando vuoi.</p>
+          <span class="exgo">Apri l'esercizio →</span>
+        </div>
+      </a>
+
+      <div class="excard soon">
+        <div class="excover">
+          <div class="ring"></div>
+          <span class="sym">🌙</span>
+        </div>
+        <div class="exbody">
+          <div class="exbadge">In preparazione</div>
+          <h3>Prossimo esercizio</h3>
+          <p class="exdesc">Un nuovo strumento del Cammino sta prendendo forma. Lo troverai qui appena sarà pronto.</p>
+          <span class="exgo">Presto disponibile</span>
+        </div>
       </div>
-      <div class="tbox"><div class="tn">20'</div><div class="tl">minuti</div><div class="tf">3× a settimana</div></div>
-    </div>
 
-    <p class="intro">Metti una musica rilassante. Portati in uno spazio tranquillo. Prima di iniziare, respira.</p>
-
-    <div class="meta">
-      <div class="blk"><label>Data</label><input type="date" data-k="s1-date"></div>
-      <div class="blk"><label>Ora</label><input type="time" data-k="s1-time"></div>
-      <div class="blk grow"><label>Il pensiero / la frase che è arrivata</label><input type="text" placeholder="Scrivi qui…" data-k="s1-think"></div>
-    </div>
-
-    <div class="phase"><div class="pnum">1</div><div class="ptxt">Le quattro domande — scrivi la tua risposta</div></div>
-    <div class="qg">
-      <div class="blk"><p class="qt">Questo pensiero e questa sensazione sono reali, vengono da me o sono automatici?</p><textarea rows="3" placeholder="La tua risposta…" data-k="s1-q1"></textarea></div>
-      <div class="blk"><p class="qt">Nasce dal presente — da ciò che sto vivendo adesso — o dal mio passato?</p><textarea rows="3" placeholder="La tua risposta…" data-k="s1-q2"></textarea></div>
-      <div class="blk"><p class="qt">Mi sta aiutando o mi sta togliendo la possibilità di fare ciò che sento?</p><textarea rows="3" placeholder="La tua risposta…" data-k="s1-q3"></textarea></div>
-      <div class="blk"><p class="qt">Se al mio posto ci fosse qualcuno che amo, agirei come voglio fare adesso?</p><textarea rows="3" placeholder="La tua risposta…" data-k="s1-q4"></textarea></div>
-    </div>
-
-    <div class="phase"><div class="pnum">2</div><div class="ptxt">3 minuti di respirazione · Dove sento il blocco nel corpo?</div></div>
-    <div class="blk"><textarea rows="3" placeholder="Descrivi dove e come senti il blocco (es. petto, stomaco, gola…)" data-k="s1-body"></textarea></div>
-
-    <div class="phase"><div class="pnum">3</div><div class="ptxt">Descrivi l'emozione — rabbia, tristezza, frustrazione, dolore…</div></div>
-    <div class="blk"><textarea rows="2" placeholder="Che emozione è? Come la senti?" data-k="s1-emo"></textarea></div>
-
-    <div class="mantra">
-      <div class="ml">Il tuo mantra — ripetilo 3 volte ad alta voce</div>
-      <p class="mt">"Io posso vedermi senza ferirmi. Posso sentirmi amato senza sentirmi sbagliato.<br>Posso riconoscere ciò che provo, senza giudicarlo, senza condannarlo."</p>
-    </div>
-
-    <div class="blk">
-      <span class="blab">Come mi sento ora →</span>
-      <textarea rows="2" placeholder="Scrivi come ti senti dopo la sessione…" data-k="s1-after"></textarea>
     </div>
   </section>
-
-  <!-- ============ PANNELLO 2 · OSSERVATORIO ============ -->
-  <section class="panel" id="p2">
-    <div class="shdr">
-      <div>
-        <div class="stag">Scheda 2 · Giudizio Interiore</div>
-        <div class="sh1">Il mio<br>Osservatorio Interiore</div>
-      </div>
-      <div class="tbox"><div class="tn">15'</div><div class="tl">minuti</div><div class="tf">ogni giorno</div></div>
-    </div>
-
-    <p class="intro">Quando arriva un giudizio su di te, fermati. Fai 1–2 respiri lenti. Poi rispondi con onestà.</p>
-
-    <div class="meta" style="grid-template-columns:150px 1fr">
-      <div class="blk"><label>Data</label><input type="date" data-k="s2-date"></div>
-      <div class="blk grow"><label>Il giudizio che sto dando a me stesso</label><input type="text" placeholder="Scrivi il giudizio così com'è…" data-k="s2-j"></div>
-    </div>
-
-    <div class="phase"><div class="pnum">1</div><div class="ptxt">Osserva il pensiero</div></div>
-    <div class="qg">
-      <div class="blk"><p class="qt">Che tono sto usando verso me stesso? Sono aggressivo, freddo, duro?</p><textarea rows="3" placeholder="La tua risposta…" data-k="s2-q1"></textarea></div>
-      <div class="blk"><p class="qt">Questa voce e queste sensazioni mi appartengono davvero?</p><textarea rows="3" placeholder="La tua risposta…" data-k="s2-q2"></textarea></div>
-    </div>
-
-    <div class="phase"><div class="pnum">2</div><div class="ptxt">Risali alla fonte</div></div>
-    <div class="qg">
-      <div class="blk"><p class="qt">Chi o cosa mi ha fatto pensare di essere così? Cosa ho vissuto per arrivare a questo giudizio?</p><textarea rows="3" placeholder="La tua risposta…" data-k="s2-q3"></textarea></div>
-      <div class="blk"><p class="qt">Se al mio posto ci fosse qualcuno che amo, come le parlerei?</p><textarea rows="3" placeholder="La tua risposta…" data-k="s2-q4"></textarea></div>
-    </div>
-
-    <div class="phase"><div class="pnum">3</div><div class="ptxt">Trasforma il giudizio — da accusatore a osservatore</div></div>
-    <div class="trrow">
-      <div class="blk"><label>Il giudizio negativo</label><textarea rows="2" placeholder="Es. Sono sbagliata…" data-k="s2-neg"></textarea></div>
-      <div class="trarr">→</div>
-      <div class="blk"><label>Visto dall'esterno</label><textarea rows="2" placeholder="Es. C'è una parte di me che oggi…" data-k="s2-pos"></textarea></div>
-    </div>
-    <p class="trex">esempio: "Sono sbagliata" → <b>"C'è una parte di me che oggi si sente sbagliata"</b></p>
-
-    <div class="mantra">
-      <div class="ml">Il tuo mantra di chiusura</div>
-      <p class="mt">"Io posso guardarmi, posso amarmi,<br>posso riconoscermi e abbracciarmi.<br>Io sono degno/a di tutto questo."</p>
-    </div>
-
-    <div class="blk">
-      <span class="blab">♪ Canzone di oggi</span>
-      <input type="text" placeholder="Nome della canzone…" data-k="s2-song">
-      <p class="qt" style="margin:10px 0 0">Scegli una canzone che ti porta emozioni positive e rispetto verso te stesso.</p>
-    </div>
-
-    <div class="blk">
-      <span class="blab">Come mi sento ora →</span>
-      <textarea rows="2" placeholder="Scrivi come ti senti dopo la sessione…" data-k="s2-after"></textarea>
-    </div>
-  </section>
-
-  <!-- ============ PANNELLO 3 · DIARIO ============ -->
-  <section class="panel" id="p3">
-    <div class="shdr">
-      <div>
-        <div class="stag">Diario · Settimana per settimana</div>
-        <div class="sh1">Il mio<br>Diario della Settimana</div>
-      </div>
-    </div>
-
-    <div class="cal-istr">
-      <b>Ogni giorno:</b> spunta gli esercizi completati (S1 e/o S2), scrivi una parola chiave, scegli l'umore.<br>
-      <b>Fine settimana:</b> compila le note qui sotto.<br>
-      Puoi navigare liberamente tra le settimane — <b>ogni settimana ricorda quello che hai scritto.</b>
-    </div>
-
-    <div class="wnav">
-      <button class="wnav-btn" onclick="weekGo(-1)">← Prec.</button>
-      <div class="wnav-lbl"><span id="wrange"></span><span class="wnav-badge" id="wbadge"></span></div>
-      <button class="wnav-btn" onclick="weekGo(1)">Succ. →</button>
-    </div>
-
-    <div class="wcard">
-      <div class="scroll-hint">← scorri per vedere tutti i giorni →</div>
-      <div class="cal-scroll">
-        <div class="wgrid" id="whdr"></div>
-        <div class="wgrid" id="wcells" style="border-top:1px solid rgba(185,163,227,.1);"></div>
-      </div>
-      <div class="wnote">
-        <div class="wnote-t">Note di fine settimana — cosa ho scoperto su di me</div>
-        <textarea id="wnote" rows="3" placeholder="Scrivi qui le tue riflessioni di fine settimana…"></textarea>
-      </div>
-    </div>
-
-    <div class="seclbl">Riflessioni periodiche</div>
-
-    <div class="fine">
-      <div class="blk">
-        <span class="blab">Cos'ho riconosciuto di recente</span>
-        <textarea rows="6" placeholder="Ciò che hai scoperto su di te, i momenti significativi…" data-k="cal-reco"></textarea>
-      </div>
-      <div class="blk">
-        <span class="blab">I progressi che ho notato</span>
-        <textarea rows="6" placeholder="Come sei cambiato/a, cosa è diventato più facile…" data-k="cal-prog"></textarea>
-      </div>
-    </div>
-
-    <div class="intenz">
-      <span class="blab">La mia intenzione per la prossima settimana →</span>
-      <input type="text" placeholder="Scrivi la tua intenzione…" data-k="cal-int">
-    </div>
-  </section>
-
-  <!-- ============ NAV BASSA ============ -->
-  <footer class="bnav">
-    <div class="bnav-t">Vai a un'altra sezione</div>
-    <div class="bnav-grid">
-      <button class="bnav-btn" onclick="goTab(0);window.scrollTo({top:0,behavior:'smooth'})">📖<br>Guida</button>
-      <button class="bnav-btn" onclick="goTab(1);window.scrollTo({top:0,behavior:'smooth'})">🕊️<br>Scheda 1</button>
-      <button class="bnav-btn" onclick="goTab(2);window.scrollTo({top:0,behavior:'smooth'})">🌿<br>Scheda 2</button>
-      <button class="bnav-btn" onclick="goTab(3);window.scrollTo({top:0,behavior:'smooth'})">📜<br>Diario</button>
-    </div>
-    <div class="bnav-pdf">
-      <button class="btn-gold" onclick="dlPDF(this)">↓ Scarica PDF della scheda attiva</button>
-    </div>
-    <div class="bnav-foot">Il Cammino Interiore · <a href="/">Torna al Libro</a></div>
-  </footer>
 
 </div>
 
-<div id="saved">✓ Salvato</div>
-<div id="pdf-hidden" aria-hidden="true"></div>
+<footer>Il Cammino Interiore · Elisa Soul Medium · <a href="/">Torna al Libro</a></footer>
 
 <script>
 (function(){
-  /* ================= PERSISTENZA ================= */
-  var KEY='ovl-strumenti';
-  var store={};
-  try{ store=JSON.parse(localStorage.getItem(KEY)||'{}'); }catch(e){ store={}; }
-  var saveTimer=null, toastTimer=null;
-  function persist(){
-    try{ localStorage.setItem(KEY, JSON.stringify(store)); }catch(e){}
-    var t=document.getElementById('saved');
-    t.classList.add('show');
-    clearTimeout(toastTimer);
-    toastTimer=setTimeout(function(){t.classList.remove('show');},1200);
-  }
-  function queueSave(){ clearTimeout(saveTimer); saveTimer=setTimeout(persist,500); }
+  var KEY='ovl-user';
 
-  function applyStored(el){
-    var k=el.dataset.k; if(!k)return;
-    if(el.type==='checkbox'){ el.checked=!!store[k]; }
-    else if(store[k]!==undefined){ el.value=store[k]; }
-  }
-  function bindAll(root){
-    (root||document).querySelectorAll('[data-k]').forEach(applyStored);
-  }
-  document.addEventListener('input',function(e){
-    var el=e.target, k=el.dataset.k; if(!k)return;
-    store[k]=el.type==='checkbox'?el.checked:el.value;
-    queueSave();
-  });
-  document.addEventListener('change',function(e){
-    var el=e.target, k=el.dataset.k; if(!k)return;
-    store[k]=el.type==='checkbox'?el.checked:el.value;
-    queueSave();
-  });
-
-  /* ================= LA LUCE GUIDA ================= */
-  var lume=document.getElementById('lume');
-  var litEl=null;
-  function lumeHome(){
-    /* riposo: a lato del titolo */
-    var x=Math.max(34, innerWidth/2 - 460);
-    moveLume(x, 86 + (document.querySelector('.hd')?document.querySelector('.hd').offsetTop:0));
-  }
-  function moveLume(x,y){
-    lume.style.transform='translate3d('+(x|0)+'px,'+(y|0)+'px,0)';
-  }
-  function lightUp(el){
-    if(litEl===el)return;
-    if(litEl)litEl.classList.remove('lit');
-    litEl=el;
-    if(!el){ lumeHome(); return; }
-    el.classList.add('lit');
-    var r=el.getBoundingClientRect();
-    var docY=r.top + scrollY + Math.min(r.height/2, 70);
-    /* la luce si posa sul bordo sinistro del blocco (o destro se non c'è spazio) */
-    var x=r.left - 26;
-    if(x < 30) x=Math.min(innerWidth-30, r.right + 26);
-    moveLume(x, docY);
-  }
-  /* clic o focus su un blocco → la luce lo raggiunge lentamente */
-  document.addEventListener('focusin',function(e){
-    var b=e.target.closest('.blk, .gcard, .intenz, .wnote, .dcell');
-    if(b)lightUp(b);
-  });
-  document.addEventListener('click',function(e){
-    var b=e.target.closest('.blk, .gcard, .intenz, .wnote, .dcell');
-    if(b)lightUp(b);
-  });
-  addEventListener('resize',function(){ if(litEl)lightUp(litEl); else lumeHome(); });
-
-  /* ================= TABS ================= */
-  window.goTab=function(idx){
-    document.querySelectorAll('.panel').forEach(function(p,i){p.classList.toggle('on',i===idx);});
-    document.querySelectorAll('.tabs .tab').forEach(function(b,i){b.classList.toggle('on',i===idx);});
-    if(litEl){litEl.classList.remove('lit');litEl=null;}
-    lumeHome();
-  };
-
-  /* ================= DIARIO SETTIMANALE ================= */
-  var DAYS=['LUN','MAR','MER','GIO','VEN','SAB','DOM'];
-  var MONTHS=['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
-  var weekOffset=0;
-  var MOODS=['😔','😕','😐','🙂','😊'];
-
-  function monday(off){
-    var n=new Date(); n.setHours(0,0,0,0);
-    var d=n.getDay(); var diff=n.getDate()-d+(d===0?-6:1);
-    var m=new Date(n); m.setDate(diff+off*7); return m;
-  }
-  function iso(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
-  function fmt(d){ return d.getDate()+' '+MONTHS[d.getMonth()]+' '+d.getFullYear(); }
-  function isToday(d){ return d.toDateString()===new Date().toDateString(); }
-  function isPast(d){ var t=new Date(); t.setHours(0,0,0,0); return d<t; }
-
-  window.setMood=function(el,dayIso,idx){
-    var cell=el.closest('.dcell'); if(!cell)return;
-    var faces=cell.querySelectorAll('.mood');
-    var wasOn=el.classList.contains('on');
-    faces.forEach(function(f){f.classList.remove('on');});
-    if(!wasOn){ el.classList.add('on'); store['cal-'+dayIso+'-mood']=idx; }
-    else{ delete store['cal-'+dayIso+'-mood']; }
-    queueSave();
-  };
-
-  window.weekGo=function(dir){ weekOffset+=dir; renderWeek(); };
-
-  function renderWeek(){
-    var mon=monday(weekOffset);
-    var sun=new Date(mon); sun.setDate(mon.getDate()+6);
-    document.getElementById('wrange').textContent=fmt(mon)+' — '+fmt(sun);
-    var b=document.getElementById('wbadge');
-    b.textContent=weekOffset===0?'Settimana corrente':(weekOffset<0?Math.abs(weekOffset)+' settiman'+(Math.abs(weekOffset)>1?'e':'a')+' fa':'tra '+weekOffset+' settiman'+(weekOffset>1?'e':'a'));
-
-    var hdr=document.getElementById('whdr'), cells=document.getElementById('wcells');
-    hdr.innerHTML=''; cells.innerHTML='';
-
-    for(var i=0;i<7;i++){
-      var date=new Date(mon); date.setDate(mon.getDate()+i);
-      var di=iso(date), today=isToday(date);
-
-      var h=document.createElement('div');
-      h.className='dhdr'+(today?' today':'');
-      h.textContent=DAYS[i];
-      hdr.appendChild(h);
-
-      var numCls=today?'dnum':(isPast(date)?'dnum past':'dnum future');
-      var cell=document.createElement('div');
-      cell.className='dcell'+(today?' today':'');
-      var moodSel=store['cal-'+di+'-mood'];
-
-      cell.innerHTML=
-        '<div class="dtop"><div class="'+numCls+'">'+date.getDate()+'</div>'+
-        '<div class="chks">'+
-        '<label class="chk"><input type="checkbox" data-k="cal-'+di+'-s1"><span class="chkl">S1</span></label>'+
-        '<label class="chk"><input type="checkbox" data-k="cal-'+di+'-s2"><span class="chkl">S2</span></label>'+
-        '</div></div>'+
-        '<div class="dkw"><input type="text" placeholder="parola chiave…" data-k="cal-'+di+'-kw"></div>'+
-        '<div class="dmood">'+MOODS.map(function(m,mi){
-          return '<span class="mood'+(moodSel===mi?' on':'')+'" onclick="setMood(this,\''+di+'\','+mi+')">'+m+'</span>';
-        }).join('')+'</div>';
-      cells.appendChild(cell);
+  function show(view){
+    document.getElementById('login').classList.toggle('on', view==='login');
+    document.getElementById('dash').classList.toggle('on', view==='dash');
+    if(view==='dash'){
+      var u='';
+      try{ u=localStorage.getItem(KEY)||''; }catch(e){}
+      document.getElementById('wmail').textContent=u;
     }
-
-    var note=document.getElementById('wnote');
-    note.dataset.k='cal-'+iso(mon)+'-note';
-    note.value=store[note.dataset.k]||'';
-
-    bindAll(cells);
   }
 
-  /* ================= PDF ================= */
-  function pdfMeta(id){
-    if(id==='p0')return{file:'guida-strumenti-cammino.pdf',title:'Come usare questi strumenti',sub:'Guida introduttiva · Il Cammino Interiore'};
-    if(id==='p1')return{file:'spazio-emotivo.pdf',title:'Il mio Spazio Emotivo',sub:'Scheda 1 · Sblocco Emotivo'};
-    if(id==='p2')return{file:'osservatorio-interiore.pdf',title:'Il mio Osservatorio Interiore',sub:'Scheda 2 · Giudizio Interiore'};
-    return{file:'diario-della-settimana.pdf',title:'Il mio Diario della Settimana',sub:'Diario · Il Cammino Interiore'};
-  }
-
-  function preparePdf(){
-    var active=document.querySelector('.panel.on');
-    if(!active)return null;
-    var meta=pdfMeta(active.id);
-
-    var wrap=document.createElement('div');
-    wrap.className='pdf-render';
-    var t=document.createElement('div'); t.className='pdf-title'; t.textContent=meta.title;
-    var s=document.createElement('div'); s.className='pdf-sub'; s.textContent=meta.sub;
-    wrap.appendChild(t); wrap.appendChild(s);
-    wrap.appendChild(active.cloneNode(true));
-
-    var clonePanel=wrap.querySelector('.panel');
-    clonePanel.style.display='block'; clonePanel.style.padding='0';
-
-    /* campi → testo */
-    wrap.querySelectorAll('input,textarea,select').forEach(function(el){
-      if(el.type==='checkbox'){
-        var sp=document.createElement('span');
-        sp.style.cssText='display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border:1px solid #8B7B6A;font-size:10px;line-height:1;color:#43301a;';
-        sp.textContent=el.checked?'✓':'';
-        el.parentNode.replaceChild(sp,el); return;
-      }
-      var d=document.createElement('div');
-      d.className='pdf-field';
-      var v=(el.value||'').trim();
-      if(!v){ d.classList.add('empty'); d.textContent=el.getAttribute('placeholder')||' '; }
-      else d.textContent=v;
-      el.parentNode.replaceChild(d,el);
-    });
-
-    /* umore → testo */
-    wrap.querySelectorAll('.dmood').forEach(function(row){
-      var sel=row.querySelector('.mood.on');
-      row.innerHTML='<div class="pdf-field" style="border:none;padding:0;min-height:auto;">'+(sel?'Umore: '+sel.textContent:'—')+'</div>';
-    });
-    /* bottoni via */
-    wrap.querySelectorAll('button').forEach(function(b){b.remove();});
-
-    var hidden=document.getElementById('pdf-hidden');
-    hidden.innerHTML=''; hidden.appendChild(wrap);
-    return {node:wrap, meta:meta};
-  }
-
-  window.dlPDF=async function(btn){
-    if(typeof html2pdf==='undefined'){ alert('La libreria PDF non è stata caricata. Controlla la connessione.'); return; }
-    var orig=btn?btn.textContent:'';
-    if(btn){ btn.disabled=true; btn.textContent='Preparazione…'; }
-    try{
-      var p=preparePdf();
-      if(!p)throw new Error('no panel');
-      await new Promise(function(r){setTimeout(r,250);});
-      if(btn)btn.textContent='Creazione PDF…';
-      await html2pdf().set({
-        margin:[10,10,10,10],
-        filename:p.meta.file,
-        image:{type:'jpeg',quality:.95},
-        html2canvas:{scale:2,useCORS:true,backgroundColor:'#f6eed8',scrollX:0,scrollY:0},
-        jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},
-        pagebreak:{mode:['css','legacy']}
-      }).from(p.node).save();
-      if(btn){ btn.textContent='✓ PDF creato'; setTimeout(function(){btn.disabled=false;btn.textContent=orig;},1300); }
-    }catch(err){
-      console.error(err);
-      alert('Problema nella creazione del PDF. Riprova, oppure usa Chrome/Safari aggiornato.');
-      if(btn){ btn.disabled=false; btn.textContent=orig; }
+  window.entra=function(){
+    var el=document.getElementById('mail');
+    var v=(el.value||'').trim().toLowerCase();
+    var err=document.getElementById('lerr');
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)){
+      err.textContent='Scrivi una mail valida, per favore.';
+      el.focus();
+      return;
     }
+    err.textContent='';
+    try{ localStorage.setItem(KEY, v); }catch(e){}
+    show('dash');
   };
 
-  /* ================= INIT ================= */
-  bindAll(document);
-  renderWeek();
-  lumeHome();
+  window.esci=function(){
+    try{ localStorage.removeItem(KEY); }catch(e){}
+    show('login');
+  };
+
+  /* già dentro? vai dritto alla dashboard */
+  var u=null;
+  try{ u=localStorage.getItem(KEY); }catch(e){}
+  show(u?'dash':'login');
 })();
 </script>
 </body>
