@@ -754,7 +754,8 @@ async function init(){
     wispEl.addEventListener(ev, function(){ dragging=false; wispEl.classList.remove('grab'); });
   });
 
-  let wx=-300, wy=-300, wOn=false, lightK=0;
+  let wx=-300, wy=-300, wOn=false, lightK=0, wOp=0;
+  wispEl.style.transition = 'none';
   function updateWisp(t){
     /* il velo nero si accende già durante il tuffo: si arriva al buio totale */
     const on = ps > .68;
@@ -762,16 +763,30 @@ async function init(){
       wOn = on;
       darkEl.style.opacity = on?1:0;
       tintEl.style.opacity = on?1:0;
-      wispEl.style.opacity = on?1:0;
       if (!on){ userOff.x=0; userOff.y=0; lightK=0; }
     }
-    if (!on || anchors.length<2) return;
+    if (!on){
+      /* lucciola dell'intro: danza attorno al nome, svanisce scendendo */
+      const tOp = 1 - ease(ph(.035,.13));
+      wOp += (tOp - wOp)*.06;
+      wispEl.style.opacity = wOp.toFixed(3);
+      if (wOp > .01){
+        const tx = innerWidth*(.5 + Math.sin(t*.47)*.27 + Math.sin(t*1.9)*.035);
+        const ty = innerHeight*(.30 + Math.sin(t*.66)*.11) + Math.sin(t*2.4)*9;
+        wx += (tx-wx)*.045; wy += (ty-wy)*.045;
+        wispEl.style.transform =
+          'translate3d('+wx.toFixed(1)+'px,'+wy.toFixed(1)+'px,0) scale(.62)';
+      }
+      return;
+    }
+    if (anchors.length<2) return;
+    wOp += (1-wOp)*.06;
+    wispEl.style.opacity = wOp.toFixed(3);
 
-    /* la luce NASCE solo quando la prima sezione è già al suo posto:
-       legata allo scroll reale, non alla regìa del libro */
+    /* la luce nasce subito dopo il tuffo: piena già quando appare il titolo */
     const birth = ease(clamp01(
-      (scrollY - (sito.offsetTop - innerHeight*.25)) / (innerHeight*.75)));
-    lightK += (birth - lightK)*.04;
+      (scrollY - (sito.offsetTop - innerHeight)) / (innerHeight*.55)));
+    lightK += (birth - lightK)*.09;
 
     /* progresso lineare lungo il sentiero */
     const start = sito.offsetTop - innerHeight*.55;
