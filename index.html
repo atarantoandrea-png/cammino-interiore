@@ -27,6 +27,17 @@ body{
   z-index:1;pointer-events:none;
   filter:blur(2px);
 }
+/* fascio di luce che scende col libro */
+#beam{
+  position:fixed;left:50%;top:0;transform:translateX(-50%);
+  width:46vmin;height:0;z-index:2;pointer-events:none;opacity:0;
+  background:linear-gradient(180deg,
+    rgba(255,255,255,0) 0%, rgba(255,255,255,.10) 30%,
+    rgba(255,255,255,.22) 70%, rgba(255,255,255,.38) 100%);
+  -webkit-mask:linear-gradient(90deg,transparent,#000 30% 70%,transparent);
+  mask:linear-gradient(90deg,transparent,#000 30% 70%,transparent);
+  filter:blur(7px);
+}
 /* flash finale */
 #flash{
   position:fixed;inset:0;z-index:6;pointer-events:none;opacity:0;
@@ -185,6 +196,7 @@ footer .c{margin-top:2.4vh;font-style:italic;color:#6e6b64;font-size:15px}
 <div class="halo halo-3"></div>
 
 <canvas id="tornado"></canvas>
+<div id="beam"></div>
 <canvas id="bookgl"></canvas>
 <div class="vignette"></div>
 <div id="flash"></div>
@@ -567,6 +579,7 @@ async function init(){
   const hint = document.getElementById('hint');
   const flashEl = document.getElementById('flash');
   const backlight = document.getElementById('backlight');
+  const beam = document.getElementById('beam');
   const spacer = document.getElementById('spacer');
 
   let scrollRaw = 0, ps = 0;
@@ -587,8 +600,8 @@ async function init(){
 
     /* fasi */
     const pFall = ease(ph(.05,.50));     /* caduta roteando */
-    const p1   = ease(ph(.58,.74));      /* avvicinamento */
-    const p2   = ease(ph(.64,.80));      /* apertura copertina */
+    const p1   = ease(ph(.52,.70));      /* avvicinamento (dentro il flash) */
+    const p2   = ease(ph(.54,.72));      /* apertura copertina: inizia NEL flash */
     const p4   = ease(ph(.90,.995));     /* assestamento finale */
     window.vortexBoost = pFall * (1-p1); /* il vortice si placa dopo il flash */
 
@@ -607,9 +620,15 @@ async function init(){
 
     frontPivot.rotation.y = -2.95*p2;
     for (let i=0;i<NPAGES;i++){
-      const pp = ease(ph(.72+i*.022, .84+i*.022));
+      const pp = ease(ph(.64+i*.02, .76+i*.02));
       pagePivots[i].rotation.y = -3.0*pp;
     }
+
+    /* fascio di luce dall'alto che segue la caduta del libro */
+    const cyFrac = .5 - bookGroup.position.y/8.32;       /* proiezione a schermo */
+    beam.style.height = Math.max(0,(cyFrac*100-8)).toFixed(1)+'vh';
+    const beamO = Math.sin(clamp01(pFall*1.05)*Math.PI) * (1-ph(.52,.6));
+    beam.style.opacity = (beamO*.95).toFixed(3);
 
     /* flash di luce alla fine della caduta */
     const fl = Math.exp(-Math.pow((ps-.56)/.055,2));
