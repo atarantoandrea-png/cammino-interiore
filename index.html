@@ -57,18 +57,23 @@ body{
   mix-blend-mode:screen;
   transition:opacity 1.4s ease;
 }
-/* il corpo della lucina */
+/* il corpo della lucina — afferrabile e trascinabile */
 #wisp{
-  position:fixed;left:0;top:0;z-index:8;pointer-events:none;opacity:0;
-  width:18px;height:18px;margin:-9px 0 0 -9px;border-radius:50%;
-  background:radial-gradient(circle at 38% 34%,
-    #ffffff 0%, #efe6ff 28%, #cdb2f2 55%, rgba(160,120,220,.0) 75%);
-  box-shadow:
-    0 0 12px 4px rgba(220,200,255,.85),
-    0 0 36px 14px rgba(186,150,240,.45),
-    0 0 90px 40px rgba(150,110,215,.22);
+  position:fixed;left:0;top:0;z-index:9;opacity:0;
+  width:64px;height:64px;margin:-32px 0 0 -32px;
+  pointer-events:auto;cursor:grab;touch-action:none;
   transition:opacity 1.4s ease;
   animation:wflick 2.8s ease-in-out infinite;
+}
+#wisp.grab{cursor:grabbing}
+#wisp::after{
+  content:'';position:absolute;inset:22px;border-radius:50%;
+  background:radial-gradient(circle at 38% 34%,
+    #ffffff 0%, #efe6ff 28%, #cdb2f2 55%, rgba(160,120,220,0) 75%);
+  box-shadow:
+    0 0 14px 5px rgba(225,205,255,.9),
+    0 0 44px 18px rgba(186,150,240,.5),
+    0 0 110px 52px rgba(150,110,215,.26);
 }
 @keyframes wflick{
   0%,100%{filter:brightness(1)}
@@ -716,54 +721,97 @@ async function init(){
   const sito = document.getElementById('sito');
   const spacer = document.getElementById('spacer');
 
-  /* ---- il percorso del fuoco fatuo: un'ancora per ogni sezione ---- */
+  /* ---- sentiero del fuoco fatuo: discesa lineare, x casuale ---- */
   let anchors = [];
   function calcAnchors(){
     anchors = [];
-    document.querySelectorAll('.sez').forEach((s,i)=>{
+    document.querySelectorAll('.sez').forEach(function(s){
       const r = s.getBoundingClientRect();
       const docTop = r.top + scrollY;
-      const x = Math.max(innerWidth*.08, r.left - 26) + (i%2 ? innerWidth*.05 : 0);
-      anchors.push({x:x, y:docTop + 60});
-      anchors.push({x:x + innerWidth*.025, y:docTop + r.height*.55});
+      /* due tappe per sezione, ascissa casuale ma dentro lo schermo */
+      anchors.push({x:innerWidth*(.14+Math.random()*.45), y:docTop + 70});
+      anchors.push({x:innerWidth*(.14+Math.random()*.55), y:docTop + r.height*.6});
     });
-    anchors.push({x:innerWidth*.5, y:sito.offsetTop + sito.offsetHeight - 80});
+    anchors.push({x:innerWidth*.5, y:sito.offsetTop + sito.offsetHeight - 90});
   }
   calcAnchors();
   addEventListener('load', calcAnchors);
 
-  let wx=-300, wy=-300, wOn=false;
+  /* trascinamento della lucina */
+  let dragging=false, dragPX=0, dragPY=0;
+  const userOff = {x:0, y:0};
+  wispEl.addEventListener('pointerdown', function(e){
+    dragging=true; dragPX=e.clientX; dragPY=e.clientY;
+    wispEl.classList.add('grab');
+    wispEl.setPointerCapture(e.pointerId);
+    e.preventDefault();
+  });
+  wispEl.addEventListener('pointermove', function(e){
+    if(!dragging) return;
+    dragPX=e.clientX; dragPY=e.clientY;
+  });
+  ['pointerup','pointercancel'].forEach(function(ev){
+    wispEl.addEventListener(ev, function(){ dragging=false; wispEl.classList.remove('grab'); });
+  });
+
+  let wx=-300, wy=-300, wOn=false, lightK=0;
   function updateWisp(t){
-    const on = ps > .8;
+    const on = ps > .78;
     if (on !== wOn){
       wOn = on;
       darkEl.style.opacity = on?1:0;
       tintEl.style.opacity = on?1:0;
       wispEl.style.opacity = on?1:0;
+      if (!on){ userOff.x=0; userOff.y=0; lightK=0; }
     }
     if (!on || anchors.length<2) return;
-    /* progresso lungo il sentiero, guidato dallo scroll */
+
+    /* la luce NASCE dal buio: il raggio si espande piano */
+    const birth = ease(ph(.88, 1));
+    lightK += (birth - lightK)*.04;
+
+    /* progresso lineare lungo il sentiero */
     const start = sito.offsetTop - innerHeight*.55;
     const end = sito.offsetTop + sito.offsetHeight - innerHeight*.85;
     const p = clamp01((scrollY - start)/Math.max(1,end-start)) * (anchors.length-1);
     const i = Math.min(anchors.length-2, Math.floor(p));
     const f = p - i;
     const A=anchors[i], B=anchors[i+1];
-    /* salta ad arco da un'ancora all'altra */
     const hop = Math.sin(f*Math.PI) * 48;
-    const tx = A.x + (B.x-A.x)*f + Math.sin(t*1.7)*10;
-    const ty = A.y + (B.y-A.y)*f - hop - scrollY
-             + Math.sin(t*2.6)*6 - Math.abs(Math.sin(t*1.35))*12;
-    wx += (tx-wx)*.07;
-    wy += (ty-wy)*.07;
-    const r = Math.max(270, Math.min(innerWidth,innerHeight)*.5);
+    let tx = A.x + (B.x-A.x)*f;
+    let ty = A.y + (B.y-A.y)*f - hop - scrollY;
+
+    if (dragging){
+      /* la luce segue il dito; ricorda lo scostamento */
+      userOff.x = dragPX - tx;
+      userOff.y = dragPY - ty;
+    } else {
+      /* riprende il cammino da dove l'hai lasciata, dolcemente */
+      userOff.x *= .992; userOff.y *= .992;
+      tx += Math.sin(t*1.7)*10;
+      ty += Math.sin(t*2.6)*6 - Math.abs(Math.sin(t*1.35))*12;
+    }
+    tx += userOff.x; ty += userOff.y;
+
+    /* MAI fuori dallo schermo */
+    const m = 76;
+    tx = Math.min(innerWidth-m,  Math.max(m, tx));
+    ty = Math.min(innerHeight-m, Math.max(m, ty));
+
+    wx += (tx-wx)*(dragging?.3:.07);
+    wy += (ty-wy)*(dragging?.3:.07);
+
+    /* tanta luce: la sezione toccata si vede bene */
+    const rFull = Math.max(420, Math.min(innerWidth,innerHeight)*.78);
+    const r = Math.max(14, rFull*lightK);
     darkEl.style.background =
       'radial-gradient(circle '+(r*2|0)+'px at '+(wx|0)+'px '+(wy|0)+'px,'+
-      'rgba(6,5,9,0) 0%, rgba(6,5,9,0) 30%, rgba(6,5,9,.5) 55%, rgba(6,5,9,.94) 82%)';
+      'rgba(6,5,9,0) 0%, rgba(6,5,9,0) 44%, rgba(6,5,9,.34) 62%, rgba(6,5,9,.93) 88%)';
     tintEl.style.background =
       'radial-gradient(circle '+(r|0)+'px at '+(wx|0)+'px '+(wy|0)+'px,'+
-      'rgba(196,168,238,.16) 0%, rgba(160,128,215,.07) 45%, transparent 75%)';
-    wispEl.style.transform = 'translate3d('+wx.toFixed(1)+'px,'+wy.toFixed(1)+'px,0)';
+      'rgba(202,176,240,.20) 0%, rgba(166,134,220,.09) 45%, transparent 78%)';
+    const ws = .25 + .75*lightK;
+    wispEl.style.transform = 'translate3d('+wx.toFixed(1)+'px,'+wy.toFixed(1)+'px,0) scale('+ws.toFixed(3)+')';
   }
   const glEl = document.getElementById('bookgl');
   const navItems = [...document.querySelectorAll('.navItem')];
