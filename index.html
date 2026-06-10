@@ -53,13 +53,12 @@ body{
 #hint .a{margin-top:1vh;font-size:18px;color:#8a7fa0;animation:bob 2s ease-in-out infinite}
 @keyframes bob{0%,100%{transform:translateY(0);opacity:.45}50%{transform:translateY(8px);opacity:1}}
 
-/* zona cliccabile sul pulsante inciso */
-#hotzone{
-  position:fixed;left:50%;top:55%;transform:translate(-50%,-50%);
-  width:min(64vmin,94vw);height:48vh;z-index:8;border-radius:18px;
+/* zone cliccabili agganciate alla pagina (geometria impostata da JS) */
+#hotzone,#exzone{
+  position:fixed;z-index:8;border-radius:14px;
   cursor:pointer;display:none;
 }
-#hotzone.on{display:block}
+#hotzone.on,#exzone.on{display:block}
 
 /* frecce volta-pagina: disegnate NELLA pergamena, qui solo zone cliccabili invisibili */
 .pgArrow{
@@ -215,6 +214,7 @@ body{
 </div>
 
 <div id="hotzone" title="Apri la lista dei video"></div>
+<div id="exzone" title="Accedi agli esercizi"></div>
 
 <div id="pgPrev" class="pgArrow" title="Pagina precedente"></div>
 <div id="pgNext" class="pgArrow" title="Pagina successiva"></div>
@@ -295,7 +295,7 @@ function drawLogo(x, lg){ /* logo rimosso su richiesta */ }
 const dia=(x,cx,cy,r)=>{x.beginPath();x.moveTo(cx,cy-r);x.lineTo(cx+r*.75,cy);
   x.lineTo(cx,cy+r);x.lineTo(cx-r*.75,cy);x.closePath();x.fill()};
 
-function carvedButton(x, cx, cy, wd, ht, label){
+function carvedButton(x, cx, cy, wd, ht, label, fs){
   x.save();
   const r = ht/2;
   const path = ()=>{ x.beginPath(); x.roundRect(cx-wd/2, cy-ht/2, wd, ht, r); };
@@ -309,7 +309,7 @@ function carvedButton(x, cx, cy, wd, ht, label){
   x.save(); x.translate(0, 1.7); path(); x.strokeStyle='rgba(255,246,222,.55)'; x.stroke(); x.restore();
   path(); x.strokeStyle='rgba(96,68,30,.5)'; x.lineWidth=1; x.stroke();
   x.textAlign='center'; x.textBaseline='middle';
-  x.font='700 27px Cinzel';
+  x.font='700 '+(fs||27)+'px Cinzel';
   x.fillStyle='rgba(255,244,216,.5)'; x.fillText(label, cx, cy+1.6);
   x.fillStyle='#3f2c12';            x.fillText(label, cx, cy);
   x.restore();
@@ -359,52 +359,114 @@ function welcomeCanvas(pg,lg){
   return c;
 }
 
+function drawPhone(b, px, py, pw_, ph_, pg){
+  const rr=(x0,y0,ww,hh,r)=>{b.beginPath();b.roundRect(x0,y0,ww,hh,r);};
+  b.save();
+  b.shadowColor='rgba(40,25,8,.45)'; b.shadowBlur=18; b.shadowOffsetY=8;
+  rr(px,py,pw_,ph_,30); b.fillStyle='#241b26'; b.fill();
+  b.shadowColor='transparent';
+  rr(px,py,pw_,ph_,30); b.strokeStyle='rgba(201,168,76,.55)'; b.lineWidth=2.5; b.stroke();
+  /* schermo */
+  const sx0=px+10, sy0=py+12, sw=pw_-20, sh=ph_-24;
+  b.save();
+  rr(sx0,sy0,sw,sh,20); b.clip();
+  b.drawImage(pg, sx0,sy0,sw,sh);
+  b.fillStyle='rgba(255,250,238,.25)'; b.fillRect(sx0,sy0,sw,sh);
+  /* mini-interfaccia esercizi */
+  b.textAlign='center';
+  b.fillStyle='#3f2c12'; b.font='700 17px Cinzel';
+  b.fillText('I tuoi Esercizi', sx0+sw/2, sy0+38);
+  b.strokeStyle='rgba(110,80,40,.4)'; b.lineWidth=1;
+  b.beginPath(); b.moveTo(sx0+30,sy0+50); b.lineTo(sx0+sw-30,sy0+50); b.stroke();
+  for (let i=0;i<3;i++){
+    const cy0=sy0+68+i*82;
+    rr(sx0+16,cy0,sw-32,68,10);
+    b.fillStyle='rgba(255,250,238,.75)'; b.fill();
+    rr(sx0+16,cy0,sw-32,68,10);
+    b.strokeStyle='rgba(150,110,50,.55)'; b.lineWidth=1.5; b.stroke();
+    b.fillStyle='#8a6c2c'; b.font='700 13px Cinzel'; b.textAlign='left';
+    b.fillText(['🕊','🌿','📜'][i], sx0+28, cy0+30);
+    b.fillStyle='#3f2c12'; b.font='600 13px Cinzel';
+    b.fillText(['Spazio Emotivo','Osservatorio','Diario'][i], sx0+52, cy0+30);
+    b.strokeStyle='rgba(110,80,40,.3)';
+    b.beginPath(); b.moveTo(sx0+28,cy0+46); b.lineTo(sx0+sw-44,cy0+46); b.stroke();
+    b.textAlign='center';
+  }
+  b.restore();
+  /* tacca */
+  rr(px+pw_/2-26,py+5,52,5,3); b.fillStyle='#0d0a0f'; b.fill();
+  b.restore();
+}
+
 function makeChapterCanvas(pg,lg,mods){
   const w=1024,h=1220;
-  const BX=84,BY=296,BW=856,BH=276;
+  const BX=84,BY=262,BW=856,BH=232;
   /* base statica (tutto tranne il carosello) */
   const base=cv(w,h),b=base.getContext('2d');
   pageBase(b,pg);
   b.textAlign='center';
   b.fillStyle='rgba(118,88,44,.9)';
-  b.font='600 23px Cinzel'; b.fillText('CAPITOLO PRIMO',w/2,172);
-  b.fillStyle='#3f2c12'; b.font='700 42px Cinzel';
-  b.fillText('Le fondamenta del Cammino',w/2,234);
+  b.font='600 22px Cinzel'; b.fillText('CAPITOLO PRIMO',w/2,148);
+  b.fillStyle='#3f2c12'; b.font='700 40px Cinzel';
+  b.fillText('Le fondamenta del Cammino',w/2,202);
   b.strokeStyle='rgba(118,88,44,.45)'; b.lineWidth=1.2;
-  b.beginPath(); b.moveTo(w*.36,266); b.lineTo(w*.64,266); b.stroke();
-  b.fillStyle='rgba(118,88,44,.6)'; dia(b,w/2,266,7);
+  b.beginPath(); b.moveTo(w*.36,232); b.lineTo(w*.64,232); b.stroke();
+  b.fillStyle='rgba(118,88,44,.6)'; dia(b,w/2,232,7);
+  /* cornice carosello */
   b.strokeStyle='rgba(110,80,40,.65)'; b.lineWidth=3;
   b.strokeRect(BX-6,BY-6,BW+12,BH+12);
   b.lineWidth=1; b.strokeStyle='rgba(110,80,40,.35)';
   b.strokeRect(BX-13,BY-13,BW+26,BH+26);
   /* lista video: scura e ben leggibile */
-  b.font='600 20px Cinzel'; b.fillStyle='rgba(118,88,44,.95)';
-  b.fillText('I   V I D E O   D E L   C A P I T O L O', w/2, 654);
+  b.font='600 19px Cinzel'; b.fillStyle='rgba(118,88,44,.95)';
+  b.fillText('I   V I D E O   D E L   C A P I T O L O', w/2, 552);
   const names=['Introduzione','La Frequenza Nascosta','Lo Spazio Emotivo','L’Osservatorio Interiore'];
   const ROM=['I','II','III','IV'];
   b.textAlign='left';
-  let ly=712;
+  let ly=600;
   names.forEach(function(n,i){
-    b.font='700 27px Cinzel'; b.fillStyle='#8a6c2c';
+    b.font='700 24px Cinzel'; b.fillStyle='#8a6c2c';
     b.fillText(ROM[i]+'.', 196, ly);
-    b.font='600 31px Cinzel'; b.fillStyle='#2e2008';
-    b.fillText(n, 258, ly);
+    b.font='600 28px Cinzel'; b.fillStyle='#2e2008';
+    b.fillText(n, 254, ly);
     b.strokeStyle='rgba(110,80,40,.25)'; b.lineWidth=1;
-    b.beginPath(); b.moveTo(196,ly+18); b.lineTo(828,ly+18); b.stroke();
-    ly+=68;
+    b.beginPath(); b.moveTo(196,ly+15); b.lineTo(828,ly+15); b.stroke();
+    ly+=53;
   });
   b.textAlign='center';
-  carvedButton(b, w/2, h-178, 390, 66, 'A P R I   L A   L I S T A');
-  b.font='italic 500 23px "Cormorant Garamond"';
+  b.font='italic 500 20px "Cormorant Garamond"';
+  b.fillStyle='rgba(74,51,24,.55)';
+  b.fillText('tocca l’elenco per aprire i video', w/2, ly+8);
+  /* ── sezione ESERCIZI ── */
+  const ey=826;
+  b.strokeStyle='rgba(118,88,44,.45)'; b.lineWidth=1.2;
+  b.beginPath(); b.moveTo(w*.3,ey-32); b.lineTo(w*.7,ey-32); b.stroke();
+  b.fillStyle='rgba(118,88,44,.6)'; dia(b,w/2,ey-32,7);
+  drawPhone(b, 138, ey, 226, 330, pg);
+  const ecx=672;
+  b.fillStyle='rgba(118,88,44,.95)'; b.font='600 19px Cinzel';
+  b.fillText('M E T T I T I   I N   P R A T I C A', ecx, ey+52);
+  b.fillStyle='#3f2c12'; b.font='700 36px Cinzel';
+  b.fillText('Gli Esercizi', ecx, ey+104);
+  b.font='italic 500 24px "Cormorant Garamond"';
+  b.fillStyle='rgba(74,51,24,.8)';
+  b.fillText('Le tue schede del Cammino,', ecx, ey+146);
+  b.fillText('da compilare e conservare.', ecx, ey+178);
+  carvedButton(b, ecx, ey+248, 480, 62, 'A C C E D I   A G L I   E S E R C I Z I', 21);
+  b.font='italic 500 19px "Cormorant Garamond"';
   b.fillStyle='rgba(74,51,24,.5)';
-  b.fillText('continua a scorrere per voltare pagina', w/2, h-110);
-  pageArrow(b, 160, h-66, -1);
-  pageArrow(b, w-160, h-66, 1);
+  b.fillText('si apre la tua area pratica', ecx, ey+300);
+  /* fondo pagina */
+  b.font='italic 500 20px "Cormorant Garamond"';
+  b.fillStyle='rgba(74,51,24,.5)';
+  b.fillText('continua a scorrere per voltare pagina', w/2, h-44);
+  pageArrow(b, 150, h-56, -1);
+  pageArrow(b, w-150, h-56, 1);
   drawLogo(b,lg);
 
   /* canvas vivo: carosello che scorre da destra a sinistra */
   const c=cv(w,h), x=c.getContext('2d');
-  const TW=330, TH=196, GAP=18, SPAN=(TW+GAP)*mods.length;
+  const TW=320, TH=158, GAP=18, SPAN=(TW+GAP)*mods.length;
   function draw(t){
     x.drawImage(base,0,0);
     x.save();
@@ -415,7 +477,7 @@ function makeChapterCanvas(pg,lg,mods){
       const idx=((i%mods.length)+mods.length)%mods.length;
       const px=BX + i*(TW+GAP) - off;
       if (px>BX+BW || px+TW<BX) continue;
-      const py=BY+16;
+      const py=BY+14;
       x.save();
       x.shadowColor='rgba(50,32,12,.4)'; x.shadowBlur=10; x.shadowOffsetY=4;
       x.fillStyle='#fff'; x.fillRect(px-3,py-3,TW+6,TH+6);
@@ -425,7 +487,7 @@ function makeChapterCanvas(pg,lg,mods){
       x.strokeStyle='rgba(110,80,40,.7)'; x.lineWidth=2;
       x.strokeRect(px-3,py-3,TW+6,TH+6);
       x.fillStyle='#3a2a10'; x.font='600 17px Cinzel'; x.textAlign='center';
-      x.fillText(mods[idx].short, px+TW/2, py+TH+34);
+      x.fillText(mods[idx].short, px+TW/2, py+TH+30);
       x.restore();
     }
     x.restore();
@@ -757,12 +819,31 @@ async function init(){
   const hint = document.getElementById('hint');
   const backlight = document.getElementById('backlight');
   const hotzone = document.getElementById('hotzone');
+  const exzone = document.getElementById('exzone');
   const spacer = document.getElementById('spacer');
   const navItems = [...document.querySelectorAll('.navItem')];
   const pgPrev = document.getElementById('pgPrev');
   const pgNext = document.getElementById('pgNext');
   const dragzone = document.getElementById('dragzone');
   let curIdx = 0;
+  let curSx = .55, curSy = .55;
+
+  /* proietta una fascia della pagina destra sullo schermo */
+  function placeZone(el, f0, f1){
+    const d = 13.2 - bookGroup.position.z;
+    const halfH = Math.tan(35*Math.PI/360)*d;
+    const halfW = halfH*camera.aspect;
+    const x0 = bookGroup.position.x + curSx*(hingeX+.05);
+    const x1 = x0 + curSx*pw;
+    const camY = .15;
+    const yTop = bookGroup.position.y + curSy*phh*(.5 - f0);
+    const yBot = bookGroup.position.y + curSy*phh*(.5 - f1);
+    const L = ((x0/(2*halfW))+.5)*100, R = ((x1/(2*halfW))+.5)*100;
+    const T = (((camY-yTop)/(2*halfH))+.5)*100, B = (((camY-yBot)/(2*halfH))+.5)*100;
+    el.style.left = L+'%'; el.style.top = T+'%';
+    el.style.width = Math.max(0,R-L)+'%';
+    el.style.height = Math.max(0,B-T)+'%';
+  }
 
   let scrollRaw = 0, ps = 0, solid = false;
   const updateScroll = ()=>{
@@ -838,6 +919,7 @@ async function init(){
       xOff = pOpen*.4 + pZoom*.6;
     }
     bookGroup.scale.set(sx, sy, sx);
+    curSx = sx; curSy = sy;
     bookGroup.position.z = pZoom*1.1;
     bookGroup.position.y = Math.sin(t*.5)*.05*idle;
     bookGroup.position.x = xOff;
@@ -862,8 +944,16 @@ async function init(){
 
     hint.style.opacity = 1 - ph(.008,.05);
 
-    const inC1 = ps>=.615 && ps<=.695;
+    /* attive APPENA la pagina è voltata: vale anche lo scroll grezzo,
+       così non serve aspettare l'ammortizzazione */
+    const inWin = v => v>=.595 && v<=.705;
+    const inC1 = inWin(ps) || inWin(scrollRaw);
     hotzone.classList.toggle('on', inC1);
+    exzone.classList.toggle('on', inC1);
+    if (inC1){
+      placeZone(hotzone, .18, .645);   /* carosello + lista video */
+      placeZone(exzone,  .648, .96);   /* sezione esercizi */
+    }
 
     const cur = ps < .53 ? 0 : (ps < .79 ? 1 : 2);
     navItems.forEach((it,i)=>it.classList.toggle('cur', i===cur));
@@ -942,6 +1032,7 @@ async function init(){
 
   const vwrap = document.getElementById('vwrap');
   hotzone.addEventListener('click', ()=>vwrap.classList.add('open'));
+  exzone.addEventListener('click', ()=>{ window.location.href = '/app/'; });
   document.getElementById('vClose').addEventListener('click', ()=>vwrap.classList.remove('open'));
   vwrap.addEventListener('click', e=>{ if (e.target===vwrap) vwrap.classList.remove('open'); });
 
