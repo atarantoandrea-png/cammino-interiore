@@ -19,7 +19,7 @@ body{
   overflow-x:hidden;
   color:#d8d3df;
 }
-#spacer{height:560vh}
+#spacer{height:520vh}
 
 /* atmosfera viola dell'intro: copre la carta e svanisce col tuffo */
 #atmo{
@@ -791,10 +791,10 @@ async function init(){
     wOp += (1-wOp)*.06;
     wispEl.style.opacity = wOp.toFixed(3);
 
-    /* la luce nasce subito dopo il tuffo: piena già quando appare il titolo */
+    /* la luce nasce APPENA cala il buio: pochissimi scroll di attesa */
     const birth = ease(clamp01(
-      (scrollY - (sito.offsetTop - innerHeight)) / (innerHeight*.55)));
-    lightK += (birth - lightK)*.09;
+      (scrollY - (sito.offsetTop - innerHeight*1.5)) / (innerHeight*.6)));
+    lightK += (birth - lightK)*.12;
 
     /* progresso lineare lungo il sentiero */
     const start = sito.offsetTop - innerHeight*.55;
