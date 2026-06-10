@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Il Cammino Interiore · Elisa Soul Medium</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -13,7 +15,7 @@ body{
   background-attachment:fixed;
   font-family:'Cormorant Garamond',serif;
   overflow-x:hidden;
-  color:#e8e6e0;
+  color:#d8d3df;
 }
 #spacer{height:560vh}
 
@@ -43,6 +45,16 @@ body{
   background:radial-gradient(ellipse at 50% 44%,
     transparent 40%, rgba(0,0,0,.4) 78%, rgba(0,0,0,.75) 100%)}
 
+/* ===== LA LUCE GLICINE, ferma a sinistra ===== */
+#spot{
+  position:fixed;inset:0;z-index:2;pointer-events:none;opacity:0;
+  background:
+    radial-gradient(1200px 900px at -10% 40%,
+      rgba(196,168,238,.26) 0%, rgba(160,128,215,.12) 38%,
+      rgba(120,95,180,.05) 58%, transparent 75%);
+  transition:opacity 1.2s ease;
+}
+
 #hint{
   position:fixed;left:50%;bottom:7vh;transform:translateX(-50%);
   z-index:7;text-align:center;pointer-events:none;
@@ -53,30 +65,7 @@ body{
 #hint .a{margin-top:1vh;font-size:18px;color:#8a7fa0;animation:bob 2s ease-in-out infinite}
 @keyframes bob{0%,100%{transform:translateY(0);opacity:.45}50%{transform:translateY(8px);opacity:1}}
 
-/* zone cliccabili agganciate alla pagina (geometria impostata da JS) */
-#hotzone,#exzone{
-  position:fixed;z-index:8;border-radius:14px;
-  cursor:pointer;display:none;
-}
-#hotzone.on,#exzone.on{display:block}
-
-/* frecce volta-pagina: disegnate NELLA pergamena, qui solo zone cliccabili invisibili */
-.pgArrow{
-  position:fixed;bottom:2.5vh;z-index:9;
-  width:72px;height:58px;cursor:pointer;
-  opacity:0;pointer-events:none;font-size:0;
-}
-.pgArrow.on{pointer-events:auto}
-#pgPrev{left:3vw}
-#pgNext{right:3vw}
-
-/* zona touch sul bordo destro: trascina per girare pagina (mobile) */
-#dragzone{
-  position:fixed;right:0;top:18vh;width:16vw;height:60vh;
-  z-index:8;display:none;touch-action:none;
-}
-#dragzone.on{display:block}
-
+/* ===== PULSANTE + PERGAMENA INDICE ===== */
 #navBtn{
   position:fixed;top:3vh;right:3vw;z-index:22;
   display:flex;align-items:center;gap:11px;
@@ -84,10 +73,9 @@ body{
   background:linear-gradient(165deg, rgba(34,30,22,.9), rgba(22,19,14,.9));
   border:1px solid rgba(201,168,76,.4);
   box-shadow:0 6px 22px rgba(0,0,0,.55);
-  transition:border-color .3s ease, box-shadow .3s ease;
-  user-select:none;
+  transition:border-color .3s ease;user-select:none;
 }
-#navBtn:hover{border-color:rgba(201,168,76,.85);box-shadow:0 6px 26px rgba(0,0,0,.7),0 0 30px rgba(201,168,76,.15)}
+#navBtn:hover{border-color:rgba(201,168,76,.85)}
 #navBtn .ic{font-size:15px;color:#c9a84c}
 #navBtn .tx{font-family:'Cinzel',serif;font-size:13px;font-weight:600;
   letter-spacing:.22em;text-transform:uppercase;color:#e8d9ae}
@@ -96,23 +84,19 @@ body{
   position:fixed;top:calc(3vh + 54px);right:3vw;z-index:21;
   width:min(330px, 86vw);
   border-radius:10px;overflow:hidden;
-  background-size:cover;background-position:center;
+  background:url('/src/pagina.jpg') center/cover;
   box-shadow:0 22px 60px rgba(0,0,0,.75), 0 0 0 1px rgba(90,66,30,.5), inset 0 0 60px rgba(120,90,45,.25);
   transform-origin:50% 0;
   transform:scaleY(.02);opacity:0;pointer-events:none;
   transition:transform .42s cubic-bezier(.22,1.25,.36,1), opacity .28s ease;
 }
 #nav.open{transform:scaleY(1);opacity:1;pointer-events:auto}
-#nav::after{
-  content:'';position:absolute;left:0;right:0;bottom:0;height:14px;
-  background:linear-gradient(180deg, rgba(70,50,22,0), rgba(70,50,22,.35) 50%, rgba(40,28,12,.55));
-}
+#nav::after{content:'';position:absolute;left:0;right:0;bottom:0;height:14px;
+  background:linear-gradient(180deg, rgba(70,50,22,0), rgba(70,50,22,.35) 50%, rgba(40,28,12,.55))}
 #nav .inner{padding:26px 24px 30px}
-#nav h4{
-  font-family:'Cinzel',serif;font-size:15px;font-weight:700;
+#nav h4{font-family:'Cinzel',serif;font-size:15px;font-weight:700;
   letter-spacing:.4em;text-indent:.4em;text-transform:uppercase;
-  color:#4a3318;text-align:center;margin-bottom:6px;
-}
+  color:#4a3318;text-align:center;margin-bottom:6px}
 #nav .rule{height:1px;margin:10px 14px 18px;
   background:linear-gradient(90deg,transparent,rgba(110,80,40,.6),transparent)}
 .navItem{
@@ -121,80 +105,136 @@ body{
   border:1px solid rgba(110,80,40,.30);
   background:rgba(255,250,235,.22);
   transform:translateX(8px) scale(.97);opacity:.78;
-  transition:transform .3s ease, opacity .3s ease, border-color .3s ease, background .3s ease;
+  transition:all .3s ease;
 }
 .navItem:hover{border-color:rgba(110,80,40,.7);background:rgba(255,250,235,.4)}
-.navItem.cur{
-  transform:translateX(-6px) scale(1.03);opacity:1;
-  border-color:rgba(150,110,50,.85);
-  background:rgba(255,250,235,.5);
-  box-shadow:0 6px 16px rgba(80,55,20,.3);
-}
-.navItem .n{
-  font-family:'Cinzel',serif;font-size:12px;font-weight:700;color:#8a6520;
-  width:26px;text-align:center;flex-shrink:0;
-}
+.navItem.cur{transform:translateX(-6px) scale(1.03);opacity:1;
+  border-color:rgba(150,110,50,.85);background:rgba(255,250,235,.5);
+  box-shadow:0 6px 16px rgba(80,55,20,.3)}
+.navItem .n{font-family:'Cinzel',serif;font-size:12px;font-weight:700;color:#8a6520;
+  width:26px;text-align:center;flex-shrink:0}
 .navItem .t{font-family:'Cinzel',serif;font-size:14px;font-weight:600;color:#4a3318;letter-spacing:.06em}
-.navItem .s{margin-left:auto;font-size:13px;font-style:italic;color:#8a7348}
-#navClose{
-  display:block;margin:16px auto 0;padding:9px 34px;
+#navClose{display:block;margin:16px auto 0;padding:9px 34px;
   font-family:'Cinzel',serif;font-size:12px;font-weight:700;
   letter-spacing:.32em;text-indent:.32em;text-transform:uppercase;
   color:#5e4014;background:none;border:1px solid rgba(110,80,40,.55);
-  border-radius:40px;cursor:pointer;
-  transition:background .3s ease;
-}
+  border-radius:40px;cursor:pointer}
 #navClose:hover{background:rgba(110,80,40,.18)}
 
-#vwrap{
-  position:fixed;inset:0;z-index:30;display:flex;
-  align-items:center;justify-content:center;
-  background:rgba(4,3,8,.6);backdrop-filter:blur(3px);
-  opacity:0;pointer-events:none;transition:opacity .3s ease;
+/* ================================================================
+   IL SITO — pergamena scurissima, rivelata dalla luce
+   ================================================================ */
+#sito{
+  position:relative;z-index:5;
+  background:
+    linear-gradient(180deg, rgba(8,7,11,.96) 0%, rgba(10,9,13,.93) 8%, rgba(11,10,14,.92) 100%),
+    url('/src/pagina.jpg') center top/100% auto repeat-y;
+  padding:16vh 6vw 0;
 }
-#vwrap.open{opacity:1;pointer-events:auto}
-#vmodal{
-  width:min(560px, 92vw);max-height:86vh;overflow:auto;
-  border-radius:12px;
-  background-size:cover;background-position:center;
-  box-shadow:0 30px 90px rgba(0,0,0,.85), 0 0 0 1px rgba(90,66,30,.55), inset 0 0 80px rgba(120,90,45,.22);
-  transform-origin:50% 0;transform:scaleY(.03);
-  transition:transform .45s cubic-bezier(.22,1.25,.36,1);
+.sez{
+  max-width:980px;margin:0 auto 18vh;
+  opacity:.07;transform:translateY(46px);
+  transition:opacity 1.3s ease, transform 1.3s ease;
 }
-#vwrap.open #vmodal{transform:scaleY(1)}
-#vmodal .inner{padding:clamp(18px,5vw,34px) clamp(14px,4.5vw,34px) 26px}
-#vmodal h3{
-  font-family:'Cinzel',serif;font-size:20px;font-weight:700;
-  letter-spacing:.14em;color:#4a3318;text-align:center;
+.sez.lit{opacity:1;transform:none}
+.sez-eyebrow{
+  font-family:'Cinzel',serif;font-size:12px;font-weight:600;
+  letter-spacing:.5em;text-indent:.5em;text-transform:uppercase;
+  color:#b9a3e3;margin-bottom:14px;
 }
-#vmodal .sub{text-align:center;font-style:italic;color:#7a6238;font-size:16px;margin:6px 0 4px}
-#vmodal .rule{height:1px;margin:14px 30px 22px;
-  background:linear-gradient(90deg,transparent,rgba(110,80,40,.6),transparent)}
-.vItem{
-  display:flex;align-items:center;gap:clamp(8px,2.5vw,16px);text-decoration:none;
-  overflow:hidden;
-  padding:12px;margin-bottom:12px;border-radius:10px;
-  border:1px solid rgba(110,80,40,.32);
-  background:rgba(255,250,235,.28);
-  transition:transform .25s ease, border-color .25s ease, background .25s ease;
+.sez h2{
+  font-family:'Cinzel',serif;font-weight:700;
+  font-size:clamp(26px,4.8vmin,44px);
+  color:#ece8f2;line-height:1.2;margin-bottom:10px;
+  transition:text-shadow 1.3s ease;
 }
-.vItem:hover{transform:translateX(5px);border-color:rgba(150,110,50,.85);background:rgba(255,250,235,.5)}
-.vItem img{width:clamp(72px,19vw,108px);border-radius:6px;border:1px solid rgba(110,80,40,.5);flex-shrink:0;filter:brightness(.82) sepia(.12)}
-.vItem > div{flex:1 1 110px;min-width:0}
-.vItem .vt{font-family:'Cinzel',serif;font-size:15px;font-weight:600;color:#4a3318}
-.vItem .vs{font-size:14px;font-style:italic;color:#8a7348;margin-top:3px}
-.vItem .go{margin-left:auto;font-family:'Cinzel',serif;font-size:10px;font-weight:700;
-  letter-spacing:.06em;color:#8a6520;white-space:nowrap;flex-shrink:0}
-#vClose{
-  display:block;margin:8px auto 0;padding:9px 38px;
-  font-family:'Cinzel',serif;font-size:12px;font-weight:700;
-  letter-spacing:.32em;text-indent:.32em;text-transform:uppercase;
-  color:#5e4014;background:none;border:1px solid rgba(110,80,40,.55);
-  border-radius:40px;cursor:pointer;
+.sez.lit h2{text-shadow:0 0 34px rgba(185,163,227,.45), 0 0 90px rgba(150,120,210,.18)}
+.sez-sub{font-style:italic;font-size:clamp(16px,2.3vmin,21px);color:#9d94ad;
+  max-width:560px;line-height:1.6;margin-bottom:5vh}
+.sez-rule{display:flex;align-items:center;gap:13px;margin:0 0 5vh}
+.sez-rule .l{width:110px;height:1px;
+  background:linear-gradient(90deg,rgba(185,163,227,.7),transparent)}
+.sez-rule .d{width:7px;height:7px;border:1px solid rgba(185,163,227,.8);
+  transform:rotate(45deg);box-shadow:0 0 10px rgba(185,163,227,.5)}
+
+/* cards video */
+.vgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px}
+.vcard{
+  display:block;text-decoration:none;border-radius:12px;overflow:hidden;
+  background:rgba(20,17,26,.7);
+  border:1px solid rgba(185,163,227,.16);
+  transition:transform .35s ease, border-color .35s ease, box-shadow .35s ease;
 }
-#vClose:hover{background:rgba(110,80,40,.18)}
-#vmodal .logoRow{display:none}
-#vmodal .logoRow img{width:120px;opacity:.95;border-radius:8px}
+.vcard:hover{transform:translateY(-6px);border-color:rgba(185,163,227,.55);
+  box-shadow:0 16px 42px rgba(0,0,0,.5), 0 0 36px rgba(160,128,215,.12)}
+.vcard .im{position:relative;overflow:hidden}
+.vcard img{width:100%;display:block;filter:brightness(.62) saturate(.8);
+  transition:filter .35s ease, transform .5s ease}
+.vcard:hover img{filter:brightness(.85) saturate(.95);transform:scale(1.04)}
+.vcard .rom{
+  position:absolute;top:10px;left:10px;
+  width:34px;height:34px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Cinzel',serif;font-size:14px;font-weight:700;color:#1c1426;
+  background:linear-gradient(165deg,#d3c0f0,#9d82cf);
+  box-shadow:0 2px 8px rgba(0,0,0,.5);
+}
+.vcard .cap{padding:15px 17px 16px}
+.vcard h3{font-family:'Cinzel',serif;font-size:16.5px;font-weight:600;color:#e6e1ee;line-height:1.35}
+.vcard .go{font-family:'Cinzel',serif;font-size:10.5px;font-weight:700;
+  letter-spacing:.2em;text-transform:uppercase;color:#b9a3e3;margin-top:7px;display:block}
+
+/* esercizi */
+.eserc{display:flex;align-items:center;gap:5vw;flex-wrap:wrap}
+.eserc .txt{flex:1;min-width:260px}
+.btn-gl{
+  display:inline-block;text-decoration:none;
+  background:linear-gradient(165deg,#cdb8ef,#9d82cf);
+  color:#1c1426;border-radius:50px;
+  padding:16px 38px;
+  font-family:'Cinzel',serif;font-size:13px;font-weight:700;
+  letter-spacing:.18em;text-transform:uppercase;
+  box-shadow:0 6px 24px rgba(0,0,0,.5), 0 0 30px rgba(160,128,215,.18);
+  transition:filter .3s ease, transform .3s ease;
+}
+.btn-gl:hover{filter:brightness(1.08);transform:translateY(-2px)}
+.eserc-note{font-style:italic;font-size:15px;color:#7d7490;margin-top:14px}
+.mockwrap{flex:0 0 auto;margin:0 auto}
+.mock{
+  width:min(230px,56vw);border-radius:30px;
+  border:1px solid rgba(185,163,227,.3);
+  background:linear-gradient(165deg,#3a3144,#16121c);
+  padding:9px;box-shadow:0 24px 60px rgba(0,0,0,.6), 0 0 40px rgba(160,128,215,.08);
+}
+.mock .scr{
+  border-radius:22px;overflow:hidden;display:block;position:relative;
+  background:url('/src/pagina.jpg') center/cover;
+}
+.mock .bar{background:#241b26;padding:10px 6px;text-align:center;
+  font-family:'Cinzel',serif;font-size:9px;letter-spacing:.18em;color:#c9a84c}
+.mock .card{margin:10px;padding:11px 12px;border-radius:9px;
+  background:rgba(255,250,238,.88);border-left:3px solid #c9a84c}
+.mock .card b{font-family:'Cinzel',serif;font-size:11.5px;color:#3f2c12;display:block}
+.mock .card i{font-size:11px;color:#8a6c2c}
+
+/* capitolo secondo */
+.soon{
+  border:1px dashed rgba(185,163,227,.3);border-radius:14px;
+  padding:7vh 6vw;text-align:center;
+  background:rgba(20,17,26,.45);
+}
+.soon .moon{font-size:34px;color:#b9a3e3;text-shadow:0 0 24px rgba(185,163,227,.5);margin-bottom:14px}
+.soon p{font-style:italic;font-size:18px;color:#9d94ad}
+
+footer{
+  border-top:1px solid rgba(185,163,227,.14);
+  padding:6vh 6vw 7vh;text-align:center;
+  position:relative;z-index:5;
+  background:rgba(8,7,11,.96);
+}
+footer .f1{font-family:'Cinzel',serif;font-size:13px;letter-spacing:.3em;
+  text-transform:uppercase;color:#b9a3e3}
+footer .f2{margin-top:1.6vh;font-style:italic;color:#6e6580;font-size:15px}
 
 #fallback{display:none;position:fixed;inset:0;z-index:40;
   align-items:center;justify-content:center;color:#cfccc4;font-size:20px}
@@ -204,6 +244,7 @@ body{
 
 <div class="nebula"></div>
 <div id="backlight"></div>
+<div id="spot"></div>
 
 <canvas id="bookgl"></canvas>
 <div class="vignette"></div>
@@ -213,50 +254,90 @@ body{
   <div class="a">▼</div>
 </div>
 
-<div id="hotzone" title="Apri la lista dei video"></div>
-<div id="exzone" title="Accedi agli esercizi"></div>
-
-<div id="pgPrev" class="pgArrow" title="Pagina precedente"></div>
-<div id="pgNext" class="pgArrow" title="Pagina successiva"></div>
-<div id="dragzone"></div>
-
 <div id="navBtn"><span class="ic">☰</span><span class="tx">Indice</span></div>
 <div id="nav">
   <div class="inner">
     <h4>Indice</h4>
     <div class="rule"></div>
-    <div class="navItem" data-ps=".44"><span class="n">✦</span><span class="t">Benvenuto</span></div>
-    <div class="navItem" data-ps=".655"><span class="n">I</span><span class="t">Capitolo Primo</span></div>
-    <div class="navItem" data-ps=".94"><span class="n">II</span><span class="t">Capitolo Secondo</span><span class="s">presto</span></div>
+    <div class="navItem" data-ps="0"><span class="n">✦</span><span class="t">L'inizio</span></div>
+    <div class="navItem" data-ps=".5"><span class="n">❧</span><span class="t">Il Libro</span></div>
+    <div class="navItem" data-sec="cap1"><span class="n">I</span><span class="t">Capitolo Primo</span></div>
+    <div class="navItem" data-sec="eserc"><span class="n">✎</span><span class="t">Gli Esercizi</span></div>
+    <div class="navItem" data-sec="cap2"><span class="n">II</span><span class="t">Capitolo Secondo</span></div>
     <button id="navClose">Esci</button>
   </div>
 </div>
 
-<div id="vwrap">
-  <div id="vmodal">
-    <div class="inner">
-      <h3>CAPITOLO PRIMO</h3>
-      <div class="sub">Le fondamenta del Cammino</div>
-      <div class="rule"></div>
-      <a class="vItem" href="https://www.elisasoulmedium.com/cammino-interiore/introduzione" target="_blank" rel="noopener">
-        <img id="t1" src="/src/mod1.jpg" alt=""><div><div class="vt">Introduzione</div></div><span class="go">GUARDA →</span>
-      </a>
-      <a class="vItem" href="https://www.elisasoulmedium.com/school/course/oltreilvelo/lecture/9765607" target="_blank" rel="noopener">
-        <img id="t2" src="/src/mod2.jpg" alt=""><div><div class="vt">La Frequenza Nascosta</div></div><span class="go">GUARDA →</span>
-      </a>
-      <a class="vItem" href="https://www.elisasoulmedium.com/school/course/oltreilvelo/lecture/9765608" target="_blank" rel="noopener">
-        <img id="t3" src="/src/mod3.jpg" alt=""><div><div class="vt">Lo Spazio Emotivo</div></div><span class="go">GUARDA →</span>
-      </a>
-      <a class="vItem" href="https://www.elisasoulmedium.com/school/course/oltreilvelo/lecture/9765609" target="_blank" rel="noopener">
-        <img id="t4" src="/src/mod4.jpg" alt=""><div><div class="vt">L'Osservatorio Interiore</div></div><span class="go">GUARDA →</span>
-      </a>
-      <button id="vClose">Chiudi</button>
-      <div class="logoRow"><img id="lgm" src="/src/logo.png" alt=""></div>
-    </div>
-  </div>
-</div>
-
 <div id="spacer"></div>
+
+<!-- ================= IL SITO ================= -->
+<main id="sito">
+
+  <section class="sez" id="cap1">
+    <div class="sez-eyebrow">Capitolo Primo</div>
+    <h2>Le fondamenta del Cammino</h2>
+    <p class="sez-sub">Quattro passi da percorrere con calma, nell'ordine.
+    Ogni video apre una porta diversa dentro di te.</p>
+    <div class="sez-rule"><div class="l"></div><div class="d"></div></div>
+    <div class="vgrid">
+      <a class="vcard" href="https://www.elisasoulmedium.com/cammino-interiore/introduzione" target="_blank" rel="noopener">
+        <div class="im"><img src="/src/mod1.jpg" alt="" loading="lazy"><span class="rom">I</span></div>
+        <div class="cap"><h3>Introduzione</h3><span class="go">Guarda →</span></div>
+      </a>
+      <a class="vcard" href="https://www.elisasoulmedium.com/school/course/oltreilvelo/lecture/9765607" target="_blank" rel="noopener">
+        <div class="im"><img src="/src/mod2.jpg" alt="" loading="lazy"><span class="rom">II</span></div>
+        <div class="cap"><h3>La Frequenza Nascosta</h3><span class="go">Guarda →</span></div>
+      </a>
+      <a class="vcard" href="https://www.elisasoulmedium.com/school/course/oltreilvelo/lecture/9765608" target="_blank" rel="noopener">
+        <div class="im"><img src="/src/mod3.jpg" alt="" loading="lazy"><span class="rom">III</span></div>
+        <div class="cap"><h3>Lo Spazio Emotivo</h3><span class="go">Guarda →</span></div>
+      </a>
+      <a class="vcard" href="https://www.elisasoulmedium.com/school/course/oltreilvelo/lecture/9765609" target="_blank" rel="noopener">
+        <div class="im"><img src="/src/mod4.jpg" alt="" loading="lazy"><span class="rom">IV</span></div>
+        <div class="cap"><h3>L'Osservatorio Interiore</h3><span class="go">Guarda →</span></div>
+      </a>
+    </div>
+  </section>
+
+  <section class="sez" id="eserc">
+    <div class="sez-eyebrow">Mettiti in pratica</div>
+    <h2>Gli Esercizi del Cammino</h2>
+    <p class="sez-sub">Le schede pratiche del corso — da compilare con calma,
+    salvate sul tuo dispositivo, sempre con te.</p>
+    <div class="sez-rule"><div class="l"></div><div class="d"></div></div>
+    <div class="eserc">
+      <div class="txt">
+        <a class="btn-gl" href="/app/">Apri gli Esercizi</a>
+        <p class="eserc-note">Spazio Emotivo · Osservatorio Interiore · Diario della Settimana</p>
+      </div>
+      <div class="mockwrap">
+        <div class="mock"><div class="scr">
+          <div class="bar">STRUMENTI DEL CAMMINO</div>
+          <div class="card"><b>Spazio Emotivo</b><i>Scheda 1 · 20 min</i></div>
+          <div class="card"><b>Osservatorio Interiore</b><i>Scheda 2 · 15 min</i></div>
+          <div class="card" style="margin-bottom:14px"><b>Diario della Settimana</b><i>ogni sera · 2 min</i></div>
+        </div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sez" id="cap2">
+    <div class="sez-eyebrow">Il viaggio continua</div>
+    <h2>Capitolo Secondo</h2>
+    <div class="sez-rule"><div class="l"></div><div class="d"></div></div>
+    <div class="soon">
+      <div class="moon">☽ ✦ ☾</div>
+      <p>Le prossime pagine si stanno scrivendo.<br>Presto disponibile.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="f1">Il Cammino Interiore</div>
+  <div class="f2">Elisa Soul Medium · Oltre il Velo Community</div>
+</footer>
+
 <div id="fallback">WebGL non disponibile su questo dispositivo.</div>
 
 <img id="fc"  src="/src/face_front.jpg"   style="display:none" alt="">
@@ -273,64 +354,26 @@ body{
 <img id="bcm" src="/src/face_back_m.jpg"  style="display:none" alt="">
 <img id="lc"  src="/src/leather_c.jpg"    style="display:none" alt="">
 <img id="ln"  src="/src/leather_n.jpg"    style="display:none" alt="">
-<img id="m1"  src="/src/mod1.jpg"         style="display:none" alt="">
-<img id="m2"  src="/src/mod2.jpg"         style="display:none" alt="">
-<img id="m3"  src="/src/mod3.jpg"         style="display:none" alt="">
-<img id="m4"  src="/src/mod4.jpg"         style="display:none" alt="">
 <img id="pg"  src="/src/pagina.jpg"       style="display:none" alt="">
-<img id="lg"  src="/src/logo.png"         style="display:none" alt="">
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 /* ================================================================
-   SCRITTA DI LUCI → vortice → tomo → pagine del corso
+   APERTURA: scritta di luci → tomo → benvenuto → pagina vuota
+   → TUFFO dentro la pagina → il sito
    ================================================================ */
-const cv = (w,h)=>{const c=document.createElement('canvas');c.width=w;c.height=h;return c};
-const cvs = (w,h,s)=>{const c=document.createElement('canvas');c.width=w*s;c.height=h*s;const g=c.getContext('2d');g.scale(s,s);return c};
+const cv  = (w,h)=>{const c=document.createElement('canvas');c.width=w;c.height=h;return c};
+const cvs = (w,h,s)=>{const c=document.createElement('canvas');c.width=w*s;c.height=h*s;
+  const g=c.getContext('2d');g.scale(s,s);return c};
 const TAU = Math.PI*2;
 const clamp01 = v=>Math.min(1,Math.max(0,v));
 const ease = t=>t*t*(3-2*t);
 
 function pageBase(x, pg){ x.drawImage(pg, 0,0, 1024, 1220); }
-function drawLogo(x, lg){ /* logo rimosso su richiesta */ }
 const dia=(x,cx,cy,r)=>{x.beginPath();x.moveTo(cx,cy-r);x.lineTo(cx+r*.75,cy);
   x.lineTo(cx,cy+r);x.lineTo(cx-r*.75,cy);x.closePath();x.fill()};
 
-function carvedButton(x, cx, cy, wd, ht, label, fs){
-  x.save();
-  const r = ht/2;
-  const path = ()=>{ x.beginPath(); x.roundRect(cx-wd/2, cy-ht/2, wd, ht, r); };
-  const g = x.createLinearGradient(0, cy-ht/2, 0, cy+ht/2);
-  g.addColorStop(0,'rgba(80,56,26,.32)');
-  g.addColorStop(.55,'rgba(122,92,48,.15)');
-  g.addColorStop(1,'rgba(170,134,76,.24)');
-  path(); x.fillStyle = g; x.fill();
-  x.lineWidth = 2.4;
-  x.save(); x.translate(0,-1.4); path(); x.strokeStyle='rgba(58,38,14,.6)'; x.stroke(); x.restore();
-  x.save(); x.translate(0, 1.7); path(); x.strokeStyle='rgba(255,246,222,.55)'; x.stroke(); x.restore();
-  path(); x.strokeStyle='rgba(96,68,30,.5)'; x.lineWidth=1; x.stroke();
-  x.textAlign='center'; x.textBaseline='middle';
-  x.font='700 '+(fs||27)+'px Cinzel';
-  x.fillStyle='rgba(255,244,216,.5)'; x.fillText(label, cx, cy+1.6);
-  x.fillStyle='#3f2c12';            x.fillText(label, cx, cy);
-  x.restore();
-}
-
-/* freccia a inchiostro con ricciolo, integrata nella pagina */
-function pageArrow(x, cx, cy, dir){
-  x.save(); x.translate(cx,cy); if(dir<0) x.scale(-1,1);
-  x.strokeStyle='rgba(104,76,36,.88)'; x.fillStyle='rgba(104,76,36,.88)';
-  x.lineWidth=3.2; x.lineCap='round'; x.lineJoin='round';
-  x.beginPath(); x.moveTo(-52,4); x.quadraticCurveTo(0,-12,54,0); x.stroke();
-  x.beginPath(); x.moveTo(54,0); x.lineTo(34,-12);
-  x.quadraticCurveTo(44,-2,54,0); x.lineTo(36,10);
-  x.quadraticCurveTo(45,2,54,0); x.closePath(); x.fill();
-  x.beginPath(); x.moveTo(-52,4); x.quadraticCurveTo(-66,0,-62,-12); x.stroke();
-  x.beginPath(); x.arc(-62,-15,2.6,0,TAU); x.fill();
-  x.restore();
-}
-
-function welcomeCanvas(pg,lg){
+function welcomeCanvas(pg){
   const w=1024,h=1220,c=cvs(w,h,1.5),x=c.getContext('2d');
   pageBase(x,pg);
   const ink='#4a3318', inkSoft='rgba(74,51,24,.78)';
@@ -355,242 +398,18 @@ function welcomeCanvas(pg,lg){
   for (const ln of lines){ if(ln) x.fillText(ln,w/2,yy); yy+=45; }
   x.font='italic 600 36px "Cormorant Garamond"'; x.fillStyle=ink;
   x.fillText('Elisa Soul Medium',w/2,h-188);
-  drawLogo(x,lg);
-  return c;
-}
-
-function drawPhone(b, cx, cy, pw_, ph_, pg, tilt){
-  const rr=(x0,y0,ww,hh,r)=>{b.beginPath();b.roundRect(x0,y0,ww,hh,r);};
-  b.save();
-  b.translate(cx,cy); b.rotate(tilt||0);
-  const x0=-pw_/2, y0=-ph_/2;
-  /* ombra a terra */
-  b.save();
-  b.rotate(-(tilt||0));
-  b.fillStyle='rgba(40,25,8,.30)';
-  b.beginPath(); b.ellipse(0, ph_/2+16, pw_*.52, 14, 0, 0, TAU); b.fill();
-  b.restore();
-  /* corpo metallico */
-  b.save();
-  b.shadowColor='rgba(20,12,4,.5)'; b.shadowBlur=16; b.shadowOffsetY=7;
-  const mg=b.createLinearGradient(x0,y0,x0+pw_,y0+ph_);
-  mg.addColorStop(0,'#544a5e'); mg.addColorStop(.25,'#2c2433');
-  mg.addColorStop(.7,'#1a141f'); mg.addColorStop(1,'#0e0a12');
-  rr(x0,y0,pw_,ph_,38); b.fillStyle=mg; b.fill();
-  b.restore();
-  /* filo luce sul bordo */
-  rr(x0,y0,pw_,ph_,38);
-  b.strokeStyle='rgba(255,255,255,.22)'; b.lineWidth=1.5; b.stroke();
-  rr(x0+2.5,y0+2.5,pw_-5,ph_-5,34);
-  b.strokeStyle='rgba(0,0,0,.6)'; b.lineWidth=2; b.stroke();
-  /* pulsanti laterali */
-  b.fillStyle='#5e5468';
-  rr(x0+pw_-1.5, y0+74, 3.5, 30, 2); b.fill();
-  rr(x0+pw_-1.5, y0+116, 3.5, 50, 2); b.fill();
-  rr(x0-2, y0+92, 3.5, 38, 2); b.fill();
-  /* schermo */
-  const sx0=x0+8, sy0=y0+9, sw=pw_-16, sh=ph_-18;
-  b.save();
-  rr(sx0,sy0,sw,sh,29); b.clip();
-  b.drawImage(pg, sx0,sy0,sw,sh);
-  b.fillStyle='rgba(255,250,238,.18)'; b.fillRect(sx0,sy0,sw,sh);
-  /* barra app scura */
-  b.fillStyle='#241b26'; b.fillRect(sx0,sy0,sw,42);
-  b.fillStyle='#c9a84c'; b.font='600 11px Cinzel'; b.textAlign='center';
-  b.fillText('STRUMENTI DEL CAMMINO', sx0+sw/2, sy0+27);
-  /* card esercizi */
-  const cards=[['Spazio Emotivo','Scheda 1 · 20 min'],
-               ['Osservatorio Interiore','Scheda 2 · 15 min'],
-               ['Diario della Settimana','ogni sera · 2 min']];
-  for (let i=0;i<3;i++){
-    const cy0=sy0+58+i*82;
-    rr(sx0+13,cy0,sw-26,70,10);
-    b.fillStyle='rgba(255,250,238,.86)'; b.fill();
-    b.fillStyle='#c9a84c'; b.fillRect(sx0+13,cy0,4,70);
-    b.fillStyle='#3f2c12'; b.font='700 13.5px Cinzel'; b.textAlign='left';
-    b.fillText(cards[i][0], sx0+30, cy0+29);
-    b.fillStyle='rgba(110,80,40,.85)'; b.font='italic 12px "Cormorant Garamond"';
-    b.fillText(cards[i][1], sx0+30, cy0+50);
-    b.fillStyle='#8a6c2c'; b.font='700 16px Georgia'; b.textAlign='right';
-    b.fillText('›', sx0+sw-26, cy0+42);
-  }
-  /* riflesso vetro diagonale */
-  const gl=b.createLinearGradient(sx0,sy0,sx0+sw*.9,sy0+sh*.55);
-  gl.addColorStop(0,'rgba(255,255,255,.13)');
-  gl.addColorStop(.45,'rgba(255,255,255,.045)');
-  gl.addColorStop(.55,'rgba(255,255,255,0)');
-  b.fillStyle=gl;
-  b.beginPath();
-  b.moveTo(sx0,sy0); b.lineTo(sx0+sw*.62,sy0);
-  b.lineTo(sx0+sw*.18,sy0+sh); b.lineTo(sx0,sy0+sh);
-  b.closePath(); b.fill();
-  b.restore();
-  /* fotocamera punch-hole */
-  b.beginPath(); b.arc(0, y0+22, 4.5, 0, TAU);
-  b.fillStyle='#08060b'; b.fill();
-  b.beginPath(); b.arc(-1.2, y0+20.8, 1.4, 0, TAU);
-  b.fillStyle='rgba(120,140,200,.7)'; b.fill();
-  b.restore();
-}
-
-function makeChapterCanvas(pg,lg,mods){
-  const w=1024,h=1220;
-  /* vetrina */
-  const FX=192,FY=226,FW=640,FH=360;
-  const names=['Introduzione','La Frequenza Nascosta','Lo Spazio Emotivo','L’Osservatorio Interiore'];
-  const ROM=['I','II','III','IV'];
-
-  /* ---------- base statica ---------- */
-  const base=cvs(w,h,1.5), b=base.getContext('2d');
-  pageBase(b,pg);
-  b.textAlign='center';
-  b.fillStyle='rgba(118,88,44,.9)';
-  b.font='600 21px Cinzel'; b.fillText('C A P I T O L O   P R I M O', w/2, 112);
-  b.fillStyle='#3f2c12'; b.font='700 42px Cinzel';
-  b.fillText('Le fondamenta del Cammino', w/2, 166);
-  b.strokeStyle='rgba(118,88,44,.5)'; b.lineWidth=1.2;
-  b.beginPath(); b.moveTo(w*.34,196); b.lineTo(w*.66,196); b.stroke();
-  b.fillStyle='rgba(118,88,44,.65)'; dia(b,w/2,196,7);
-
-  /* cornice ornata della vetrina */
-  b.strokeStyle='rgba(110,80,40,.7)'; b.lineWidth=3;
-  b.strokeRect(FX-10,FY-10,FW+20,FH+20);
-  b.lineWidth=1; b.strokeStyle='rgba(110,80,40,.4)';
-  b.strokeRect(FX-18,FY-18,FW+36,FH+36);
-  /* fleuron agli angoli della cornice */
-  b.fillStyle='rgba(110,80,40,.75)';
-  [[FX-18,FY-18],[FX+FW+18,FY-18],[FX-18,FY+FH+18],[FX+FW+18,FY+FH+18]].forEach(function(p){
-    dia(b,p[0],p[1],8);
-  });
-  b.strokeStyle='rgba(110,80,40,.5)'; b.lineWidth=1.4;
-  [[1,1],[-1,1],[1,-1],[-1,-1]].forEach(function(s){
-    b.save();
-    b.translate(s[0]>0?FX-18:FX+FW+18, s[1]>0?FY-18:FY+FH+18);
-    b.scale(s[0],s[1]);
-    b.beginPath(); b.moveTo(14,4); b.quadraticCurveTo(30,8,36,22); b.stroke();
-    b.beginPath(); b.moveTo(4,14); b.quadraticCurveTo(8,30,22,36); b.stroke();
-    b.restore();
-  });
-  /* regole laterali della didascalia */
-  b.strokeStyle='rgba(118,88,44,.45)'; b.lineWidth=1;
-  b.beginPath(); b.moveTo(220,648); b.lineTo(380,648); b.stroke();
-  b.beginPath(); b.moveTo(644,648); b.lineTo(804,648); b.stroke();
-
-  /* chip indice 2x2 */
-  const chipY=712, chipH=46, chipW=394;
-  function chip(cx0,cy0,label){
-    b.beginPath(); b.roundRect(cx0,cy0,chipW,chipH,23);
-    b.fillStyle='rgba(255,250,238,.55)'; b.fill();
-    b.beginPath(); b.roundRect(cx0,cy0,chipW,chipH,23);
-    b.strokeStyle='rgba(150,110,50,.6)'; b.lineWidth=1.6; b.stroke();
-    b.fillStyle='#3a2a10'; b.font='600 20px Cinzel'; b.textAlign='center';
-    b.fillText(label, cx0+chipW/2, cy0+30);
-  }
-  chip(108, chipY,           ROM[0]+' · '+names[0]);
-  chip(522, chipY,           ROM[1]+' · '+names[1]);
-  chip(108, chipY+chipH+18,  ROM[2]+' · '+names[2]);
-  chip(522, chipY+chipH+18,  ROM[3]+' · '+names[3]);
-  b.font='italic 500 20px "Cormorant Garamond"';
-  b.fillStyle='rgba(74,51,24,.55)'; b.textAlign='center';
-  b.fillText('tocca per aprire l’elenco dei video', w/2, chipY+chipH*2+58);
-
-  /* ---------- banda della pratica ---------- */
-  const PY=886, PB=1170;
-  b.fillStyle='rgba(60,42,18,.075)';
-  b.fillRect(56,PY,w-112,PB-PY);
-  b.strokeStyle='rgba(110,80,40,.5)'; b.lineWidth=1.6;
-  b.beginPath(); b.moveTo(56,PY); b.lineTo(w-56,PY); b.stroke();
-  b.beginPath(); b.moveTo(56,PB); b.lineTo(w-56,PB); b.stroke();
-  b.fillStyle='rgba(110,80,40,.6)';
-  dia(b,56,PY,5); dia(b,w-56,PY,5); dia(b,56,PB,5); dia(b,w-56,PB,5);
-
-  drawPhone(b, 226, (PY+PB)/2, 188, 250, pg, -.04);
-  const ecx=664;
-  b.fillStyle='rgba(118,88,44,.95)'; b.font='600 17px Cinzel'; b.textAlign='center';
-  b.fillText('M E T T I T I   I N   P R A T I C A', ecx, PY+52);
-  b.fillStyle='#3f2c12'; b.font='700 34px Cinzel';
-  b.fillText('Gli Esercizi del Cammino', ecx, PY+98);
-  b.font='italic 500 22px "Cormorant Garamond"';
-  b.fillStyle='rgba(74,51,24,.8)';
-  b.fillText('Le schede pratiche del corso, sempre con te.', ecx, PY+136);
-  carvedButton(b, ecx, PY+196, 400, 56, 'A P R I   G L I   E S E R C I Z I', 19);
-  b.font='italic 500 18px "Cormorant Garamond"';
-  b.fillStyle='rgba(74,51,24,.5)';
-  b.fillText('si apre la tua area pratica', ecx, PY+244);
-
-  b.font='italic 500 19px "Cormorant Garamond"';
-  b.fillStyle='rgba(74,51,24,.45)';
-  b.fillText('continua a scorrere per voltare pagina', w/2, h-22);
-  drawLogo(b,lg);
-
-  /* ---------- canvas vivo: dissolvenza Ken Burns ---------- */
-  const c=cvs(w,h,1.5), x=c.getContext('2d');
-  const D=4.4, F=1.0;            /* durata slide, durata dissolvenza */
-  function cover(img, alpha, zoom){
-    const iw=img.naturalWidth||16, ih=img.naturalHeight||9;
-    const fr=FW/FH, ir=iw/ih;
-    let dw,dh;
-    if (ir>fr){ dh=FH*zoom; dw=dh*ir; } else { dw=FW*zoom; dh=dw/ir; }
-    x.globalAlpha=alpha;
-    x.drawImage(img, FX+FW/2-dw/2, FY+FH/2-dh/2, dw, dh);
-    x.globalAlpha=1;
-  }
-  function draw(t){
-    x.drawImage(base,0,0,1024,1220);
-    const i0=Math.floor(t/D)%mods.length;
-    const i1=(i0+1)%mods.length;
-    const p=(t%D)/D;
-    x.save();
-    x.beginPath(); x.rect(FX,FY,FW,FH); x.clip();
-    cover(mods[i0].img, 1, 1.12 - .09*p);
-    const fstart=1-F/D;
-    if (p>fstart) cover(mods[i1].img, (p-fstart)/(F/D), 1.12);
-    /* velo scuro leggero per coerenza col tomo */
-    x.fillStyle='rgba(22,13,5,.18)'; x.fillRect(FX,FY,FW,FH);
-    x.restore();
-    /* didascalia corrente */
-    const name=(p>fstart+.5*(F/D))?names[i1]:names[i0];
-    const rom=(p>fstart+.5*(F/D))?ROM[i1]:ROM[i0];
-    x.fillStyle='#2e2008'; x.font='600 27px Cinzel'; x.textAlign='center';
-    x.fillText(rom+' · '+name, 512, 656);
-    /* segnaposto: 4 diamanti */
-    const active=(p>fstart+.5*(F/D))?i1:i0;
-    for (let k=0;k<mods.length;k++){
-      const dx=512+(k-1.5)*42;
-      x.save();
-      x.translate(dx,684); x.rotate(Math.PI/4);
-      if (k===active){ x.fillStyle='#a8852f'; x.fillRect(-6,-6,12,12); }
-      else { x.strokeStyle='rgba(110,80,40,.55)'; x.lineWidth=1.5; x.strokeRect(-5,-5,10,10); }
-      x.restore();
-    }
-  }
-  draw(0);
-  return {canvas:c, draw:draw};
-}
-function chapterCanvasUnused(x,lg){
-  return c;
-}
-
-function comingCanvas(pg,lg){
-  const w=1024,h=1220,c=cvs(w,h,1.5),x=c.getContext('2d');
-  pageBase(x,pg);
-  x.textAlign='center';
-  x.fillStyle='rgba(118,88,44,.9)';
-  x.font='600 23px Cinzel'; x.fillText('CAPITOLO SECONDO',w/2,420);
-  x.fillStyle='#4a3318'; x.font='700 56px Cinzel';
-  x.fillText('Le prossime pagine',w/2,520);
-  x.fillText('si stanno scrivendo',w/2,592);
-  x.font='44px serif'; x.fillStyle='rgba(118,88,44,.8)';
-  x.fillText('☽  ✦  ☾', w/2, 700);
-  x.font='italic 500 34px "Cormorant Garamond"';
-  x.fillStyle='rgba(74,51,24,.7)';
-  x.fillText('Presto disponibile', w/2, 790);
-  drawLogo(x,lg);
   return c;
 }
 function blankPageCanvas(pg){
   const c=cv(512,610),x=c.getContext('2d');
   x.drawImage(pg,0,0,512,610);
+  return c;
+}
+/* pagina vuota SCURA: il tuffo atterra nel buio del sito */
+function darkPageCanvas(pg){
+  const w=1024,h=1220,c=cvs(w,h,1.5),x=c.getContext('2d');
+  pageBase(x,pg);
+  x.fillStyle='rgba(10,8,13,.9)'; x.fillRect(0,0,w,h);
   return c;
 }
 function pagesCanvas(w,h,horizontal){
@@ -621,7 +440,6 @@ function sampleTitle(){
   for (let py=0;py<hh;py+=2) for (let px=0;px<w;px+=2){
     if (d1[(py*w+px)*4+3] > 120) pts.push([px/w-.5, .5-py/hh]);
   }
-  /* sottotitolo più grande, campionato a parte per nitidezza */
   x.clearRect(0,0,w,hh);
   x.font='700 80px Cinzel';
   x.fillText('IL CAMMINO INTERIORE', w/2, 304);
@@ -639,13 +457,10 @@ async function init(){
     document.fonts.load('600 26px Cinzel'),
     document.fonts.load('italic 500 33px "Cormorant Garamond"')
   ]);
-  const ids = ['fc','fcn','fcr','fcm','sc','scn','scr','scm','bc','bcn','bcr','bcm','lc','ln','m1','m2','m3','m4','pg','lg'];
+  const ids = ['fc','fcn','fcr','fcm','sc','scn','scr','scm','bc','bcn','bcr','bcm','lc','ln','pg'];
   const im = {};
   for (const id of ids) im[id] = document.getElementById(id);
   await Promise.all(ids.map(id=>im[id].complete?1:new Promise(r=>{im[id].onload=r;im[id].onerror=r;})));
-
-  document.getElementById('nav').style.backgroundImage = `url(${im.pg.src})`;
-  document.getElementById('vmodal').style.backgroundImage = `url(${im.pg.src})`;
 
   const canvas = document.getElementById('bookgl');
   const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
@@ -695,8 +510,6 @@ async function init(){
     return t;
   };
 
-  /* depthWrite spento finché il libro è in dissolvenza:
-     altrimenti il libro invisibile "buca" la scritta di luci */
   const ALLMATS = [];
   const reg = m=>{ m.transparent=true; m.opacity=0; m.depthWrite=false; ALLMATS.push(m); return m; };
 
@@ -734,19 +547,14 @@ async function init(){
     map: TC(c,true), roughness:.9, metalness:0, envMapIntensity:.55
   }));
 
-  const MODS = [
-    {img:im.m1, short:'Introduzione'},
-    {img:im.m2, short:'La Frequenza Nascosta'},
-    {img:im.m3, short:'Lo Spazio Emotivo'},
-    {img:im.m4, short:'L’Osservatorio Interiore'},
-  ];
-
+  /* ---- geometria ---- */
   const bookGroup = new THREE.Group();
   const H = 7, W = .845*H, THICK = .115*H, COVER_T = .09;
   const PAGES_T = THICK - 2*COVER_T;
   const hingeX = -W/2;
 
   const endpaperMat = pageMat(blankPageCanvas(im.pg));
+  const darkMat = pageMat(darkPageCanvas(im.pg));
 
   const frontPivot = new THREE.Group();
   frontPivot.position.set(hingeX, 0, PAGES_T/2 + COVER_T/2);
@@ -761,9 +569,8 @@ async function init(){
   backCover.position.set(0, 0, -(PAGES_T/2 + COVER_T/2));
   bookGroup.add(backCover);
 
-  const lastPageMat = pageMat(comingCanvas(im.pg, im.lg));
   const pages = new THREE.Mesh(new THREE.BoxGeometry(W-.12, H-.12, PAGES_T),
-    [pagesSideMat, edgeMat, pagesTopMat, pagesTopMat, lastPageMat, pagesSideMat]);
+    [pagesSideMat, edgeMat, pagesTopMat, pagesTopMat, darkMat, pagesSideMat]);
   pages.position.set(hingeX + (W-.12)/2 + .02, 0, 0);
   bookGroup.add(pages);
 
@@ -776,13 +583,13 @@ async function init(){
   bookGroup.add(spine);
 
   const pw = W-.18, phh = H-.16;
-  function makeSheet(frontCanvas, idx, total){
+  function makeSheet(frontCanvas, idx, total, backDark){
     const geo = new THREE.PlaneGeometry(pw, phh, 26, 4);
     geo.translate(pw/2, 0, 0);
     const base = geo.attributes.position.array.slice();
     const mF = pageMat(frontCanvas);
     const mB = reg(new THREE.MeshStandardMaterial({
-      map: TC(blankPageCanvas(im.pg),true),
+      map: TC(backDark ? darkPageCanvas(im.pg) : blankPageCanvas(im.pg), true),
       roughness:.92, metalness:0, envMapIntensity:.5, side:THREE.BackSide
     }));
     const piv = new THREE.Group();
@@ -809,10 +616,8 @@ async function init(){
 
   const TOTAL = 5;
   const qSheets = [0,1,2].map(i=>makeSheet(blankPageCanvas(im.pg), i, TOTAL));
-  const wSheet  = makeSheet(welcomeCanvas(im.pg, im.lg), 3, TOTAL);
-  const chap = makeChapterCanvas(im.pg, im.lg, MODS);
-  const c1Sheet = makeSheet(chap.canvas, 4, TOTAL);
-  const c1Tex = c1Sheet.piv.children[0].material.map;
+  const wSheet  = makeSheet(welcomeCanvas(im.pg), 3, TOTAL);
+  const dSheet  = makeSheet(darkPageCanvas(im.pg), 4, TOTAL, true);
 
   bookGroup.visible = false;
   scene.add(bookGroup);
@@ -821,14 +626,6 @@ async function init(){
   const txtPts = sampleTitle();
   const worldW = 2*Math.tan(35*Math.PI/360)*13.2*camera.aspect;
   const fit = Math.min(1, worldW*.84/10.6);
-  /* il libro non deve mai uscire dai bordi: scala massima dal viewport */
-  let sFit;
-  const calcSFit = ()=>{
-    const visW = 2*12.1*Math.tan(35*Math.PI/360)*camera.aspect;
-    /* mobile: conta solo la pagina destra, con margine garantito */
-    sFit = camera.aspect < 1 ? (visW*.86)/(W-.18) : (visW*.82)/W;
-  };
-  calcSFit();
   const HN = 5200;
   const holoGeo = new THREE.BufferGeometry();
   const hPos = new Float32Array(HN*3);
@@ -837,8 +634,12 @@ async function init(){
   const hTarget = new Float32Array(HN*3);
   const hStag = new Float32Array(HN);
   const cosR=Math.cos(-.42), sinR=Math.sin(-.42);
-  /* le luci compongono il libro con la STESSA scala del libro vero
-     (su mobile: più piccolo in larghezza, allungato in altezza) */
+  let sFit;
+  const calcSFit = ()=>{
+    const visW = 2*12.1*Math.tan(35*Math.PI/360)*camera.aspect;
+    sFit = camera.aspect < 1 ? (visW*.86)/(W-.18) : (visW*.82)/W;
+  };
+  calcSFit();
   const sForm = Math.min(.55, sFit);
   const syForm = camera.aspect < 1 ? Math.min(sForm*1.45, .95) : sForm;
   for (let i=0;i<HN;i++){
@@ -889,35 +690,12 @@ async function init(){
      ================================================================ */
   const hint = document.getElementById('hint');
   const backlight = document.getElementById('backlight');
-  const hotzone = document.getElementById('hotzone');
-  const exzone = document.getElementById('exzone');
+  const spot = document.getElementById('spot');
   const spacer = document.getElementById('spacer');
+  const glEl = document.getElementById('bookgl');
   const navItems = [...document.querySelectorAll('.navItem')];
-  const pgPrev = document.getElementById('pgPrev');
-  const pgNext = document.getElementById('pgNext');
-  const dragzone = document.getElementById('dragzone');
-  let curIdx = 0;
-  let curSx = .55, curSy = .55;
-  let frameNo = 0;
 
-  /* proietta una fascia della pagina destra sullo schermo */
-  function placeZone(el, f0, f1){
-    const d = 13.2 - bookGroup.position.z;
-    const halfH = Math.tan(35*Math.PI/360)*d;
-    const halfW = halfH*camera.aspect;
-    const x0 = bookGroup.position.x + curSx*(hingeX+.05);
-    const x1 = x0 + curSx*pw;
-    const camY = .15;
-    const yTop = bookGroup.position.y + curSy*phh*(.5 - f0);
-    const yBot = bookGroup.position.y + curSy*phh*(.5 - f1);
-    const L = ((x0/(2*halfW))+.5)*100, R = ((x1/(2*halfW))+.5)*100;
-    const T = (((camY-yTop)/(2*halfH))+.5)*100, B = (((camY-yBot)/(2*halfH))+.5)*100;
-    el.style.left = L+'%'; el.style.top = T+'%';
-    el.style.width = Math.max(0,R-L)+'%';
-    el.style.height = Math.max(0,B-T)+'%';
-  }
-
-  let scrollRaw = 0, ps = 0, solid = false;
+  let scrollRaw = 0, ps = 0, solid = false, spotOn = false;
   const updateScroll = ()=>{
     const max = spacer.offsetHeight - innerHeight;
     scrollRaw = max>0 ? clamp01(scrollY/max) : 0;
@@ -933,14 +711,15 @@ async function init(){
     const t = clock.getElapsedTime();
     ps += (scrollRaw - ps)*.075;
 
-    const pVortex = ease(ph(.012,.13));
-    const pSolid  = ease(ph(.13,.20));
-    const pOpen   = ease(ph(.23,.33));
-    const pZoom   = ease(ph(.37,.47));
+    const pVortex = ease(ph(.012,.12));
+    const pSolid  = ease(ph(.12,.19));
+    const pOpen   = ease(ph(.22,.32));
+    const pZoom   = ease(ph(.35,.45));
+    const pDive   = ease(ph(.66,.88));
 
-    bookGroup.visible = pSolid > .001;
+    bookGroup.visible = pSolid > .001 && ps < .985;
 
-    if (ps < .27){
+    if (ps < .26){
       for (let i=0;i<HN;i++){
         const k = ease(clamp01((pVortex - hStag[i]) / .7));
         const k1 = 1-k;
@@ -970,19 +749,17 @@ async function init(){
       for (const m of ALLMATS){ m.transparent=true; m.opacity=op; m.depthWrite=false; }
     }
 
+    /* posa + TUFFO dentro la pagina */
     const idle = (1-pZoom);
     bookGroup.rotation.y = -.42*(1-pZoom) + Math.sin(t*.3)*.012*idle;
     bookGroup.rotation.x = .055*(1-pZoom) + Math.cos(t*.24)*.008*idle;
     const mob = camera.aspect < 1;
     let sx, sy, xOff;
     if (mob){
-      /* mobile: libro verticale allungato, pagina destra centrata */
       const s = Math.min(.55 + pZoom*.27, sFit);
       sx = s; sy = Math.min(s*1.45, .95);
       xOff = pOpen*.1;
     } else {
-      /* PC: zoom forte sulla pagina, libro più largo,
-         copertina sinistra quasi fuori scena */
       const visH = 2*12.1*Math.tan(35*Math.PI/360);
       const syT = Math.min((visH*.9)/H, 1.04);
       const sxT = syT*1.30;
@@ -990,50 +767,39 @@ async function init(){
       sx = .55 + (sxT-.55)*pZoom;
       xOff = pOpen*.4 + pZoom*.6;
     }
+    const dive = 1 + pDive*3.4;
+    sx *= dive; sy *= dive;
+    xOff = xOff*(1-pDive) - (hingeX+.05+pw/2)*sx*pDive;
     bookGroup.scale.set(sx, sy, sx);
-    curSx = sx; curSy = sy;
-    bookGroup.position.z = pZoom*1.1;
-    bookGroup.position.y = Math.sin(t*.5)*.05*idle;
+    bookGroup.position.z = pZoom*1.1 + pDive*2.2;
+    bookGroup.position.y = Math.sin(t*.5)*.05*idle*(1-pDive);
     bookGroup.position.x = xOff;
 
     frontPivot.rotation.y = -2.95*pOpen;
-    setFlip(qSheets[0], ph(.29,.37));
-    setFlip(qSheets[1], ph(.32,.40));
-    setFlip(qSheets[2], ph(.35,.43));
-    setFlip(wSheet,  ph(.46,.60));
-    setFlip(c1Sheet, ph(.70,.86));
+    setFlip(qSheets[0], ph(.28,.36));
+    setFlip(qSheets[1], ph(.31,.39));
+    setFlip(qSheets[2], ph(.34,.42));
+    /* benvenuto leggibile .45-.55, poi gira: appare la pagina vuota scura */
+    setFlip(wSheet, ph(.55,.64));
 
-    /* carosello dei video: la pagina del capitolo è viva */
-    frameNo++;
-    if (ps > .50 && ps < .84 && frameNo % 2 === 0){
-      chap.draw(t);
-      c1Tex.needsUpdate = true;
-    }
+    /* dissolvenza del canvas dentro il sito */
+    const fade = ph(.86,.97);
+    glEl.style.opacity = (1-fade).toFixed(3);
+
+    /* la luce glicine si accende col tuffo e resta */
+    const wantSpot = ps > .72;
+    if (wantSpot !== spotOn){ spotOn = wantSpot; spot.style.opacity = wantSpot ? 1 : 0; }
 
     const pulse = .5 + Math.sin(t*1.6)*.14;
-    backlight.style.opacity = ((pulse*(.45+pVortex*.55) + pSolid*.15)*clamp01(pVortex*2)).toFixed(3);
+    backlight.style.opacity = ((pulse*(.45+pVortex*.55) + pSolid*.15)
+      * clamp01(pVortex*2) * (1-pDive)).toFixed(3);
     backlight.style.transform =
       `translate(-50%,-50%) scale(${(1 + pVortex*.55 + Math.sin(t*1.6)*.04).toFixed(3)})`;
 
     hint.style.opacity = 1 - ph(.008,.05);
 
-    /* attive APPENA la pagina è voltata: vale anche lo scroll grezzo,
-       così non serve aspettare l'ammortizzazione */
-    const inWin = v => v>=.595 && v<=.705;
-    const inC1 = inWin(ps) || inWin(scrollRaw);
-    hotzone.classList.toggle('on', inC1);
-    exzone.classList.toggle('on', inC1);
-    if (inC1){
-      placeZone(hotzone, .155, .695);  /* vetrina + chip indice */
-      placeZone(exzone,  .72, .96);    /* banda esercizi */
-    }
-
-    const cur = ps < .53 ? 0 : (ps < .79 ? 1 : 2);
+    const cur = ps < .4 ? 0 : (ps < .92 ? 1 : 2);
     navItems.forEach((it,i)=>it.classList.toggle('cur', i===cur));
-    curIdx = cur;
-    const showAr = ps > .42;
-    /* frecce in pagina rimosse su richiesta */
-    dragzone.classList.toggle('on', showAr);
 
     renderer.render(scene, camera);
   })();
@@ -1043,70 +809,34 @@ async function init(){
   const nav = document.getElementById('nav');
   navBtn.addEventListener('click', ()=>nav.classList.toggle('open'));
   document.getElementById('navClose').addEventListener('click', ()=>nav.classList.remove('open'));
-  navItems.forEach(it=>{
-    it.addEventListener('click', ()=>{
-      nav.classList.remove('open');
-      goTo(parseFloat(it.dataset.ps));
-    });
-  });
-  function tweenTo(px, D){
-    const from = scrollY, t0 = performance.now(); D = D || 700;
+  function goTo(psT){
+    const max = spacer.offsetHeight - innerHeight;
+    const from = scrollY, to = psT*max;
+    const t0 = performance.now(), D = 700;
     (function step(n){
       const k = Math.min(1,(n-t0)/D);
       const e = k<.5 ? 2*k*k : 1-Math.pow(-2*k+2,2)/2;
-      window.scrollTo(0, from+(px-from)*e);
+      window.scrollTo(0, from+(to-from)*e);
       if (k<1) requestAnimationFrame(step);
     })(t0);
   }
-  function goTo(psT){
-    tweenTo(psT*(spacer.offsetHeight - innerHeight), 900);
-  }
-  /* frecce: voltano pagina con l'animazione dello sfoglio */
-  const ANCH = [.44, .655, .94];
-  pgPrev.addEventListener('click', ()=>goTo(ANCH[Math.max(0, curIdx-1)]));
-  pgNext.addEventListener('click', ()=>goTo(ANCH[Math.min(2, curIdx+1)]));
-
-  /* trascina il bordo destro: la pagina segue il dito */
-  const drag = {on:false, sx:0, sy:0, ss:0, horiz:null};
-  dragzone.addEventListener('touchstart', e=>{
-    const t = e.touches[0];
-    drag.on = true; drag.sx = t.clientX; drag.sy = t.clientY;
-    drag.ss = scrollY; drag.horiz = null;
-  }, {passive:true});
-  dragzone.addEventListener('touchmove', e=>{
-    if (!drag.on) return;
-    const t = e.touches[0];
-    const dx = drag.sx - t.clientX, dy = drag.sy - t.clientY;
-    if (drag.horiz === null && (Math.abs(dx)>8 || Math.abs(dy)>8))
-      drag.horiz = Math.abs(dx) > Math.abs(dy);
-    if (drag.horiz){
-      e.preventDefault();
-      const max = spacer.offsetHeight - innerHeight;
-      const next = Math.min(2, curIdx+1);
-      const sec = Math.max(.08, ANCH[next]-ANCH[curIdx]) * max;
-      window.scrollTo(0, Math.max(0, Math.min(max, drag.ss + (dx/(innerWidth*.72))*sec)));
-    }
-  }, {passive:false});
-  const endDrag = ()=>{
-    if (drag.on && drag.horiz){
-      const max = spacer.offsetHeight - innerHeight;
-      let best = ANCH[0]*max, bd = Infinity;
-      for (const a of ANCH){
-        const d = Math.abs(scrollY - a*max);
-        if (d < bd){ bd = d; best = a*max; }
+  navItems.forEach(it=>{
+    it.addEventListener('click', ()=>{
+      nav.classList.remove('open');
+      if (it.dataset.sec){
+        const el = document.getElementById(it.dataset.sec);
+        if (el) window.scrollTo({top: el.getBoundingClientRect().top + scrollY - innerHeight*.18, behavior:'smooth'});
+      } else {
+        goTo(parseFloat(it.dataset.ps));
       }
-      tweenTo(best, 500);
-    }
-    drag.on = false;
-  };
-  dragzone.addEventListener('touchend', endDrag);
-  dragzone.addEventListener('touchcancel', endDrag);
+    });
+  });
 
-  const vwrap = document.getElementById('vwrap');
-  hotzone.addEventListener('click', ()=>vwrap.classList.add('open'));
-  exzone.addEventListener('click', ()=>{ window.location.href = '/app/'; });
-  document.getElementById('vClose').addEventListener('click', ()=>vwrap.classList.remove('open'));
-  vwrap.addEventListener('click', e=>{ if (e.target===vwrap) vwrap.classList.remove('open'); });
+  /* ---- rivelazione delle sezioni ---- */
+  const obs = new IntersectionObserver(es=>{
+    es.forEach(e=>{ if (e.isIntersecting) e.target.classList.add('lit'); });
+  }, {threshold:.25});
+  document.querySelectorAll('.sez').forEach(s=>obs.observe(s));
 
   addEventListener('resize', ()=>{
     camera.aspect = innerWidth/innerHeight;
