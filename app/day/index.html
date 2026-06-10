@@ -754,23 +754,28 @@ input:focus,textarea:focus{
 
 <script>
 (function(){
-  /* ================= PERSISTENZA PER ACCOUNT ================= */
+  /* ================= PERSISTENZA PER ACCOUNT (dispositivo + nuvola) ================= */
   var EMAIL='';
   try{ EMAIL=(localStorage.getItem('ovl-user')||'').trim().toLowerCase(); }catch(e){}
   var KEY='ovl-strumenti:'+EMAIL;
+  var METAK=KEY+':meta';
   var LEGACY='ovl-strumenti';
-  var store={};
+  var store={}, meta={};
   try{
     store=JSON.parse(localStorage.getItem(KEY)||'null');
+    meta=JSON.parse(localStorage.getItem(METAK)||'{}')||{};
     if(!store){
       /* primo accesso di questo account su questo dispositivo:
          eredita i dati scritti prima dell'arrivo degli account */
       var old={};
       try{ old=JSON.parse(localStorage.getItem(LEGACY)||'{}'); }catch(e){ old={}; }
       store=migrate(old);
+      var mnow=Date.now();
+      for(var mk in store) meta[mk]=mnow;
       localStorage.setItem(KEY, JSON.stringify(store));
+      localStorage.setItem(METAK, JSON.stringify(meta));
     }
-  }catch(e){ store={}; }
+  }catch(e){ store={}; meta={}; }
 
   function todayIso(){
     var d=new Date();
@@ -795,33 +800,97 @@ input:focus,textarea:focus{
     return ns;
   }
 
-  var saveTimer=null, toastTimer=null;
-  function persist(){
-    try{ localStorage.setItem(KEY, JSON.stringify(store)); }catch(e){}
+  var saveTimer=null, toastTimer=null, pushTimer=null, pushing=false, dirty=false;
+  function toast(msg){
     var t=document.getElementById('saved');
+    t.textContent=msg;
     t.classList.add('show');
     clearTimeout(toastTimer);
-    toastTimer=setTimeout(function(){t.classList.remove('show');},1200);
+    toastTimer=setTimeout(function(){t.classList.remove('show');},1400);
+  }
+  function persist(){
+    try{
+      localStorage.setItem(KEY, JSON.stringify(store));
+      localStorage.setItem(METAK, JSON.stringify(meta));
+    }catch(e){}
+    queuePush();
   }
   function queueSave(){ clearTimeout(saveTimer); saveTimer=setTimeout(persist,500); }
+  function setVal(k,v){ store[k]=v; meta[k]=Date.now(); queueSave(); }
+
+  /* ---- la nuvola: i progressi vivono sul server, per account ---- */
+  function mergeIn(remote){
+    if(!remote||typeof remote.data!=='object'||!remote.data)return false;
+    var changed=false;
+    var rmeta=remote.meta||{};
+    for(var k in remote.data){
+      var tR=+rmeta[k]||0, tL=+meta[k]||0;
+      if(tR>tL){ store[k]=remote.data[k]; meta[k]=tR; changed=true; }
+    }
+    return changed;
+  }
+  function saveLocal(){
+    try{
+      localStorage.setItem(KEY, JSON.stringify(store));
+      localStorage.setItem(METAK, JSON.stringify(meta));
+    }catch(e){}
+  }
+  function queuePush(){ clearTimeout(pushTimer); pushTimer=setTimeout(pushCloud,900); }
+  function pushCloud(){
+    if(pushing){ dirty=true; return; }
+    pushing=true;
+    fetch('/api/store',{
+      method:'PUT',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({email:EMAIL,data:store,meta:meta})
+    }).then(function(r){ if(!r.ok)throw 0; return r.json(); })
+    .then(function(merged){
+      mergeIn(merged); saveLocal();
+      toast('✓ Salvato sul tuo account');
+    })
+    .catch(function(){ toast('✓ Salvato sul dispositivo — offline'); })
+    .then(function(){
+      pushing=false;
+      if(dirty){ dirty=false; queuePush(); }
+    });
+  }
+  function pullCloud(then){
+    fetch('/api/store?email='+encodeURIComponent(EMAIL))
+      .then(function(r){ if(!r.ok)throw 0; return r.json(); })
+      .then(function(remote){
+        var changed=mergeIn(remote);
+        if(changed)saveLocal();
+        queuePush();   /* manda anche le novità locali alla nuvola */
+        if(then)then(changed);
+      })
+      .catch(function(){ if(then)then(false); });
+  }
+  /* uscendo dalla pagina, ultimo invio garantito */
+  addEventListener('pagehide',function(){
+    try{
+      navigator.sendBeacon('/api/store',
+        new Blob([JSON.stringify({email:EMAIL,data:store,meta:meta})],{type:'application/json'}));
+    }catch(e){}
+  });
+  document.addEventListener('visibilitychange',function(){
+    if(document.visibilityState==='visible')pullCloud(refreshAll);
+  });
 
   function applyStored(el){
     var k=el.dataset.k; if(!k)return;
     if(el.type==='checkbox'){ el.checked=!!store[k]; }
-    else el.value=(store[k]!==undefined)?store[k]:'';
+    else{ var v=store[k]; el.value=(v===undefined||v===null)?'':v; }
   }
   function bindAll(root){
     (root||document).querySelectorAll('[data-k]').forEach(applyStored);
   }
   document.addEventListener('input',function(e){
     var el=e.target, k=el.dataset.k; if(!k)return;
-    store[k]=el.type==='checkbox'?el.checked:el.value;
-    queueSave();
+    setVal(k, el.type==='checkbox'?el.checked:el.value);
   });
   document.addEventListener('change',function(e){
     var el=e.target, k=el.dataset.k; if(!k)return;
-    store[k]=el.type==='checkbox'?el.checked:el.value;
-    queueSave();
+    setVal(k, el.type==='checkbox'?el.checked:el.value);
   });
 
   /* ================= SCHEDE DATATE ================= */
@@ -963,9 +1032,8 @@ input:focus,textarea:focus{
     var faces=cell.querySelectorAll('.mood');
     var wasOn=el.classList.contains('on');
     faces.forEach(function(f){f.classList.remove('on');});
-    if(!wasOn){ el.classList.add('on'); store['cal-'+dayIso+'-mood']=idx; }
-    else{ delete store['cal-'+dayIso+'-mood']; }
-    queueSave();
+    if(!wasOn){ el.classList.add('on'); setVal('cal-'+dayIso+'-mood', idx); }
+    else{ setVal('cal-'+dayIso+'-mood', null); }
   };
 
   window.weekGo=function(dir){ weekOffset+=dir; renderWeek(); };
@@ -1020,7 +1088,8 @@ input:focus,textarea:focus{
     return hasEntry(s,isoDay) || !!store['cal-'+isoDay+'-'+s];
   }
   function activeDay(isoDay){
-    return did('s1',isoDay)||did('s2',isoDay)||store['cal-'+isoDay+'-mood']!==undefined;
+    var mv=store['cal-'+isoDay+'-mood'];
+    return did('s1',isoDay)||did('s2',isoDay)||(mv!==undefined&&mv!==null&&mv!=='');
   }
   function allActiveDays(){
     var set={};
@@ -1216,11 +1285,21 @@ input:focus,textarea:focus{
   };
 
   /* ================= INIT ================= */
+  function refreshAll(changed){
+    if(!changed)return;
+    bindAll(document);
+    loadSheet('s1');
+    loadSheet('s2');
+    renderWeek();
+    if(document.getElementById('p4').classList.contains('on'))renderReport();
+  }
   bindAll(document);
   loadSheet('s1');
   loadSheet('s2');
   renderWeek();
   lumeHome();
+  /* primo allineamento con la nuvola */
+  pullCloud(refreshAll);
 })();
 </script>
 </body>
