@@ -10,14 +10,23 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{
+  /* la carta scura è lo sfondo di TUTTA la pagina: nessuna linea di confine */
   background:
-    radial-gradient(1000px 760px at 50% 36%, #1b1626 0%, #110d1a 42%, #08070c 72%, #000 100%);
+    linear-gradient(180deg, rgba(8,7,11,.96) 0%, rgba(10,9,13,.93) 8%, rgba(11,10,14,.92) 100%),
+    url('/src/pagina.jpg') center top/100% auto repeat;
   background-attachment:fixed;
   font-family:'Cormorant Garamond',serif;
   overflow-x:hidden;
   color:#d8d3df;
 }
 #spacer{height:560vh}
+
+/* atmosfera viola dell'intro: copre la carta e svanisce col tuffo */
+#atmo{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(1000px 760px at 50% 36%, #1b1626 0%, #110d1a 42%, #08070c 72%, #000 100%);
+}
 
 .nebula{
   position:fixed;left:50%;top:40%;transform:translate(-50%,-50%);
@@ -152,9 +161,6 @@ body{
    ================================================================ */
 #sito{
   position:relative;z-index:5;
-  background:
-    linear-gradient(180deg, rgba(8,7,11,.96) 0%, rgba(10,9,13,.93) 8%, rgba(11,10,14,.92) 100%),
-    url('/src/pagina.jpg') center top/100% auto repeat-y;
   padding:16vh 6vw 0;
 }
 .sez{
@@ -265,7 +271,7 @@ footer .f2{margin-top:1.6vh;color:#6e6580;font-size:15px}
 </head>
 <body>
 
-<div class="nebula"></div>
+<div id="atmo"><div class="nebula"></div></div>
 <div id="backlight"></div>
 <div id="dark"></div>
 <div id="wisptint"></div>
@@ -834,6 +840,7 @@ async function init(){
     wispEl.style.transform = 'translate3d('+wx.toFixed(1)+'px,'+wy.toFixed(1)+'px,0) scale('+ws.toFixed(3)+')';
   }
   const glEl = document.getElementById('bookgl');
+  const atmoEl = document.getElementById('atmo');
   const navItems = [...document.querySelectorAll('.navItem')];
 
   let scrollRaw = 0, ps = 0, solid = false;
@@ -947,6 +954,7 @@ async function init(){
     /* dissolvenza del canvas dentro il sito (sotto il velo nero) */
     const fade = ph(.84,.95);
     glEl.style.opacity = (1-fade).toFixed(3);
+    atmoEl.style.opacity = (1-fade).toFixed(3);
 
     /* il fuoco fatuo cammina e rivela ciò che tocca */
     updateWisp(t);
