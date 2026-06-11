@@ -536,21 +536,23 @@ input:focus,textarea:focus{
 .sc-step.on .sc-lab{color:var(--txt-soft)}
 .sc-d{font-size:10px;color:var(--txt-dim)}
 
-/* imprese */
+/* traguardi: righe sobrie con spunta */
 .gp-sec{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--txt-dim);margin:20px 0 12px;padding-left:2px}
-.bgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
-.badge{
-  border:1px solid var(--card-line);border-radius:12px;background:var(--card);
-  padding:13px 10px 11px;text-align:center;opacity:.45;filter:grayscale(.7);
-  transition:all .5s;
+.tlist{border:1px solid var(--card-line);border-radius:12px;background:var(--card);overflow:hidden}
+.trag{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 16px;border-bottom:1px solid rgba(185,163,227,.08);
+  font-size:15px;color:var(--txt-dim);
 }
-.badge.won{opacity:1;filter:none;border-color:rgba(205,178,242,.55);
-  box-shadow:0 0 16px rgba(170,135,230,.25), inset 0 0 20px rgba(170,135,230,.06)}
-.badge .bsym{font-size:26px;display:block;margin-bottom:6px;line-height:1;
-  filter:drop-shadow(0 0 10px rgba(186,150,240,.7))}
-.badge .bnam{font-family:'Cinzel',serif;font-size:11.5px;font-weight:700;color:#f0eaf6;margin-bottom:4px;line-height:1.35}
-.badge .bcond{font-size:12.5px;color:var(--txt-dim);line-height:1.45}
-.badge.won .bcond{color:var(--txt-soft)}
+.trag:last-child{border-bottom:none}
+.trag .tck{
+  width:22px;height:22px;border-radius:50%;flex-shrink:0;
+  border:1.5px solid rgba(185,163,227,.25);
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;color:transparent;
+}
+.trag.won{color:var(--txt)}
+.trag.won .tck{border-color:var(--gold);color:var(--gold-pale);background:rgba(201,168,76,.08)}
 
 /* spiegazioni */
 details.gd{
@@ -885,7 +887,7 @@ details.gd[open]{border-color:rgba(205,178,242,.5);box-shadow:0 0 16px rgba(170,
 <aside id="gpan" role="dialog" aria-label="Guida della Lucina">
   <div class="gp-hd">
     <div class="gp-orb"></div>
-    <h2>La tua Luce ti parla</h2>
+    <h2>Guida del Cammino</h2>
     <button class="gp-x" onclick="chiudiGuida()">✕</button>
   </div>
   <div class="gp-bd">
@@ -896,8 +898,8 @@ details.gd[open]{border-color:rgba(205,178,242,.5);box-shadow:0 0 16px rgba(170,
     </div>
 
     <div class="lvl">
-      <div class="lvl-n">Il tuo livello di luce</div>
-      <div class="lvl-t" id="lvlT">Prima Scintilla</div>
+      <div class="lvl-n">La tua costanza</div>
+      <div class="lvl-t" id="lvlT">0 giorni di pratica</div>
       <div class="lvl-d" id="lvlD"></div>
       <div class="lvl-bar"><div class="lvl-fill" id="lvlFill"></div></div>
       <div class="lvl-next" id="lvlNext"></div>
@@ -905,13 +907,13 @@ details.gd[open]{border-color:rgba(205,178,242,.5);box-shadow:0 0 16px rgba(170,
 
     <div class="scala" id="scala"></div>
 
-    <div class="gp-sec">Le tue imprese</div>
-    <div class="bgrid" id="bgrid"></div>
+    <div class="gp-sec">I tuoi traguardi</div>
+    <div class="tlist" id="bgrid"></div>
 
     <div class="gp-sec">Cosa fare in ogni sezione</div>
 
     <details class="gd">
-      <summary><span class="gi">🌌</span>Perché questi esercizi funzionano<span class="arr">▶</span></summary>
+      <summary>Perché questi esercizi funzionano<span class="arr">▶</span></summary>
       <div class="gd-c">
         <p>Noi siamo <b>energia</b>: vibriamo a una frequenza fatta delle emozioni che viviamo. Prima di ogni azione c'è un pensiero, e la <b>prima fase di ogni pensiero è il giudizio</b> — spesso non nasce da noi, ma da ciò che famiglia, scuola e società ci hanno insegnato.</p>
         <p>Quando scegliamo sempre la voce razionale e schiacciamo quella emotiva, l'energia delle emozioni non trova spazio per uscire: resta <b>congestionata nel corpo</b> e diventa un blocco emotivo. Col tempo crea schemi che si ripetono senza che ce ne accorgiamo.</p>
@@ -920,7 +922,7 @@ details.gd[open]{border-color:rgba(205,178,242,.5);box-shadow:0 0 16px rgba(170,
     </details>
 
     <details class="gd">
-      <summary><span class="gi">🕊</span>Scheda 1 · Il mio Spazio Emotivo<span class="arr">▶</span></summary>
+      <summary>Scheda 1 · Il mio Spazio Emotivo<span class="arr">▶</span></summary>
       <div class="gd-c">
         <p><b>Quando:</b> 3 volte a settimana (es. lunedì, mercoledì, venerdì), almeno <b>20 minuti</b> tutti per te. <b>Come iniziare:</b> siediti in un posto tranquillo e metti una musica rilassante — il pianoforte è perfetto, o le musiche da meditazione che ti danno serenità.</p>
         <ol>
@@ -944,7 +946,7 @@ details.gd[open]{border-color:rgba(205,178,242,.5);box-shadow:0 0 16px rgba(170,
     </details>
 
     <details class="gd">
-      <summary><span class="gi">👁</span>Scheda 2 · Il mio Osservatorio Interiore<span class="arr">▶</span></summary>
+      <summary>Scheda 2 · Il mio Osservatorio Interiore<span class="arr">▶</span></summary>
       <div class="gd-c">
         <p><b>Quando:</b> ogni giorno, <b>15–20 minuti</b> — anche nei giorni in cui fai la Scheda 1. È l'allenamento quotidiano che scioglie gli schemi mentali.</p>
         <ol>
@@ -960,7 +962,7 @@ details.gd[open]{border-color:rgba(205,178,242,.5);box-shadow:0 0 16px rgba(170,
     </details>
 
     <details class="gd">
-      <summary><span class="gi">📜</span>Diario · La mia Settimana<span class="arr">▶</span></summary>
+      <summary>Diario · La mia Settimana<span class="arr">▶</span></summary>
       <div class="gd-c">
         <p><b>Quando:</b> ogni sera, bastano <b>2 minuti</b>. È la mappa del tuo Cammino: ti mostra nero su bianco la costanza che stai costruendo.</p>
         <ul>
@@ -974,7 +976,7 @@ details.gd[open]{border-color:rgba(205,178,242,.5);box-shadow:0 0 16px rgba(170,
     </details>
 
     <details class="gd">
-      <summary><span class="gi">📈</span>Resoconto · Il mio Cammino fin qui<span class="arr">▶</span></summary>
+      <summary>Resoconto · Il mio Cammino fin qui<span class="arr">▶</span></summary>
       <div class="gd-c">
         <p>Qui vedi la tua energia diventare visibile:</p>
         <ul>
@@ -1521,13 +1523,13 @@ details.gd[open]{border-color:rgba(205,178,242,.5);box-shadow:0 0 16px rgba(170,
   /* ================= IL SENTIERO DELLA LUCE ================= */
   function clamp01(v){ return v<0?0:(v>1?1:v); }
   var TIERS=[
-    {d:0,  cls:'',    nome:'Luce Velata',       col:'#9d96ad', desc:'La tua luce è velata, come dietro una nebbia. Ogni pratica la libera.'},
-    {d:3,  cls:'lt1', nome:'Prima Scintilla',   col:'#f0f2fa', desc:'3 giorni: dal buio è nata una scintilla bianca.'},
-    {d:10, cls:'lt2', nome:'Luce d\'Argento',   col:'#dde8f4', desc:'10 giorni di pratica: la scintilla si è fatta argento.'},
-    {d:25, cls:'lt3', nome:'Aura Celeste',      col:'#b9ddf6', desc:'25 giorni: la tua aura respira di celeste, il colore della calma.'},
-    {d:50, cls:'lt4', nome:'Velo d\'Indaco',    col:'#a7b6ef', desc:'50 giorni: l\'indaco dell\'intuizione ti accompagna.'},
-    {d:90, cls:'lt5', nome:'Fiamma di Glicine', col:'#cdb2f2', desc:'90 giorni: la tua luce vibra del glicine del Cammino.'},
-    {d:150,cls:'lt6', nome:'Anima Viola',       col:'#ad7ff0', desc:'150 giorni: il viola della medianità, la frequenza più alta.'}
+    {d:0,  cls:'',    nome:'Perla',   col:'#9d96ad'},
+    {d:3,  cls:'lt1', nome:'Bianco',  col:'#f0f2fa'},
+    {d:10, cls:'lt2', nome:'Argento', col:'#dde8f4'},
+    {d:25, cls:'lt3', nome:'Celeste', col:'#b9ddf6'},
+    {d:50, cls:'lt4', nome:'Indaco',  col:'#a7b6ef'},
+    {d:90, cls:'lt5', nome:'Glicine', col:'#cdb2f2'},
+    {d:150,cls:'lt6', nome:'Viola',   col:'#ad7ff0'}
   ];
   function tierIndex(days){
     var i=0; TIERS.forEach(function(t,k){ if(days>=t.d)i=k; }); return i;
@@ -1558,14 +1560,14 @@ details.gd[open]{border-color:rgba(205,178,242,.5);box-shadow:0 0 16px rgba(170,
     }
     return Object.keys(set).length;
   }
-  var IMPRESE=[
-    {sym:'✧', nome:'Tre Albe',                cond:'3 giorni di fila',                 test:function(){return streak()>=3}},
-    {sym:'☾', nome:'Settimana dell\'Anima',   cond:'7 giorni di fila',                 test:function(){return streak()>=7}},
-    {sym:'🌕', nome:'Luna Intera',             cond:'30 giorni di fila',                test:function(){return streak()>=30}},
-    {sym:'🕊', nome:'Cuore Aperto',            cond:'10 sessioni di Spazio Emotivo',    test:function(){return countSessions('s1')>=10}},
-    {sym:'👁', nome:'Sguardo Limpido',         cond:'15 sessioni di Osservatorio',      test:function(){return countSessions('s2')>=15}},
-    {sym:'✦', nome:'Alchimista del Giudizio', cond:'5 giudizi trasformati in luce',    test:function(){return countTransforms()>=5}},
-    {sym:'📜', nome:'Cronista dell\'Anima',    cond:'14 giorni di diario compilato',    test:function(){return countDiaryDays()>=14}}
+  var TRAGUARDI=[
+    {cond:'3 giorni consecutivi di pratica',   test:function(){return streak()>=3}},
+    {cond:'7 giorni consecutivi di pratica',   test:function(){return streak()>=7}},
+    {cond:'30 giorni consecutivi di pratica',  test:function(){return streak()>=30}},
+    {cond:'10 sessioni di Spazio Emotivo',     test:function(){return countSessions('s1')>=10}},
+    {cond:'15 sessioni di Osservatorio',       test:function(){return countSessions('s2')>=15}},
+    {cond:'5 giudizi trasformati',             test:function(){return countTransforms()>=5}},
+    {cond:'14 giorni di diario compilato',     test:function(){return countDiaryDays()>=14}}
   ];
 
   /* ---- la lucina sa DOVE si trova: spiegazioni contestuali ---- */
@@ -1622,14 +1624,15 @@ details.gd[open]{border-color:rgba(205,178,242,.5);box-shadow:0 0 16px rgba(170,
   function renderGuida(){
     var days=allActiveDays().length;
     var i=applyTier(), t=TIERS[i];
-    document.getElementById('lvlT').textContent=t.nome;
-    document.getElementById('lvlD').textContent=t.desc;
+    document.getElementById('lvlT').textContent=days+(days===1?' giorno':' giorni')+' di pratica';
+    document.getElementById('lvlD').textContent='Il colore della tua luce è '+t.nome.toLowerCase()+
+      ': cresce con la costanza, non con la fretta.';
     var nx=TIERS[i+1];
     var fill=nx ? clamp01((days-t.d)/Math.max(1,nx.d-t.d)) : 1;
     document.getElementById('lvlFill').style.width=(fill*100).toFixed(0)+'%';
     document.getElementById('lvlNext').textContent = nx
-      ? (days+' giorni di pratica — alla '+nx.nome+' ne mancano '+(nx.d-days))
-      : days+' giorni di pratica — hai raggiunto la frequenza più alta ✨';
+      ? ('Prossimo colore ('+nx.nome.toLowerCase()+') a '+nx.d+' giorni')
+      : 'Hai raggiunto l\'ultimo colore.';
     /* scala dei colori */
     var sc=document.getElementById('scala'); sc.innerHTML='';
     TIERS.forEach(function(tt,k){
@@ -1637,19 +1640,17 @@ details.gd[open]{border-color:rgba(205,178,242,.5);box-shadow:0 0 16px rgba(170,
       s.className='sc-step'+(k<=i?' on':'')+(k===i?' cur':'');
       s.innerHTML='<div class="sc-dot" style="background:'+tt.col+';color:'+tt.col+
         ';box-shadow:0 0 10px '+tt.col+'66"></div>'+
-        '<span class="sc-lab">'+tt.nome.split(' ')[0]+'</span>'+
+        '<span class="sc-lab">'+tt.nome+'</span>'+
         '<span class="sc-d">'+(tt.d||'')+'</span>';
       sc.appendChild(s);
     });
-    /* imprese */
+    /* traguardi */
     var bg=document.getElementById('bgrid'); bg.innerHTML='';
-    IMPRESE.forEach(function(b){
+    TRAGUARDI.forEach(function(b){
       var won=false; try{ won=b.test(); }catch(e){}
       var d=document.createElement('div');
-      d.className='badge'+(won?' won':'');
-      d.innerHTML='<span class="bsym">'+b.sym+'</span>'+
-        '<div class="bnam">'+b.nome+'</div>'+
-        '<div class="bcond">'+(won?'✓ ':'')+b.cond+'</div>';
+      d.className='trag'+(won?' won':'');
+      d.innerHTML='<span class="tck">✓</span><span>'+b.cond+'</span>';
       bg.appendChild(d);
     });
   }
@@ -1657,7 +1658,7 @@ details.gd[open]{border-color:rgba(205,178,242,.5);box-shadow:0 0 16px rgba(170,
     renderGuida();
     var ctx=document.getElementById('gctx');
     if(key && INFO[key]){
-      document.getElementById('gctxT').textContent='✦ In questo punto · '+INFO[key].t;
+      document.getElementById('gctxT').textContent='In questa sezione — '+INFO[key].t;
       document.getElementById('gctxB').innerHTML=INFO[key].h;
       ctx.style.display='block';
     } else {
@@ -1722,7 +1723,7 @@ details.gd[open]{border-color:rgba(205,178,242,.5);box-shadow:0 0 16px rgba(170,
   /* la prima volta, suggerisci di toccare la lucina */
   try{
     if(!localStorage.getItem('ovl-lume-hint')){
-      setTimeout(function(){ toast('✨ Tocca la lucina: ha cose da dirti'); },2500);
+      setTimeout(function(){ toast('Tocca la luce per aprire la guida'); },2500);
       localStorage.setItem('ovl-lume-hint','1');
     }
   }catch(e){}
