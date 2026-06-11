@@ -87,10 +87,13 @@ window.OVL_ELISA=(function(){
     return (best&&bestsc>=QA_THRESHOLD)?best:null;
   }
 
+  /* ---------- approfondimenti disponibili (testi in /app/elisa-deep.js, caricato al bisogno) ---------- */
+  var DEEP_IDS=["colpa_lutto","lasciare_andare","aiutare_caro","dopo_morte","tre_giorni","dimensioni","luce_come","rivedro_contatto","segni_sogni","non_sogno","karma_cose","reincarnazione_scelta","fine_volontaria","consulto"];
+
   /* ---------- risposta ---------- */
   function byId(id){
     for(var i=0;i<BANK.length;i++){
-      if(BANK[i].id===id)return {answer:BANK[i].risposta,mode:"doc",tema:BANK[i].tema,label:BANK[i].label};
+      if(BANK[i].id===id)return {answer:BANK[i].risposta,mode:"doc",tema:BANK[i].tema,label:BANK[i].label,id:id};
     }
     return null;
   }
@@ -101,7 +104,7 @@ window.OVL_ELISA=(function(){
     var lastUser=''; (history||[]).forEach(function(m){ if(m.role==='user'&&m.text!==question)lastUser=m.text||''; });
     var rq=(question.split(/\s+/).length>4||!lastUser)?question:(lastUser+" "+question);
     var hit=qaMatch(rq);
-    if(hit)return {answer:hit.risposta,mode:"faq",tema:hit.tema,avviso:AVVISO};
+    if(hit)return {answer:hit.risposta,mode:"faq",tema:hit.tema,avviso:AVVISO,id:hit.id};
     return {answer:FALLBACK,mode:"empty"};
   }
   function rispondi(question,history,cb){
@@ -315,5 +318,5 @@ window.OVL_ELISA=(function(){
   ];
 
   prepara();
-  return { rispondi:rispondi, byId:byId, MENU:MENU, AVVISO:AVVISO, count:BANK.length };
+  return { rispondi:rispondi, byId:byId, MENU:MENU, AVVISO:AVVISO, DEEP_IDS:DEEP_IDS, count:BANK.length };
 })();
