@@ -387,13 +387,39 @@ details.gd[open]{border-color:rgba(205,178,242,.5);box-shadow:0 0 16px rgba(170,
 .msg .mtxt{white-space:pre-line}
 .msg .mode{display:block;margin-top:10px;font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-pale);opacity:.85}
 .msg.typing .mtxt{color:var(--txt-dim);letter-spacing:.25em}
-.chips{display:flex;flex-wrap:wrap;gap:8px;padding:2px 0 4px}
-.chip{
-  background:none;border:1px solid rgba(185,221,246,.4);color:var(--txt);
-  border-radius:20px;padding:9px 14px;cursor:pointer;
-  font-family:'Cormorant Garamond',serif;font-size:15.5px;line-height:1.25;text-align:left;
+.msg .avviso{
+  display:block;margin-bottom:10px;padding:8px 11px;
+  border:1px solid rgba(185,221,246,.3);border-left:3px solid var(--cele);
+  border-radius:0 9px 9px 0;background:rgba(185,221,246,.06);
+  font-size:14px;line-height:1.55;color:var(--txt-soft);
 }
-.chip:hover{border-color:var(--cele);color:#fff;box-shadow:0 0 10px rgba(185,221,246,.25)}
+/* il menu dei temi: tendine con dentro tutte le domande */
+#chat-menu{display:flex;flex-direction:column;gap:8px;margin:2px 0 4px}
+details.qdrop{
+  border:1px solid rgba(185,221,246,.28);border-radius:12px;
+  background:rgba(22,18,29,.6);overflow:hidden;
+}
+details.qdrop summary{
+  list-style:none;cursor:pointer;padding:12px 14px;
+  display:flex;align-items:center;gap:10px;
+  font-family:'Cinzel',serif;font-size:13.5px;font-weight:600;color:#f0eaf6;
+}
+details.qdrop summary::-webkit-details-marker{display:none}
+details.qdrop summary .qi{font-size:16px}
+details.qdrop summary .qn{
+  margin-left:auto;font-family:'Cormorant Garamond',serif;font-size:13.5px;
+  color:var(--txt-dim);font-weight:500;
+}
+details.qdrop summary .arr{color:var(--cele);transition:transform .3s;font-size:11px;margin-left:8px}
+details.qdrop[open] summary .arr{transform:rotate(90deg)}
+details.qdrop[open]{border-color:rgba(185,221,246,.5);box-shadow:0 0 14px rgba(185,221,246,.12)}
+.qlist{display:flex;flex-direction:column;padding:0 8px 8px}
+.qitem{
+  background:none;border:none;border-top:1px solid rgba(185,163,227,.1);
+  color:var(--txt);text-align:left;cursor:pointer;
+  padding:11px 8px;font-family:'Cormorant Garamond',serif;font-size:16px;line-height:1.4;
+}
+.qitem:hover{color:#fff;background:rgba(185,221,246,.07);border-radius:8px}
 
 /* ================= POPUP DELLA LUCE (tappa non ancora consigliata) ================= */
 #lkpop{
@@ -421,10 +447,30 @@ details.gd[open]{border-color:rgba(205,178,242,.5);box-shadow:0 0 16px rgba(170,
   box-shadow:0 0 18px rgba(150,110,215,.3)}
 #saved.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
+/* ================= la lucetta quando la chat è aperta =================
+   si appollaia sull'angolo del pannello e danza piano, curiosa */
+html.chat-viva #lume{
+  z-index:63;
+  animation:ldanza 3.2s ease-in-out infinite;
+}
+@keyframes ldanza{
+  0%,100%{margin-top:-28px;margin-left:-28px;filter:brightness(1)}
+  22%{margin-top:-36px;margin-left:-23px;filter:brightness(1.3)}
+  48%{margin-top:-25px;margin-left:-33px;filter:brightness(1.08)}
+  74%{margin-top:-34px;margin-left:-24px;filter:brightness(1.34)}
+}
+html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
+@keyframes lcuore{
+  0%,100%{transform:scale(1)}
+  50%{transform:scale(1.16)}
+}
+
 /* ================= movimento ridotto ================= */
 @media (prefers-reduced-motion: reduce){
   html{scroll-behavior:auto}
   #lume{transition:opacity .8s ease;animation:none}
+  html.chat-viva #lume{animation:none}
+  html.chat-viva #lume::after{animation:none}
   .gp-orb{animation:none}
   .fp,.steps.seen .fp{opacity:.7;animation:none}
   .excard.start.first-time{animation:none;box-shadow:0 0 0 1px rgba(201,168,76,.4), 0 0 24px rgba(201,168,76,.25)}
@@ -586,9 +632,9 @@ details.gd[open]{border-color:rgba(205,178,242,.5);box-shadow:0 0 16px rgba(170,
   <div class="chat-msgs" id="chat-msgs">
     <div class="msg elisa">
       <span class="mwho">Elisa</span>
-      Benvenuta/o in questo piccolo spazio 💛 Qui trovi le mie parole sui temi che mi scrivete più spesso. Scrivimi quello che hai nel cuore, oppure parti da una di queste domande:
+      Benvenuta/o in questo piccolo spazio 💛 Qui sono raccolte, con cura, le parole di Elisa sui temi più importanti. Apri un tema qui sotto e scegli una domanda — oppure scrivimi liberamente.
     </div>
-    <div class="chips" id="chat-chips"></div>
+    <div id="chat-menu"></div>
   </div>
   <div class="chat-bar" id="chat-bar">
     <input id="chat-in" type="text" placeholder="Scrivi qui la tua domanda…" autocomplete="off" aria-label="La tua domanda per Elisa">
@@ -609,7 +655,7 @@ details.gd[open]{border-color:rgba(205,178,242,.5);box-shadow:0 0 16px rgba(170,
 <div id="saved">✓ Salvato</div>
 
 <script src="/app/lume.js?v=1"></script>
-<script src="/app/elisa-chat.js?v=1"></script>
+<script src="/app/elisa-chat.js?v=2"></script>
 <script>
 (function(){
   var KEY='ovl-user';
@@ -862,7 +908,11 @@ details.gd[open]{border-color:rgba(205,178,242,.5);box-shadow:0 0 16px rgba(170,
     if(ticking)return; ticking=true;
     requestAnimationFrame(function(){ placeLume(); ticking=false; });
   },{passive:true});
-  addEventListener('resize',function(){ cachePositions(); placeLume(); });
+  addEventListener('resize',function(){
+    cachePositions();
+    if(document.documentElement.classList.contains('chat-viva')){ lumeAllaChat(); return; }
+    placeLume();
+  });
   addEventListener('load',function(){ cachePositions(); placeLume(); });
 
   /* ================= la Guida del Cammino ================= */
@@ -914,6 +964,10 @@ details.gd[open]{border-color:rgba(205,178,242,.5);box-shadow:0 0 16px rgba(170,
     gpan.classList.remove('on');
     chatpan.classList.remove('on');
     lkpop.classList.remove('on');
+    if(document.documentElement.classList.contains('chat-viva')){
+      document.documentElement.classList.remove('chat-viva');
+      placeLume();
+    }
     if(lastFocus){ try{ lastFocus.focus(); }catch(e){} lastFocus=null; }
   }
   document.getElementById('gpan-x').addEventListener('click',chiudiTutto);
@@ -921,22 +975,35 @@ details.gd[open]{border-color:rgba(205,178,242,.5);box-shadow:0 0 16px rgba(170,
 
   /* il contesto della luce: la tappa su cui è posata */
   function ctxKey(){ return recommendedStage(); }
+  function lumeTap(){
+    if(document.documentElement.classList.contains('chat-viva')){ chiudiChat(); return; }
+    apriGuida(ctxKey(), lume);
+  }
   lume.addEventListener('click',function(e){
     e.stopPropagation();
-    apriGuida(ctxKey(), lume);
+    lumeTap();
   });
   lume.addEventListener('keydown',function(e){
-    if(e.key==='Enter'||e.key===' '){ e.preventDefault(); apriGuida(ctxKey(), lume); }
+    if(e.key==='Enter'||e.key===' '){ e.preventDefault(); lumeTap(); }
   });
 
   /* ================= Scrivi a Elisa ================= */
+  /* la lucetta si appollaia sull'angolo del pannello finché la chat è aperta */
+  function lumeAllaChat(){
+    var r=chatpan.getBoundingClientRect();
+    moveLume(r.left+scrollX+10, r.top+scrollY+6);
+  }
   function apriChat(){
     gpan.classList.remove('on');
     chatpan.classList.add('on');
+    document.documentElement.classList.add('chat-viva');
+    setTimeout(lumeAllaChat,60);
     document.getElementById('chat-in').focus();
   }
   function chiudiChat(){
     chatpan.classList.remove('on');
+    document.documentElement.classList.remove('chat-viva');
+    placeLume();
     gpan.classList.add('on');
     document.getElementById('gpan-x').focus();
   }
@@ -945,37 +1012,57 @@ details.gd[open]{border-color:rgba(205,178,242,.5);box-shadow:0 0 16px rgba(170,
 
   var chatHist=[];
   var chatMsgs=document.getElementById('chat-msgs');
-  function chatBubble(role,text,mode){
+  function chatBubble(role,text,opts){
+    opts=opts||{};
     var d=document.createElement('div');
     d.className='msg '+(role==='user'?'io':'elisa');
     if(role!=='user'){
       var w=document.createElement('span'); w.className='mwho'; w.textContent='Elisa'; d.appendChild(w);
     }
+    if(opts.avviso){
+      var a=document.createElement('span'); a.className='avviso'; a.textContent='🔎 '+opts.avviso; d.appendChild(a);
+    }
     var p=document.createElement('span'); p.className='mtxt'; p.textContent=text; d.appendChild(p);
-    if(mode==='faq'){
-      var b=document.createElement('span'); b.className='mode'; b.textContent='💛 risposta di Elisa'; d.appendChild(b);
+    if(opts.mode==='faq'||opts.mode==='doc'){
+      var b=document.createElement('span'); b.className='mode'; b.textContent='💛 dalle parole di Elisa'; d.appendChild(b);
     }
     chatMsgs.appendChild(d);
     chatMsgs.scrollTop=chatMsgs.scrollHeight;
     return d;
   }
+  function chatReply(r){
+    chatBubble('bot',r.answer,{mode:r.mode,avviso:r.avviso});
+    chatHist.push({role:'bot',text:r.answer});
+  }
+  /* domanda scelta dal menu: risposta esatta, senza avvertenza */
+  function chatAskId(id,label){
+    if(!window.OVL_ELISA)return;
+    var r=OVL_ELISA.byId(id); if(!r)return;
+    chatBubble('user',label);
+    chatHist.push({role:'user',text:label});
+    var typing=chatBubble('bot','· · ·',{}); typing.classList.add('typing');
+    setTimeout(function(){
+      if(typing.parentNode)typing.parentNode.removeChild(typing);
+      chatReply(r);
+    },650);
+  }
+  /* domanda scritta a mano libera: risposta con avvertenza */
   function chatSend(text){
     text=(text||'').trim(); if(!text)return;
     document.getElementById('chat-in').value='';
     chatBubble('user',text);
-    var typing=chatBubble('bot','· · ·'); typing.classList.add('typing');
+    var typing=chatBubble('bot','· · ·',{}); typing.classList.add('typing');
     var prior=chatHist.slice();
+    chatHist.push({role:'user',text:text});
     setTimeout(function(){
       if(!window.OVL_ELISA){
         if(typing.parentNode)typing.parentNode.removeChild(typing);
-        chatBubble('bot','In questo momento non riesco a risponderti 🙏🏻 Riprova tra poco, ricaricando la pagina.');
+        chatBubble('bot','In questo momento non riesco a risponderti 🙏🏻 Riprova tra poco, ricaricando la pagina.',{});
         return;
       }
       OVL_ELISA.rispondi(text,prior,function(r){
         if(typing.parentNode)typing.parentNode.removeChild(typing);
-        chatBubble('bot',r.answer,r.mode);
-        chatHist.push({role:'user',text:text});
-        chatHist.push({role:'bot',text:r.answer});
+        chatReply(r);
       });
     },650);
   }
@@ -985,14 +1072,27 @@ details.gd[open]{border-color:rgba(205,178,242,.5);box-shadow:0 0 16px rgba(170,
   document.getElementById('chat-in').addEventListener('keydown',function(e){
     if(e.key==='Enter'){ e.preventDefault(); chatSend(this.value); }
   });
+  /* il menu a tendina dei temi, con dentro tutte le domande */
   (function(){
     if(!window.OVL_ELISA)return;   /* se il modulo non carica, la pagina vive lo stesso */
-    var box=document.getElementById('chat-chips');
-    OVL_ELISA.CHIPS.forEach(function(c){
-      var b=document.createElement('button');
-      b.type='button'; b.className='chip'; b.textContent=c.label;
-      b.addEventListener('click',function(){ chatSend(c.q); });
-      box.appendChild(b);
+    var box=document.getElementById('chat-menu');
+    OVL_ELISA.MENU.forEach(function(cat){
+      var det=document.createElement('details');
+      det.className='qdrop';
+      var sum=document.createElement('summary');
+      sum.innerHTML='<span class="qi">'+cat.icon+'</span>'+cat.t+
+        '<span class="qn">'+cat.ids.length+'</span><span class="arr">▶</span>';
+      det.appendChild(sum);
+      var list=document.createElement('div'); list.className='qlist';
+      cat.ids.forEach(function(id){
+        var v=OVL_ELISA.byId(id); if(!v)return;
+        var b=document.createElement('button');
+        b.type='button'; b.className='qitem'; b.textContent=v.label;
+        b.addEventListener('click',function(){ chatAskId(id,v.label); });
+        list.appendChild(b);
+      });
+      det.appendChild(list);
+      box.appendChild(det);
     });
   })();
 
