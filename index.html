@@ -20,7 +20,7 @@ body{
   overflow-x:hidden;
   color:#d8d3df;
 }
-#spacer{height:520vh}
+#spacer{height:470vh}
 
 /* atmosfera viola dell'intro: copre la carta e svanisce col tuffo */
 #atmo{
@@ -679,10 +679,10 @@ async function init(){
     sh.piv.rotation.y = -(2.86 + sh.idx*.012) * ease(clamp01(f));
   }
 
-  const TOTAL = 5;
-  const qSheets = [0,1,2].map(i=>makeSheet(blankPageCanvas(im.pg), i, TOTAL));
-  const wSheet  = makeSheet(welcomeCanvas(im.pg), 3, TOTAL);
-  const dSheet  = makeSheet(darkPageCanvas(im.pg), 4, TOTAL, true);
+  const TOTAL = 4;
+  const qSheets = [0,1].map(i=>makeSheet(blankPageCanvas(im.pg), i, TOTAL));
+  const wSheet  = makeSheet(welcomeCanvas(im.pg), 2, TOTAL);
+  const dSheet  = makeSheet(darkPageCanvas(im.pg), 3, TOTAL, true);
 
   bookGroup.visible = false;
   scene.add(bookGroup);
@@ -990,9 +990,8 @@ async function init(){
     bookGroup.position.x = xOff;
 
     frontPivot.rotation.y = -2.95*pOpen;
-    setFlip(qSheets[0], ph(.28,.36));
-    setFlip(qSheets[1], ph(.31,.39));
-    setFlip(qSheets[2], ph(.34,.42));
+    setFlip(qSheets[0], ph(.28,.37));
+    setFlip(qSheets[1], ph(.32,.41));
     /* il benvenuto resta: niente giro di pagina, il libro si dissolve in luce */
 
     /* dissolvenza del canvas dentro il sito (sotto il velo nero) */
