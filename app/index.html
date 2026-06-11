@@ -12,6 +12,7 @@
 :root{
   --glic:#b9a3e3; --glic-hi:#dccdf6;
   --gold:#c9a84c; --gold-pale:#e8d9ae;
+  --cele:#b9ddf6;
   --txt:#e6e0ec; --txt-soft:#b7aec4; --txt-dim:#8d8499;
   --card:rgba(22,18,29,.72);
   --card-line:rgba(185,163,227,.16);
@@ -28,25 +29,42 @@ body{
   display:flex;flex-direction:column;
 }
 
-/* ===== la lucina che veglia sulla soglia ===== */
+/* ================= LA LUCE GUIDA =================
+   la luce fiorisce col Cammino: margherita → bucaneve → stella alpina → ortensia → fiordaliso → viola del pensiero → glicine */
+body{--lm-c1:#beb8ca;--lm-mid:#6e6880;
+  --lm-g1:rgba(200,195,215,.55);--lm-g2:rgba(160,152,180,.3);--lm-g3:rgba(120,112,145,.16)}
+body.lt1{--lm-c1:#ffffff;--lm-mid:#f0f2fa;
+  --lm-g1:rgba(240,243,255,.9);--lm-g2:rgba(212,222,248,.48);--lm-g3:rgba(185,198,240,.24)}
+body.lt2{--lm-c1:#ffffff;--lm-mid:#dde8f4;
+  --lm-g1:rgba(224,236,250,.9);--lm-g2:rgba(176,205,240,.5);--lm-g3:rgba(145,180,230,.25)}
+body.lt3{--lm-c1:#ffffff;--lm-mid:#b9ddf6;
+  --lm-g1:rgba(190,225,252,.9);--lm-g2:rgba(126,190,242,.52);--lm-g3:rgba(88,160,228,.26)}
+body.lt4{--lm-c1:#ffffff;--lm-mid:#a7b6ef;
+  --lm-g1:rgba(180,194,252,.9);--lm-g2:rgba(128,148,238,.52);--lm-g3:rgba(98,118,222,.26)}
+body.lt5{--lm-c1:#ffffff;--lm-mid:#ad7ff0;
+  --lm-g1:rgba(206,170,255,.9);--lm-g2:rgba(164,112,246,.5);--lm-g3:rgba(128,76,226,.26)}
+body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;
+  --lm-g1:rgba(225,205,255,.95);--lm-g2:rgba(186,150,240,.56);--lm-g3:rgba(150,110,215,.3)}
 #lume{
-  position:fixed;left:50%;top:13%;z-index:1;pointer-events:none;
+  position:absolute;left:0;top:0;z-index:40;
   width:56px;height:56px;margin:-28px 0 0 -28px;
-  animation:lfloat 5.5s ease-in-out infinite;
+  pointer-events:auto;cursor:pointer;
+  opacity:0;
+  transition:transform 1.7s cubic-bezier(.45,.05,.25,1), opacity .8s ease;
+  animation:lflick 3.1s ease-in-out infinite;
 }
-@keyframes lfloat{
-  0%,100%{transform:translate(0,0);filter:brightness(1)}
-  30%{transform:translate(14px,-9px);filter:brightness(1.25)}
-  65%{transform:translate(-12px,6px);filter:brightness(1.1)}
-}
+#lume.ready{opacity:1}
+@keyframes lflick{0%,100%{filter:brightness(1)}50%{filter:brightness(1.28)}}
 #lume::after{
   content:'';position:absolute;inset:19px;border-radius:50%;
   background:radial-gradient(circle at 38% 34%,
-    #ffffff 0%, #efe6ff 30%, #cdb2f2 58%, rgba(160,120,220,0) 78%);
+    var(--lm-c1) 0%, var(--lm-c1) 28%, var(--lm-mid) 58%, transparent 78%);
   box-shadow:
-    0 0 12px 4px rgba(225,205,255,.85),
-    0 0 38px 16px rgba(186,150,240,.45),
-    0 0 95px 44px rgba(150,110,215,.22);
+    0 0 12px 4px var(--lm-g1),
+    0 0 38px 16px var(--lm-g2),
+    0 0 95px 44px var(--lm-g3),
+    inset 0 0 4px rgba(220,215,245,.5);
+  transition:box-shadow 2s ease;
 }
 
 .wrap{width:100%;max-width:760px;margin:0 auto;padding:0 18px 40px;flex:1}
@@ -98,9 +116,16 @@ header.hd{padding:54px 0 8px;text-align:center;position:relative;z-index:2}
   box-shadow:0 3px 12px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,240,200,.5);
 }
 .btn-gold:hover{filter:brightness(1.07)}
+.btn-ghost{
+  width:100%;margin-top:10px;
+  background:none;border:1px solid rgba(185,163,227,.4);color:var(--txt-soft);
+  border-radius:40px;padding:13px 24px;cursor:pointer;
+  font-family:'Cinzel',serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+}
+.btn-ghost:hover{color:var(--glic-hi);border-color:var(--glic)}
 .lnote{font-size:13.5px;color:var(--txt-dim);margin-top:16px;line-height:1.6}
 
-/* ================= DASHBOARD ================= */
+/* ================= DASHBOARD: IL SENTIERO ================= */
 #dash{display:none;position:relative;z-index:2}
 #dash.on{display:block}
 .who{
@@ -117,15 +142,37 @@ header.hd{padding:54px 0 8px;text-align:center;position:relative;z-index:2}
 }
 .who button:hover{border-color:var(--glic);color:var(--glic-hi)}
 
-.dlbl{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--txt-dim);margin:0 0 14px;padding-left:2px}
+.dlbl{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--txt-dim);margin:0 0 14px;padding-left:2px;text-align:center}
 
-.exgrid{display:grid;grid-template-columns:1fr;gap:16px}
-@media(min-width:640px){.exgrid{grid-template-columns:1fr 1fr}}
+/* il sentiero: una sola colonna, dall'alto verso il basso */
+.path{position:relative;list-style:none;max-width:560px;margin:0 auto;padding:0}
+.path::before{
+  content:'';position:absolute;left:50%;top:80px;bottom:80px;width:1px;
+  background:linear-gradient(180deg,transparent, rgba(185,163,227,.14) 18%, rgba(185,163,227,.14) 82%, transparent);
+}
+.stage{position:relative}
 
+/* le impronte tra una tappa e l'altra: il cammino si crea camminando */
+.steps{display:flex;flex-direction:column;align-items:center;gap:12px;padding:26px 0;position:relative}
+.fp{
+  color:rgba(185,163,227,.45);
+  filter:drop-shadow(0 0 6px rgba(185,163,227,.3));
+  opacity:0;transition:opacity .9s ease;
+}
+.steps .fp:nth-child(odd){transform:translateX(-15px) rotate(-8deg)}
+.steps .fp:nth-child(even){transform:translateX(15px) rotate(8deg) scale(-1,1)}
+.steps.seen .fp{opacity:1}
+.steps.seen .fp:nth-child(1){transition-delay:0s}
+.steps.seen .fp:nth-child(2){transition-delay:.3s}
+.steps.seen .fp:nth-child(3){transition-delay:.6s}
+.steps.seen .fp:nth-child(4){transition-delay:.9s}
+
+/* ================= LE CARD-TAPPA ================= */
 .excard{
-  display:block;text-decoration:none;color:inherit;cursor:pointer;
+  display:block;width:100%;text-align:left;text-decoration:none;color:inherit;cursor:pointer;
+  font:inherit;
   border:1px solid var(--card-line);background:var(--card);
-  border-radius:16px;overflow:hidden;
+  border-radius:16px;overflow:hidden;position:relative;
   transition:transform .3s ease, box-shadow .9s ease, border-color .9s ease;
 }
 .excard:hover{
@@ -135,7 +182,7 @@ header.hd{padding:54px 0 8px;text-align:center;position:relative;z-index:2}
     0 0 80px rgba(150,110,215,.18), 0 18px 40px rgba(0,0,0,.5);
 }
 .excover{
-  height:150px;position:relative;overflow:hidden;
+  height:140px;position:relative;overflow:hidden;
   background:
     radial-gradient(420px 200px at 50% 110%, rgba(150,110,215,.4) 0%, rgba(150,110,215,.08) 55%, transparent 75%),
     linear-gradient(180deg, rgba(14,11,19,.88), rgba(20,16,27,.84)),
@@ -143,11 +190,11 @@ header.hd{padding:54px 0 8px;text-align:center;position:relative;z-index:2}
 }
 .excover .sym{
   position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
-  font-size:46px;line-height:1;
+  font-size:44px;line-height:1;
   filter:drop-shadow(0 0 18px rgba(186,150,240,.8));
 }
 .excover .ring{
-  position:absolute;left:50%;top:50%;width:96px;height:96px;
+  position:absolute;left:50%;top:50%;width:92px;height:92px;
   transform:translate(-50%,-50%) rotate(45deg);
   border:1px solid rgba(185,163,227,.4);
 }
@@ -158,9 +205,32 @@ header.hd{padding:54px 0 8px;text-align:center;position:relative;z-index:2}
 .exgo{font-family:'Cinzel',serif;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-pale)}
 .excard:hover .exgo{color:#f5e9c8}
 
-.excard.soon{opacity:.55;cursor:default}
-.excard.soon:hover{transform:none;border-color:var(--card-line);box-shadow:none}
-.excard.soon .exgo{color:var(--txt-dim)}
+/* mini-progresso sulla card del Giornaliero */
+.mini{
+  display:flex;align-items:center;gap:9px;flex-wrap:wrap;
+  margin:0 0 14px;padding:10px 12px;
+  border:1px solid rgba(185,163,227,.18);border-radius:10px;
+  background:rgba(185,163,227,.05);
+  font-size:15px;color:var(--txt-soft);line-height:1.5;
+}
+.mini-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+
+/* la tappa consigliata per oggi: bordo che respira piano */
+.stage.reco .excard{
+  border-color:rgba(205,178,242,.55);
+  box-shadow:0 0 0 1px rgba(205,178,242,.18), 0 0 22px rgba(170,135,230,.22);
+}
+/* "Inizia da qui" alla prima visita: un richiamo d'oro, gentile */
+@keyframes startglow{
+  0%,100%{box-shadow:0 0 0 1px rgba(201,168,76,.22), 0 0 16px rgba(201,168,76,.16)}
+  50%{box-shadow:0 0 0 1px rgba(201,168,76,.5), 0 0 32px rgba(201,168,76,.34)}
+}
+.excard.start.first-time{border-color:rgba(201,168,76,.55);animation:startglow 2.8s ease-in-out infinite}
+
+/* tappe più avanti nel cammino: vive ma in attesa */
+.excard.next .excover{filter:saturate(.4) brightness(.82)}
+.excard.next .exgo{color:var(--txt-dim)}
+.excard.next:hover .exgo{color:var(--txt-soft)}
 
 footer{
   text-align:center;padding:22px 14px 26px;position:relative;z-index:2;
@@ -168,11 +238,185 @@ footer{
   font-size:14px;color:var(--txt-dim);
 }
 footer a{color:var(--glic-hi);text-decoration:none}
+
+/* ================= LA GUIDA DEL CAMMINO ================= */
+#veil{
+  position:fixed;inset:0;z-index:60;background:rgba(4,3,8,.72);
+  backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);
+  opacity:0;pointer-events:none;transition:opacity .45s ease;
+}
+#veil.on{opacity:1;pointer-events:auto}
+#gpan,#chatpan{
+  position:fixed;z-index:61;left:50%;top:50%;
+  transform:translate(-50%,-50%) scale(.96);
+  width:min(720px,94vw);height:min(88vh,860px);
+  display:flex;flex-direction:column;
+  border:1px solid rgba(185,163,227,.35);border-radius:18px;
+  background:
+    linear-gradient(180deg, rgba(13,10,18,.97), rgba(10,8,14,.97)),
+    url('/src/pagina.jpg') center/cover;
+  box-shadow:0 0 60px rgba(150,110,215,.25), 0 30px 80px rgba(0,0,0,.7);
+  opacity:0;pointer-events:none;transition:opacity .45s ease, transform .45s ease;
+}
+#gpan.on,#chatpan.on{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1)}
+#chatpan{width:min(560px,94vw);height:min(76vh,640px)}
+.gp-hd{
+  display:flex;align-items:center;gap:12px;padding:18px 20px 14px;
+  border-bottom:1px solid rgba(185,163,227,.2);
+}
+.gp-orb{
+  width:34px;height:34px;border-radius:50%;flex-shrink:0;
+  background:radial-gradient(circle at 38% 34%, #fff 0%, #fff 30%, var(--lm-mid) 60%, transparent 80%);
+  box-shadow:0 0 10px 3px var(--lm-g1), 0 0 26px 10px var(--lm-g2);
+  animation:lflick 3.1s ease-in-out infinite;
+}
+.gp-hd h2{font-family:'Cinzel',serif;font-size:17px;font-weight:600;color:#f0eaf6;flex:1;
+  text-shadow:0 0 18px rgba(185,163,227,.4)}
+.gp-x{
+  background:none;border:1px solid rgba(185,163,227,.4);color:var(--txt-soft);
+  width:38px;height:38px;border-radius:50%;cursor:pointer;font-size:15px;line-height:1;flex-shrink:0;
+}
+.gp-x:hover{color:#fff;border-color:var(--glic-hi)}
+/* la vignetta celestina: scrivi a Elisa */
+.gp-chat{
+  background:none;border:1px solid rgba(185,221,246,.45);color:var(--cele);
+  width:38px;height:38px;border-radius:50%;cursor:pointer;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 12px rgba(185,221,246,.2);
+  transition:box-shadow .4s, border-color .4s;
+}
+.gp-chat:hover{border-color:var(--cele);box-shadow:0 0 18px rgba(185,221,246,.45)}
+.gp-chat svg{display:block}
+.gp-bd{flex:1;overflow-y:auto;padding:18px 18px 26px;-webkit-overflow-scrolling:touch}
+
+/* spiegazione contestuale dentro la guida */
+.gctx{
+  border:1px solid rgba(201,168,76,.4);border-left:3px solid var(--gold);
+  border-radius:12px;background:rgba(201,168,76,.05);
+  padding:14px 16px;margin-bottom:16px;
+}
+.gctx-t{font-family:'Cinzel',serif;font-size:13px;font-weight:700;color:var(--gold-pale);margin-bottom:8px}
+.gctx-b{font-size:17px;line-height:1.8;color:var(--txt)}
+.gctx-b b{color:var(--glic-hi);font-weight:600}
+
+/* il tuo punto del cammino */
+.lvl{
+  border:1px solid rgba(185,163,227,.3);border-radius:14px;
+  padding:16px 16px 14px;margin-bottom:16px;text-align:center;
+  background:rgba(185,163,227,.05);
+}
+.lvl-n{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:var(--glic);margin-bottom:6px}
+.lvl-t{font-family:'Cinzel',serif;font-size:21px;font-weight:700;color:#f0eaf6;
+  text-shadow:0 0 22px var(--lm-g2)}
+.lvl-d{font-size:16px;color:var(--txt-soft);margin-top:6px;line-height:1.6}
+.lvl-bar{height:7px;border-radius:7px;background:rgba(185,163,227,.12);margin:13px 6px 7px;overflow:hidden}
+.lvl-fill{height:100%;border-radius:7px;width:0%;
+  background:linear-gradient(90deg, #f0f2fa, var(--lm-mid));
+  box-shadow:0 0 12px var(--lm-g2);transition:width 1s ease}
+.lvl-next{font-size:14.5px;color:var(--txt-dim)}
+
+/* la scala dei fiori, in colonna: semplice da leggere */
+.scalav{border:1px solid var(--card-line);border-radius:12px;background:var(--card);overflow:hidden;margin-bottom:18px}
+.sv-row{
+  display:flex;align-items:center;gap:12px;
+  padding:11px 16px;border-bottom:1px solid rgba(185,163,227,.08);
+  opacity:.45;
+}
+.sv-row:last-child{border-bottom:none}
+.sv-row.on{opacity:1}
+.sv-row.cur{background:rgba(185,163,227,.07)}
+.sv-dot{width:18px;height:18px;border-radius:50%;flex-shrink:0;box-shadow:0 0 10px currentColor}
+.sv-row.cur .sv-dot{box-shadow:0 0 0 3px rgba(255,255,255,.14), 0 0 14px currentColor;transform:scale(1.15)}
+.sv-name{font-family:'Cinzel',serif;font-size:13px;font-weight:600;color:var(--txt);flex:1}
+.sv-row.cur .sv-name{color:#f0eaf6}
+.sv-d{font-size:14.5px;color:var(--txt-dim)}
+
+.gp-sec{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--txt-dim);margin:20px 0 12px;padding-left:2px}
+
+/* spiegazioni */
+details.gd{
+  border:1px solid var(--card-line);border-radius:12px;background:var(--card);
+  margin-bottom:10px;overflow:hidden;
+}
+details.gd summary{
+  list-style:none;cursor:pointer;padding:15px 16px;
+  display:flex;align-items:center;gap:10px;
+  font-family:'Cinzel',serif;font-size:14.5px;font-weight:600;color:#f0eaf6;
+}
+details.gd summary::-webkit-details-marker{display:none}
+details.gd summary .gi{font-size:17px}
+details.gd summary .arr{margin-left:auto;color:var(--glic);transition:transform .3s;font-size:12px}
+details.gd[open] summary .arr{transform:rotate(90deg)}
+details.gd[open]{border-color:rgba(205,178,242,.5);box-shadow:0 0 16px rgba(170,135,230,.18)}
+.gd-c{padding:2px 18px 16px;font-size:17px;line-height:1.8;color:var(--txt)}
+.gd-c p{margin-bottom:10px}
+.gd-c b{color:var(--glic-hi);font-weight:600}
+.gd-c .gold{color:var(--gold-pale);font-weight:600}
+.gd-c ol,.gd-c ul{margin:0 0 10px 20px}
+.gd-c li{margin-bottom:7px}
+
+/* ================= SCRIVI A ELISA (in preparazione) ================= */
+.chat-msgs{flex:1;overflow-y:auto;padding:18px 16px;display:flex;flex-direction:column;gap:10px;-webkit-overflow-scrolling:touch}
+.msg{max-width:84%;padding:12px 15px;border-radius:14px;font-size:16.5px;line-height:1.65;color:var(--txt)}
+.msg .mwho{display:block;font-family:'Cinzel',serif;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--glic);margin-bottom:6px}
+.msg.elisa{align-self:flex-start;background:rgba(185,163,227,.09);border:1px solid rgba(185,163,227,.3);border-bottom-left-radius:4px}
+.msg.io{align-self:flex-end;background:rgba(201,168,76,.09);border:1px solid rgba(201,168,76,.35);border-bottom-right-radius:4px}
+.chat-bar{display:flex;gap:10px;padding:12px 14px 6px;border-top:1px solid rgba(185,163,227,.2)}
+.chat-bar input{
+  flex:1;background:rgba(10,8,14,.55);
+  border:1px solid rgba(185,163,227,.25);border-radius:24px;
+  padding:12px 16px;font-size:16.5px;font-family:'Cormorant Garamond',serif;
+  color:#f4eefc;outline:none;-webkit-appearance:none;
+}
+.chat-bar input:disabled{opacity:.55}
+.chat-send{
+  width:46px;height:46px;border-radius:50%;flex-shrink:0;cursor:pointer;
+  background:linear-gradient(165deg,#d8b765,#b08c38);color:#2a1d08;
+  border:none;font-size:17px;line-height:1;
+}
+.chat-send:disabled{opacity:.4;cursor:default}
+.chat-note{font-size:13.5px;color:var(--txt-dim);text-align:center;padding:6px 14px 14px}
+
+/* ================= POPUP DELLA LUCE (tappa non ancora consigliata) ================= */
+#lkpop{
+  position:fixed;z-index:62;left:50%;top:50%;
+  transform:translate(-50%,-50%) scale(.96);
+  width:min(420px,92vw);
+  border:1px solid rgba(185,163,227,.4);border-radius:18px;
+  background:
+    linear-gradient(180deg, rgba(13,10,18,.97), rgba(10,8,14,.97)),
+    url('/src/pagina.jpg') center/cover;
+  box-shadow:0 0 60px rgba(150,110,215,.25), 0 30px 80px rgba(0,0,0,.7);
+  padding:26px 22px 22px;text-align:center;
+  opacity:0;pointer-events:none;transition:opacity .45s ease, transform .45s ease;
+}
+#lkpop.on{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1)}
+#lkpop .gp-orb{width:44px;height:44px;margin:0 auto 14px}
+#lkpop h3{font-family:'Cinzel',serif;font-size:18px;font-weight:600;color:#f0eaf6;margin-bottom:10px}
+#lkpop p{font-size:16.5px;line-height:1.7;color:var(--txt-soft);margin-bottom:18px}
+
+/* ================= toast ================= */
+#saved{position:fixed;bottom:18px;left:50%;transform:translateX(-50%) translateY(60px);
+  background:rgba(22,17,28,.96);color:var(--glic-hi);border:1px solid rgba(185,163,227,.5);
+  border-radius:30px;padding:9px 20px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:.1em;
+  z-index:70;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;
+  box-shadow:0 0 18px rgba(150,110,215,.3)}
+#saved.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ================= movimento ridotto ================= */
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+  #lume{transition:opacity .8s ease;animation:none}
+  .gp-orb{animation:none}
+  .fp{opacity:1;transition:none}
+  .excard.start.first-time{animation:none;box-shadow:0 0 0 1px rgba(201,168,76,.4), 0 0 24px rgba(201,168,76,.25)}
+  .excard,.excard:hover{transition:none;transform:none}
+}
 </style>
 </head>
 <body>
 
-<div id="lume"></div>
+<div id="lume" role="button" tabindex="0" aria-label="Apri la Guida del Cammino"></div>
 
 <div class="wrap">
 
@@ -196,54 +440,196 @@ footer a{color:var(--glic-hi);text-decoration:none}
     </div>
   </section>
 
-  <!-- ============ DASHBOARD ============ -->
+  <!-- ============ DASHBOARD: IL SENTIERO ============ -->
   <section id="dash">
     <div class="who">
       <span class="wmail">Benvenuta/o, <b id="wmail"></b></span>
       <button onclick="esci()">Esci</button>
     </div>
 
-    <div class="dlbl">I tuoi esercizi</div>
+    <div class="dlbl">Il tuo sentiero</div>
 
-    <div class="exgrid">
+    <ol id="sentiero" class="path" aria-label="Le tappe del tuo cammino">
 
-      <a class="excard" href="/app/day/" id="card-day">
-        <div class="excover">
-          <div class="ring"></div>
-          <span class="sym">📜</span>
-        </div>
-        <div class="exbody">
-          <div class="exbadge">Pratica quotidiana</div>
-          <h3>Il Giornaliero</h3>
-          <p class="exdesc">Le tue schede di pratica giorno per giorno: lo Spazio Emotivo, l'Osservatorio Interiore e il Diario della Settimana. Tutto resta salvato nel tuo account, con il Resoconto del tuo andamento.</p>
-          <span class="exgo">Apri l'esercizio →</span>
-        </div>
-      </a>
+      <li class="stage" data-stage="start">
+        <button class="excard start" id="card-start" onclick="apriGuida('start',this)">
+          <div class="excover">
+            <div class="ring"></div>
+            <span class="sym">🕯️</span>
+          </div>
+          <div class="exbody">
+            <div class="exbadge">La prima tappa</div>
+            <h3>Inizia da qui</h3>
+            <p class="exdesc">Cos'è quest'area, come funziona il sentiero e cosa significa la piccola luce che ti accompagna. Due minuti per orientarti: poi il cammino è tuo.</p>
+            <span class="exgo">Apri la guida →</span>
+          </div>
+        </button>
+      </li>
 
-      <div class="excard soon">
-        <div class="excover">
-          <div class="ring"></div>
-          <span class="sym">🌙</span>
-        </div>
-        <div class="exbody">
-          <div class="exbadge">In preparazione</div>
-          <h3>Prossimo esercizio</h3>
-          <p class="exdesc">Un nuovo strumento del Cammino sta prendendo forma. Lo troverai qui appena sarà pronto.</p>
-          <span class="exgo">Presto disponibile</span>
-        </div>
-      </div>
+      <!-- le tappe successive nascono qui dal registro degli esercizi -->
 
-    </div>
+    </ol>
   </section>
 
 </div>
 
 <footer>Il Cammino Interiore · Elisa Soul Medium · <a href="/">Torna al Libro</a></footer>
 
+<!-- l'orma riusata per tutte le impronte -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <g id="fp-shoe">
+      <ellipse cx="12" cy="12.5" rx="7" ry="10.5"/>
+      <ellipse cx="12" cy="32.5" rx="5.2" ry="5.8"/>
+    </g>
+  </defs>
+</svg>
+
+<!-- ============ LA GUIDA DEL CAMMINO ============ -->
+<div id="veil"></div>
+<aside id="gpan" role="dialog" aria-modal="true" aria-label="Guida del Cammino">
+  <div class="gp-hd">
+    <div class="gp-orb"></div>
+    <h2>Guida del Cammino</h2>
+    <button class="gp-chat" id="chat-btn" aria-label="Scrivi a Elisa — in preparazione" title="Scrivi a Elisa">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 11.5a8.4 8.4 0 0 1-8.6 8.2c-1.4 0-2.7-.3-3.9-.9L3.5 20l1.2-4.3a8 8 0 0 1-1.2-4.2A8.4 8.4 0 0 1 12.1 3.3a8.4 8.4 0 0 1 8.9 8.2z"/>
+        <circle cx="8.6" cy="11.6" r=".9" fill="currentColor" stroke="none"/>
+        <circle cx="12.2" cy="11.6" r=".9" fill="currentColor" stroke="none"/>
+        <circle cx="15.8" cy="11.6" r=".9" fill="currentColor" stroke="none"/>
+      </svg>
+    </button>
+    <button class="gp-x" id="gpan-x" aria-label="Chiudi la guida">✕</button>
+  </div>
+  <div class="gp-bd">
+
+    <div class="gctx" id="gctx" style="display:none">
+      <div class="gctx-t" id="gctxT"></div>
+      <div class="gctx-b" id="gctxB"></div>
+    </div>
+
+    <div class="lvl">
+      <div class="lvl-n">Il tuo punto del cammino</div>
+      <div class="lvl-t" id="lvlT">0 giorni di pratica</div>
+      <div class="lvl-d" id="lvlD"></div>
+      <div class="lvl-bar"><div class="lvl-fill" id="lvlFill"></div></div>
+      <div class="lvl-next" id="lvlNext"></div>
+    </div>
+
+    <div class="gp-sec">La scala dei fiori</div>
+    <div class="scalav" id="scala"></div>
+
+    <div class="gp-sec">Come funziona</div>
+
+    <details class="gd" open>
+      <summary><span class="gi">🕯️</span>Cos'è quest'area<span class="arr">▶</span></summary>
+      <div class="gd-c">
+        <p>Questa è la tua <b>area di pratica personale</b>. Tiene traccia di tutto quello che fai: ogni scheda, ogni nota, ogni giorno di pratica resta <b>salvato nel tuo account</b> — non devi ricordare nulla a memoria, e riprendi sempre da dove eri rimasta.</p>
+        <p>È pensata per <b>accompagnarti passo dopo passo</b>, con calma: ti dice sempre qual è la tappa consigliata per oggi e ti protegge dal correre troppo. <span class="gold">Non serve la perfezione: conta la direzione, non la velocità.</span></p>
+      </div>
+    </details>
+
+    <details class="gd">
+      <summary><span class="gi">👣</span>Come funziona il sentiero<span class="arr">▶</span></summary>
+      <div class="gd-c">
+        <p>La pagina che hai davanti è un <b>sentiero</b>, da percorrere dall'alto verso il basso. Si comincia da <b>«Inizia da qui»</b>, poi c'è <b>il Giornaliero</b> — la pratica di ogni giorno — e più in basso le tappe che verranno.</p>
+        <p>Le <b>impronte</b> tra una tappa e l'altra sono i tuoi passi: il cammino si crea camminando. La tappa con il <b>bordo luminoso</b> è quella consigliata per oggi.</p>
+        <p>Gli esercizi più avanti <b>si aprono con la costanza</b>: ti consiglieremo sempre quanti giorni di pratica fare prima di proseguire. Ma la scelta resta tua, sempre.</p>
+      </div>
+    </details>
+
+    <details class="gd">
+      <summary><span class="gi">🌸</span>La scala dei fiori<span class="arr">▶</span></summary>
+      <div class="gd-c">
+        <p>La tua piccola luce <b>cambia colore con i giorni di pratica</b>, come un fiore che sboccia. Si parte dalla <b>margherita</b>, il fiore semplice dell'inizio; con la costanza arrivano il bucaneve, la stella alpina, l'ortensia, il fiordaliso, la viola… fino al <span class="gold">glicine</span>, il fiore del Cammino.</p>
+        <p>Conta ogni giorno in cui fai <b>almeno una pratica</b>. Non è una gara: i fiori arrivano da soli, un giorno alla volta. La scala qui sopra ti mostra sempre a che punto sei.</p>
+      </div>
+    </details>
+
+    <details class="gd">
+      <summary><span class="gi">✨</span>La piccola luce<span class="arr">▶</span></summary>
+      <div class="gd-c">
+        <p>La luce che vedi sulla pagina è la tua <b>compagna di cammino</b>. Ti segue mentre scorri, si ferma accanto alla tappa consigliata e — dentro gli esercizi — si posa sulla sezione in cui stai lavorando.</p>
+        <p><b>Toccala in qualsiasi momento</b>: si apre questa guida, con la spiegazione di dove ti trovi e di cosa fare. Quando hai un dubbio, la luce è lì per questo.</p>
+      </div>
+    </details>
+
+  </div>
+</aside>
+
+<!-- ============ SCRIVI A ELISA (predisposta) ============ -->
+<aside id="chatpan" role="dialog" aria-modal="true" aria-label="Scrivi a Elisa">
+  <div class="gp-hd">
+    <div class="gp-orb"></div>
+    <h2>Scrivi a Elisa</h2>
+    <button class="gp-x" id="chat-x" aria-label="Torna alla guida">✕</button>
+  </div>
+  <div class="chat-msgs" id="chat-msgs">
+    <div class="msg elisa">
+      <span class="mwho">Elisa</span>
+      Questo spazio sta prendendo forma: presto potrai scrivermi da qui.
+      Intanto la Guida del Cammino e il Giornaliero sono con te, passo dopo passo. 🤍
+    </div>
+  </div>
+  <div class="chat-bar" id="chat-bar">
+    <input id="chat-in" type="text" placeholder="In preparazione…" disabled aria-label="Messaggio (in preparazione)">
+    <button class="chat-send" id="chat-send" disabled aria-label="Invia (in preparazione)">➤</button>
+  </div>
+  <div class="chat-note">La chat con Elisa arriverà in un prossimo aggiornamento.</div>
+</aside>
+
+<!-- ============ IL CONSIGLIO DELLA LUCE (tappa non ancora consigliata) ============ -->
+<div id="lkpop" role="alertdialog" aria-modal="true" aria-labelledby="lkT" aria-describedby="lkB">
+  <div class="gp-orb"></div>
+  <h3 id="lkT">Sicuro di voler continuare?</h3>
+  <p id="lkB"></p>
+  <button class="btn-gold" id="lkBack">Torna indietro</button>
+  <button class="btn-ghost" id="lkGo">Vai avanti comunque</button>
+</div>
+
+<div id="saved">✓ Salvato</div>
+
+<script src="/app/lume.js?v=1"></script>
 <script>
 (function(){
   var KEY='ovl-user';
+  var EMAIL='', S={store:{},meta:{}};
+  var days=0, tier=0, strk=0;
+  var rendered=false, lastFocus=null;
 
+  /* ============ IL REGISTRO DEGLI ESERCIZI ============
+     ogni nuovo esercizio = una riga qui (la tappa nasce da sola).
+     requires.days = giorni di pratica consigliati prima di aprirlo. */
+  var EXERCISES=[
+    {id:'day', title:'Il Giornaliero', badge:'Pratica quotidiana', sym:'📜', route:'/app/day/',
+     desc:'Le tue schede di pratica giorno per giorno: lo Spazio Emotivo, l\'Osservatorio Interiore e il Diario della Settimana. Tutto resta salvato nel tuo account.',
+     requires:null},
+    {id:'ex2', title:'Prossimo esercizio', badge:'Più avanti nel cammino', sym:'🌙', route:null,
+     desc:'Un nuovo strumento del Cammino sta prendendo forma. Lo troverai qui, quando il Giornaliero ti avrà accompagnato abbastanza a lungo.',
+     requires:{days:20}, soon:true}
+  ];
+
+  /* ---- la guida sa DOVE è posata la luce: contesti del sentiero ---- */
+  var DCTX={
+    start:{t:'Inizia da qui',
+      h:'<p>Benvenuta/o nella tua area di pratica. Qui sotto trovi tutto quello che serve per cominciare: leggi con calma <b>«Cos\'è quest\'area»</b> e <b>«Come funziona il sentiero»</b>, poi apri il Giornaliero e fai la tua prima pratica. Al resto pensa l\'app: tiene traccia di tutto e ti accompagna passo dopo passo.</p>'},
+    day:{t:'Il Giornaliero',
+      h:'<p>È la pratica di ogni giorno: lo <b>Spazio Emotivo</b>, l\'<b>Osservatorio Interiore</b> e il <b>Diario della Settimana</b>. Sulla card vedi i tuoi giorni di pratica e il tuo fiore. Apri l\'esercizio e lasciati guidare: dentro, la luce sarà con te sezione per sezione.</p>'},
+    ex2:{t:'Le tappe più avanti',
+      h:'<p>Più in basso nel sentiero ci sono gli esercizi che verranno. Si aprono con la costanza: per il prossimo ti consigliamo almeno <b>20 giorni</b> di Giornaliero. Non c\'è fretta — il sentiero non scappa.</p>'}
+  };
+
+  /* ================= toast ================= */
+  var toastTimer=null;
+  function toast(msg){
+    var t=document.getElementById('saved');
+    t.textContent=msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer=setTimeout(function(){t.classList.remove('show');},1800);
+  }
+
+  /* ================= login (invariato) ================= */
   function show(view){
     document.getElementById('login').classList.toggle('on', view==='login');
     document.getElementById('dash').classList.toggle('on', view==='dash');
@@ -251,9 +637,12 @@ footer a{color:var(--glic-hi);text-decoration:none}
       var u='';
       try{ u=localStorage.getItem(KEY)||''; }catch(e){}
       document.getElementById('wmail').textContent=u;
+      boot();
+    } else {
+      document.body.className='';
+      cachePositions(); placeLume();
     }
   }
-
   window.entra=function(){
     var el=document.getElementById('mail');
     var v=(el.value||'').trim().toLowerCase();
@@ -267,11 +656,303 @@ footer a{color:var(--glic-hi);text-decoration:none}
     try{ localStorage.setItem(KEY, v); }catch(e){}
     show('dash');
   };
-
   window.esci=function(){
     try{ localStorage.removeItem(KEY); }catch(e){}
     show('login');
   };
+
+  /* ================= il sentiero ================= */
+  function guidaVista(){ try{ return !!localStorage.getItem('ovl-guida-vista'); }catch(e){ return false; } }
+  function unlockOk(ex){ return !ex.requires || days>=ex.requires.days; }
+
+  function fpSvg(){
+    return '<svg class="fp" viewBox="0 0 24 40" width="22" height="36" fill="currentColor" aria-hidden="true"><use href="#fp-shoe"/></svg>';
+  }
+  function renderSentiero(){
+    var ol=document.getElementById('sentiero');
+    EXERCISES.forEach(function(ex){
+      var steps=document.createElement('li');
+      steps.className='steps'; steps.setAttribute('aria-hidden','true');
+      steps.innerHTML=fpSvg()+fpSvg()+fpSvg()+fpSvg();
+      ol.appendChild(steps);
+
+      var li=document.createElement('li');
+      li.className='stage'; li.dataset.stage=ex.id;
+      var locked=!!ex.requires;
+      var el;
+      if(ex.route){
+        el=document.createElement('a');
+        el.href=ex.route;
+        el.addEventListener('click',function(e){
+          if(!unlockOk(ex)){ e.preventDefault(); openLock(ex, el); }
+        });
+      } else {
+        el=document.createElement('button');
+        el.type='button';
+        el.addEventListener('click',function(){ openLock(ex, el); });
+      }
+      el.className='excard'+(locked?' next':'');
+      if(ex.id==='day')el.id='card-day';
+      el.innerHTML=
+        '<div class="excover"><div class="ring"></div><span class="sym">'+ex.sym+'</span></div>'+
+        '<div class="exbody">'+
+          '<div class="exbadge">'+(ex.soon?'In preparazione':ex.badge)+'</div>'+
+          '<h3>'+ex.title+'</h3>'+
+          '<p class="exdesc">'+ex.desc+'</p>'+
+          (ex.id==='day'?'<div class="mini" id="mini-day"></div>':'')+
+          '<span class="exgo">'+(locked
+            ?('Consigliato dopo '+ex.requires.days+' giorni di Giornaliero')
+            :'Apri l\'esercizio →')+'</span>'+
+        '</div>';
+      li.appendChild(el);
+      ol.appendChild(li);
+    });
+
+    /* le impronte si rivelano scendendo: il cammino si crea camminando */
+    if('IntersectionObserver' in window){
+      var io=new IntersectionObserver(function(entries){
+        entries.forEach(function(en){
+          if(en.isIntersecting){ en.target.classList.add('seen'); io.unobserve(en.target); }
+        });
+      },{threshold:.35});
+      ol.querySelectorAll('.steps').forEach(function(s){ io.observe(s); });
+    } else {
+      ol.querySelectorAll('.steps').forEach(function(s){ s.classList.add('seen'); });
+    }
+  }
+
+  function renderMini(){
+    var el=document.getElementById('mini-day'); if(!el)return;
+    if(days===0){
+      el.textContent='Il sentiero inizia con il primo passo — apri e comincia.';
+      return;
+    }
+    var t=OVL_LUME.TIERS[tier];
+    el.innerHTML='<span class="mini-dot" style="background:'+t.col+';box-shadow:0 0 8px '+t.col+'88"></span>'+
+      '<span>'+t.nome+' · '+days+(days===1?' giorno':' giorni')+' di pratica'+
+      (strk>=2?' · '+strk+' di fila':'')+'</span>';
+  }
+
+  function recommendedStage(){
+    if(days===0 && !guidaVista())return 'start';
+    for(var i=0;i<EXERCISES.length;i++){
+      var ex=EXERCISES[i];
+      if(ex.route && ex.requires && days>=ex.requires.days)return ex.id;
+    }
+    return 'day';
+  }
+  function markRecommended(){
+    var id=recommendedStage();
+    document.querySelectorAll('#sentiero .stage').forEach(function(li){
+      li.classList.toggle('reco', li.dataset.stage===id);
+    });
+    var cs=document.getElementById('card-start');
+    if(cs)cs.classList.toggle('first-time', days===0 && !guidaVista());
+  }
+
+  /* ================= dati e progresso (pull-only) ================= */
+  function calcProgress(){
+    var arr=OVL_LUME.allActiveDays(S.store);
+    days=arr.length;
+    strk=OVL_LUME.streakFromDays(arr);
+    tier=OVL_LUME.applyTier(days);
+  }
+  function refreshAll(){
+    calcProgress();
+    renderMini();
+    markRecommended();
+    cachePositions();
+    placeLume();
+  }
+  function doPull(){
+    if(!EMAIL)return;
+    OVL_LUME.pullStore(EMAIL, S.store, S.meta, function(changed){
+      if(changed)refreshAll();
+    });
+  }
+  function boot(){
+    try{ EMAIL=(localStorage.getItem(KEY)||'').trim().toLowerCase(); }catch(e){ EMAIL=''; }
+    S=OVL_LUME.loadLocal(EMAIL);
+    if(!rendered){ renderSentiero(); rendered=true; }
+    refreshAll();
+    doPull();
+  }
+  /* tornando dal Giornaliero (anche dalla cache del telefono) i conteggi vanno rifatti */
+  document.addEventListener('visibilitychange',function(){
+    if(document.visibilityState==='visible' && document.getElementById('dash').classList.contains('on'))boot();
+  });
+  addEventListener('pageshow',function(e){
+    if(e.persisted && document.getElementById('dash').classList.contains('on'))boot();
+  });
+
+  /* ================= la luce che accompagna ================= */
+  var lume=document.getElementById('lume');
+  var pos={homeX:0,homeY:0,pathX:0,rest:null};
+  var firstPlace=true;
+
+  function moveLume(x,y){
+    lume.style.transform='translate3d('+(x|0)+'px,'+(y|0)+'px,0)';
+  }
+  function cachePositions(){
+    var hd=document.querySelector('header.hd');
+    pos.homeX=innerWidth/2;
+    pos.homeY=hd.offsetTop+hd.offsetHeight+26;
+    pos.rest=null;
+    if(document.getElementById('dash').classList.contains('on')){
+      var sent=document.getElementById('sentiero');
+      var sr=sent.getBoundingClientRect();
+      pos.pathX=sr.left+scrollX+sr.width/2;
+      var card=document.querySelector('#sentiero .stage.reco .excard');
+      if(card){
+        var r=card.getBoundingClientRect();
+        var top=r.top+scrollY;
+        if(innerWidth<600){
+          pos.rest={x:r.left+scrollX+r.width/2, y:top-30};       /* sul telefono: sopra la card */
+        } else {
+          pos.rest={x:r.left+scrollX-26, y:top+Math.min(r.height/2,70)};  /* da grande: di fianco */
+        }
+      }
+    }
+  }
+  function placeLume(){
+    var x,y;
+    if(!pos.rest){
+      x=pos.homeX; y=pos.homeY;
+    } else {
+      var follow=scrollY+innerHeight*0.35;
+      y=Math.max(pos.homeY, Math.min(pos.rest.y, follow));
+      x=(y>=pos.rest.y-4)?pos.rest.x:pos.pathX;
+    }
+    if(firstPlace){
+      /* il primo posizionamento è immediato: niente viaggio dall'angolo della pagina */
+      firstPlace=false;
+      lume.style.transition='none';
+      moveLume(x,y);
+      void lume.offsetWidth;
+      lume.style.transition='';
+      lume.classList.add('ready');
+      return;
+    }
+    moveLume(x,y);
+  }
+  var ticking=false;
+  addEventListener('scroll',function(){
+    if(ticking)return; ticking=true;
+    requestAnimationFrame(function(){ placeLume(); ticking=false; });
+  },{passive:true});
+  addEventListener('resize',function(){ cachePositions(); placeLume(); });
+  addEventListener('load',function(){ cachePositions(); placeLume(); });
+
+  /* ================= la Guida del Cammino ================= */
+  var veil=document.getElementById('veil');
+  var gpan=document.getElementById('gpan');
+  var chatpan=document.getElementById('chatpan');
+  var lkpop=document.getElementById('lkpop');
+
+  function renderGuida(){
+    calcProgress();
+    var t=OVL_LUME.TIERS[tier];
+    document.getElementById('lvlT').textContent=days+(days===1?' giorno':' giorni')+' di pratica';
+    document.getElementById('lvlD').textContent='La tua luce è '+t.art+t.nome.toLowerCase()+
+      ': fiorisce con la costanza, non con la fretta.';
+    var nx=OVL_LUME.TIERS[tier+1];
+    var fill=nx ? Math.max(0,Math.min(1,(days-t.d)/Math.max(1,nx.d-t.d))) : 1;
+    document.getElementById('lvlFill').style.width=(fill*100).toFixed(0)+'%';
+    document.getElementById('lvlNext').textContent = nx
+      ? ('Prossimo fiore ('+nx.nome.toLowerCase()+') a '+nx.d+' giorni')
+      : 'Sei arrivata al glicine, il fiore del Cammino.';
+    var sc=document.getElementById('scala'); sc.innerHTML='';
+    OVL_LUME.TIERS.forEach(function(tt,k){
+      var d=document.createElement('div');
+      d.className='sv-row'+(k<=tier?' on':'')+(k===tier?' cur':'');
+      d.innerHTML='<span class="sv-dot" style="background:'+tt.col+';color:'+tt.col+'"></span>'+
+        '<span class="sv-name">'+tt.nome+'</span>'+
+        '<span class="sv-d">'+(tt.d===0?'l\'inizio del cammino':'da '+tt.d+' giorni di pratica')+'</span>';
+      sc.appendChild(d);
+    });
+  }
+  window.apriGuida=function(key,fromEl){
+    lastFocus=fromEl||document.activeElement;
+    if(key==='start'){ try{ localStorage.setItem('ovl-guida-vista','1'); }catch(e){} markRecommended(); cachePositions(); placeLume(); }
+    renderGuida();
+    var ctx=document.getElementById('gctx');
+    if(key && DCTX[key]){
+      document.getElementById('gctxT').textContent='In questa sezione — '+DCTX[key].t;
+      document.getElementById('gctxB').innerHTML=DCTX[key].h;
+      ctx.style.display='block';
+    } else {
+      ctx.style.display='none';
+    }
+    veil.classList.add('on'); gpan.classList.add('on');
+    document.querySelector('.gp-bd').scrollTop=0;
+    document.getElementById('gpan-x').focus();
+  };
+  function chiudiTutto(){
+    veil.classList.remove('on');
+    gpan.classList.remove('on');
+    chatpan.classList.remove('on');
+    lkpop.classList.remove('on');
+    if(lastFocus){ try{ lastFocus.focus(); }catch(e){} lastFocus=null; }
+  }
+  document.getElementById('gpan-x').addEventListener('click',chiudiTutto);
+  veil.addEventListener('click',chiudiTutto);
+
+  /* il contesto della luce: la tappa su cui è posata */
+  function ctxKey(){ return recommendedStage(); }
+  lume.addEventListener('click',function(e){
+    e.stopPropagation();
+    apriGuida(ctxKey(), lume);
+  });
+  lume.addEventListener('keydown',function(e){
+    if(e.key==='Enter'||e.key===' '){ e.preventDefault(); apriGuida(ctxKey(), lume); }
+  });
+
+  /* ================= Scrivi a Elisa (predisposta) ================= */
+  function apriChat(){
+    gpan.classList.remove('on');
+    chatpan.classList.add('on');
+    document.getElementById('chat-x').focus();
+  }
+  function chiudiChat(){
+    chatpan.classList.remove('on');
+    gpan.classList.add('on');
+    document.getElementById('gpan-x').focus();
+  }
+  document.getElementById('chat-btn').addEventListener('click',apriChat);
+  document.getElementById('chat-x').addEventListener('click',chiudiChat);
+  document.getElementById('chat-bar').addEventListener('click',function(){
+    toast('La chat arriverà presto');
+  });
+
+  /* ================= il consiglio della luce (tappa più avanti) ================= */
+  var lockTarget=null;
+  function openLock(ex,fromEl){
+    lockTarget=ex; lastFocus=fromEl;
+    document.getElementById('lkT').textContent='Sicuro di voler continuare?';
+    var msg;
+    if(ex.route){
+      msg='Ti consigliamo almeno '+ex.requires.days+' giorni di Giornaliero prima di proseguire. '+
+        (days===0?'Il Giornaliero ti aspetta per iniziare.':
+         days===1?'Finora ne hai fatto uno.':'Finora ne hai fatti '+days+'.');
+    } else {
+      msg='Questa tappa sta prendendo forma: la troverai qui appena pronta. Intanto il Giornaliero ti accompagna'+
+        (ex.requires?' — ti consigliamo almeno '+ex.requires.days+' giorni di pratica prima di proseguire.':'.');
+    }
+    document.getElementById('lkB').textContent=msg;
+    document.getElementById('lkGo').style.display=ex.route?'':'none';
+    veil.classList.add('on'); lkpop.classList.add('on');
+    document.getElementById('lkBack').focus();
+  }
+  document.getElementById('lkBack').addEventListener('click',chiudiTutto);
+  document.getElementById('lkGo').addEventListener('click',function(){
+    if(lockTarget&&lockTarget.route)location.href=lockTarget.route;
+  });
+
+  document.addEventListener('keydown',function(e){
+    if(e.key!=='Escape')return;
+    if(chatpan.classList.contains('on'))chiudiChat();
+    else chiudiTutto();
+  });
 
   /* già dentro? vai dritto alla dashboard */
   var u=null;
