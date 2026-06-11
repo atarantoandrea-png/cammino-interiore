@@ -796,7 +796,7 @@ details.gd[open]{border-color:rgba(205,178,242,.5);box-shadow:0 0 16px rgba(170,
   function cachePositions(){
     var hd=document.querySelector('header.hd');
     pos.homeX=innerWidth/2;
-    pos.homeY=hd.offsetTop+hd.offsetHeight+26;
+    pos.homeY=hd.offsetTop+70;   /* a riposo veglia sul rombo dell'header */
     pos.rest=null;
     if(document.getElementById('dash').classList.contains('on')){
       var sent=document.getElementById('sentiero');
@@ -819,7 +819,9 @@ details.gd[open]{border-color:rgba(205,178,242,.5);box-shadow:0 0 16px rgba(170,
     if(!pos.rest){
       x=pos.homeX; y=pos.homeY;
     } else {
-      var follow=scrollY+innerHeight*0.35;
+      /* parte dalla soglia e cammina un po' più veloce di chi scorre,
+         così raggiunge la tappa consigliata quando la card è in vista */
+      var follow=pos.homeY+scrollY*1.35;
       y=Math.max(pos.homeY, Math.min(pos.rest.y, follow));
       x=(y>=pos.rest.y-4)?pos.rest.x:pos.pathX;
     }
