@@ -37,18 +37,20 @@ body{
 }
 
 /* ================= LA LUCE GUIDA =================
-   il colore evolve col Cammino: bianco → argento → celeste → indaco → glicine → viola */
-body{--lm-mid:#f0f2fa;
+   il colore evolve col Cammino: nera → bianca → argento → celeste → indaco → glicine → viola */
+body{--lm-c1:#241e30;--lm-mid:#07060c;
+  --lm-g1:rgba(210,205,235,.4);--lm-g2:rgba(150,145,195,.2);--lm-g3:rgba(105,100,160,.12)}
+body.lt1{--lm-c1:#ffffff;--lm-mid:#f0f2fa;
   --lm-g1:rgba(240,243,255,.9);--lm-g2:rgba(212,222,248,.48);--lm-g3:rgba(185,198,240,.24)}
-body.lt1{--lm-mid:#dde8f4;
+body.lt2{--lm-c1:#ffffff;--lm-mid:#dde8f4;
   --lm-g1:rgba(224,236,250,.9);--lm-g2:rgba(176,205,240,.5);--lm-g3:rgba(145,180,230,.25)}
-body.lt2{--lm-mid:#b9ddf6;
+body.lt3{--lm-c1:#ffffff;--lm-mid:#b9ddf6;
   --lm-g1:rgba(190,225,252,.9);--lm-g2:rgba(126,190,242,.52);--lm-g3:rgba(88,160,228,.26)}
-body.lt3{--lm-mid:#a7b6ef;
+body.lt4{--lm-c1:#ffffff;--lm-mid:#a7b6ef;
   --lm-g1:rgba(180,194,252,.9);--lm-g2:rgba(128,148,238,.52);--lm-g3:rgba(98,118,222,.26)}
-body.lt4{--lm-mid:#cdb2f2;
+body.lt5{--lm-c1:#ffffff;--lm-mid:#cdb2f2;
   --lm-g1:rgba(225,205,255,.9);--lm-g2:rgba(186,150,240,.5);--lm-g3:rgba(150,110,215,.26)}
-body.lt5{--lm-mid:#ad7ff0;
+body.lt6{--lm-c1:#ffffff;--lm-mid:#ad7ff0;
   --lm-g1:rgba(206,170,255,.95);--lm-g2:rgba(164,112,246,.56);--lm-g3:rgba(128,76,226,.3)}
 #lume{
   position:absolute;left:0;top:0;z-index:40;
@@ -61,11 +63,12 @@ body.lt5{--lm-mid:#ad7ff0;
 #lume::after{
   content:'';position:absolute;inset:19px;border-radius:50%;
   background:radial-gradient(circle at 38% 34%,
-    #ffffff 0%, #ffffff 28%, var(--lm-mid) 58%, transparent 78%);
+    var(--lm-c1) 0%, var(--lm-c1) 28%, var(--lm-mid) 58%, transparent 78%);
   box-shadow:
     0 0 12px 4px var(--lm-g1),
     0 0 38px 16px var(--lm-g2),
-    0 0 95px 44px var(--lm-g3);
+    0 0 95px 44px var(--lm-g3),
+    inset 0 0 4px rgba(220,215,245,.5);
   transition:box-shadow 2s ease;
 }
 
@@ -451,20 +454,21 @@ input:focus,textarea:focus{
   box-shadow:0 0 18px rgba(150,110,215,.3)}
 #saved.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-/* ================= IL RITUALE DI OGGI ================= */
-.oggi{display:flex;justify-content:center;align-items:center;gap:8px;flex-wrap:wrap}
-.oggi .ol{font-size:14.5px;color:var(--txt-soft);margin-right:4px}
-.pill{
-  background:rgba(185,163,227,.07);border:1px solid rgba(185,163,227,.3);
-  color:var(--txt-soft);border-radius:30px;padding:8px 14px;cursor:pointer;
-  font-family:'Cinzel',serif;font-size:10.5px;letter-spacing:.06em;
-  transition:all .3s;
+/* ================= IL RITUALE DI OGGI (segni sulle tab) ================= */
+.tab.done .lbl::after{content:' ✦';color:var(--gold-pale)}
+
+/* spiegazione contestuale dentro la guida */
+.gctx{
+  border:1px solid rgba(201,168,76,.4);border-left:3px solid var(--gold);
+  border-radius:12px;background:rgba(201,168,76,.05);
+  padding:14px 16px;margin-bottom:16px;
 }
-.pill:hover{background:rgba(185,163,227,.14)}
-.pill.done{
-  border-color:rgba(201,168,76,.7);color:var(--gold-pale);
-  background:rgba(201,168,76,.1);
-  box-shadow:0 0 10px rgba(201,168,76,.3);
+.gctx-t{font-family:'Cinzel',serif;font-size:13px;font-weight:700;color:var(--gold-pale);margin-bottom:8px}
+.gctx-b{font-size:15.5px;line-height:1.75;color:var(--txt)}
+.gctx-b b{color:var(--glic-hi);font-weight:600}
+.gctx-b .man{
+  display:block;border-left:2px solid var(--gold);padding:8px 12px;margin:10px 0 4px;
+  color:var(--gold-pale);background:rgba(201,168,76,.06);border-radius:0 8px 8px 0;
 }
 
 /* ================= LA GUIDA DELLA LUCINA ================= */
@@ -584,22 +588,15 @@ details.gd[open]{border-color:rgba(205,178,242,.5);box-shadow:0 0 16px rgba(170,
   <header class="hd">
     <div class="orn"><div class="l"></div><div class="d"></div><div class="l"></div></div>
     <h1>Strumenti del Cammino</h1>
-    <p>Il tuo spazio di pratica · Elisa Soul Medium</p>
+    <p id="oggiMsg">Il tuo spazio di pratica</p>
   </header>
 
-  <div class="act oggi">
-    <span class="ol" id="oggiMsg">Il rituale di oggi:</span>
-    <button class="pill" id="pg1" onclick="goTab(1);window.scrollTo({top:0,behavior:'smooth'})">🕊 Spazio Emotivo</button>
-    <button class="pill" id="pg2" onclick="goTab(2);window.scrollTo({top:0,behavior:'smooth'})">👁 Osservatorio</button>
-    <button class="pill" id="pg3" onclick="goTab(3);window.scrollTo({top:0,behavior:'smooth'})">📜 Diario</button>
-  </div>
-
   <nav class="tabs">
-    <button class="tab on" onclick="goTab(0)"><span class="num">Guida</span><span class="lbl">Come usare</span></button>
-    <button class="tab" onclick="goTab(1)"><span class="num">Scheda 1</span><span class="lbl">Spazio Emotivo</span></button>
-    <button class="tab" onclick="goTab(2)"><span class="num">Scheda 2</span><span class="lbl">Osservatorio</span></button>
-    <button class="tab" onclick="goTab(3)"><span class="num">Diario</span><span class="lbl">La Settimana</span></button>
-    <button class="tab" onclick="goTab(4)"><span class="num">Resoconto</span><span class="lbl">Il Cammino</span></button>
+    <button class="tab on" onclick="goTab(0)"><span class="lbl">Guida</span></button>
+    <button class="tab" onclick="goTab(1)"><span class="lbl">Spazio Emotivo</span></button>
+    <button class="tab" onclick="goTab(2)"><span class="lbl">Osservatorio</span></button>
+    <button class="tab" onclick="goTab(3)"><span class="lbl">Diario</span></button>
+    <button class="tab" onclick="goTab(4)"><span class="lbl">Resoconto</span></button>
   </nav>
 
   <!-- ============ PANNELLO 0 · GUIDA ============ -->
@@ -878,14 +875,6 @@ details.gd[open]{border-color:rgba(205,178,242,.5);box-shadow:0 0 16px rgba(170,
 
   <!-- ============ NAV BASSA ============ -->
   <footer class="bnav">
-    <div class="bnav-t">Vai a un'altra sezione</div>
-    <div class="bnav-grid">
-      <button class="bnav-btn" onclick="goTab(0);window.scrollTo({top:0,behavior:'smooth'})">📖<br>Guida</button>
-      <button class="bnav-btn" onclick="goTab(1);window.scrollTo({top:0,behavior:'smooth'})">🕊️<br>Scheda 1</button>
-      <button class="bnav-btn" onclick="goTab(2);window.scrollTo({top:0,behavior:'smooth'})">🌿<br>Scheda 2</button>
-      <button class="bnav-btn" onclick="goTab(3);window.scrollTo({top:0,behavior:'smooth'})">📜<br>Diario</button>
-      <button class="bnav-btn" onclick="goTab(4);window.scrollTo({top:0,behavior:'smooth'})">📈<br>Resoconto</button>
-    </div>
     <div class="bnav-foot">Il Cammino Interiore · <a href="/app/">I miei esercizi</a> · <a href="/">Torna al Libro</a> · <a href="#" onclick="esci();return false">Esci</a></div>
   </footer>
 
@@ -900,6 +889,11 @@ details.gd[open]{border-color:rgba(205,178,242,.5);box-shadow:0 0 16px rgba(170,
     <button class="gp-x" onclick="chiudiGuida()">✕</button>
   </div>
   <div class="gp-bd">
+
+    <div class="gctx" id="gctx" style="display:none">
+      <div class="gctx-t" id="gctxT"></div>
+      <div class="gctx-b" id="gctxB"></div>
+    </div>
 
     <div class="lvl">
       <div class="lvl-n">Il tuo livello di luce</div>
@@ -1526,12 +1520,13 @@ details.gd[open]{border-color:rgba(205,178,242,.5);box-shadow:0 0 16px rgba(170,
 
   /* ================= IL SENTIERO DELLA LUCE ================= */
   var TIERS=[
-    {d:0,  cls:'',    nome:'Prima Scintilla',   col:'#f0f2fa', desc:'La tua luce è appena nata: bianca e pura, come ogni inizio.'},
-    {d:7,  cls:'lt1', nome:'Luce d\'Argento',   col:'#dde8f4', desc:'7 giorni di pratica: la scintilla si è fatta argento.'},
-    {d:21, cls:'lt2', nome:'Aura Celeste',      col:'#b9ddf6', desc:'21 giorni: la tua aura respira di celeste, il colore della calma.'},
-    {d:45, cls:'lt3', nome:'Velo d\'Indaco',    col:'#a7b6ef', desc:'45 giorni: l\'indaco dell\'intuizione ti accompagna.'},
-    {d:90, cls:'lt4', nome:'Fiamma di Glicine', col:'#cdb2f2', desc:'90 giorni: la tua luce vibra del glicine del Cammino.'},
-    {d:150,cls:'lt5', nome:'Anima Viola',       col:'#ad7ff0', desc:'150 giorni: il viola della medianità, la frequenza più alta.'}
+    {d:0,  cls:'',    nome:'Luna Nera',         col:'#241e30', desc:'La tua luce dorme ancora nel buio. Ogni pratica la sveglia.'},
+    {d:3,  cls:'lt1', nome:'Prima Scintilla',   col:'#f0f2fa', desc:'3 giorni: dal buio è nata una scintilla bianca.'},
+    {d:10, cls:'lt2', nome:'Luce d\'Argento',   col:'#dde8f4', desc:'10 giorni di pratica: la scintilla si è fatta argento.'},
+    {d:25, cls:'lt3', nome:'Aura Celeste',      col:'#b9ddf6', desc:'25 giorni: la tua aura respira di celeste, il colore della calma.'},
+    {d:50, cls:'lt4', nome:'Velo d\'Indaco',    col:'#a7b6ef', desc:'50 giorni: l\'indaco dell\'intuizione ti accompagna.'},
+    {d:90, cls:'lt5', nome:'Fiamma di Glicine', col:'#cdb2f2', desc:'90 giorni: la tua luce vibra del glicine del Cammino.'},
+    {d:150,cls:'lt6', nome:'Anima Viola',       col:'#ad7ff0', desc:'150 giorni: il viola della medianità, la frequenza più alta.'}
   ];
   function tierIndex(days){
     var i=0; TIERS.forEach(function(t,k){ if(days>=t.d)i=k; }); return i;
@@ -1572,6 +1567,55 @@ details.gd[open]{border-color:rgba(205,178,242,.5);box-shadow:0 0 16px rgba(170,
     {sym:'📜', nome:'Cronista dell\'Anima',    cond:'14 giorni di diario compilato',    test:function(){return countDiaryDays()>=14}}
   ];
 
+  /* ---- la lucina sa DOVE si trova: spiegazioni contestuali ---- */
+  var INFO={
+    's1-think':{t:'Il pensiero che è arrivato',
+      h:'<p>Scrivi la frase o la sensazione <b>esattamente come l\'hai sentita, senza censurarti</b>. Spesso è un giudizio che ti sei data questa settimana — o che ti porti dietro da sempre. Metterla per iscritto è già osservarla da fuori: ciò che scrivi è un\'energia che resta, e potrai rileggerla per capire la dinamica che si ripete.</p>'},
+    's1-q':{t:'Le quattro domande',
+      h:'<p>Rispondi con la <b>prima cosa che senti</b>, senza pensarci troppo:</p><p><b>1. È reale, viene da me o è automatico?</b> — scopri se stai sentendo davvero o ripetendo uno schema.<br><b>2. Nasce dal presente o dal passato?</b> — molti giudizi sono ricordi travestiti da verità.<br><b>3. Mi aiuta o mi toglie la possibilità di fare ciò che sento?</b><br><b>4. Se al mio posto ci fosse qualcuno che amo, agirei così?</b> — di solito no: lo abbracceresti. Quelle parole d\'affetto spettano anche a te.</p>'},
+    's1-body':{t:'La respirazione e il blocco nel corpo',
+      h:'<p>Chiudi gli occhi e fai <b>3 minuti di respirazione continua</b>, senza mai fermarti. Ascolta: <b>dove senti che l\'energia non passa bene?</b> Petto, stomaco, gola, gambe… ognuno ha il suo punto — è lì che l\'emozione repressa si è congestionata. Scrivilo. E ricorda: <b>non combattere la sensazione</b> — vivila, sentila, attraversala. Non sparisce facendo finta che non esista.</p>'},
+    's1-emo':{t:'Dai un nome all\'emozione',
+      h:'<p>Rabbia, tristezza, frustrazione, dolore… <b>descrivi come la senti</b>, che effetto fa sul tuo corpo. Poi chiediti: <b>questa voce che mi giudica mi vuole comprendere o mi vuole ferire?</b> Scrivi anche questo. E ripeti dentro di te: <i>io non posso e non voglio ferirmi</i>.</p>'},
+    's1-after':{t:'Dopo il mantra: come ti senti?',
+      h:'<p>Leggi il mantra <b>3 volte ad alta voce</b>. Mentre lo ripeti, immagina <b>una luce che parte dal punto del blocco</b> e accompagnala fuori — dalla bocca o dai piedi — finché senti che quel peso se ne va. Poi scrivi qui cosa è cambiato, anche una sola riga: è la traccia del tuo lavoro.</p>'},
+    's2-j':{t:'Il giudizio, così com\'è',
+      h:'<p>Quando arriva un pensiero come <i>"non vado bene", "sono sempre la solita", "non sono abbastanza"</i>… fermati e dì: <b>"non sto facendo un pensiero, mi sto giudicando"</b>. Fai 1–2 respiri lenti e scrivi il giudizio <b>esattamente come l\'hai sentito</b>, senza addolcirlo. Prima di credergli, vogliamo capire da dove arriva.</p>'},
+    's2-oss':{t:'Osserva il pensiero',
+      h:'<p><b>Che tono stai usando con te?</b> Aggressivo, freddo, duro? Capire il tono ti fa capire <b>da dove proviene</b> quella voce. Poi: <b>questa voce mi appartiene davvero?</b> — o è qualcosa che hai assorbito nel tempo e interiorizzato? Osservare da fuori, senza identificarti, è già metà del lavoro.</p>'},
+    's2-fonte':{t:'Risali alla fonte',
+      h:'<p><b>Chi o cosa ti ha fatto pensare di essere così?</b> Il giudizio spesso nasce dall\'esterno: confronti continui, frasi sentite in famiglia, a scuola, al lavoro. Dagli un nome. E poi: <b>se al tuo posto ci fosse una persona che ami, le parleresti così?</b> No — la consoleresti. Quella strada d\'amore vale anche verso te stessa.</p>'},
+    's2-tr':{t:'Trasforma il giudizio',
+      h:'<p>Il cuore dell\'esercizio: riscrivi la frase <b>vista dall\'esterno</b>, senza identificarti con l\'emozione. Da <i>"sono sbagliata"</i> a <b>"c\'è una parte di me che oggi si sente sbagliata"</b>. Non sei tu ad essere sbagliata: c\'è una parte che oggi si sente così. Chiudi sempre dandoti un giudizio <b>positivo</b>.</p>'},
+    's2-song':{t:'La canzone di oggi',
+      h:'<p>Finisci ascoltando una canzone che ti carica di <b>emozioni positive e rispetto verso te stessa</b>. Funzionano benissimo le canzoni dell\'infanzia: ti riportano alle frequenze più belle che hai vissuto. Puoi cambiarla ogni giorno — l\'importante è che ti porti in alto.</p>'},
+    's2-after':{t:'Chiudi con il mantra',
+      h:'<p>Ripeti il mantra di chiusura e poi scrivi come ti senti: <span class="man">"Io posso guardarmi, posso amarmi, posso riconoscermi e abbracciarmi. Io sono degno/a di tutto questo."</span></p>'},
+    'diario':{t:'Il Diario della Settimana',
+      h:'<p>Ogni sera, 2 minuti: <b>spunta le pratiche</b> fatte (si segnano anche da sole quando compili le schede), scrivi <b>una parola chiave</b> che racconta la giornata e scegli <b>l\'umore</b>. A fine settimana rileggi le parole chiave: vedrai il filo del tuo percorso. L\'umore alimenta la linea dell\'anima nel Resoconto.</p>'},
+    'rifl':{t:'Riflessioni periodiche',
+      h:'<p>Ogni tanto fermati qui: <b>cosa hai riconosciuto</b> di te ultimamente? <b>Quali progressi</b> noti — cosa è diventato più facile? Sono le pagine che rileggerai tra mesi per vedere quanta strada hai fatto.</p>'},
+    'int':{t:'L\'intenzione della settimana',
+      h:'<p>Affida alla settimana che arriva <b>una sola intenzione</b>, scritta in positivo: non "non voglio più giudicarmi" ma <b>"questa settimana mi parlo con gentilezza"</b>. L\'intenzione è un seme: piantala e lasciala lavorare.</p>'},
+    'resoconto':{t:'Il tuo andamento',
+      h:'<p><b>Giorni di fila</b> = la tua costanza. <b>Le barre</b> = oro per lo Spazio Emotivo, glicine per l\'Osservatorio. <b>La linea dell\'umore</b> segue le faccine del Diario: guardala nelle settimane, non nei singoli giorni. Ed è da qui che la tua luce cambia colore.</p>'}
+  };
+  /* assegna a ogni blocco la sua voce di guida */
+  (function(){
+    var m1=['s1-think','s1-q','s1-q','s1-q','s1-q','s1-body','s1-emo','s1-after'];
+    document.querySelectorAll('#p1 .blk').forEach(function(b,i){ if(m1[i])b.dataset.g=m1[i]; });
+    var m2=['s2-j','s2-oss','s2-oss','s2-fonte','s2-fonte','s2-tr','s2-tr','s2-song','s2-after'];
+    document.querySelectorAll('#p2 .blk').forEach(function(b,i){ if(m2[i])b.dataset.g=m2[i]; });
+    document.querySelectorAll('#p3 .blk').forEach(function(b){ b.dataset.g='rifl'; });
+  })();
+  function ctxKey(){
+    if(!litEl)return null;
+    if(litEl.classList.contains('wcard'))return 'diario';
+    if(litEl.classList.contains('chartcard'))return 'resoconto';
+    if(litEl.classList.contains('intenz'))return 'int';
+    return litEl.dataset.g||null;
+  }
+
   /* ---- la guida che si apre toccando la lucina ---- */
   var veil=document.getElementById('veil'), gpan=document.getElementById('gpan');
   function renderGuida(){
@@ -1608,31 +1652,44 @@ details.gd[open]{border-color:rgba(205,178,242,.5);box-shadow:0 0 16px rgba(170,
       bg.appendChild(d);
     });
   }
-  window.apriGuida=function(){
+  window.apriGuida=function(key){
     renderGuida();
+    var ctx=document.getElementById('gctx');
+    if(key && INFO[key]){
+      document.getElementById('gctxT').textContent='✦ In questo punto · '+INFO[key].t;
+      document.getElementById('gctxB').innerHTML=INFO[key].h;
+      ctx.style.display='block';
+    } else {
+      ctx.style.display='none';
+    }
     veil.classList.add('on'); gpan.classList.add('on');
+    document.querySelector('.gp-bd').scrollTop=0;
   };
   window.chiudiGuida=function(){
     veil.classList.remove('on'); gpan.classList.remove('on');
   };
-  lume.addEventListener('click',apriGuida);
+  lume.addEventListener('click',function(e){
+    e.stopPropagation();
+    apriGuida(ctxKey());
+  });
   document.addEventListener('keydown',function(e){ if(e.key==='Escape')chiudiGuida(); });
 
-  /* ---- il rituale di oggi ---- */
+  /* ---- il rituale di oggi, segnato sulle tab ---- */
   function updateOggi(){
     var t=todayIso();
     var d1=did('s1',t), d2=did('s2',t);
     var mv=store['cal-'+t+'-mood'];
     var kw=store['cal-'+t+'-kw'];
-    var d3=(mv!==undefined&&mv!==null&&mv!=='')||(kw&&String(kw).trim());
-    document.getElementById('pg1').classList.toggle('done',!!d1);
-    document.getElementById('pg2').classList.toggle('done',!!d2);
-    document.getElementById('pg3').classList.toggle('done',!!d3);
+    var d3=!!((mv!==undefined&&mv!==null&&mv!=='')||(kw&&String(kw).trim()));
+    var tabs=document.querySelectorAll('.tabs .tab');
+    tabs[1].classList.toggle('done',!!d1);
+    tabs[2].classList.toggle('done',!!d2);
+    tabs[3].classList.toggle('done',d3);
     var n=(d1?1:0)+(d2?1:0)+(d3?1:0);
     document.getElementById('oggiMsg').textContent =
-      n===0 ? 'La tua luce ti aspetta — il rituale di oggi:' :
-      n===3 ? '✨ Rituale completo: la tua luce ringrazia' :
-      'Il rituale di oggi ('+n+' su 3):';
+      n===0 ? 'La tua luce ti aspetta' :
+      n===3 ? '✨ Rituale di oggi completo' :
+      'Rituale di oggi: '+n+' su 3';
   }
   document.addEventListener('input',function(){ updateOggi(); });
   document.addEventListener('change',function(){ updateOggi(); applyTier(); });
