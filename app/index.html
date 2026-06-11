@@ -384,6 +384,16 @@ details.gd[open]{border-color:rgba(205,178,242,.5);box-shadow:0 0 16px rgba(170,
 }
 .chat-send:disabled{opacity:.4;cursor:default}
 .chat-note{font-size:13.5px;color:var(--txt-dim);text-align:center;padding:6px 14px 14px}
+.msg .mtxt{white-space:pre-line}
+.msg .mode{display:block;margin-top:10px;font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-pale);opacity:.85}
+.msg.typing .mtxt{color:var(--txt-dim);letter-spacing:.25em}
+.chips{display:flex;flex-wrap:wrap;gap:8px;padding:2px 0 4px}
+.chip{
+  background:none;border:1px solid rgba(185,221,246,.4);color:var(--txt);
+  border-radius:20px;padding:9px 14px;cursor:pointer;
+  font-family:'Cormorant Garamond',serif;font-size:15.5px;line-height:1.25;text-align:left;
+}
+.chip:hover{border-color:var(--cele);color:#fff;box-shadow:0 0 10px rgba(185,221,246,.25)}
 
 /* ================= POPUP DELLA LUCE (tappa non ancora consigliata) ================= */
 #lkpop{
@@ -576,15 +586,15 @@ details.gd[open]{border-color:rgba(205,178,242,.5);box-shadow:0 0 16px rgba(170,
   <div class="chat-msgs" id="chat-msgs">
     <div class="msg elisa">
       <span class="mwho">Elisa</span>
-      Questo spazio sta prendendo forma: presto potrai scrivermi da qui.
-      Intanto la Guida del Cammino e il Giornaliero sono con te, passo dopo passo. 🤍
+      Benvenuta/o in questo piccolo spazio 💛 Qui trovi le mie parole sui temi che mi scrivete più spesso. Scrivimi quello che hai nel cuore, oppure parti da una di queste domande:
     </div>
+    <div class="chips" id="chat-chips"></div>
   </div>
   <div class="chat-bar" id="chat-bar">
-    <input id="chat-in" type="text" placeholder="In preparazione…" disabled aria-label="Messaggio (in preparazione)">
-    <button class="chat-send" id="chat-send" disabled aria-label="Invia (in preparazione)">➤</button>
+    <input id="chat-in" type="text" placeholder="Scrivi qui la tua domanda…" autocomplete="off" aria-label="La tua domanda per Elisa">
+    <button class="chat-send" id="chat-send" aria-label="Invia">➤</button>
   </div>
-  <div class="chat-note">La chat con Elisa arriverà in un prossimo aggiornamento.</div>
+  <div class="chat-note">Le risposte nascono dalle parole di Elisa e crescono nel tempo. Questo spazio non è un consulto né una lettura.</div>
 </aside>
 
 <!-- ============ IL CONSIGLIO DELLA LUCE (tappa non ancora consigliata) ============ -->
@@ -599,6 +609,7 @@ details.gd[open]{border-color:rgba(205,178,242,.5);box-shadow:0 0 16px rgba(170,
 <div id="saved">✓ Salvato</div>
 
 <script src="/app/lume.js?v=1"></script>
+<script src="/app/elisa-chat.js?v=1"></script>
 <script>
 (function(){
   var KEY='ovl-user';
@@ -918,11 +929,11 @@ details.gd[open]{border-color:rgba(205,178,242,.5);box-shadow:0 0 16px rgba(170,
     if(e.key==='Enter'||e.key===' '){ e.preventDefault(); apriGuida(ctxKey(), lume); }
   });
 
-  /* ================= Scrivi a Elisa (predisposta) ================= */
+  /* ================= Scrivi a Elisa ================= */
   function apriChat(){
     gpan.classList.remove('on');
     chatpan.classList.add('on');
-    document.getElementById('chat-x').focus();
+    document.getElementById('chat-in').focus();
   }
   function chiudiChat(){
     chatpan.classList.remove('on');
@@ -931,9 +942,59 @@ details.gd[open]{border-color:rgba(205,178,242,.5);box-shadow:0 0 16px rgba(170,
   }
   document.getElementById('chat-btn').addEventListener('click',apriChat);
   document.getElementById('chat-x').addEventListener('click',chiudiChat);
-  document.getElementById('chat-bar').addEventListener('click',function(){
-    toast('La chat arriverà presto');
+
+  var chatHist=[];
+  var chatMsgs=document.getElementById('chat-msgs');
+  function chatBubble(role,text,mode){
+    var d=document.createElement('div');
+    d.className='msg '+(role==='user'?'io':'elisa');
+    if(role!=='user'){
+      var w=document.createElement('span'); w.className='mwho'; w.textContent='Elisa'; d.appendChild(w);
+    }
+    var p=document.createElement('span'); p.className='mtxt'; p.textContent=text; d.appendChild(p);
+    if(mode==='faq'){
+      var b=document.createElement('span'); b.className='mode'; b.textContent='💛 risposta di Elisa'; d.appendChild(b);
+    }
+    chatMsgs.appendChild(d);
+    chatMsgs.scrollTop=chatMsgs.scrollHeight;
+    return d;
+  }
+  function chatSend(text){
+    text=(text||'').trim(); if(!text)return;
+    document.getElementById('chat-in').value='';
+    chatBubble('user',text);
+    var typing=chatBubble('bot','· · ·'); typing.classList.add('typing');
+    var prior=chatHist.slice();
+    setTimeout(function(){
+      if(!window.OVL_ELISA){
+        if(typing.parentNode)typing.parentNode.removeChild(typing);
+        chatBubble('bot','In questo momento non riesco a risponderti 🙏🏻 Riprova tra poco, ricaricando la pagina.');
+        return;
+      }
+      OVL_ELISA.rispondi(text,prior,function(r){
+        if(typing.parentNode)typing.parentNode.removeChild(typing);
+        chatBubble('bot',r.answer,r.mode);
+        chatHist.push({role:'user',text:text});
+        chatHist.push({role:'bot',text:r.answer});
+      });
+    },650);
+  }
+  document.getElementById('chat-send').addEventListener('click',function(){
+    chatSend(document.getElementById('chat-in').value);
   });
+  document.getElementById('chat-in').addEventListener('keydown',function(e){
+    if(e.key==='Enter'){ e.preventDefault(); chatSend(this.value); }
+  });
+  (function(){
+    if(!window.OVL_ELISA)return;   /* se il modulo non carica, la pagina vive lo stesso */
+    var box=document.getElementById('chat-chips');
+    OVL_ELISA.CHIPS.forEach(function(c){
+      var b=document.createElement('button');
+      b.type='button'; b.className='chip'; b.textContent=c.label;
+      b.addEventListener('click',function(){ chatSend(c.q); });
+      box.appendChild(b);
+    });
+  })();
 
   /* ================= il consiglio della luce (tappa più avanti) ================= */
   var lockTarget=null;
