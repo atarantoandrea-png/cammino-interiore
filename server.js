@@ -1,10 +1,12 @@
 /* Oltre il Velo — server: pagine statiche + archivio progressi per account */
 const express = require('express');
+const compression = require('compression');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 
 const app = express();
+app.use(compression());
 const DATA = process.env.DATA_DIR || '/data';
 fs.mkdirSync(DATA, { recursive: true });
 
@@ -61,8 +63,10 @@ const saveStore = (req,res)=>{
 app.put('/api/store', saveStore);
 app.post('/api/store', saveStore);   /* per sendBeacon all'uscita dalla pagina */
 
-/* le pagine del sito (html mai in cache: i deploy si vedono subito) */
+/* le pagine del sito: html mai in cache (i deploy si vedono subito),
+   immagini e texture in cache 30 giorni (visite successive istantanee) */
 app.use(express.static(__dirname, {
+  maxAge: '30d',
   setHeaders(res, p){
     if (p.endsWith('.html')) res.setHeader('Cache-Control','no-cache');
   }
