@@ -1519,6 +1519,7 @@ details.gd[open]{border-color:rgba(205,178,242,.5);box-shadow:0 0 16px rgba(170,
   });
 
   /* ================= IL SENTIERO DELLA LUCE ================= */
+  function clamp01(v){ return v<0?0:(v>1?1:v); }
   var TIERS=[
     {d:0,  cls:'',    nome:'Luce Velata',       col:'#9d96ad', desc:'La tua luce è velata, come dietro una nebbia. Ogni pratica la libera.'},
     {d:3,  cls:'lt1', nome:'Prima Scintilla',   col:'#f0f2fa', desc:'3 giorni: dal buio è nata una scintilla bianca.'},
