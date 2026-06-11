@@ -111,6 +111,8 @@ body{
   transition:border-color .3s ease;user-select:none;
 }
 #navBtn:hover{border-color:rgba(201,168,76,.85)}
+#navBtn.lit{border-color:rgba(205,178,242,.85);
+  box-shadow:0 6px 22px rgba(0,0,0,.55), 0 0 18px rgba(170,135,230,.55)}
 #navBtn .ic{font-size:15px;color:#c9a84c}
 #navBtn .tx{font-family:'Cinzel',serif;font-size:13px;font-weight:600;
   letter-spacing:.22em;text-transform:uppercase;color:#e8d9ae}
@@ -123,9 +125,31 @@ body{
   box-shadow:0 22px 60px rgba(0,0,0,.75), 0 0 0 1px rgba(90,66,30,.5), inset 0 0 60px rgba(120,90,45,.25);
   transform-origin:50% 0;
   transform:scaleY(.02);opacity:0;pointer-events:none;
-  transition:transform .42s cubic-bezier(.22,1.25,.36,1), opacity .28s ease;
+  transition:transform .42s cubic-bezier(.22,1.25,.36,1), opacity .28s ease, box-shadow .6s ease;
 }
 #nav.open{transform:scaleY(1);opacity:1;pointer-events:auto}
+/* la luce accende i bordi del menu, neon glicine */
+#nav.lit{
+  box-shadow:
+    0 22px 60px rgba(0,0,0,.75),
+    0 0 0 1px rgba(205,178,242,.7),
+    0 0 26px rgba(170,135,230,.55),
+    0 0 85px rgba(150,110,215,.28),
+    inset 0 0 60px rgba(120,90,45,.25);
+}
+/* il lampo che attraversa il menu quando si apre */
+#nav::before{
+  content:'';position:absolute;left:-30%;right:-30%;top:-55%;height:55%;
+  background:radial-gradient(ellipse at 50% 100%,
+    rgba(215,190,250,.6) 0%, rgba(170,135,230,.18) 55%, transparent 78%);
+  opacity:0;pointer-events:none;z-index:2;
+}
+#nav.sweep::before{animation:navsweep .85s ease-out}
+@keyframes navsweep{
+  0%{opacity:0;transform:translateY(0)}
+  18%{opacity:1}
+  100%{opacity:0;transform:translateY(240%)}
+}
 #nav::after{content:'';position:absolute;left:0;right:0;bottom:0;height:14px;
   background:linear-gradient(180deg, rgba(70,50,22,0), rgba(70,50,22,.35) 50%, rgba(40,28,12,.55))}
 #nav .inner{padding:26px 24px 30px}
@@ -755,7 +779,7 @@ async function init(){
   addEventListener('load', calcAnchors);
 
   /* trascinamento della lucina */
-  let dragging=false, dragPX=0, dragPY=0;
+  let dragging=false, dragPX=0, dragPY=0, navLock=false;
   const userOff = {x:0, y:0};
   wispEl.addEventListener('pointerdown', function(e){
     dragging=true; dragPX=e.clientX; dragPY=e.clientY;
@@ -830,11 +854,21 @@ async function init(){
 
     /* MAI fuori dallo schermo */
     const m = 76;
+
+    /* il menu chiama la luce: vola rapida accanto all'indice */
+    if (navLock){
+      const nr = nav.getBoundingClientRect();
+      tx = nr.left - 26;
+      if (tx < m+4) tx = Math.min(innerWidth-m, nr.right + 26);
+      ty = nr.top + 30 + Math.sin(t*2.2)*7;
+      userOff.x=0; userOff.y=0;
+    }
+
     tx = Math.min(innerWidth-m,  Math.max(m, tx));
     ty = Math.min(innerHeight-m, Math.max(m, ty));
 
-    wx += (tx-wx)*(dragging?.3:.07);
-    wy += (ty-wy)*(dragging?.3:.07);
+    wx += (tx-wx)*(dragging?.3:(navLock?.18:.07));
+    wy += (ty-wy)*(dragging?.3:(navLock?.18:.07));
 
     /* tanta luce: la sezione toccata si vede bene */
     const rFull = Math.max(420, Math.min(innerWidth,innerHeight)*.78);
@@ -985,8 +1019,20 @@ async function init(){
   /* ---- interfaccia ---- */
   const navBtn = document.getElementById('navBtn');
   const nav = document.getElementById('nav');
-  navBtn.addEventListener('click', ()=>nav.classList.toggle('open'));
-  document.getElementById('navClose').addEventListener('click', ()=>nav.classList.remove('open'));
+  function closeNav(){
+    nav.classList.remove('open','lit','sweep');
+    navBtn.classList.remove('lit');
+    navLock = false;
+  }
+  navBtn.addEventListener('click', ()=>{
+    if (nav.classList.contains('open')){ closeNav(); return; }
+    nav.classList.add('open','lit');
+    navBtn.classList.add('lit');
+    /* lampo di luce che attraversa il menu */
+    nav.classList.remove('sweep'); void nav.offsetWidth; nav.classList.add('sweep');
+    navLock = true;
+  });
+  document.getElementById('navClose').addEventListener('click', closeNav);
   function goTo(psT){
     const max = spacer.offsetHeight - innerHeight;
     const from = scrollY, to = psT*max;
@@ -1000,7 +1046,7 @@ async function init(){
   }
   navItems.forEach(it=>{
     it.addEventListener('click', ()=>{
-      nav.classList.remove('open');
+      closeNav();
       if (it.dataset.sec){
         const el = document.getElementById(it.dataset.sec);
         if (el) window.scrollTo({top: el.getBoundingClientRect().top + scrollY - innerHeight*.18, behavior:'smooth'});
