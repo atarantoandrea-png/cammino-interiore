@@ -88,7 +88,7 @@ window.OVL_ELISA=(function(){
   }
 
   /* ---------- approfondimenti disponibili (testi in /app/elisa-deep.js, caricato al bisogno) ---------- */
-  var DEEP_IDS=["colpa_lutto","lasciare_andare","aiutare_caro","oggetti_defunti","dopo_morte","tre_giorni","dimensioni","luce_come","memoria_aldila","rivedro_contatto","famiglia_spirituale","segni_sogni","non_sogno","permessi_segni","karma_cose","reincarnazione_scelta","ricordare_vite","energia_frequenza","cinque_ferite","fine_volontaria","male_giustizia","metodo_connessione","animali","consulto"];
+  var DEEP_IDS=["colpa_lutto","lasciare_andare","aiutare_caro","oggetti_defunti","paura_morte","dopo_morte","tre_giorni","dimensioni","luce_come","personalita_resta","memoria_aldila","animali","rivedro_contatto","spiriti_ci_vedono","amore_coppia","famiglia_spirituale","segni_sogni","non_sogno","permessi_segni","karma_cose","reincarnazione_scelta","ricordare_vite","energia_frequenza","cinque_ferite","malattia_senso","senso_vita","salute_mentale","fine_volontaria","male_giustizia","dio_religione","chi_e_elisa","metodo_connessione","medium_serio","protezione_energie","scettici","sensibilita","consulto"];
 
   /* ---------- risposta ---------- */
   function byId(id){
