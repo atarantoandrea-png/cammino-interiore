@@ -663,7 +663,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
 <div id="saved">✓ Salvato</div>
 
 <script src="/app/lume.js?v=1"></script>
-<script src="/app/elisa-chat.js?v=3"></script>
+<script src="/app/elisa-chat.js?v=4"></script>
 <script>
 (function(){
   var KEY='ovl-user';
@@ -1047,7 +1047,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     if(deepLoading){ setTimeout(function(){ cb(!!window.OVL_ELISA_DEEP); },1200); return; }
     deepLoading=true;
     var s=document.createElement('script');
-    s.src='/app/elisa-deep.js?v=1';
+    s.src='/app/elisa-deep.js?v=2';
     s.onload=function(){ cb(!!window.OVL_ELISA_DEEP); };
     s.onerror=function(){ deepLoading=false; cb(false); };
     document.body.appendChild(s);
