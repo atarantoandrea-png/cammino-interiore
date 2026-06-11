@@ -1674,7 +1674,7 @@ details.gd[open]{border-color:rgba(205,178,242,.5);box-shadow:0 0 16px rgba(170,
   });
   document.addEventListener('keydown',function(e){ if(e.key==='Escape')chiudiGuida(); });
 
-  /* ---- il rituale di oggi, segnato sulle tab ---- */
+  /* ---- le pratiche di oggi, segnate sulle tab ---- */
   function updateOggi(){
     var t=todayIso();
     var d1=did('s1',t), d2=did('s2',t);
@@ -1688,8 +1688,8 @@ details.gd[open]{border-color:rgba(205,178,242,.5);box-shadow:0 0 16px rgba(170,
     var n=(d1?1:0)+(d2?1:0)+(d3?1:0);
     document.getElementById('oggiMsg').textContent =
       n===0 ? 'La tua luce ti aspetta' :
-      n===3 ? '✨ Rituale di oggi completo' :
-      'Rituale di oggi: '+n+' su 3';
+      n===3 ? '✨ Le pratiche di oggi sono complete' :
+      'Le pratiche di oggi: '+n+' su 3';
   }
   document.addEventListener('input',function(){ updateOggi(); });
   document.addEventListener('change',function(){ updateOggi(); applyTier(); });
