@@ -82,7 +82,7 @@ window.OVL_ELISA=(function(){
     "paradiso":["luce_come","dimensioni","dio_religione"],
     "inferno":["dimensioni","male_giustizia"],"purgatorio":["dimensioni"],
     "tribunale":["male_giustizia","dopo_morte"],"giudizio":["male_giustizia","dopo_morte"],"specchio":["dopo_morte","male_giustizia"],
-    "sogno":["segni_sogni","non_sogno","permessi_segni"],"sogni":["segni_sogni","non_sogno","permessi_segni"],"sognato":["segni_sogni","non_sogno","permessi_segni"],
+    "sogno":["segni_sogni","non_sogno","permessi_segni"],"sogni":["segni_sogni","non_sogno","permessi_segni"],"sognato":["segni_sogni","non_sogno","permessi_segni"],"volto":["segni_sogni","permessi_segni"],"muto":["segni_sogni","permessi_segni"],
     "permesso":["permessi_segni"],"concesso":["permessi_segni"],
     "funerale":["tre_giorni"],"trapasso":["tre_giorni","dopo_morte"],
     "cremazione":["tre_giorni","lasciare_andare"],"sepoltura":["tre_giorni","lasciare_andare"],"tomba":["colpa_lutto","lasciare_andare"],"cimitero":["colpa_lutto","lasciare_andare"],
@@ -151,13 +151,14 @@ window.OVL_ELISA=(function(){
     var us=merge(stems(contentWords(question)), stems(expand(kw(question))));
     var any=false,k; for(k in us){any=true;break;}
     if(!any)return null;
-    var best=null,bestsc=0;
+    var best=null,bestsc=0,secondsc=0;
     BANK.forEach(function(e){
       if(!overlap(us,e._gate))return;
       var sc=overlap(us,e._terms);
-      if(sc>bestsc){bestsc=sc;best=e;}
+      if(sc>bestsc){ secondsc=bestsc; bestsc=sc; best=e; }
+      else if(sc>secondsc){ secondsc=sc; }
     });
-    return (best&&bestsc>=QA_THRESHOLD)?best:null;
+    return (best&&bestsc>=QA_THRESHOLD)?{e:best,sc:bestsc,sc2:secondsc}:null;
   }
 
   /* ---------- approfondimenti disponibili (testi in /app/elisa-deep.js, caricato al bisogno) ---------- */
@@ -170,28 +171,69 @@ window.OVL_ELISA=(function(){
     }
     return null;
   }
-  function localAnswer(question,history){
+  /* ---------- il cervello (frammenti + composizione), caricato in differita ---------- */
+  var brainLoading=false;
+  function brainPronto(){ return !!(window.OVL_BRAIN && OVL_BRAIN.pronta && OVL_BRAIN.pronta()); }
+  function caricaBrain(cb){
+    if(brainPronto()){ cb(true); return; }
+    if(brainLoading){ setTimeout(function(){ cb(brainPronto()); },1500); return; }
+    brainLoading=true;
+    try{
+      var s=document.createElement('script');
+      s.src='/app/elisa-brain.js?v=1';
+      s.onload=function(){ cb(brainPronto()); };
+      s.onerror=function(){ brainLoading=false; cb(false); };
+      document.body.appendChild(s);
+    }catch(e){ cb(false); }
+  }
+  var AVVISO_BRAIN="Ho letto il contesto della tua domanda e ho composto la risposta unendo i passaggi più vicini della conoscenza di Elisa, con le loro fonti. Non è Elisa a risponderti di persona.";
+
+  function rispostaVoce(m){
+    return {answer:m.e.risposta,mode:"faq",tema:m.e.tema,avviso:AVVISO,id:m.e.id,fonte:m.e.fonte};
+  }
+  function rispondiLocale(question,history,cb){
     question=(question||'').trim();
-    if(!question)return {answer:"Scrivimi pure quello che hai nel cuore 💓",mode:"empty"};
-    if(CRISIS.test(question))return {answer:CRISIS_MSG,mode:"safety"};
+    if(!question){ cb({answer:"Scrivimi pure quello che hai nel cuore 💓",mode:"empty"}); return; }
+    if(CRISIS.test(question)){ cb({answer:CRISIS_MSG,mode:"safety"}); return; }
     var lastUser=''; (history||[]).forEach(function(m){ if(m.role==='user'&&m.text!==question)lastUser=m.text||''; });
     var rq=(question.split(/\s+/).length>4||!lastUser)?question:(lastUser+" "+question);
-    var hit=qaMatch(rq);
-    if(hit)return {answer:hit.risposta,mode:"faq",tema:hit.tema,avviso:AVVISO,id:hit.id,fonte:hit.fonte};
-    var sug=suggerisci(rq);
-    if(sug.length)return {answer:"Su questa domanda non ho una voce precisa — ma dalle parole che hai usato, forse stavi cercando uno di questi temi. Tocca quello che ti somiglia di più:",mode:"suggest",suggerimenti:sug};
-    return {answer:FALLBACK,mode:"empty"};
+    var m=qaMatch(rq);
+    /* aggancio FORTE e senza ambiguità → risposta curata della voce */
+    if(m && (m.sc>=4 || m.sc>=m.sc2+2)){ cb(rispostaVoce(m)); return; }
+    /* altrimenti: il cervello legge il contesto e compone */
+    caricaBrain(function(ok){
+      if(ok){
+        var b=null;
+        try{ b=OVL_BRAIN.cerca(rq); }catch(e){ b=null; }
+        if(b && b.voce){
+          /* la domanda somiglia a una domanda reale del pubblico → voce curata */
+          var rv=byId(b.voce);
+          if(rv){ cb({answer:rv.answer,mode:"faq",tema:rv.tema,avviso:AVVISO,id:b.voce,fonte:rv.fonte}); return; }
+        }
+        if(b && b.answer){
+          var sug=(b.voci||[]).map(function(id){ var v=byId(id); return v?{id:id,label:v.label}:null; })
+                               .filter(function(x){ return !!x; }).slice(0,3);
+          var corpo=b.answer+(sug.length?"\n\nPer il quadro completo puoi aprire le voci qui sotto.":"");
+          cb({answer:corpo,mode:"brain",avviso:AVVISO_BRAIN,fonte:b.fonte,suggerimenti:sug});
+          return;
+        }
+      }
+      if(m){ cb(rispostaVoce(m)); return; }   /* aggancio debole ma esistente */
+      var sug2=suggerisci(rq);
+      if(sug2.length){ cb({answer:"Su questa domanda non ho una voce precisa — ma dalle parole che hai usato, forse stavi cercando uno di questi temi. Tocca quello che ti somiglia di più:",mode:"suggest",suggerimenti:sug2}); return; }
+      cb({answer:FALLBACK,mode:"empty"});
+    });
   }
   function rispondi(question,history,cb){
     if(CRISIS.test(question||'')){ cb({answer:CRISIS_MSG,mode:"safety"}); return; }
-    if(!REMOTE){ cb(localAnswer(question,history)); return; }
+    if(!REMOTE){ rispondiLocale(question,history,cb); return; }
     var done=false;
-    var t=setTimeout(function(){ if(!done){done=true;cb(localAnswer(question,history));} },REMOTE_TIMEOUT);
+    var t=setTimeout(function(){ if(!done){done=true;rispondiLocale(question,history,cb);} },REMOTE_TIMEOUT);
     fetch(REMOTE,{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({question:question,history:history||[]})})
       .then(function(r){ if(!r.ok)throw 0; return r.json(); })
-      .then(function(j){ if(!done){done=true;clearTimeout(t);cb(j&&j.answer?j:localAnswer(question,history));} })
-      ['catch'](function(){ if(!done){done=true;clearTimeout(t);cb(localAnswer(question,history));} });
+      .then(function(j){ if(!done){done=true;clearTimeout(t); if(j&&j.answer)cb(j); else rispondiLocale(question,history,cb);} })
+      ['catch'](function(){ if(!done){done=true;clearTimeout(t);rispondiLocale(question,history,cb);} });
   }
 
   /* ---------- il menu dei temi (per la tendina in chat) ---------- */
@@ -220,7 +262,7 @@ window.OVL_ELISA=(function(){
 
   {id:"lasciare_andare",tema:"Lutto & lasciare andare",label:"Lasciare andare: andare avanti è tradire?",fonte:"diretta «Lasciare Andare» · libro «La Vita Oltre il Velo»",
    domande:["Cosa significa lasciare andare? Andare avanti è tradire chi ho perso?","Mi sento in colpa se torno a vivere e a sorridere dopo il lutto","Come si supera un lutto senza dimenticare","Rifarsi una vita è mancare di rispetto a chi non c'è più","Non riesco a lasciare andare il mio caro"],
-   keys:["lasciare","tradire","tradimento","liberare","superare","sorridere","voltare"],
+   keys:["lasciare","tradire","tradimento","liberare","superare","sorridere"],
    risposta:"«Lasciare andare» è uno dei temi più centrali di tutto l'insegnamento di Elisa, e anche uno dei più fraintesi. Non significa dimenticare, non significa smettere di amare, e non significa che il legame finisce. Significa smettere di trattenere — il dolore, la colpa, l'idea che restare fermi nella sofferenza sia una prova d'amore.\n\nC'è una frase-simbolo che Elisa riporta dalle sue canalizzazioni, ed è il messaggio che gli spiriti stessi mandano più spesso a chi resta: «Non mi stai tradendo, mi stai liberando». Perché il nostro dolore, quando diventa una prigione, pesa anche a loro: lo percepiscono, e ciò che desiderano di più è vederci tornare a vivere.\n\nLa fedeltà a chi abbiamo amato non passa attraverso la rinuncia alla vita. Il dolore va attraversato — non scavalcato, non represso: attraversato — perché il dolore è trasformativo. Le lacrime non sono il problema: il problema è come decidiamo di vivere dopo.\n\nLasciare andare, quindi, è un atto d'amore doppio: libera te, che puoi dare al tuo amore una forma nuova, e libera il tuo caro, che può proseguire il suo cammino sapendoti in pace. Tornare a sorridere non è voltare le spalle a chi non c'è più: è il modo più alto di onorarlo. 🤍"},
 
   {id:"aiutare_caro",tema:"Lutto & sostegno",label:"Come posso aiutare il mio caro di là?",fonte:"Q&A Instagram · diretta «La memoria nell'aldilà»",
@@ -288,7 +330,7 @@ window.OVL_ELISA=(function(){
   /* ---------- SEGNI E SOGNI ---------- */
   {id:"segni_sogni",tema:"Segni & sogni",label:"Come riconosco i segni e i sogni veri?",fonte:"dirette «Segni e Sogni» (parte 1 e 2)",
    domande:["Come riconosco i segni dei miei cari defunti? E i sogni in cui li vedo sono reali contatti?","Come capisco se un segno viene da chi non c'è più","Ho sognato il mio caro defunto, era davvero lui?","I sogni con i defunti sono reali","Ho sognato un mio caro defunto, è un messaggio reale?","Le farfalle e i profumi sono segni dei defunti"],
-   keys:["segni","segno","sogni","sogno","sognato","sognare","messaggio","farfalla","farfalle","profumo"],
+   keys:["segni","segno","sogni","sogno","sognato","sognare","messaggio","farfalla","farfalle","profumo","volto","muto","ombra"],
    risposta:"Segni e sogni sono le cose che il pubblico chiede più spesso a Elisa — e la sua risposta parte sempre dall'onestà: nessuno può certificare un segno. «Non posso dirti con certezza che quella farfalla era lui: non sarebbe corretto.» Il criterio che lei indica è un altro: il segno più vero non è fuori, ma dentro — è ciò che senti tu quando accade. Se un dettaglio (una canzone che torna, un numero, un animale che si ferma vicino) ti scalda il cuore e ti fa sentire vicino chi hai perso, va accolto come un dono, senza bisogno di prove.\n\nSui sogni, la distinzione che Elisa insegna nelle sue lezioni: ci sono sogni che sono solo elaborazione nostra del dolore, e poi ci sono i sogni reali, i veri contatti. Questi ultimi di solito si riconoscono perché sono nitidi, restano impressi a lungo, lasciano una sensazione di pace più che di angoscia, e spesso portano un messaggio semplice. (Con Approfondisci trovi tutti i criteri, compreso il «sogno lucido».)\n\nE il consiglio che ripete in ogni diretta: non andare a caccia di segni con ansia. Vivere, parlare ai propri cari, e lasciare che siano loro a trovare il modo: «spesso arrivano proprio quando smettiamo di pretenderli»."},
 
   {id:"non_sogno",tema:"Segni & sogni",label:"Perché non sogno il mio caro?",fonte:"dirette «Segni e Sogni» · Q&A social",
@@ -413,5 +455,6 @@ window.OVL_ELISA=(function(){
   ];
 
   prepara();
-  return { rispondi:rispondi, byId:byId, MENU:MENU, AVVISO:AVVISO, DEEP_IDS:DEEP_IDS, count:BANK.length };
+  return { rispondi:rispondi, byId:byId, MENU:MENU, AVVISO:AVVISO, DEEP_IDS:DEEP_IDS, count:BANK.length,
+           preload:function(){ caricaBrain(function(){}); } };
 })();

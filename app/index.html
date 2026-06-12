@@ -671,7 +671,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
 <div id="saved">✓ Salvato</div>
 
 <script src="/app/lume.js?v=1"></script>
-<script src="/app/elisa-chat.js?v=12"></script>
+<script src="/app/elisa-chat.js?v=13"></script>
 <script>
 (function(){
   var KEY='ovl-user';
@@ -1014,6 +1014,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     chatpan.classList.add('on');
     document.documentElement.classList.add('chat-viva');
     setTimeout(lumeAllaChat,60);
+    if(window.OVL_ELISA && OVL_ELISA.preload)OVL_ELISA.preload();   /* il cervello si scalda in anticipo */
     document.getElementById('chat-in').focus();
   }
   function chiudiChat(){
@@ -1042,7 +1043,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     if(opts.fonte){
       var f=document.createElement('span'); f.className='fonte'; f.textContent='📚 Fonte: '+opts.fonte; d.appendChild(f);
     }
-    if(opts.mode==='faq'||opts.mode==='doc'){
+    if(opts.mode==='faq'||opts.mode==='doc'||opts.mode==='brain'){
       var b=document.createElement('span'); b.className='mode'; b.textContent='💛 dalla conoscenza di Elisa'; d.appendChild(b);
     } else if(opts.mode==='deep'){
       var b2=document.createElement('span'); b2.className='mode'; b2.textContent='📖 approfondimento · dalle fonti di Elisa'; d.appendChild(b2);
