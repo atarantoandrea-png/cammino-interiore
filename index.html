@@ -311,10 +311,10 @@ body{
   opacity:1;
   transform:translateY(0) rotateX(6deg) rotateY(-10deg);
 }
-/* al click si ingrandisce prendendo lo schermo, poi porta agli esercizi */
+/* al click vola al centro e si ingrandisce a tutto schermo, poi porta agli esercizi */
 .phone3d.zoom{
   z-index:60;
-  transform:translateY(-4vh) rotateX(0) rotateY(0) scale(2.4);
+  transform:translate(var(--zx,0px),var(--zy,0px)) rotateX(0) rotateY(0) scale(var(--zs,2.4));
   transition:transform .8s cubic-bezier(.55,0,.2,1), opacity .4s ease;
 }
 .ph-notch{position:absolute;top:21px;left:50%;transform:translateX(-50%);
@@ -1289,9 +1289,21 @@ async function init(){
     phIn();
     ph3d.addEventListener('click', ()=>{
       if (ph3d.classList.contains('zoom')) return;
+      /* vola al CENTRO dello schermo e lo riempie tutto */
+      const r = ph3d.getBoundingClientRect();
+      const dx = innerWidth/2 - (r.left + r.width/2);
+      const dy = innerHeight/2 - (r.top + r.height/2);
+      const zs = Math.max(innerWidth/r.width, innerHeight/r.height)*1.06;
+      ph3d.style.setProperty('--zx', dx.toFixed(0)+'px');
+      ph3d.style.setProperty('--zy', dy.toFixed(0)+'px');
+      ph3d.style.setProperty('--zs', zs.toFixed(2));
       ph3d.classList.add('zoom');
       setTimeout(()=>{ location.href='/app/'; }, 820);
+      /* dopo qualche secondo torna piccolo (l'utente è già di là) */
+      setTimeout(()=>{ ph3d.classList.remove('zoom'); }, 3500);
     });
+    /* tornando indietro col back, il telefono dev'essere di nuovo normale */
+    addEventListener('pageshow', ()=>{ ph3d.classList.remove('zoom'); });
     /* la pioggia di lucine bianche dietro al telefono */
     for (let i=0;i<44;i++){
       const s = document.createElement('i');
