@@ -17,14 +17,10 @@ catch(e){ location.replace('/app/'); }
 :root{
   --glic:#b9a3e3; --glic-hi:#dccdf6; --glic-deep:#8a6fc0;
   --gold:#c9a84c; --gold-pale:#e8d9ae;
-  --txt:#e6e0ec;
-  --txt-soft:#b7aec4;
-  --txt-dim:#8d8499;
-  --card:rgba(22,18,29,.72);
-  --card-line:rgba(185,163,227,.16);
-  --field:rgba(10,8,14,.55);
-  --field-line:rgba(185,163,227,.3);
-  /* VERDE ACQUA — solo per il lettore audio (tono indicativo, da rifinire sull'immagine di Andrea) */
+  --txt:#e6e0ec; --txt-soft:#b7aec4; --txt-dim:#8d8499;
+  --card:rgba(22,18,29,.72); --card-line:rgba(185,163,227,.16);
+  --field:rgba(10,8,14,.55); --field-line:rgba(185,163,227,.3);
+  /* VERDE ACQUA — solo per il lettore audio (tono provvisorio) */
   --aqua:#2fe0c6; --aqua-deep:#0e8f7f; --aqua-hi:#9af7ea;
   --aqua-line:rgba(47,224,198,.34); --aqua-glow:rgba(47,224,198,.5);
 }
@@ -34,87 +30,59 @@ body{
     linear-gradient(180deg, rgba(8,7,11,.95) 0%, rgba(10,9,13,.92) 8%, rgba(11,10,14,.91) 100%),
     url('/src/pagina.jpg') center top/100% auto repeat;
   background-attachment:fixed;
-  font-family:'Cormorant Garamond',Georgia,serif;
-  color:var(--txt);
-  min-height:100vh;
+  font-family:'Cormorant Garamond',Georgia,serif;color:var(--txt);min-height:100vh;
 }
 
 /* ================= LA LUCE GUIDA ================= */
-body{--lm-c1:#beb8ca;--lm-mid:#6e6880;
-  --lm-g1:rgba(200,195,215,.55);--lm-g2:rgba(160,152,180,.3);--lm-g3:rgba(120,112,145,.16)}
-body.lt1{--lm-c1:#ffffff;--lm-mid:#f0f2fa;
-  --lm-g1:rgba(240,243,255,.9);--lm-g2:rgba(212,222,248,.48);--lm-g3:rgba(185,198,240,.24)}
-body.lt2{--lm-c1:#ffffff;--lm-mid:#dde8f4;
-  --lm-g1:rgba(224,236,250,.9);--lm-g2:rgba(176,205,240,.5);--lm-g3:rgba(145,180,230,.25)}
-body.lt3{--lm-c1:#ffffff;--lm-mid:#b9ddf6;
-  --lm-g1:rgba(190,225,252,.9);--lm-g2:rgba(126,190,242,.52);--lm-g3:rgba(88,160,228,.26)}
-body.lt4{--lm-c1:#ffffff;--lm-mid:#a7b6ef;
-  --lm-g1:rgba(180,194,252,.9);--lm-g2:rgba(128,148,238,.52);--lm-g3:rgba(98,118,222,.26)}
-body.lt5{--lm-c1:#ffffff;--lm-mid:#ad7ff0;
-  --lm-g1:rgba(206,170,255,.9);--lm-g2:rgba(164,112,246,.5);--lm-g3:rgba(128,76,226,.26)}
-body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;
-  --lm-g1:rgba(225,205,255,.95);--lm-g2:rgba(186,150,240,.56);--lm-g3:rgba(150,110,215,.3)}
-#lume{
-  position:absolute;left:0;top:0;z-index:40;
-  width:56px;height:56px;margin:-28px 0 0 -28px;
-  pointer-events:auto;cursor:pointer;
-  transition:transform 1.7s cubic-bezier(.45,.05,.25,1), opacity .8s ease;
-  animation:lflick 3.1s ease-in-out infinite;
-}
+body{--lm-c1:#beb8ca;--lm-mid:#6e6880;--lm-g1:rgba(200,195,215,.55);--lm-g2:rgba(160,152,180,.3);--lm-g3:rgba(120,112,145,.16)}
+body.lt1{--lm-c1:#ffffff;--lm-mid:#f0f2fa;--lm-g1:rgba(240,243,255,.9);--lm-g2:rgba(212,222,248,.48);--lm-g3:rgba(185,198,240,.24)}
+body.lt2{--lm-c1:#ffffff;--lm-mid:#dde8f4;--lm-g1:rgba(224,236,250,.9);--lm-g2:rgba(176,205,240,.5);--lm-g3:rgba(145,180,230,.25)}
+body.lt3{--lm-c1:#ffffff;--lm-mid:#b9ddf6;--lm-g1:rgba(190,225,252,.9);--lm-g2:rgba(126,190,242,.52);--lm-g3:rgba(88,160,228,.26)}
+body.lt4{--lm-c1:#ffffff;--lm-mid:#a7b6ef;--lm-g1:rgba(180,194,252,.9);--lm-g2:rgba(128,148,238,.52);--lm-g3:rgba(98,118,222,.26)}
+body.lt5{--lm-c1:#ffffff;--lm-mid:#ad7ff0;--lm-g1:rgba(206,170,255,.9);--lm-g2:rgba(164,112,246,.5);--lm-g3:rgba(128,76,226,.26)}
+body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:rgba(186,150,240,.56);--lm-g3:rgba(150,110,215,.3)}
+#lume{position:absolute;left:0;top:0;z-index:40;width:56px;height:56px;margin:-28px 0 0 -28px;
+  pointer-events:auto;cursor:pointer;transition:transform 1.4s cubic-bezier(.45,.05,.25,1), opacity .8s ease;
+  animation:lflick 3.1s ease-in-out infinite}
 @keyframes lflick{0%,100%{filter:brightness(1)}50%{filter:brightness(1.28)}}
-#lume::after{
-  content:'';position:absolute;inset:19px;border-radius:50%;
-  background:radial-gradient(circle at 38% 34%,
-    var(--lm-c1) 0%, var(--lm-c1) 28%, var(--lm-mid) 58%, transparent 78%);
-  box-shadow:
-    0 0 12px 4px var(--lm-g1),
-    0 0 38px 16px var(--lm-g2),
-    0 0 95px 44px var(--lm-g3),
-    inset 0 0 4px rgba(220,215,245,.5);
-  transition:box-shadow 2s ease;
-}
+#lume::after{content:'';position:absolute;inset:19px;border-radius:50%;
+  background:radial-gradient(circle at 38% 34%, var(--lm-c1) 0%, var(--lm-c1) 28%, var(--lm-mid) 58%, transparent 78%);
+  box-shadow:0 0 12px 4px var(--lm-g1),0 0 38px 16px var(--lm-g2),0 0 95px 44px var(--lm-g3),inset 0 0 4px rgba(220,215,245,.5);
+  transition:box-shadow 1.2s ease, inset 1.2s ease}
+#lume.boost::after{inset:15px;
+  box-shadow:0 0 18px 7px var(--lm-g1),0 0 60px 26px var(--lm-g2),0 0 150px 70px var(--lm-g3),inset 0 0 7px rgba(230,225,255,.7)}
 
 /* ================= colonna ================= */
 .page{max-width:760px;margin:0 auto;padding:0 0 30px;position:relative}
-@media(min-width:920px){.page{padding-top:18px}}
+@media(min-width:920px){.page{padding-top:14px}}
 
 /* ================= header ================= */
-.hd{padding:26px 22px 14px;text-align:center}
+.hd{padding:24px 22px 12px;text-align:center}
 .hd .orn{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:10px}
 .hd .orn .l{width:80px;height:1px;background:linear-gradient(90deg,transparent,rgba(185,163,227,.6),transparent)}
 .hd .orn .d{width:6px;height:6px;border:1px solid var(--glic);transform:rotate(45deg)}
-.hd h1{
-  font-family:'Cinzel',serif;font-weight:600;
-  font-size:clamp(21px,5vw,30px);letter-spacing:.08em;
-  color:#f0eaf6;
-  text-shadow:0 0 30px rgba(185,163,227,.35);
-}
+.hd h1{font-family:'Cinzel',serif;font-weight:600;font-size:clamp(21px,5vw,30px);letter-spacing:.08em;color:#f0eaf6;text-shadow:0 0 30px rgba(185,163,227,.35)}
 .hd p{font-size:15px;color:var(--txt-soft);margin-top:6px}
 
-/* ================= tabs ================= */
-.tabs{
-  position:sticky;top:0;z-index:30;
-  display:grid;grid-template-columns:repeat(4,1fr);
-  background:rgba(9,7,12,.96);
-  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
-  border-top:1px solid rgba(185,163,227,.16);
-  border-bottom:1px solid rgba(185,163,227,.22);
-}
-.tab{
-  background:none;border:none;cursor:pointer;
-  padding:13px 2px 11px;text-align:center;position:relative;
-  font-family:'Cinzel',serif;transition:background .2s;
-}
-.tab .lbl{font-size:12px;color:var(--txt-soft);display:block;line-height:1.3;font-weight:600;letter-spacing:.03em}
-.tab::after{
-  content:'';position:absolute;left:14%;right:14%;bottom:0;height:2px;
-  background:transparent;transition:background .25s,box-shadow .25s;
-}
-.tab:hover{background:rgba(185,163,227,.07)}
-.tab.on .lbl{color:var(--glic-hi)}
-.tab.on::after{background:var(--glic);box-shadow:0 0 12px rgba(185,163,227,.8)}
+/* ================= MENU 3D ARROTONDATO ================= */
+.tabs{position:sticky;top:0;z-index:30;display:flex;gap:7px;justify-content:center;align-items:stretch;
+  padding:12px 12px 13px;background:rgba(9,7,12,.86);
+  backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);
+  border-bottom:1px solid rgba(185,163,227,.12)}
+.tab{flex:1;max-width:172px;border:1px solid rgba(185,163,227,.2);border-radius:16px;cursor:pointer;
+  padding:12px 5px;display:flex;align-items:center;justify-content:center;text-align:center;
+  background:linear-gradient(180deg, rgba(46,37,62,.85), rgba(20,16,28,.92));
+  box-shadow:0 3px 8px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.06), inset 0 -3px 8px rgba(0,0,0,.3);
+  transition:transform .18s, box-shadow .25s, background .25s, border-color .25s}
+.tab .lbl{font-family:'Cinzel',serif;font-size:12px;font-weight:600;letter-spacing:.03em;color:var(--txt-soft);line-height:1.25}
+.tab:hover{transform:translateY(-1px);border-color:rgba(205,178,242,.4)}
+.tab.on{transform:translateY(-2px);
+  background:linear-gradient(180deg, rgba(126,99,184,.62), rgba(74,55,116,.66));
+  border-color:rgba(205,178,242,.7);
+  box-shadow:0 6px 18px rgba(120,80,200,.45), inset 0 1px 0 rgba(255,255,255,.22), 0 0 0 1px rgba(205,178,242,.35), 0 0 22px rgba(170,135,230,.35)}
+.tab.on .lbl{color:#f4eefc;text-shadow:0 0 12px rgba(220,205,250,.6)}
 .tab.done .lbl::after{content:' ✦';color:var(--gold-pale)}
-@media(max-width:470px){.tab .lbl{font-size:10.5px}}
+@media(max-width:470px){.tab{border-radius:13px;padding:11px 3px}.tab .lbl{font-size:10.5px}}
 
 /* ================= pannelli ================= */
 .panel{display:none;padding:22px 18px 36px}
@@ -122,30 +90,17 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;
 @media(max-width:520px){.panel{padding:18px 13px 30px}}
 
 /* ================= HOME ================= */
-.home-prog{
-  display:flex;align-items:center;gap:14px;
-  border:1px solid var(--card-line);border-radius:14px;background:var(--card);
-  padding:14px 16px;margin-bottom:18px;
-}
-.hp-orb{
-  width:42px;height:42px;border-radius:50%;flex-shrink:0;
+.home-prog{display:flex;align-items:center;gap:14px;border:1px solid var(--card-line);border-radius:14px;background:var(--card);padding:14px 16px;margin-bottom:18px}
+.hp-orb{width:42px;height:42px;border-radius:50%;flex-shrink:0;
   background:radial-gradient(circle at 38% 34%, #fff 0%, #fff 26%, var(--lm-mid) 60%, transparent 80%);
-  box-shadow:0 0 10px 3px var(--lm-g1), 0 0 24px 9px var(--lm-g2);
-  animation:lflick 3.1s ease-in-out infinite;
-}
+  box-shadow:0 0 10px 3px var(--lm-g1), 0 0 24px 9px var(--lm-g2);animation:lflick 3.1s ease-in-out infinite}
 .hp-txt{flex:1;line-height:1.45}
 .hp-fiore{font-family:'Cinzel',serif;font-size:15px;color:var(--glic-hi)}
 .hp-sub{font-size:14px;color:var(--txt-soft)}
 .hp-sub b{color:var(--gold-pale);font-weight:600}
-
-.pcards{display:flex;flex-direction:column;gap:14px;margin-bottom:8px}
-.pcard{
-  display:block;text-align:left;width:100%;cursor:pointer;
-  border:1px solid var(--card-line);border-left:3px solid var(--glic);
-  border-radius:14px;background:var(--card);
-  padding:18px 18px 16px;
-  transition:box-shadow .3s,border-color .3s,background .3s;
-}
+.pcards{display:flex;flex-direction:column;gap:14px}
+.pcard{display:block;text-align:left;width:100%;cursor:pointer;border:1px solid var(--card-line);border-left:3px solid var(--glic);
+  border-radius:14px;background:var(--card);padding:18px 18px 16px;transition:box-shadow .3s,border-color .3s}
 .pcard:hover{box-shadow:0 0 22px rgba(170,135,230,.28);border-color:rgba(205,178,242,.7)}
 .pcard .pc-tag{font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--glic);margin-bottom:7px}
 .pcard h3{font-family:'Cinzel',serif;font-size:21px;font-weight:600;color:#f0eaf6;margin-bottom:6px;line-height:1.2}
@@ -153,135 +108,94 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;
 .pc-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .pc-meta{font-size:13px;color:var(--txt-dim)}
 .pc-meta .au{color:var(--aqua);font-weight:600}
-.pc-go{
-  margin-left:auto;font-family:'Cinzel',serif;font-size:11px;font-weight:700;letter-spacing:.12em;
-  text-transform:uppercase;color:#2a1d08;white-space:nowrap;
-  background:linear-gradient(165deg,#d8b765,#b08c38);
-  border:none;border-radius:30px;padding:9px 16px;cursor:pointer;
-  box-shadow:0 3px 12px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,240,200,.5);
-}
-.home-note{
-  border:1px solid var(--card-line);border-left:3px solid var(--gold);
-  border-radius:12px;background:var(--card);padding:15px 17px;margin-top:18px;
-  font-size:15.5px;line-height:1.7;color:var(--txt-soft);
-}
+.pc-go{margin-left:auto;font-family:'Cinzel',serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#2a1d08;white-space:nowrap;
+  background:linear-gradient(165deg,#d8b765,#b08c38);border:none;border-radius:30px;padding:9px 16px;cursor:pointer;box-shadow:0 3px 12px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,240,200,.5)}
+.home-note{border:1px solid var(--card-line);border-left:3px solid var(--gold);border-radius:12px;background:var(--card);padding:15px 17px;margin-top:18px;font-size:15.5px;line-height:1.7;color:var(--txt-soft)}
 .home-note b{color:var(--gold-pale);font-weight:600}
 
 /* ================= header scheda ================= */
-.shdr{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;
-  margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid rgba(185,163,227,.3)}
+.shdr{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid rgba(185,163,227,.3)}
 .stag{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:var(--glic);margin-bottom:7px}
 .sh1{font-family:'Cinzel',serif;font-size:clamp(21px,5vw,30px);font-weight:600;line-height:1.2;color:#f0eaf6}
-.tbox{border:1px solid rgba(185,163,227,.4);text-align:center;padding:9px 14px;flex-shrink:0;border-radius:8px;background:rgba(185,163,227,.06)}
-.tn{font-family:'Cinzel',serif;font-size:20px;font-weight:700;color:var(--glic-hi);line-height:1}
-.tf{font-size:12px;color:var(--txt-soft);margin-top:4px}
+.tbox{border:1px solid rgba(185,163,227,.4);text-align:center;padding:9px 14px;flex-shrink:0;border-radius:10px;background:rgba(185,163,227,.06)}
+.tn{font-family:'Cinzel',serif;font-size:22px;font-weight:700;color:var(--glic-hi);line-height:1}
+.tl{font-family:'Cinzel',serif;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--glic);margin-top:4px}
+.tf{font-size:12px;color:var(--txt-soft);margin-top:3px}
+.intro{font-size:16.5px;line-height:1.65;color:var(--txt-soft);margin:0 2px 16px}
 
 /* ================= LETTORE AUDIO (verde acqua) ================= */
-.player{
-  border:1px solid var(--aqua-line);border-radius:18px;overflow:hidden;
-  background:linear-gradient(165deg, rgba(12,34,32,.55), rgba(8,18,18,.72));
-  margin-bottom:16px;
-  box-shadow:0 0 30px rgba(47,224,198,.08);
-}
-.pcover{
-  position:relative;height:142px;
-  background:linear-gradient(135deg,#0e8f7f 0%, #0a5048 70%);
-  display:flex;align-items:flex-end;overflow:hidden;
-}
+.player{border:1px solid var(--aqua-line);border-radius:18px;overflow:hidden;background:linear-gradient(165deg, rgba(12,34,32,.55), rgba(8,18,18,.72));margin-bottom:14px;box-shadow:0 0 30px rgba(47,224,198,.08)}
+.pcover{position:relative;height:150px;background:linear-gradient(135deg,#0e8f7f 0%, #0a5048 70%);display:flex;align-items:flex-end;overflow:hidden}
 .pcover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.pcover::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,20,18,0) 40%, rgba(6,16,16,.82) 100%)}
+.pcover::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,20,18,0) 38%, rgba(6,16,16,.84) 100%)}
 .pcover .pcap{position:relative;z-index:1;padding:12px 16px}
 .pcover .pcap .pk{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--aqua-hi);margin-bottom:3px}
 .pcover .pcap .pt{font-family:'Cinzel',serif;font-size:18px;color:#eafffb;text-shadow:0 1px 10px rgba(0,0,0,.6)}
 .pbody{padding:15px 15px 14px}
 .pmain{display:flex;align-items:center;gap:14px;margin-bottom:13px}
-.pring{
-  width:74px;height:74px;border-radius:50%;flex-shrink:0;padding:5px;
-  background:conic-gradient(var(--aqua) calc(var(--p,0)*1%), rgba(47,224,198,.16) 0);
-  box-shadow:0 0 18px rgba(47,224,198,.25);
-}
-.pplay{
-  width:64px;height:64px;border-radius:50%;border:none;cursor:pointer;
+.pring{width:74px;height:74px;border-radius:50%;flex-shrink:0;padding:5px;background:conic-gradient(var(--aqua) calc(var(--p,0)*1%), rgba(47,224,198,.16) 0);box-shadow:0 0 18px rgba(47,224,198,.25)}
+.pplay{width:64px;height:64px;border-radius:50%;border:none;cursor:pointer;
   background:radial-gradient(circle at 34% 28%, var(--aqua-hi), var(--aqua) 46%, var(--aqua-deep) 100%);
   box-shadow:0 6px 18px rgba(0,0,0,.45), 0 0 26px var(--aqua-glow), inset 0 2px 5px rgba(255,255,255,.5), inset 0 -7px 13px rgba(6,70,62,.5);
-  color:#06403a;font-size:23px;line-height:64px;display:flex;align-items:center;justify-content:center;
-  transition:transform .15s;
-}
+  color:#06403a;font-size:23px;display:flex;align-items:center;justify-content:center;transition:transform .15s}
 .pplay:active{transform:scale(.95)}
 .pplay[disabled]{filter:grayscale(.6) brightness(.8);cursor:default}
 .pmeta{flex:1;min-width:0}
 .pchap{font-size:15px;color:#eafffb;font-weight:600;line-height:1.3}
 .ptime{font-size:13px;color:#8fc7be;margin-top:3px;font-variant-numeric:tabular-nums}
 .pbar{position:relative;height:10px;border-radius:10px;background:rgba(47,224,198,.15);margin:0 2px 4px;cursor:pointer}
-.pfill{position:absolute;left:0;top:0;height:10px;width:0;border-radius:10px;
-  background:linear-gradient(90deg,var(--aqua-deep),var(--aqua));box-shadow:0 0 12px var(--aqua-glow)}
+.pfill{position:absolute;left:0;top:0;height:10px;width:0;border-radius:10px;background:linear-gradient(90deg,var(--aqua-deep),var(--aqua));box-shadow:0 0 12px var(--aqua-glow)}
 .ptick{position:absolute;top:-6px;width:6px;height:6px;border-radius:50%;background:rgba(154,247,234,.55);transform:translateX(-3px)}
-.pknob{position:absolute;top:50%;width:18px;height:18px;border-radius:50%;transform:translate(-9px,-9px);
-  background:radial-gradient(circle at 35% 30%,var(--aqua-hi),var(--aqua) 60%,var(--aqua-deep));
-  box-shadow:0 2px 7px rgba(0,0,0,.5),0 0 12px var(--aqua-glow)}
+.pknob{position:absolute;top:50%;width:18px;height:18px;border-radius:50%;transform:translate(-9px,-9px);background:radial-gradient(circle at 35% 30%,var(--aqua-hi),var(--aqua) 60%,var(--aqua-deep));box-shadow:0 2px 7px rgba(0,0,0,.5),0 0 12px var(--aqua-glow)}
 .pwait{font-size:13.5px;color:#8fc7be;text-align:center;padding:4px 6px 2px;line-height:1.55}
 .pchaps{border-top:1px solid rgba(47,224,198,.16);margin-top:12px;padding-top:8px}
 .pcrow{display:flex;align-items:center;gap:11px;padding:9px 8px;border-radius:11px;cursor:pointer;transition:background .15s}
 .pcrow:hover{background:rgba(47,224,198,.07)}
 .pcrow.cur{background:rgba(47,224,198,.12)}
-.pci{width:23px;height:23px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;
-  font-family:'Cinzel',serif;font-size:11px;font-weight:700;
-  background:rgba(47,224,198,.16);color:var(--aqua-hi);border:1px solid rgba(47,224,198,.4)}
+.pci{width:23px;height:23px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif;font-size:11px;font-weight:700;background:rgba(47,224,198,.16);color:var(--aqua-hi);border:1px solid rgba(47,224,198,.4)}
 .pcrow.cur .pci{background:radial-gradient(circle at 35% 30%,var(--aqua-hi),var(--aqua) 70%);color:#06403a;border:none}
 .pcl{flex:1;font-size:15px;color:var(--txt)}
 .pcrow.cur .pcl{color:#eafffb}
 .pct{font-size:12.5px;color:#7fb3aa;font-variant-numeric:tabular-nums}
 
-/* ================= riga azioni pratica ================= */
-.pact{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:6px 0 18px}
-@media(max-width:430px){.pact{grid-template-columns:1fr}}
-.pact button{
-  display:flex;align-items:center;justify-content:center;gap:8px;
-  background:rgba(185,163,227,.07);border:1px solid rgba(185,163,227,.32);
-  color:var(--glic-hi);border-radius:12px;padding:13px 10px;cursor:pointer;
-  font-family:'Cinzel',serif;font-size:12px;letter-spacing:.04em;
-  transition:background .15s,box-shadow .15s;
-}
-.pact button:hover{background:rgba(185,163,227,.14);box-shadow:0 0 12px rgba(185,163,227,.25)}
-.pact button .gi{font-size:15px}
+/* ================= navigatore del giorno + pallini ================= */
+.daynav{display:flex;align-items:center;gap:10px;border:1px solid rgba(185,163,227,.3);border-radius:12px;background:rgba(28,22,38,.85);padding:11px 14px;margin-bottom:10px}
+.dn-btn{background:none;border:1.5px solid var(--glic);color:var(--glic-hi);border-radius:30px;padding:8px 15px;font-family:'Cinzel',serif;font-size:13px;cursor:pointer;white-space:nowrap;transition:background .15s, box-shadow .15s, opacity .2s}
+.dn-btn:hover{background:rgba(185,163,227,.12);box-shadow:0 0 12px rgba(185,163,227,.3)}
+.dn-btn[disabled]{opacity:.25;cursor:default;box-shadow:none;background:none}
+.dn-mid{flex:1;text-align:center}
+.dn-lab{font-family:'Cinzel',serif;font-size:13px;letter-spacing:.08em;color:#f0eaf6;display:block;margin-bottom:5px}
+.dn-mid input{background:var(--field);border:1px solid var(--field-line);border-radius:8px;padding:7px 10px;font-size:15px;font-family:'Cormorant Garamond',serif;color:#f4eefc;outline:none;color-scheme:dark;max-width:170px}
+.dn-mid input:focus{border-color:rgba(205,178,242,.85)}
+.dots{display:flex;gap:6px;justify-content:space-between;border:1px solid var(--card-line);border-radius:12px;background:var(--card);padding:11px 12px;margin-bottom:18px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.dot{flex:1;min-width:34px;text-align:center;cursor:pointer;border:none;background:none;font-family:'Cormorant Garamond',serif;padding:2px 0}
+.dot .c{width:13px;height:13px;border-radius:50%;margin:0 auto 5px;border:1.5px solid rgba(185,163,227,.4);background:transparent;transition:box-shadow .3s, background .3s}
+.dot.full .c{background:var(--gold);border-color:var(--gold);box-shadow:0 0 9px rgba(201,168,76,.7)}
+.dot.sel .c{box-shadow:0 0 0 3px rgba(205,178,242,.35), 0 0 12px rgba(170,135,230,.7);border-color:var(--glic-hi)}
+.dot.sel.full .c{background:var(--glic-hi);border-color:var(--glic-hi)}
+.dot .dl{font-size:11.5px;color:var(--txt-dim);display:block;line-height:1.25}
+.dot.sel .dl{color:var(--glic-hi)}
+.dot.today .dl{color:var(--gold-pale)}
 
-/* ================= appunti essenziali ================= */
+/* ================= versione scritta (pulsante) ================= */
+.vsbtn{width:100%;display:flex;align-items:center;justify-content:center;gap:9px;border:1px solid rgba(185,163,227,.32);background:rgba(185,163,227,.07);color:var(--glic-hi);border-radius:12px;padding:13px;cursor:pointer;font-family:'Cinzel',serif;font-size:12px;letter-spacing:.05em;margin-bottom:18px;transition:background .15s,box-shadow .15s}
+.vsbtn:hover{background:rgba(185,163,227,.14);box-shadow:0 0 12px rgba(185,163,227,.25)}
+.vsbtn .gi{font-size:16px}
+
+/* ================= blocchi di scrittura ================= */
 .app-lab{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--txt-dim);margin:4px 2px 12px}
-.blk{
-  border:1px solid var(--card-line);background:var(--card);border-radius:12px;
-  padding:15px 16px 13px;margin-bottom:13px;
-  transition:box-shadow 1.1s ease, border-color 1.1s ease, background 1.1s ease;
-}
-.blk.lit{border-color:rgba(205,178,242,.9);background:rgba(30,24,40,.92);
-  box-shadow:0 0 0 1px rgba(205,178,242,.35),0 0 22px rgba(170,135,230,.4),0 0 70px rgba(150,110,215,.18),inset 0 0 30px rgba(170,135,230,.1)}
-.blk label,.blk .blab{
-  font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;
-  color:var(--txt-dim);display:block;margin-bottom:8px;transition:color 1.1s ease}
+.blk{border:1px solid var(--card-line);background:var(--card);border-radius:12px;padding:15px 16px 13px;margin-bottom:13px;transition:box-shadow 1.1s ease, border-color 1.1s ease, background 1.1s ease}
+.blk.lit{border-color:rgba(205,178,242,.9);background:rgba(30,24,40,.92);box-shadow:0 0 0 1px rgba(205,178,242,.35),0 0 22px rgba(170,135,230,.4),0 0 70px rgba(150,110,215,.18),inset 0 0 30px rgba(170,135,230,.1)}
+.blk label,.blk .blab{font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--txt-dim);display:block;margin-bottom:8px;transition:color 1.1s ease}
 .blk.lit label,.blk.lit .blab{color:var(--glic);text-shadow:0 0 12px rgba(190,160,240,.6)}
 .blk .qt{font-size:16px;line-height:1.55;margin-bottom:10px;color:var(--txt-soft);font-weight:500}
 .blk.lit .qt{color:var(--glic-hi)}
-.blk .hintq{font-size:13.5px;color:var(--txt-dim);margin-top:7px;line-height:1.5;font-style:italic}
-
-input[type=text],input[type=date]{
-  width:100%;background:var(--field);border:1px solid var(--field-line);border-radius:8px;
-  padding:12px 13px;font-size:17px;font-family:'Cormorant Garamond',serif;font-weight:500;
-  color:#f4eefc;outline:none;-webkit-appearance:none;transition:border-color .4s, box-shadow .4s;color-scheme:dark;
-}
-textarea{
-  width:100%;background:var(--field);border:1px solid var(--field-line);border-radius:8px;resize:vertical;
-  font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:500;color:#f4eefc;outline:none;line-height:1.75;
-  padding:12px 13px;min-height:84px;transition:border-color .4s, box-shadow .4s;color-scheme:dark;
-}
+input[type=text],input[type=date]{width:100%;background:var(--field);border:1px solid var(--field-line);border-radius:8px;padding:12px 13px;font-size:17px;font-family:'Cormorant Garamond',serif;font-weight:500;color:#f4eefc;outline:none;-webkit-appearance:none;transition:border-color .4s, box-shadow .4s;color-scheme:dark}
+textarea{width:100%;background:var(--field);border:1px solid var(--field-line);border-radius:8px;resize:vertical;font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:500;color:#f4eefc;outline:none;line-height:1.75;padding:12px 13px;min-height:80px;transition:border-color .4s, box-shadow .4s;color-scheme:dark}
 input::placeholder,textarea::placeholder{color:#7b7287;opacity:1}
 input:focus,textarea:focus{border-color:rgba(205,178,242,.85);box-shadow:0 0 14px rgba(170,135,230,.35), inset 0 0 14px rgba(170,135,230,.07)}
-
-/* ================= scheda completa (a comparsa) ================= */
-.full{display:none;margin-top:4px}
-.full.on{display:block}
-.phase{display:flex;align-items:center;gap:11px;margin:24px 0 12px}
-.pnum{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--glic);
-  display:flex;align-items:center;justify-content:center;flex-shrink:0;
-  font-family:'Cinzel',serif;font-size:14px;font-weight:700;color:var(--glic-hi);background:rgba(185,163,227,.08)}
+.phase{display:flex;align-items:center;gap:11px;margin:22px 0 12px}
+.pnum{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--glic);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Cinzel',serif;font-size:14px;font-weight:700;color:var(--glic-hi);background:rgba(185,163,227,.08)}
 .ptxt{font-family:'Cinzel',serif;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--txt);line-height:1.5}
 .qg{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 @media(max-width:640px){.qg{grid-template-columns:1fr}}
@@ -291,77 +205,50 @@ input:focus,textarea:focus{border-color:rgba(205,178,242,.85);box-shadow:0 0 14p
 .trarr{font-size:24px;color:var(--glic);display:flex;align-items:center;justify-content:center;text-shadow:0 0 12px rgba(185,163,227,.7)}
 .trex{font-size:14px;color:var(--txt-soft);text-align:center;margin:4px 0 6px;line-height:1.6}
 .trex b{color:var(--glic-hi);font-weight:600}
-
-/* ================= mantra ================= */
-.mantra{padding:20px 22px;margin:20px 0 14px;border-radius:12px;text-align:center;
-  border:1px solid rgba(201,168,76,.35);background:linear-gradient(165deg, rgba(34,26,18,.8), rgba(20,16,12,.85))}
+.mantra{padding:20px 22px;margin:20px 0 14px;border-radius:12px;text-align:center;border:1px solid rgba(201,168,76,.35);background:linear-gradient(165deg, rgba(34,26,18,.8), rgba(20,16,12,.85))}
 .ml{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
 .mt{font-size:18px;line-height:1.85;color:var(--gold-pale);font-weight:500}
 
 /* ================= segna pratica ================= */
-.segna{
-  width:100%;display:flex;align-items:center;justify-content:center;gap:10px;
-  border:none;border-radius:14px;cursor:pointer;margin-top:6px;
-  padding:15px;font-family:'Cinzel',serif;font-size:13px;font-weight:700;letter-spacing:.08em;
-  background:linear-gradient(165deg,#d8b765,#b08c38);color:#2a1d08;
-  box-shadow:0 4px 16px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,240,200,.5);
-  transition:filter .15s;
-}
+.segna{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;border:none;border-radius:14px;cursor:pointer;margin-top:6px;padding:15px;font-family:'Cinzel',serif;font-size:13px;font-weight:700;letter-spacing:.08em;background:linear-gradient(165deg,#d8b765,#b08c38);color:#2a1d08;box-shadow:0 4px 16px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,240,200,.5);transition:filter .15s}
 .segna:hover{filter:brightness(1.06)}
 .segna.done{background:linear-gradient(165deg,#3a3050,#2a2340);color:var(--glic-hi);box-shadow:none;border:1px solid rgba(185,163,227,.4)}
 .segna-foot{text-align:center;font-size:13.5px;color:var(--txt-dim);margin-top:10px;line-height:1.5}
 
-/* ================= DIARIO ================= */
-.cal-istr{border:1px solid var(--card-line);border-left:3px solid var(--glic);
-  padding:14px 16px;margin:4px 0 18px;font-size:15.5px;color:var(--txt-soft);line-height:1.7;border-radius:12px;background:var(--card)}
+/* ================= DIARIO (verticale, elegante) ================= */
+.cal-istr{border:1px solid var(--card-line);border-left:3px solid var(--glic);padding:14px 16px;margin:4px 0 18px;font-size:15.5px;color:var(--txt-soft);line-height:1.7;border-radius:12px;background:var(--card)}
 .cal-istr b{color:var(--glic-hi);font-weight:600}
-.wnav{display:flex;align-items:center;justify-content:space-between;gap:8px;
-  border:1px solid rgba(185,163,227,.3);border-bottom:none;
-  background:rgba(28,22,38,.85);padding:12px 14px;border-radius:12px 12px 0 0}
-.wnav-btn{background:none;border:1.5px solid var(--glic);color:var(--glic-hi);border-radius:30px;
-  padding:9px 16px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:.06em;cursor:pointer;white-space:nowrap;transition:background .15s,box-shadow .15s}
+.wnav{display:flex;align-items:center;justify-content:space-between;gap:8px;border:1px solid rgba(185,163,227,.3);background:rgba(28,22,38,.85);padding:12px 14px;border-radius:12px;margin-bottom:14px}
+.wnav-btn{background:none;border:1.5px solid var(--glic);color:var(--glic-hi);border-radius:30px;padding:9px 16px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:.06em;cursor:pointer;white-space:nowrap;transition:background .15s,box-shadow .15s}
 .wnav-btn:hover{background:rgba(185,163,227,.12);box-shadow:0 0 12px rgba(185,163,227,.3)}
 .wnav-lbl{font-size:14.5px;color:var(--txt);text-align:center;flex:1;line-height:1.4}
 .wnav-badge{font-family:'Cinzel',serif;font-size:8.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--glic);display:block;margin-top:3px}
 @media(max-width:430px){.wnav-lbl{font-size:12px}.wnav-btn{padding:8px 11px;font-size:10px}}
-.wcard{border:1px solid var(--card-line);border-top:none;border-radius:0 0 12px 12px;overflow:hidden;background:var(--card);
-  transition:box-shadow 1.1s ease, border-color 1.1s ease, background 1.1s ease}
-.wcard.lit{border-color:rgba(205,178,242,.9);background:rgba(30,24,40,.92);
-  box-shadow:0 0 0 1px rgba(205,178,242,.35),0 0 26px rgba(170,135,230,.45),0 0 80px rgba(150,110,215,.2),inset 0 0 36px rgba(170,135,230,.1)}
-.scroll-hint{font-size:13px;color:var(--txt-dim);text-align:center;padding:6px;display:none}
-@media(max-width:560px){.scroll-hint{display:block}}
-.cal-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
-.wgrid{display:grid;grid-template-columns:repeat(7,1fr);min-width:700px}
-.dhdr{text-align:center;padding:12px 2px;font-family:'Cinzel',serif;font-size:10.5px;letter-spacing:.14em;font-weight:700;
-  background:rgba(185,163,227,.07);color:var(--txt-soft);border-bottom:1px solid rgba(185,163,227,.25)}
-.dhdr.today{color:var(--glic-hi);border-bottom-color:var(--glic);background:rgba(185,163,227,.14)}
-.dcell{padding:12px 9px;min-height:150px;display:flex;flex-direction:column;gap:9px;border-right:1px solid rgba(185,163,227,.1)}
-.dcell:last-child{border-right:none}
-.dcell.today{background:rgba(185,163,227,.08);box-shadow:inset 2px 0 0 var(--glic)}
-.dtop{display:flex;justify-content:space-between;align-items:flex-start}
-.dnum{font-family:'Cinzel',serif;font-size:15px;font-weight:700;color:var(--txt);line-height:1;min-width:20px}
-.dnum.past{color:var(--txt-dim)}.dnum.future{color:#5f5870}
-.chks{display:flex;flex-direction:column;gap:4px}
-.chk{display:flex;align-items:center;gap:6px;cursor:pointer;padding:2px 0}
-.chk input{width:19px;height:19px;accent-color:var(--glic);cursor:pointer}
-.chkl{font-family:'Cinzel',serif;font-size:10px;font-weight:700;color:var(--glic)}
-.dkw{flex:1;display:flex;align-items:flex-end}
-.dkw input{background:rgba(10,8,14,.5);border:1px solid rgba(185,163,227,.2);border-radius:7px;width:100%;
-  font-size:15px;font-family:'Cormorant Garamond',serif;color:#f4eefc;outline:none;padding:9px 9px}
-.dkw input:focus{border-color:rgba(205,178,242,.7)}
-.dmood{display:flex;justify-content:space-between;gap:3px;padding:4px 0 2px}
-.mood{background:none;border:none;cursor:pointer;padding:1px;opacity:.34;transition:opacity .15s,transform .15s;line-height:0}
-.mood svg{width:25px;height:25px;display:block}
-.mood:hover{opacity:.75}
-.mood.on{opacity:1;transform:scale(1.12)}
-.wnote{padding:14px 16px;border-top:1px solid rgba(185,163,227,.15)}
-.wnote-t{font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--txt-dim);margin-bottom:8px}
+.dweek{display:flex;flex-direction:column;gap:9px}
+.dday{border:1px solid var(--card-line);border-radius:14px;background:var(--card);padding:13px 15px;transition:box-shadow 1.1s ease, border-color 1.1s ease, background 1.1s ease}
+.dday.today{border-color:rgba(205,178,242,.6);box-shadow:0 0 18px rgba(170,135,230,.18)}
+.dday.lit{border-color:rgba(205,178,242,.9);background:rgba(30,24,40,.92);box-shadow:0 0 24px rgba(170,135,230,.4)}
+.dd-top{display:flex;align-items:center;gap:10px;margin-bottom:11px}
+.dd-date{font-family:'Cinzel',serif;font-size:14.5px;color:var(--glic-hi);min-width:78px}
+.dd-date .fut{color:#5f5870}
+.dd-today{font-family:'Cinzel',serif;font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-pale);border:1px solid rgba(201,168,76,.5);border-radius:20px;padding:3px 8px}
+.dd-moods{display:flex;gap:5px;margin-left:auto}
+.mood{background:none;border:none;cursor:pointer;padding:1px;opacity:.32;transition:opacity .15s,transform .15s;line-height:0}
+.mood svg{width:23px;height:23px;display:block}
+.mood:hover{opacity:.7}
+.mood.on{opacity:1;transform:scale(1.14)}
+.dd-prac{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:11px}
+.pchip{display:flex;align-items:center;gap:8px;border:1px solid rgba(185,163,227,.3);border-radius:24px;padding:8px 14px;cursor:pointer;font-family:'Cinzel',serif;font-size:11.5px;letter-spacing:.03em;color:var(--txt-soft);transition:all .18s}
+.pchip .pchk{width:16px;height:16px;border-radius:50%;border:1.5px solid rgba(185,163,227,.5);display:flex;align-items:center;justify-content:center;font-size:10px;color:transparent}
+.pchip.on{border-color:var(--gold);color:var(--gold-pale);background:rgba(201,168,76,.08)}
+.pchip.on .pchk{border-color:var(--gold);background:rgba(201,168,76,.15);color:var(--gold-pale)}
+.dd-kw input{background:rgba(10,8,14,.5);border:1px solid rgba(185,163,227,.2);border-radius:8px;width:100%;font-size:15.5px;font-family:'Cormorant Garamond',serif;color:#f4eefc;outline:none;padding:10px 12px}
+.dd-kw input:focus{border-color:rgba(205,178,242,.7)}
 .seclbl{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--txt-dim);margin:26px 0 12px;padding-left:2px}
 .fine{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
 @media(max-width:560px){.fine{grid-template-columns:1fr}}
-.fine textarea{min-height:120px}
-.intenz{padding:16px 18px;border-radius:12px;border:1px solid rgba(201,168,76,.35);
-  background:linear-gradient(165deg, rgba(34,26,18,.8), rgba(20,16,12,.85));transition:box-shadow 1.1s ease, border-color 1.1s ease}
+.fine textarea{min-height:110px}
+.intenz{padding:16px 18px;border-radius:12px;border:1px solid rgba(201,168,76,.35);background:linear-gradient(165deg, rgba(34,26,18,.8), rgba(20,16,12,.85));transition:box-shadow 1.1s ease, border-color 1.1s ease}
 .intenz.lit{border-color:rgba(216,183,101,.9);box-shadow:0 0 22px rgba(201,168,76,.4), inset 0 0 26px rgba(201,168,76,.08)}
 .intenz .blab{color:var(--gold)}
 .intenz input{border-color:rgba(201,168,76,.35)}
@@ -373,36 +260,21 @@ input:focus,textarea:focus{border-color:rgba(205,178,242,.85);box-shadow:0 0 14p
 .bnav-foot a{color:var(--glic-hi);text-decoration:none}
 
 /* ================= toast ================= */
-#saved{position:fixed;bottom:18px;left:50%;transform:translateX(-50%) translateY(60px);
-  background:rgba(22,17,28,.96);color:var(--glic-hi);border:1px solid rgba(185,163,227,.5);
-  border-radius:30px;padding:9px 20px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:.1em;
-  z-index:70;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;box-shadow:0 0 18px rgba(150,110,215,.3)}
+#saved{position:fixed;bottom:18px;left:50%;transform:translateX(-50%) translateY(60px);background:rgba(22,17,28,.96);color:var(--glic-hi);border:1px solid rgba(185,163,227,.5);border-radius:30px;padding:9px 20px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:.1em;z-index:70;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;box-shadow:0 0 18px rgba(150,110,215,.3)}
 #saved.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-/* ================= MODALI (guida + versione scritta) ================= */
-#veil,#vsveil{position:fixed;inset:0;z-index:60;background:rgba(4,3,8,.72);
-  backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);opacity:0;pointer-events:none;transition:opacity .45s ease}
+/* ================= MODALI ================= */
+#veil,#vsveil{position:fixed;inset:0;z-index:60;background:rgba(4,3,8,.72);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);opacity:0;pointer-events:none;transition:opacity .45s ease}
 #veil.on,#vsveil.on{opacity:1;pointer-events:auto}
-#gpan,#vspan{
-  position:fixed;z-index:61;left:50%;top:50%;transform:translate(-50%,-50%) scale(.96);
-  width:min(720px,94vw);height:min(88vh,860px);display:flex;flex-direction:column;
-  border:1px solid rgba(185,163,227,.35);border-radius:18px;
-  background:linear-gradient(180deg, rgba(13,10,18,.97), rgba(10,8,14,.97)), url('/src/pagina.jpg') center/cover;
-  box-shadow:0 0 60px rgba(150,110,215,.25), 0 30px 80px rgba(0,0,0,.7);
-  opacity:0;pointer-events:none;transition:opacity .45s ease, transform .45s ease}
+#gpan,#vspan{position:fixed;z-index:61;left:50%;top:50%;transform:translate(-50%,-50%) scale(.96);width:min(720px,94vw);height:min(88vh,860px);display:flex;flex-direction:column;border:1px solid rgba(185,163,227,.35);border-radius:18px;background:linear-gradient(180deg, rgba(13,10,18,.97), rgba(10,8,14,.97)), url('/src/pagina.jpg') center/cover;box-shadow:0 0 60px rgba(150,110,215,.25), 0 30px 80px rgba(0,0,0,.7);opacity:0;pointer-events:none;transition:opacity .45s ease, transform .45s ease}
 #gpan.on,#vspan.on{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1)}
 .gp-hd{display:flex;align-items:center;gap:12px;padding:18px 20px 14px;border-bottom:1px solid rgba(185,163,227,.2)}
-.gp-orb{width:34px;height:34px;border-radius:50%;flex-shrink:0;
-  background:radial-gradient(circle at 38% 34%, #fff 0%, #fff 30%, var(--lm-mid) 60%, transparent 80%);
-  box-shadow:0 0 10px 3px var(--lm-g1), 0 0 26px 10px var(--lm-g2);animation:lflick 3.1s ease-in-out infinite}
-#vspan .gp-orb{background:radial-gradient(circle at 38% 34%, var(--aqua-hi) 0%, var(--aqua) 55%, transparent 80%);
-  box-shadow:0 0 10px 3px var(--aqua-glow), 0 0 24px 9px rgba(47,224,198,.3)}
+.gp-orb{width:34px;height:34px;border-radius:50%;flex-shrink:0;background:radial-gradient(circle at 38% 34%, #fff 0%, #fff 30%, var(--lm-mid) 60%, transparent 80%);box-shadow:0 0 10px 3px var(--lm-g1), 0 0 26px 10px var(--lm-g2);animation:lflick 3.1s ease-in-out infinite}
+#vspan .gp-orb{background:radial-gradient(circle at 38% 34%, var(--aqua-hi) 0%, var(--aqua) 55%, transparent 80%);box-shadow:0 0 10px 3px var(--aqua-glow), 0 0 24px 9px rgba(47,224,198,.3)}
 .gp-hd h2{font-family:'Cinzel',serif;font-size:17px;font-weight:600;color:#f0eaf6;flex:1;text-shadow:0 0 18px rgba(185,163,227,.4)}
 .gp-x{background:none;border:1px solid rgba(185,163,227,.4);color:var(--txt-soft);width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:15px;line-height:1}
 .gp-x:hover{color:#fff;border-color:var(--glic-hi)}
 .gp-bd{flex:1;overflow-y:auto;padding:18px 18px 26px;-webkit-overflow-scrolling:touch}
-
-/* guida: livello / scala / traguardi / spiegazioni */
 .lvl{border:1px solid rgba(185,163,227,.3);border-radius:14px;padding:16px 16px 14px;margin-bottom:16px;text-align:center;background:rgba(185,163,227,.05)}
 .lvl-n{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:var(--glic);margin-bottom:6px}
 .lvl-t{font-family:'Cinzel',serif;font-size:21px;font-weight:700;color:#f0eaf6;text-shadow:0 0 22px var(--lm-g2)}
@@ -425,13 +297,10 @@ input:focus,textarea:focus{border-color:rgba(205,178,242,.85);box-shadow:0 0 14p
 .trag .tck{width:22px;height:22px;border-radius:50%;flex-shrink:0;border:1.5px solid rgba(185,163,227,.25);display:flex;align-items:center;justify-content:center;font-size:12px;color:transparent}
 .trag.won{color:var(--txt)}
 .trag.won .tck{border-color:var(--gold);color:var(--gold-pale);background:rgba(201,168,76,.08)}
-
-/* versione scritta: passi numerati */
 .vs-intro{font-size:16px;line-height:1.7;color:var(--txt-soft);margin-bottom:18px;border-left:3px solid var(--aqua);padding:4px 0 4px 14px}
 .vs-intro b{color:var(--aqua-hi);font-weight:600}
 .vstep{border:1px solid var(--card-line);border-radius:12px;background:var(--card);padding:15px 16px 13px;margin-bottom:12px}
-.vstep .vn{display:inline-flex;align-items:center;justify-content:center;min-width:24px;height:24px;border-radius:50%;
-  background:var(--glic);color:#1c1426;font-family:'Cinzel',serif;font-size:12px;font-weight:700;margin-right:9px}
+.vstep .vn{display:inline-flex;align-items:center;justify-content:center;min-width:24px;height:24px;border-radius:50%;background:var(--glic);color:#1c1426;font-family:'Cinzel',serif;font-size:12px;font-weight:700;margin-right:9px}
 .vstep h4{display:flex;align-items:center;font-family:'Cinzel',serif;font-size:15px;font-weight:600;color:#f0eaf6;margin-bottom:9px}
 .vstep p{font-size:15.5px;line-height:1.75;color:var(--txt);margin-bottom:8px}
 .vstep p:last-child{margin-bottom:0}
@@ -476,56 +345,37 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
         <div class="hp-sub" id="hpSub">Il sentiero inizia con il primo passo.</div>
       </div>
     </div>
-
     <div class="pcards">
       <button class="pcard" onclick="goTab(1)">
         <div class="pc-tag">Pratica · 3 volte a settimana</div>
         <h3>Spazio Emotivo</h3>
         <div class="pc-d">Sciogli un blocco emotivo: la voce di Elisa ti accompagna tra le domande, il respiro e la luce che lascia andare.</div>
-        <div class="pc-row">
-          <span class="pc-meta">~10 min · <span class="au">voce di Elisa</span></span>
-          <span class="pc-go">Entra →</span>
-        </div>
+        <div class="pc-row"><span class="pc-meta">~10 min · <span class="au">voce di Elisa</span></span><span class="pc-go">Entra →</span></div>
       </button>
-
       <button class="pcard" onclick="goTab(2)">
         <div class="pc-tag">Pratica · ogni giorno</div>
         <h3>Osservatorio</h3>
         <div class="pc-d">Osserva un giudizio e trasformalo. Un allenamento quotidiano per parlarti con gentilezza.</div>
-        <div class="pc-row">
-          <span class="pc-meta">~8 min · <span class="au">voce di Elisa</span></span>
-          <span class="pc-go">Entra →</span>
-        </div>
+        <div class="pc-row"><span class="pc-meta">~8 min · <span class="au">voce di Elisa</span></span><span class="pc-go">Entra →</span></div>
       </button>
     </div>
-
-    <div class="home-note">
-      <b>Non serve la perfezione.</b> Anche pochi minuti contano: ciò che importa è la direzione, non la velocità. Tocca la <b>piccola luce</b> in alto in qualunque momento per la guida del Cammino.
-    </div>
+    <div class="home-note"><b>Non serve la perfezione.</b> Anche pochi minuti contano: ciò che importa è la direzione, non la velocità. Tocca la <b>piccola luce</b> in alto in qualunque momento per la guida del Cammino.</div>
   </section>
 
   <!-- ============ 1 · SPAZIO EMOTIVO ============ -->
   <section class="panel" id="p1">
     <div class="shdr">
-      <div>
-        <div class="stag">Pratica · Sblocco Emotivo</div>
-        <div class="sh1">Spazio Emotivo</div>
-      </div>
-      <div class="tbox"><div class="tn">~10'</div><div class="tf">3× a settimana</div></div>
+      <div><div class="stag">Pratica · Sblocco Emotivo</div><div class="sh1">Spazio Emotivo</div></div>
+      <div class="tbox"><div class="tn">20'</div><div class="tl">minuti</div><div class="tf">3× a settimana</div></div>
     </div>
+    <p class="intro">Metti una musica rilassante, portati in uno spazio tranquillo e, quando vuoi, premi play: ti guido io.</p>
 
     <div class="player" id="s1-player">
-      <div class="pcover">
-        <img id="s1-cov" alt="" style="display:none">
-        <div class="pcap"><div class="pk">Con la voce di Elisa</div><div class="pt">Sblocco Emotivo</div></div>
-      </div>
+      <div class="pcover"><img id="s1-cov" alt="" style="display:none"><div class="pcap"><div class="pk">Con la voce di Elisa</div><div class="pt">Sblocco Emotivo</div></div></div>
       <div class="pbody">
         <div class="pmain">
           <div class="pring" id="s1-ring"><button class="pplay" id="s1-play" aria-label="Riproduci">▶</button></div>
-          <div class="pmeta">
-            <div class="pchap" id="s1-chap">Premi play per iniziare</div>
-            <div class="ptime" id="s1-time">0:00 / --:--</div>
-          </div>
+          <div class="pmeta"><div class="pchap" id="s1-chap">Premi play per iniziare</div><div class="ptime" id="s1-time">0:00 / --:--</div></div>
         </div>
         <div class="pbar" id="s1-bar"><div class="pfill" id="s1-fill"></div><div class="pknob" id="s1-knob" style="left:0"></div></div>
         <div class="pwait" id="s1-wait" style="display:none">La voce di Elisa sarà disponibile a breve 🎧</div>
@@ -534,59 +384,48 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
       </div>
     </div>
 
-    <div class="pact">
-      <button onclick="apriVS('s1')"><span class="gi">📖</span> Versione scritta</button>
-      <button onclick="toggleFull('s1')" id="s1-fulltog"><span class="gi">📝</span> Vedi scheda</button>
+    <div class="daynav">
+      <button class="dn-btn" onclick="dayGo('s1',-1)">←</button>
+      <div class="dn-mid"><span class="dn-lab" id="s1-daylab">Oggi</span><input type="date" id="s1-day" onchange="daySet('s1',this.value)"></div>
+      <button class="dn-btn" id="s1-next" onclick="dayGo('s1',1)">→</button>
     </div>
+    <div class="dots" id="s1-dots"></div>
 
-    <div class="app-lab">I tuoi appunti — solo se ti va</div>
-    <div class="blk"><label>La frase con cui mi sono giudicato</label><input type="text" placeholder="Scrivi qui, oppure lascia vuoto…" data-f="think"></div>
-    <div class="blk"><label>L'emozione e dove la sento nel corpo</label><input type="text" placeholder="Es. rabbia, un peso al petto…" data-f="emo"></div>
-    <div class="blk"><label>Come mi sento ora</label><input type="text" placeholder="Dopo la pratica…" data-f="after"></div>
+    <button class="vsbtn" onclick="apriVS('s1')"><span class="gi">📖</span> Versione scritta della pratica</button>
 
-    <!-- scheda completa, a comparsa -->
-    <div class="full" id="s1-full">
-      <div class="phase"><div class="pnum">1</div><div class="ptxt">Le quattro domande</div></div>
-      <div class="qg">
-        <div class="blk"><p class="qt">È reale, viene da me o è automatico?</p><textarea rows="2" placeholder="La tua risposta…" data-f="q1"></textarea></div>
-        <div class="blk"><p class="qt">Nasce dal presente o dal mio passato?</p><textarea rows="2" placeholder="La tua risposta…" data-f="q2"></textarea></div>
-        <div class="blk"><p class="qt">Mi aiuta o mi toglie la possibilità di fare ciò che sento?</p><textarea rows="2" placeholder="La tua risposta…" data-f="q3"></textarea></div>
-        <div class="blk"><p class="qt">Se al mio posto ci fosse qualcuno che amo, agirei così?</p><textarea rows="2" placeholder="La tua risposta…" data-f="q4"></textarea></div>
-      </div>
-      <div class="phase"><div class="pnum">2</div><div class="ptxt">Il respiro · dove sento il blocco</div></div>
-      <div class="blk"><textarea rows="2" placeholder="Petto, stomaco, gola, gambe…" data-f="body"></textarea></div>
-      <div class="mantra">
-        <div class="ml">Il mantra — 3 volte ad alta voce</div>
-        <p class="mt">"Io posso vedermi senza ferirmi. Posso sentirmi amato senza sentirmi sbagliato.<br>Posso riconoscere ciò che provo, senza giudicarlo, senza condannarlo."</p>
-      </div>
+    <div class="blk"><label>Il pensiero / la frase che è arrivata</label><input type="text" placeholder="Scrivi qui, oppure lascia vuoto…" data-f="think"></div>
+    <div class="phase"><div class="pnum">1</div><div class="ptxt">Le quattro domande</div></div>
+    <div class="qg">
+      <div class="blk"><p class="qt">È reale, viene da me o è automatico?</p><textarea rows="2" placeholder="La tua risposta…" data-f="q1"></textarea></div>
+      <div class="blk"><p class="qt">Nasce dal presente o dal mio passato?</p><textarea rows="2" placeholder="La tua risposta…" data-f="q2"></textarea></div>
+      <div class="blk"><p class="qt">Mi aiuta o mi toglie la possibilità di fare ciò che sento?</p><textarea rows="2" placeholder="La tua risposta…" data-f="q3"></textarea></div>
+      <div class="blk"><p class="qt">Se al mio posto ci fosse qualcuno che amo, agirei così?</p><textarea rows="2" placeholder="La tua risposta…" data-f="q4"></textarea></div>
     </div>
+    <div class="phase"><div class="pnum">2</div><div class="ptxt">Il respiro · dove sento il blocco</div></div>
+    <div class="blk"><textarea rows="2" placeholder="Petto, stomaco, gola, gambe…" data-f="body"></textarea></div>
+    <div class="phase"><div class="pnum">3</div><div class="ptxt">L'emozione</div></div>
+    <div class="blk"><textarea rows="2" placeholder="Rabbia, tristezza, frustrazione, dolore… come la senti?" data-f="emo"></textarea></div>
+    <div class="mantra"><div class="ml">Il mantra — 3 volte ad alta voce</div><p class="mt">"Io posso vedermi senza ferirmi. Posso sentirmi amato senza sentirmi sbagliato.<br>Posso riconoscere ciò che provo, senza giudicarlo, senza condannarlo."</p></div>
+    <div class="blk"><span class="blab">Come mi sento ora →</span><textarea rows="2" placeholder="Dopo la pratica…" data-f="after"></textarea></div>
 
-    <button class="segna" id="s1-segna" onclick="segnaPratica('s1')">Segna la pratica di oggi</button>
+    <button class="segna" id="s1-segna" onclick="segnaPratica('s1')">Segna la pratica come fatta</button>
     <div class="segna-foot" id="s1-foot"></div>
   </section>
 
   <!-- ============ 2 · OSSERVATORIO ============ -->
   <section class="panel" id="p2">
     <div class="shdr">
-      <div>
-        <div class="stag">Pratica · Osservazione del giudizio</div>
-        <div class="sh1">Osservatorio</div>
-      </div>
-      <div class="tbox"><div class="tn">~8'</div><div class="tf">ogni giorno</div></div>
+      <div><div class="stag">Pratica · Osservazione del giudizio</div><div class="sh1">Osservatorio</div></div>
+      <div class="tbox"><div class="tn">15'</div><div class="tl">minuti</div><div class="tf">ogni giorno</div></div>
     </div>
+    <p class="intro">Quando arriva un giudizio su di te, fermati. Fai un respiro e premi play: lo osserviamo insieme.</p>
 
     <div class="player" id="s2-player">
-      <div class="pcover">
-        <img id="s2-cov" alt="" style="display:none">
-        <div class="pcap"><div class="pk">Con la voce di Elisa</div><div class="pt">Osservatorio Interiore</div></div>
-      </div>
+      <div class="pcover"><img id="s2-cov" alt="" style="display:none"><div class="pcap"><div class="pk">Con la voce di Elisa</div><div class="pt">Osservatorio Interiore</div></div></div>
       <div class="pbody">
         <div class="pmain">
           <div class="pring" id="s2-ring"><button class="pplay" id="s2-play" aria-label="Riproduci">▶</button></div>
-          <div class="pmeta">
-            <div class="pchap" id="s2-chap">Premi play per iniziare</div>
-            <div class="ptime" id="s2-time">0:00 / --:--</div>
-          </div>
+          <div class="pmeta"><div class="pchap" id="s2-chap">Premi play per iniziare</div><div class="ptime" id="s2-time">0:00 / --:--</div></div>
         </div>
         <div class="pbar" id="s2-bar"><div class="pfill" id="s2-fill"></div><div class="pknob" id="s2-knob" style="left:0"></div></div>
         <div class="pwait" id="s2-wait" style="display:none">La voce di Elisa sarà disponibile a breve 🎧</div>
@@ -595,126 +434,88 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
       </div>
     </div>
 
-    <div class="pact">
-      <button onclick="apriVS('s2')"><span class="gi">📖</span> Versione scritta</button>
-      <button onclick="toggleFull('s2')" id="s2-fulltog"><span class="gi">📝</span> Vedi scheda</button>
+    <div class="daynav">
+      <button class="dn-btn" onclick="dayGo('s2',-1)">←</button>
+      <div class="dn-mid"><span class="dn-lab" id="s2-daylab">Oggi</span><input type="date" id="s2-day" onchange="daySet('s2',this.value)"></div>
+      <button class="dn-btn" id="s2-next" onclick="dayGo('s2',1)">→</button>
     </div>
+    <div class="dots" id="s2-dots"></div>
 
-    <div class="app-lab">I tuoi appunti — solo se ti va</div>
-    <div class="blk"><label>Il giudizio che mi sto dando</label><input type="text" placeholder="Scrivilo così com'è, oppure lascia vuoto…" data-f="j"></div>
-    <div class="blk"><label>Visto dall'esterno</label><input type="text" placeholder="C'è una parte di me che oggi…" data-f="pos"></div>
-    <div class="blk"><label>Come mi sento ora</label><input type="text" placeholder="Dopo la pratica…" data-f="after"></div>
+    <button class="vsbtn" onclick="apriVS('s2')"><span class="gi">📖</span> Versione scritta della pratica</button>
 
-    <div class="full" id="s2-full">
-      <div class="phase"><div class="pnum">1</div><div class="ptxt">Osserva il pensiero</div></div>
-      <div class="qg">
-        <div class="blk"><p class="qt">Che tono sto usando verso me stesso?</p><textarea rows="2" placeholder="Aggressivo, freddo, duro…" data-f="q1"></textarea></div>
-        <div class="blk"><p class="qt">Questa voce mi appartiene davvero?</p><textarea rows="2" placeholder="La tua risposta…" data-f="q2"></textarea></div>
-      </div>
-      <div class="phase"><div class="pnum">2</div><div class="ptxt">Risali alla fonte</div></div>
-      <div class="qg">
-        <div class="blk"><p class="qt">Chi o cosa mi ha fatto pensare di essere così?</p><textarea rows="2" placeholder="La tua risposta…" data-f="q3"></textarea></div>
-        <div class="blk"><p class="qt">A una persona che amo, parlerei così?</p><textarea rows="2" placeholder="La tua risposta…" data-f="q4"></textarea></div>
-      </div>
-      <p class="trex">la trasformazione: "Sono sbagliata" → <b>"C'è una parte di me che oggi si sente sbagliata"</b></p>
-      <div class="blk"><span class="blab">♪ Canzone di oggi</span><input type="text" placeholder="Una canzone che ti porta in alto…" data-f="song"></div>
-      <div class="mantra">
-        <div class="ml">Il mantra di chiusura</div>
-        <p class="mt">"Io posso guardarmi, posso amarmi,<br>posso riconoscermi e abbracciarmi.<br>Io sono degno/a di tutto questo."</p>
-      </div>
+    <div class="blk"><label>Il giudizio che sto dando a me stesso</label><input type="text" placeholder="Scrivilo così com'è, oppure lascia vuoto…" data-f="j"></div>
+    <div class="phase"><div class="pnum">1</div><div class="ptxt">Osserva il pensiero</div></div>
+    <div class="qg">
+      <div class="blk"><p class="qt">Che tono sto usando verso me stesso?</p><textarea rows="2" placeholder="Aggressivo, freddo, duro…" data-f="q1"></textarea></div>
+      <div class="blk"><p class="qt">Questa voce mi appartiene davvero?</p><textarea rows="2" placeholder="La tua risposta…" data-f="q2"></textarea></div>
     </div>
+    <div class="phase"><div class="pnum">2</div><div class="ptxt">Risali alla fonte</div></div>
+    <div class="qg">
+      <div class="blk"><p class="qt">Chi o cosa mi ha fatto pensare di essere così?</p><textarea rows="2" placeholder="La tua risposta…" data-f="q3"></textarea></div>
+      <div class="blk"><p class="qt">A una persona che amo, parlerei così?</p><textarea rows="2" placeholder="La tua risposta…" data-f="q4"></textarea></div>
+    </div>
+    <div class="phase"><div class="pnum">3</div><div class="ptxt">Trasforma il giudizio</div></div>
+    <div class="trrow">
+      <div class="blk"><label>Il giudizio negativo</label><textarea rows="2" placeholder="Es. Sono sbagliata…" data-f="neg"></textarea></div>
+      <div class="trarr">→</div>
+      <div class="blk"><label>Visto dall'esterno</label><textarea rows="2" placeholder="Es. C'è una parte di me che oggi…" data-f="pos"></textarea></div>
+    </div>
+    <p class="trex">esempio: "Sono sbagliata" → <b>"C'è una parte di me che oggi si sente sbagliata"</b></p>
+    <div class="blk"><span class="blab">♪ Canzone di oggi</span><input type="text" placeholder="Una canzone che ti porta in alto…" data-f="song"></div>
+    <div class="mantra"><div class="ml">Il mantra di chiusura</div><p class="mt">"Io posso guardarmi, posso amarmi,<br>posso riconoscermi e abbracciarmi.<br>Io sono degno/a di tutto questo."</p></div>
+    <div class="blk"><span class="blab">Come mi sento ora →</span><textarea rows="2" placeholder="Dopo la pratica…" data-f="after"></textarea></div>
 
-    <button class="segna" id="s2-segna" onclick="segnaPratica('s2')">Segna la pratica di oggi</button>
+    <button class="segna" id="s2-segna" onclick="segnaPratica('s2')">Segna la pratica come fatta</button>
     <div class="segna-foot" id="s2-foot"></div>
   </section>
 
   <!-- ============ 3 · DIARIO ============ -->
   <section class="panel" id="p3">
-    <div class="shdr">
-      <div>
-        <div class="stag">Diario · Settimana per settimana</div>
-        <div class="sh1">Il mio Diario</div>
-      </div>
-    </div>
-
-    <div class="cal-istr">
-      <b>Ogni giorno:</b> scegli come ti senti e, se vuoi, una parola che racconta la giornata.<br>
-      Le pratiche fatte si segnano da sole. Puoi navigare tra le settimane: ognuna ricorda ciò che hai scritto.
-    </div>
-
+    <div class="shdr"><div><div class="stag">Diario · Settimana per settimana</div><div class="sh1">Il mio Diario</div></div></div>
+    <div class="cal-istr"><b>Ogni giorno:</b> scegli come ti senti e, se vuoi, una parola che racconta la giornata.<br>Le pratiche fatte si segnano da sole. Puoi navigare tra le settimane: ognuna ricorda ciò che hai scritto.</div>
     <div class="wnav">
       <button class="wnav-btn" onclick="weekGo(-1)">← Prec.</button>
       <div class="wnav-lbl"><span id="wrange"></span><span class="wnav-badge" id="wbadge"></span></div>
       <button class="wnav-btn" onclick="weekGo(1)">Succ. →</button>
     </div>
-
-    <div class="wcard">
-      <div class="scroll-hint">← scorri per vedere tutti i giorni →</div>
-      <div class="cal-scroll">
-        <div class="wgrid" id="whdr"></div>
-        <div class="wgrid" id="wcells" style="border-top:1px solid rgba(185,163,227,.1);"></div>
-      </div>
-      <div class="wnote">
-        <div class="wnote-t">Note di fine settimana — cosa ho scoperto su di me</div>
-        <textarea id="wnote" rows="3" placeholder="Scrivi qui le tue riflessioni…"></textarea>
-      </div>
+    <div class="dweek" id="dweek"></div>
+    <div class="wnote" style="margin-top:14px">
+      <div class="app-lab">Note di fine settimana — cosa ho scoperto su di me</div>
+      <textarea id="wnote" rows="3" placeholder="Scrivi qui le tue riflessioni…"></textarea>
     </div>
-
     <div class="seclbl">Riflessioni periodiche</div>
     <div class="fine">
       <div class="blk"><span class="blab">Cos'ho riconosciuto di recente</span><textarea rows="5" placeholder="Ciò che hai scoperto su di te…" data-k="cal-reco"></textarea></div>
       <div class="blk"><span class="blab">I progressi che ho notato</span><textarea rows="5" placeholder="Cosa è diventato più facile…" data-k="cal-prog"></textarea></div>
     </div>
-    <div class="intenz">
-      <span class="blab">La mia intenzione per la prossima settimana →</span>
-      <input type="text" placeholder="Scrivila in positivo…" data-k="cal-int">
-    </div>
+    <div class="intenz"><span class="blab">La mia intenzione per la prossima settimana →</span><input type="text" placeholder="Scrivila in positivo…" data-k="cal-int"></div>
   </section>
 
-  <footer class="bnav">
-    <div class="bnav-foot">Il Cammino Interiore · <a href="/app/">I miei esercizi</a> · <a href="/">Torna al Libro</a> · <a href="#" onclick="esci();return false">Esci</a></div>
-  </footer>
+  <footer class="bnav"><div class="bnav-foot">Il Cammino Interiore · <a href="/app/">I miei esercizi</a> · <a href="/">Torna al Libro</a> · <a href="#" onclick="esci();return false">Esci</a></div></footer>
 
 </div>
 
 <!-- ============ GUIDA DELLA LUCE ============ -->
 <div id="veil" onclick="chiudiGuida()"></div>
 <aside id="gpan" role="dialog" aria-label="Guida del Cammino">
-  <div class="gp-hd">
-    <div class="gp-orb"></div>
-    <h2>Guida del Cammino</h2>
-    <button class="gp-x" onclick="chiudiGuida()">✕</button>
-  </div>
+  <div class="gp-hd"><div class="gp-orb"></div><h2>Guida del Cammino</h2><button class="gp-x" onclick="chiudiGuida()">✕</button></div>
   <div class="gp-bd">
-    <div class="lvl">
-      <div class="lvl-n">La tua costanza</div>
-      <div class="lvl-t" id="lvlT">0 giorni di pratica</div>
-      <div class="lvl-d" id="lvlD"></div>
-      <div class="lvl-bar"><div class="lvl-fill" id="lvlFill"></div></div>
-      <div class="lvl-next" id="lvlNext"></div>
-    </div>
+    <div class="lvl"><div class="lvl-n">La tua costanza</div><div class="lvl-t" id="lvlT">0 giorni di pratica</div><div class="lvl-d" id="lvlD"></div><div class="lvl-bar"><div class="lvl-fill" id="lvlFill"></div></div><div class="lvl-next" id="lvlNext"></div></div>
     <div class="scala" id="scala"></div>
     <div class="gp-sec">I tuoi traguardi</div>
     <div class="tlist" id="bgrid"></div>
     <div class="gp-sec">Perché queste pratiche</div>
-    <details class="gd">
-      <summary>Perché funzionano<span class="arr">▶</span></summary>
-      <div class="gd-c">
-        <p>Noi siamo <b>energia</b>: vibriamo a una frequenza fatta delle emozioni che viviamo. Prima di ogni azione c'è un pensiero, e la <b>prima fase di ogni pensiero è il giudizio</b> — spesso non nasce da noi, ma da ciò che famiglia, scuola e società ci hanno insegnato.</p>
-        <p>Quando scegliamo sempre la voce razionale e schiacciamo quella emotiva, l'energia non trova spazio per uscire: resta <b>congestionata nel corpo</b> e diventa un blocco. Queste pratiche servono a <b>fermarsi, osservarsi, sentire</b> — e a dare spazio a quella parte di te. <span class="gold">È qui che la tua luce cresce.</span></p>
-      </div>
-    </details>
+    <details class="gd"><summary>Perché funzionano<span class="arr">▶</span></summary><div class="gd-c">
+      <p>Noi siamo <b>energia</b>: vibriamo a una frequenza fatta delle emozioni che viviamo. Prima di ogni azione c'è un pensiero, e la <b>prima fase di ogni pensiero è il giudizio</b> — spesso non nasce da noi, ma da ciò che famiglia, scuola e società ci hanno insegnato.</p>
+      <p>Quando scegliamo sempre la voce razionale e schiacciamo quella emotiva, l'energia non trova spazio per uscire: resta <b>congestionata nel corpo</b> e diventa un blocco. Queste pratiche servono a <b>fermarsi, osservarsi, sentire</b> — e a dare spazio a quella parte di te. <span class="gold">È qui che la tua luce cresce.</span></p>
+    </div></details>
   </div>
 </aside>
 
 <!-- ============ VERSIONE SCRITTA ============ -->
 <div id="vsveil" onclick="chiudiVS()"></div>
 <aside id="vspan" role="dialog" aria-label="Versione scritta della pratica">
-  <div class="gp-hd">
-    <div class="gp-orb"></div>
-    <h2 id="vsTitle">Versione scritta</h2>
-    <button class="gp-x" onclick="chiudiVS()">✕</button>
-  </div>
+  <div class="gp-hd"><div class="gp-orb"></div><h2 id="vsTitle">Versione scritta</h2><button class="gp-x" onclick="chiudiVS()">✕</button></div>
   <div class="gp-bd" id="vsBody"></div>
 </aside>
 
@@ -722,7 +523,7 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
 
 <script>
 (function(){
-  /* ============ PERSISTENZA PER ACCOUNT (dispositivo + nuvola) ============ */
+  /* ============ PERSISTENZA (dispositivo + nuvola) ============ */
   var EMAIL='';
   try{ EMAIL=(localStorage.getItem('ovl-user')||'').trim().toLowerCase(); }catch(e){}
   var KEY='ovl-strumenti:'+EMAIL, METAK=KEY+':meta', LEGACY='ovl-strumenti';
@@ -734,19 +535,14 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
       var old={}; try{ old=JSON.parse(localStorage.getItem(LEGACY)||'{}'); }catch(e){ old={}; }
       store=migrate(old);
       var mnow=Date.now(); for(var mk in store) meta[mk]=mnow;
-      localStorage.setItem(KEY, JSON.stringify(store));
-      localStorage.setItem(METAK, JSON.stringify(meta));
+      localStorage.setItem(KEY, JSON.stringify(store)); localStorage.setItem(METAK, JSON.stringify(meta));
     }
   }catch(e){ store={}; meta={}; }
 
-  function todayIso(){
-    var d=new Date();
-    return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
-  }
+  function todayIso(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
   function migrate(old){
     var ns={}; for(var k in old) ns[k]=old[k];
-    var F1=['think','q1','q2','q3','q4','body','emo','after'];
-    var F2=['j','q1','q2','q3','q4','neg','pos','song','after'];
+    var F1=['think','q1','q2','q3','q4','body','emo','after'], F2=['j','q1','q2','q3','q4','neg','pos','song','after'];
     var d1=/^\d{4}-\d{2}-\d{2}$/.test(old['s1-date']||'')?old['s1-date']:todayIso();
     var d2=/^\d{4}-\d{2}-\d{2}$/.test(old['s2-date']||'')?old['s2-date']:todayIso();
     F1.forEach(function(f){ if(old['s1-'+f]){ ns['s1:'+d1+':'+f]=old['s1-'+f]; delete ns['s1-'+f]; } });
@@ -756,92 +552,101 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
   }
 
   var saveTimer=null, toastTimer=null, pushTimer=null, pushing=false, dirty=false;
-  function toast(msg){
-    var t=document.getElementById('saved'); t.textContent=msg; t.classList.add('show');
-    clearTimeout(toastTimer); toastTimer=setTimeout(function(){t.classList.remove('show');},1400);
-  }
-  function persist(){
-    try{ localStorage.setItem(KEY, JSON.stringify(store)); localStorage.setItem(METAK, JSON.stringify(meta)); }catch(e){}
-    queuePush();
-  }
+  function toast(msg){ var t=document.getElementById('saved'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(function(){t.classList.remove('show');},1600); }
+  function persist(){ try{ localStorage.setItem(KEY, JSON.stringify(store)); localStorage.setItem(METAK, JSON.stringify(meta)); }catch(e){} queuePush(); }
   function queueSave(){ clearTimeout(saveTimer); saveTimer=setTimeout(persist,500); }
   function setVal(k,v){ store[k]=v; meta[k]=Date.now(); queueSave(); }
-
+  function saveLocal(){ try{ localStorage.setItem(KEY, JSON.stringify(store)); localStorage.setItem(METAK, JSON.stringify(meta)); }catch(e){} }
   function mergeIn(remote){
     if(!remote||typeof remote.data!=='object'||!remote.data)return false;
     var changed=false, rmeta=remote.meta||{};
-    for(var k in remote.data){
-      var tR=+rmeta[k]||0, tL=+meta[k]||0;
-      if(tR>tL){ store[k]=remote.data[k]; meta[k]=tR; changed=true; }
-    }
+    for(var k in remote.data){ var tR=+rmeta[k]||0, tL=+meta[k]||0; if(tR>tL){ store[k]=remote.data[k]; meta[k]=tR; changed=true; } }
     return changed;
   }
-  function saveLocal(){ try{ localStorage.setItem(KEY, JSON.stringify(store)); localStorage.setItem(METAK, JSON.stringify(meta)); }catch(e){} }
   function queuePush(){ clearTimeout(pushTimer); pushTimer=setTimeout(pushCloud,900); }
   function pushCloud(){
     if(pushing){ dirty=true; return; }
     pushing=true;
-    fetch('/api/store',{method:'PUT',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({email:EMAIL,data:store,meta:meta})})
+    fetch('/api/store',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:EMAIL,data:store,meta:meta})})
     .then(function(r){ if(!r.ok)throw 0; return r.json(); })
-    .then(function(merged){ mergeIn(merged); saveLocal(); toast('✓ Salvato sul tuo account'); })
-    ['catch'](function(){ toast('✓ Salvato sul dispositivo'); })
+    .then(function(merged){ mergeIn(merged); saveLocal(); })
+    ['catch'](function(){})
     .then(function(){ pushing=false; if(dirty){ dirty=false; queuePush(); } });
   }
+  /* salvataggio IMMEDIATO (per "segna pratica": deve vedersi su tutti i dispositivi) */
+  function flushNow(){ clearTimeout(saveTimer); saveLocal(); clearTimeout(pushTimer); pushCloud(); }
   function pullCloud(then){
     fetch('/api/store?email='+encodeURIComponent(EMAIL))
       .then(function(r){ if(!r.ok)throw 0; return r.json(); })
       .then(function(remote){ var changed=mergeIn(remote); if(changed)saveLocal(); queuePush(); if(then)then(changed); })
       ['catch'](function(){ if(then)then(false); });
   }
-  addEventListener('pagehide',function(){
-    try{ navigator.sendBeacon('/api/store', new Blob([JSON.stringify({email:EMAIL,data:store,meta:meta})],{type:'application/json'})); }catch(e){}
-  });
+  addEventListener('pagehide',function(){ try{ navigator.sendBeacon('/api/store', new Blob([JSON.stringify({email:EMAIL,data:store,meta:meta})],{type:'application/json'})); }catch(e){} });
   document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='visible')pullCloud(refreshAll); });
 
-  function applyStored(el){
-    var k=el.dataset.k; if(!k)return;
-    if(el.type==='checkbox'){ el.checked=!!store[k]; }
-    else{ var v=store[k]; el.value=(v===undefined||v===null)?'':v; }
-  }
+  function applyStored(el){ var k=el.dataset.k; if(!k)return; if(el.type==='checkbox'){ el.checked=!!store[k]; } else { var v=store[k]; el.value=(v===undefined||v===null)?'':v; } }
   function bindAll(root){ (root||document).querySelectorAll('[data-k]').forEach(applyStored); }
   document.addEventListener('input',function(e){ var el=e.target,k=el.dataset.k; if(!k)return; setVal(k, el.type==='checkbox'?el.checked:el.value); });
   document.addEventListener('change',function(e){ var el=e.target,k=el.dataset.k; if(!k)return; setVal(k, el.type==='checkbox'?el.checked:el.value); });
 
   /* ============ SCHEDE DATATE ============ */
+  var sheetDay={s1:todayIso(), s2:todayIso()};
   var FIELDS={ s1:['think','q1','q2','q3','q4','body','emo','after'], s2:['j','q1','q2','q3','q4','neg','pos','song','after'] };
-  function isoAdd(iso,days){
-    var p=iso.split('-'); var d=new Date(+p[0],+p[1]-1,+p[2]); d.setDate(d.getDate()+days);
-    return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
-  }
+  var MONTHS_S=['Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov','Dic'];
+  function isoAdd(iso,days){ var p=iso.split('-'); var d=new Date(+p[0],+p[1]-1,+p[2]); d.setDate(d.getDate()+days); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+  function labelFor(iso){ var t=todayIso(); if(iso===t)return 'Oggi'; if(iso===isoAdd(t,-1))return 'Ieri'; var p=iso.split('-'); return (+p[2])+' '+MONTHS_S[+p[1]-1]+' '+p[0]; }
   function hasEntry(s,iso){ return FIELDS[s].some(function(f){ var v=store[s+':'+iso+':'+f]; return v && String(v).trim(); }); }
   function loadSheet(s){
-    var iso=todayIso();
-    var panel=document.getElementById(s==='s1'?'p1':'p2');
+    var iso=sheetDay[s], panel=document.getElementById(s==='s1'?'p1':'p2');
     panel.querySelectorAll('[data-f]').forEach(function(el){ el.dataset.k=s+':'+iso+':'+el.dataset.f; applyStored(el); });
+    document.getElementById(s+'-day').value=iso;
+    document.getElementById(s+'-day').max=todayIso();
+    document.getElementById(s+'-daylab').textContent=labelFor(iso);
+    document.getElementById(s+'-next').disabled=(iso>=todayIso());
+    renderDots(s); refreshSegna(s);
   }
+  function renderDots(s){
+    var box=document.getElementById(s+'-dots'); box.innerHTML=''; var t=todayIso();
+    for(var i=13;i>=0;i--){
+      var iso=isoAdd(t,-i), b=document.createElement('button');
+      b.className='dot'+(hasEntry(s,iso)||store['cal-'+iso+'-'+s]?' full':'')+(iso===sheetDay[s]?' sel':'')+(iso===t?' today':'');
+      var p=iso.split('-');
+      b.innerHTML='<div class="c"></div><span class="dl">'+(+p[2])+'<br>'+MONTHS_S[+p[1]-1]+'</span>';
+      (function(io){ b.onclick=function(){ daySet(s,io); }; })(iso);
+      box.appendChild(b);
+    }
+    box.scrollLeft=box.scrollWidth;
+  }
+  window.daySet=function(s,iso){ if(!/^\d{4}-\d{2}-\d{2}$/.test(iso))return; if(iso>todayIso())iso=todayIso(); sheetDay[s]=iso; loadSheet(s); };
+  window.dayGo=function(s,dir){ daySet(s, isoAdd(sheetDay[s],dir)); };
+  document.addEventListener('input',function(e){ var k=e.target.dataset.k||''; if(k.indexOf('s1:')===0)renderDots('s1'); else if(k.indexOf('s2:')===0)renderDots('s2'); });
 
   /* ============ LA LUCE GUIDA ============ */
   var lume=document.getElementById('lume'), litEl=null;
-  function lumeHome(){
-    var x=Math.max(30, innerWidth/2 - 400);
-    moveLume(x, 84 + (document.querySelector('.hd')?document.querySelector('.hd').offsetTop:0));
-  }
+  function lumeHome(){ var x=Math.max(30, innerWidth/2 - 400); moveLume(x, 84 + (document.querySelector('.hd')?document.querySelector('.hd').offsetTop:0)); }
   function moveLume(x,y){ lume.style.transform='translate3d('+(x|0)+'px,'+(y|0)+'px,0)'; }
+  function lumeAt(x,y,boost){ moveLume(x,y); if(boost)lume.classList.add('boost'); else lume.classList.remove('boost'); }
   function lightUp(el){
+    lume.classList.remove('boost');
     if(litEl===el)return;
     if(litEl)litEl.classList.remove('lit');
     litEl=el;
     if(!el){ lumeHome(); return; }
     el.classList.add('lit');
     var r=el.getBoundingClientRect();
-    if(el.classList.contains('wcard')){ moveLume(r.left + r.width/2, r.top + scrollY - 32); return; }
     var docY=r.top + scrollY + Math.min(r.height/2, 70);
     var x=r.left - 26; if(x<30) x=Math.min(innerWidth-30, r.right + 26);
     moveLume(x, docY);
   }
-  document.addEventListener('focusin',function(e){ var b=e.target.closest('.blk, .intenz, .wcard'); if(b)lightUp(b); });
-  document.addEventListener('click',function(e){ var b=e.target.closest('.blk, .intenz, .wcard, .pcard'); if(b)lightUp(b); });
+  document.addEventListener('focusin',function(e){ var b=e.target.closest('.blk, .intenz'); if(b)lightUp(b); });
+  /* la luce segue i click; sui blocchi li illumina, altrove va sotto il dito */
+  document.addEventListener('click',function(e){
+    if(e.target.closest('#lume'))return;
+    if(e.target.closest('.pplay'))return; /* il play la gestisce da sé, con boost */
+    var b=e.target.closest('.blk, .intenz, .dday, .pcard');
+    if(b){ lightUp(b); return; }
+    if(e.target.closest('.page')){ if(litEl){litEl.classList.remove('lit');litEl=null;} lumeAt(e.pageX-22, e.pageY-22, false); }
+  });
   addEventListener('resize',function(){ if(litEl)lightUp(litEl); else lumeHome(); });
 
   /* ============ TABS ============ */
@@ -849,7 +654,7 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
     document.querySelectorAll('.panel').forEach(function(p,i){p.classList.toggle('on',i===idx);});
     document.querySelectorAll('.tabs .tab').forEach(function(b,i){b.classList.toggle('on',i===idx);});
     if(litEl){litEl.classList.remove('lit');litEl=null;}
-    lumeHome();
+    lume.classList.remove('boost'); lumeHome();
     window.scrollTo({top:0,behavior:'smooth'});
     if(idx===0)renderHome();
     if(idx===3)renderWeek();
@@ -857,34 +662,21 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
 
   /* ============ LETTORE AUDIO ============ */
   var CHAPS={
-    s1:[ {t:0,l:'Prepara: musica e respiro'},{t:85,l:'Le quattro domande'},{t:240,l:'La frase con cui ti giudichi'},
-         {t:330,l:'Il respiro e il blocco nel corpo'},{t:480,l:'Il mantra'},{t:550,l:'La luce che lascia andare'} ],
-    s2:[ {t:0,l:'Fermati e accorgiti del giudizio'},{t:110,l:'Scrivi la frase e il tono'},{t:260,l:'Risali alla fonte'},
-         {t:310,l:'Parleresti così a chi ami?'},{t:360,l:'Trasforma il giudizio'},{t:400,l:'Il mantra e la canzone'} ]
+    s1:[ {t:0,l:'Prepara: musica e respiro'},{t:85,l:'Le quattro domande'},{t:240,l:'La frase con cui ti giudichi'},{t:330,l:'Il respiro e il blocco nel corpo'},{t:480,l:'Il mantra'},{t:550,l:'La luce che lascia andare'} ],
+    s2:[ {t:0,l:'Fermati e accorgiti del giudizio'},{t:110,l:'Scrivi la frase e il tono'},{t:260,l:'Risali alla fonte'},{t:310,l:'Parleresti così a chi ami?'},{t:360,l:'Trasforma il giudizio'},{t:400,l:'Il mantra e la canzone'} ]
   };
   var SRC={ s1:'audio/sblocco.m4a', s2:'audio/osservatorio.m4a' };
   var COVER={ s1:'audio/cover-sblocco.jpg', s2:'audio/cover-osservatorio.jpg' };
   function mmss(s){ s=Math.max(0,Math.floor(s||0)); var m=Math.floor(s/60); var r=s%60; return m+':'+String(r).padStart(2,'0'); }
   function initPlayer(s){
-    var au=document.getElementById(s+'-audio'),
-        play=document.getElementById(s+'-play'),
-        ring=document.getElementById(s+'-ring'),
-        fill=document.getElementById(s+'-fill'),
-        knob=document.getElementById(s+'-knob'),
-        bar=document.getElementById(s+'-bar'),
-        chapLab=document.getElementById(s+'-chap'),
-        timeLab=document.getElementById(s+'-time'),
-        wait=document.getElementById(s+'-wait'),
-        chapsBox=document.getElementById(s+'-chaps'),
-        cov=document.getElementById(s+'-cov');
+    var au=document.getElementById(s+'-audio'), play=document.getElementById(s+'-play'), ring=document.getElementById(s+'-ring'),
+        fill=document.getElementById(s+'-fill'), knob=document.getElementById(s+'-knob'), bar=document.getElementById(s+'-bar'),
+        chapLab=document.getElementById(s+'-chap'), timeLab=document.getElementById(s+'-time'), wait=document.getElementById(s+'-wait'),
+        chapsBox=document.getElementById(s+'-chaps'), cov=document.getElementById(s+'-cov');
     var chaps=CHAPS[s], ready=false, curChap=-1;
-
-    /* copertina (se manca, resta lo sfondo verde) */
     cov.onload=function(){ cov.style.display='block'; };
     cov.onerror=function(){ cov.style.display='none'; };
     cov.src=COVER[s];
-
-    /* lista capitoli */
     chapsBox.innerHTML='';
     chaps.forEach(function(c,i){
       var row=document.createElement('div'); row.className='pcrow';
@@ -892,56 +684,36 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
       row.onclick=function(){ if(!ready)return; au.currentTime=c.t+0.2; au.play(); };
       chapsBox.appendChild(row);
     });
-    function highlight(i){
-      if(i===curChap)return; curChap=i;
-      chapsBox.querySelectorAll('.pcrow').forEach(function(r,ri){ r.classList.toggle('cur',ri===i); });
-      if(chaps[i])chapLab.textContent=(i+1)+' · '+chaps[i].l;
-    }
+    function highlight(i){ if(i===curChap)return; curChap=i; chapsBox.querySelectorAll('.pcrow').forEach(function(r,ri){ r.classList.toggle('cur',ri===i); }); if(chaps[i])chapLab.textContent=(i+1)+' · '+chaps[i].l; }
     function curIndex(t){ var idx=0; for(var i=0;i<chaps.length;i++){ if(t>=chaps[i].t)idx=i; } return idx; }
-
     au.src=SRC[s];
     au.addEventListener('loadedmetadata',function(){
-      ready=true;
-      timeLab.textContent='0:00 / '+mmss(au.duration);
-      /* tacche capitoli sulla barra */
-      chaps.forEach(function(c){
-        if(c.t<=0)return;
-        var tk=document.createElement('div'); tk.className='ptick';
-        tk.style.left=(c.t/au.duration*100)+'%'; bar.appendChild(tk);
-      });
+      ready=true; timeLab.textContent='0:00 / '+mmss(au.duration);
+      chaps.forEach(function(c){ if(c.t<=0)return; var tk=document.createElement('div'); tk.className='ptick'; tk.style.left=(c.t/au.duration*100)+'%'; bar.appendChild(tk); });
       highlight(0);
     });
-    au.addEventListener('error',function(){
-      ready=false; play.setAttribute('disabled','');
-      wait.style.display='block'; chapLab.textContent='Anteprima della pratica';
-    });
+    au.addEventListener('error',function(){ ready=false; play.setAttribute('disabled',''); wait.style.display='block'; chapLab.textContent='Anteprima della pratica'; });
     au.addEventListener('timeupdate',function(){
       if(!au.duration)return;
       var f=au.currentTime/au.duration;
-      fill.style.width=(f*100)+'%'; knob.style.left=(f*100)+'%';
-      ring.style.setProperty('--p',(f*100).toFixed(1));
-      timeLab.textContent=mmss(au.currentTime)+' / '+mmss(au.duration);
-      highlight(curIndex(au.currentTime));
+      fill.style.width=(f*100)+'%'; knob.style.left=(f*100)+'%'; ring.style.setProperty('--p',(f*100).toFixed(1));
+      timeLab.textContent=mmss(au.currentTime)+' / '+mmss(au.duration); highlight(curIndex(au.currentTime));
     });
     au.addEventListener('play',function(){ play.textContent='❚❚'; });
     au.addEventListener('pause',function(){ play.textContent='▶'; });
     au.addEventListener('ended',function(){ play.textContent='▶'; });
-    play.addEventListener('click',function(){ if(!ready)return; if(au.paused)au.play(); else au.pause(); });
-    bar.addEventListener('click',function(e){
-      if(!ready||!au.duration)return;
-      var r=bar.getBoundingClientRect(); var f=(e.clientX-r.left)/r.width;
-      au.currentTime=Math.max(0,Math.min(1,f))*au.duration;
+    play.addEventListener('click',function(ev){
+      ev.stopPropagation();
+      if(ready){ if(au.paused)au.play(); else au.pause(); }
+      /* la luce si affianca al play e lo illumina di più */
+      var r=play.getBoundingClientRect();
+      if(litEl){litEl.classList.remove('lit');litEl=null;}
+      lumeAt(r.left+window.scrollX + r.width/2, r.top+window.scrollY + r.height/2, true);
     });
+    bar.addEventListener('click',function(e){ if(!ready||!au.duration)return; var r=bar.getBoundingClientRect(); var f=(e.clientX-r.left)/r.width; au.currentTime=Math.max(0,Math.min(1,f))*au.duration; });
   }
 
-  /* ============ vedi scheda / versione scritta ============ */
-  window.toggleFull=function(s){
-    var f=document.getElementById(s+'-full'), btn=document.getElementById(s+'-fulltog');
-    var on=f.classList.toggle('on');
-    btn.innerHTML=on?'<span class="gi">▲</span> Nascondi scheda':'<span class="gi">📝</span> Vedi scheda';
-    loadSheet(s);
-  };
-
+  /* ============ versione scritta ============ */
   var VS={
     s1:{ title:'Spazio Emotivo — versione scritta',
       intro:'Una pratica da <b>20 minuti, 3 volte a settimana</b>. Mettiti in un posto tranquillo con una musica rilassante — il pianoforte è perfetto. Puoi seguire la voce di Elisa o leggere questi passi con calma.',
@@ -965,62 +737,58 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
   };
   var vsveil=document.getElementById('vsveil'), vspan=document.getElementById('vspan');
   window.apriVS=function(s){
-    var d=VS[s];
-    document.getElementById('vsTitle').textContent=d.title;
+    var d=VS[s]; document.getElementById('vsTitle').textContent=d.title;
     var html='<div class="vs-intro">'+d.intro+'</div>';
     d.steps.forEach(function(st,i){ html+='<div class="vstep"><h4><span class="vn">'+(i+1)+'</span>'+st.h+'</h4><p>'+st.b+'</p></div>'; });
     html+='<div class="vs-foot">Questi passi sono tratti dalle lezioni di Elisa. Tienili con te: la pratica è soprattutto sentire, non riempire caselle.</div>';
-    document.getElementById('vsBody').innerHTML=html;
-    document.getElementById('vsBody').scrollTop=0;
+    document.getElementById('vsBody').innerHTML=html; document.getElementById('vsBody').scrollTop=0;
     vsveil.classList.add('on'); vspan.classList.add('on');
   };
   window.chiudiVS=function(){ vsveil.classList.remove('on'); vspan.classList.remove('on'); };
 
-  /* ============ segna pratica ============ */
+  /* ============ segna pratica (salvataggio immediato) ============ */
   window.segnaPratica=function(s){
-    var t=todayIso(), key='cal-'+t+'-'+s;
-    var now=!store[key];
+    var iso=sheetDay[s], key='cal-'+iso+'-'+s, now=!store[key];
     setVal(key, now?true:null);
-    refreshSegna(s); updateOggi(); applyTier(); renderHome();
-    toast(now?'✓ Pratica segnata':'Segno rimosso');
+    flushNow();
+    refreshSegna(s); renderDots(s); updateOggi(); applyTier(); renderHome();
+    toast(now?'✓ Salvato su tutti i tuoi dispositivi':'Segno rimosso');
   };
   function refreshSegna(s){
-    var t=todayIso(), done=did(s,t);
-    var btn=document.getElementById(s+'-segna'), foot=document.getElementById(s+'-foot');
+    var iso=sheetDay[s], done=did(s,iso), btn=document.getElementById(s+'-segna'), foot=document.getElementById(s+'-foot');
     btn.classList.toggle('done',done);
-    btn.textContent=done?'✓ Pratica di oggi fatta':'Segna la pratica di oggi';
-    foot.textContent=done?'Bene così. Ci si rivede domani 💛':'';
+    btn.textContent=done?'✓ Pratica segnata come fatta':'Segna la pratica come fatta';
+    foot.textContent=done?'Salvata e sincronizzata. Ci si rivede 💛':'Toccando qui la pratica si salva su tutti i tuoi dispositivi.';
   }
 
-  /* ============ DIARIO SETTIMANALE ============ */
-  var DAYS=['LUN','MAR','MER','GIO','VEN','SAB','DOM'];
+  /* ============ DIARIO (verticale) ============ */
+  var DAYS=['Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato','Domenica'];
   var MONTHS=['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
   var weekOffset=0;
   var MOOD_COL=['#9aa0b8','#a3a0c0','#b9a3e3','#cbb0ea','#e8d9ae'];
   function moodSVG(i){
     var col=MOOD_COL[i];
     var mouth=['M8 16 Q12 13 16 16','M8 15.5 Q12 14 16 15.5','M8 15 L16 15','M8 14.5 Q12 16.5 16 14.5','M8 14 Q12 17.5 16 14'][i];
-    return '<svg viewBox="0 0 24 24" fill="none" stroke="'+col+'" stroke-width="1.6" stroke-linecap="round">'+
-      '<circle cx="12" cy="12" r="9.2"/>'+
-      '<circle cx="8.8" cy="10" r="1" fill="'+col+'" stroke="none"/>'+
-      '<circle cx="15.2" cy="10" r="1" fill="'+col+'" stroke="none"/>'+
-      '<path d="'+mouth+'"/></svg>';
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="'+col+'" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="9.2"/><circle cx="8.8" cy="10" r="1" fill="'+col+'" stroke="none"/><circle cx="15.2" cy="10" r="1" fill="'+col+'" stroke="none"/><path d="'+mouth+'"/></svg>';
   }
-  function monday(off){
-    var n=new Date(); n.setHours(0,0,0,0);
-    var d=n.getDay(); var diff=n.getDate()-d+(d===0?-6:1);
-    var m=new Date(n); m.setDate(diff+off*7); return m;
-  }
+  function monday(off){ var n=new Date(); n.setHours(0,0,0,0); var d=n.getDay(); var diff=n.getDate()-d+(d===0?-6:1); var m=new Date(n); m.setDate(diff+off*7); return m; }
   function iso(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
   function fmt(d){ return d.getDate()+' '+MONTHS[d.getMonth()]+' '+d.getFullYear(); }
   function isToday(d){ return d.toDateString()===new Date().toDateString(); }
-  function isPast(d){ var t=new Date(); t.setHours(0,0,0,0); return d<t; }
+  function isFuture(d){ var t=new Date(); t.setHours(0,0,0,0); return d>t; }
   window.setMood=function(el,dayIso,idx){
-    var cell=el.closest('.dcell'); if(!cell)return;
-    var faces=cell.querySelectorAll('.mood'), wasOn=el.classList.contains('on');
+    var row=el.closest('.dd-moods'); if(!row)return;
+    var faces=row.querySelectorAll('.mood'), wasOn=el.classList.contains('on');
     faces.forEach(function(f){f.classList.remove('on');});
-    if(!wasOn){ el.classList.add('on'); setVal('cal-'+dayIso+'-mood', idx); }
-    else{ setVal('cal-'+dayIso+'-mood', null); }
+    if(!wasOn){ el.classList.add('on'); setVal('cal-'+dayIso+'-mood', idx); } else { setVal('cal-'+dayIso+'-mood', null); }
+    updateOggi();
+  };
+  window.togglePrac=function(el,dayIso,s){
+    var on=!store['cal-'+dayIso+'-'+s];
+    setVal('cal-'+dayIso+'-'+s, on?true:null);
+    el.classList.toggle('on',on);
+    updateOggi(); applyTier(); renderHome();
+    if(s==='s1'||s==='s2')renderDots(s);
   };
   window.weekGo=function(dir){ weekOffset+=dir; renderWeek(); };
   function renderWeek(){
@@ -1028,30 +796,30 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
     document.getElementById('wrange').textContent=fmt(mon)+' — '+fmt(sun);
     var b=document.getElementById('wbadge');
     b.textContent=weekOffset===0?'Settimana corrente':(weekOffset<0?Math.abs(weekOffset)+' settiman'+(Math.abs(weekOffset)>1?'e':'a')+' fa':'tra '+weekOffset+' settiman'+(weekOffset>1?'e':'a'));
-    var hdr=document.getElementById('whdr'), cells=document.getElementById('wcells');
-    hdr.innerHTML=''; cells.innerHTML='';
+    var box=document.getElementById('dweek'); box.innerHTML='';
     for(var i=0;i<7;i++){
       var date=new Date(mon); date.setDate(mon.getDate()+i);
-      var di=iso(date), today=isToday(date);
-      var h=document.createElement('div'); h.className='dhdr'+(today?' today':''); h.textContent=DAYS[i]; hdr.appendChild(h);
-      var numCls=today?'dnum':(isPast(date)?'dnum past':'dnum future');
-      var cell=document.createElement('div'); cell.className='dcell'+(today?' today':'');
+      var di=iso(date), today=isToday(date), fut=isFuture(date);
       var moodSel=store['cal-'+di+'-mood'];
+      var s1on=!!store['cal-'+di+'-s1'], s2on=!!store['cal-'+di+'-s2'];
       var moods='';
       for(var mi=0;mi<5;mi++){ moods+='<button class="mood'+(moodSel===mi?' on':'')+'" onclick="setMood(this,\''+di+'\','+mi+')" aria-label="umore '+(mi+1)+'">'+moodSVG(mi)+'</button>'; }
-      cell.innerHTML=
-        '<div class="dtop"><div class="'+numCls+'">'+date.getDate()+'</div>'+
-        '<div class="chks">'+
-        '<label class="chk"><input type="checkbox" data-k="cal-'+di+'-s1"><span class="chkl">S1</span></label>'+
-        '<label class="chk"><input type="checkbox" data-k="cal-'+di+'-s2"><span class="chkl">S2</span></label>'+
-        '</div></div>'+
-        '<div class="dkw"><input type="text" placeholder="parola…" data-k="cal-'+di+'-kw"></div>'+
-        '<div class="dmood">'+moods+'</div>';
-      cells.appendChild(cell);
+      var card=document.createElement('div'); card.className='dday'+(today?' today':'');
+      card.innerHTML=
+        '<div class="dd-top">'+
+          '<span class="dd-date'+(fut?' fut':'')+'">'+DAYS[i]+' '+date.getDate()+'</span>'+
+          (today?'<span class="dd-today">oggi</span>':'')+
+          '<div class="dd-moods">'+moods+'</div>'+
+        '</div>'+
+        '<div class="dd-prac">'+
+          '<button class="pchip'+(s1on?' on':'')+'" onclick="togglePrac(this,\''+di+'\',\'s1\')"><span class="pchk">✓</span>Spazio Emotivo</button>'+
+          '<button class="pchip'+(s2on?' on':'')+'" onclick="togglePrac(this,\''+di+'\',\'s2\')"><span class="pchk">✓</span>Osservatorio</button>'+
+        '</div>'+
+        '<div class="dd-kw"><input type="text" placeholder="una parola per oggi…" data-k="cal-'+di+'-kw"></div>';
+      box.appendChild(card);
     }
-    var note=document.getElementById('wnote');
-    note.dataset.k='cal-'+iso(mon)+'-note'; note.value=store[note.dataset.k]||'';
-    bindAll(cells);
+    var note=document.getElementById('wnote'); note.dataset.k='cal-'+iso(mon)+'-note'; note.value=store[note.dataset.k]||'';
+    bindAll(box);
   }
 
   /* ============ PROGRESSI ============ */
@@ -1059,11 +827,7 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
   function activeDay(isoDay){ var mv=store['cal-'+isoDay+'-mood']; return did('s1',isoDay)||did('s2',isoDay)||(mv!==undefined&&mv!==null&&mv!==''); }
   function allActiveDays(){
     var set={};
-    for(var k in store){
-      var v=store[k]; if(v===''||v===false||v===undefined||v===null)continue;
-      var m=k.match(/^s[12]:(\d{4}-\d{2}-\d{2}):/) || k.match(/^cal-(\d{4}-\d{2}-\d{2})-(s1|s2|mood|kw)/);
-      if(m)set[m[1]]=true;
-    }
+    for(var k in store){ var v=store[k]; if(v===''||v===false||v===undefined||v===null)continue; var m=k.match(/^s[12]:(\d{4}-\d{2}-\d{2}):/) || k.match(/^cal-(\d{4}-\d{2}-\d{2})-(s1|s2|mood|kw)/); if(m)set[m[1]]=true; }
     return Object.keys(set);
   }
   function countSessions(s){
@@ -1073,16 +837,8 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
     return Object.keys(set).length;
   }
   function streak(){ var n=0, d=todayIso(); if(!activeDay(d)){ d=isoAdd(d,-1); } while(activeDay(d)){ n++; d=isoAdd(d,-1); } return n; }
-  function countTransforms(){
-    var n=0;
-    for(var k in store){ var m=k.match(/^s2:(\d{4}-\d{2}-\d{2}):pos$/); if(m && store[k] && String(store[k]).trim())n++; }
-    return n;
-  }
-  function countDiaryDays(){
-    var set={};
-    for(var k in store){ var v=store[k]; if(v===''||v===false||v===undefined||v===null)continue; var m=k.match(/^cal-(\d{4}-\d{2}-\d{2})-(mood|kw)$/); if(m)set[m[1]]=true; }
-    return Object.keys(set).length;
-  }
+  function countTransforms(){ var n=0; for(var k in store){ var m=k.match(/^s2:(\d{4}-\d{2}-\d{2}):pos$/); if(m && store[k] && String(store[k]).trim())n++; } return n; }
+  function countDiaryDays(){ var set={}; for(var k in store){ var v=store[k]; if(v===''||v===false||v===undefined||v===null)continue; var m=k.match(/^cal-(\d{4}-\d{2}-\d{2})-(mood|kw)$/); if(m)set[m[1]]=true; } return Object.keys(set).length; }
 
   /* ============ FIORI / LUCE ============ */
   function clamp01(v){ return v<0?0:(v>1?1:v); }
@@ -1097,7 +853,6 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
   ];
   function tierIndex(days){ var i=0; TIERS.forEach(function(t,k){ if(days>=t.d)i=k; }); return i; }
   function applyTier(){ var i=tierIndex(allActiveDays().length); if(document.body.className!==TIERS[i].cls)document.body.className=TIERS[i].cls; return i; }
-
   var TRAGUARDI=[
     {cond:'3 giorni consecutivi di pratica',  test:function(){return streak()>=3}},
     {cond:'7 giorni consecutivi di pratica',  test:function(){return streak()>=7}},
@@ -1107,17 +862,13 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
     {cond:'5 giudizi trasformati',            test:function(){return countTransforms()>=5}},
     {cond:'14 giorni di diario compilato',    test:function(){return countDiaryDays()>=14}}
   ];
-
   function renderHome(){
     var days=allActiveDays().length, i=tierIndex(days), t=TIERS[i], sk=streak();
     document.getElementById('hpFiore').textContent='La tua luce è '+t.art+t.nome.toLowerCase();
-    var sub;
-    if(days===0) sub='Il sentiero inizia con il primo passo.';
-    else sub='<b>'+days+'</b> giorni di pratica'+(sk>=2?' · <b>'+sk+'</b> di fila':'');
-    document.getElementById('hpSub').innerHTML=sub;
+    document.getElementById('hpSub').innerHTML = days===0 ? 'Il sentiero inizia con il primo passo.' : ('<b>'+days+'</b> giorni di pratica'+(sk>=2?' · <b>'+sk+'</b> di fila':''));
   }
 
-  /* ============ GUIDA (tocca la luce) ============ */
+  /* ============ GUIDA ============ */
   var veil=document.getElementById('veil'), gpan=document.getElementById('gpan');
   function renderGuida(){
     var days=allActiveDays().length, i=applyTier(), t=TIERS[i];
@@ -1127,17 +878,9 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
     document.getElementById('lvlFill').style.width=(fill*100).toFixed(0)+'%';
     document.getElementById('lvlNext').textContent = nx ? ('Prossimo fiore ('+nx.nome.toLowerCase()+') a '+nx.d+' giorni') : 'Sei arrivata al glicine, il fiore del Cammino.';
     var sc=document.getElementById('scala'); sc.innerHTML='';
-    TIERS.forEach(function(tt,k){
-      var s=document.createElement('div'); s.className='sc-step'+(k<=i?' on':'')+(k===i?' cur':'');
-      s.innerHTML='<div class="sc-dot" style="background:'+tt.col+';color:'+tt.col+';box-shadow:0 0 10px '+tt.col+'66"></div><span class="sc-lab">'+tt.nome+'</span><span class="sc-d">'+(tt.d||'')+'</span>';
-      sc.appendChild(s);
-    });
+    TIERS.forEach(function(tt,k){ var x=document.createElement('div'); x.className='sc-step'+(k<=i?' on':'')+(k===i?' cur':''); x.innerHTML='<div class="sc-dot" style="background:'+tt.col+';color:'+tt.col+';box-shadow:0 0 10px '+tt.col+'66"></div><span class="sc-lab">'+tt.nome+'</span><span class="sc-d">'+(tt.d||'')+'</span>'; sc.appendChild(x); });
     var bg=document.getElementById('bgrid'); bg.innerHTML='';
-    TRAGUARDI.forEach(function(b){
-      var won=false; try{ won=b.test(); }catch(e){}
-      var d=document.createElement('div'); d.className='trag'+(won?' won':'');
-      d.innerHTML='<span class="tck">✓</span><span>'+b.cond+'</span>'; bg.appendChild(d);
-    });
+    TRAGUARDI.forEach(function(b){ var won=false; try{ won=b.test(); }catch(e){} var d=document.createElement('div'); d.className='trag'+(won?' won':''); d.innerHTML='<span class="tck">✓</span><span>'+b.cond+'</span>'; bg.appendChild(d); });
   }
   window.apriGuida=function(){ renderGuida(); veil.classList.add('on'); gpan.classList.add('on'); document.querySelector('#gpan .gp-bd').scrollTop=0; };
   window.chiudiGuida=function(){ veil.classList.remove('on'); gpan.classList.remove('on'); };
@@ -1155,14 +898,13 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
     document.getElementById('oggiMsg').textContent = n===0?'La tua luce ti aspetta' : n===3?'✨ Le pratiche di oggi sono complete' : 'Le pratiche di oggi: '+n+' su 3';
   }
   document.addEventListener('input',function(){ updateOggi(); });
-  document.addEventListener('change',function(){ updateOggi(); applyTier(); renderHome(); });
 
   window.esci=function(){ try{ localStorage.removeItem('ovl-user'); }catch(e){} location.href='/app/'; };
 
   /* ============ INIT ============ */
   function refreshAll(changed){
-    applyTier(); updateOggi(); renderHome(); refreshSegna('s1'); refreshSegna('s2');
-    if(!changed)return;
+    applyTier(); updateOggi(); renderHome();
+    if(!changed){ refreshSegna('s1'); refreshSegna('s2'); return; }
     bindAll(document); loadSheet('s1'); loadSheet('s2');
     if(document.getElementById('p3').classList.contains('on'))renderWeek();
   }
@@ -1170,14 +912,8 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
   loadSheet('s1'); loadSheet('s2');
   initPlayer('s1'); initPlayer('s2');
   renderWeek(); lumeHome(); applyTier(); updateOggi(); renderHome();
-  refreshSegna('s1'); refreshSegna('s2');
   pullCloud(refreshAll);
-  try{
-    if(!localStorage.getItem('ovl-lume-hint')){
-      setTimeout(function(){ toast('Tocca la luce per la guida'); },2500);
-      localStorage.setItem('ovl-lume-hint','1');
-    }
-  }catch(e){}
+  try{ if(!localStorage.getItem('ovl-lume-hint')){ setTimeout(function(){ toast('Tocca la luce per la guida'); },2500); localStorage.setItem('ovl-lume-hint','1'); } }catch(e){}
 })();
 </script>
 </body>
