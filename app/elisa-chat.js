@@ -144,7 +144,7 @@ window.OVL_ELISA=(function(){
       var sc=overlap(us,e._terms);
       if(sc>0)punti[e.id]=(punti[e.id]||0)+sc;
     });
-    var ids=Object.keys(punti).sort(function(a,b){ return punti[b]-punti[a]; }).slice(0,4);
+    var ids=Object.keys(punti).filter(function(id){ return punti[id]>=2; }).sort(function(a,b){ return punti[b]-punti[a]; }).slice(0,4);
     return ids.map(function(id){ var v=byId(id); return v?{id:id,label:v.label}:null; }).filter(function(x){return !!x;});
   }
   function qaMatch(question){
