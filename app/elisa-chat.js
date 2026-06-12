@@ -180,7 +180,7 @@ window.OVL_ELISA=(function(){
     brainLoading=true;
     try{
       var s=document.createElement('script');
-      s.src='/app/elisa-brain.js?v=2';
+      s.src='/app/elisa-brain.js?v=3';
       s.onload=function(){ cb(brainPronto()); };
       s.onerror=function(){ brainLoading=false; cb(false); };
       document.body.appendChild(s);

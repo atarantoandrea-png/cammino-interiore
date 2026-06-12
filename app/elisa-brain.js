@@ -81,6 +81,15 @@ window.OVL_BRAIN=(function(){
     if(!r.idxs.length)return null;
     var top=r.score[r.idxs[0]];
     if(top<4.2)return null;
+    /* stessa guardia anti-deriva dei frammenti: con 2+ radici nella
+       domanda, il contesto migliore deve condividerne almeno 2 */
+    var distinti={}; ws.forEach(function(s){ distinti[s]=1; });
+    var dlist=Object.keys(distinti);
+    if(dlist.length>=2){
+      var match=0, mi;
+      for(mi=0;mi<dlist.length;mi++){ if(CTX[r.idxs[0]]._t[dlist[mi]])match++; }
+      if(match<2)return null;
+    }
     var v0=CTX[r.idxs[0]].voce;
     var ok=(r.idxs.length<2)
         || (top>=r.score[r.idxs[1]]*1.25)
