@@ -23,6 +23,8 @@ catch(e){ location.replace('/app/'); }
   /* VERDE ACQUA — solo per il lettore audio (tono provvisorio) */
   --aqua:#2fe0c6; --aqua-deep:#0e8f7f; --aqua-hi:#9af7ea;
   --aqua-line:rgba(47,224,198,.34); --aqua-glow:rgba(47,224,198,.5);
+  /* BLU ELETTRICO — identità dell'Osservatorio quando completato */
+  --blu:#3a7bff; --blu-hi:#cfe0ff; --blu-glow:rgba(58,123,255,.6);
 }
 html{scroll-behavior:smooth}
 body{
@@ -82,6 +84,8 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
   box-shadow:0 6px 18px rgba(120,80,200,.45), inset 0 1px 0 rgba(255,255,255,.22), 0 0 0 1px rgba(205,178,242,.35), 0 0 22px rgba(170,135,230,.35)}
 .tab.on .lbl{color:#f4eefc;text-shadow:0 0 12px rgba(220,205,250,.6)}
 .tab.done .lbl::after{content:' ✦';color:var(--gold-pale)}
+.tab:nth-child(2).done .lbl::after{color:var(--aqua-hi)}
+.tab:nth-child(3).done .lbl::after{color:var(--blu-hi)}
 @media(max-width:470px){.tab{border-radius:13px;padding:11px 3px}.tab .lbl{font-size:10.5px}}
 
 /* ================= pannelli ================= */
@@ -173,6 +177,10 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
 .dot.full .c{background:var(--gold);border-color:var(--gold);box-shadow:0 0 9px rgba(201,168,76,.7)}
 .dot.sel .c{box-shadow:0 0 0 3px rgba(205,178,242,.35), 0 0 12px rgba(170,135,230,.7);border-color:var(--glic-hi)}
 .dot.sel.full .c{background:var(--glic-hi);border-color:var(--glic-hi)}
+#s1-dots .dot.full .c{background:var(--aqua);border-color:var(--aqua);box-shadow:0 0 9px var(--aqua-glow)}
+#s1-dots .dot.sel.full .c{background:var(--aqua-hi);border-color:var(--aqua-hi)}
+#s2-dots .dot.full .c{background:var(--blu);border-color:var(--blu);box-shadow:0 0 9px var(--blu-glow)}
+#s2-dots .dot.sel.full .c{background:var(--blu-hi);border-color:var(--blu-hi)}
 .dot .dl{font-size:11.5px;color:var(--txt-dim);display:block;line-height:1.25}
 .dot.sel .dl{color:var(--glic-hi)}
 .dot.today .dl{color:var(--gold-pale)}
@@ -240,8 +248,11 @@ input:focus,textarea:focus{border-color:rgba(205,178,242,.85);box-shadow:0 0 14p
 .dd-prac{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:11px}
 .pchip{display:flex;align-items:center;gap:8px;border:1px solid rgba(185,163,227,.3);border-radius:24px;padding:8px 14px;cursor:pointer;font-family:'Cinzel',serif;font-size:11.5px;letter-spacing:.03em;color:var(--txt-soft);transition:all .18s}
 .pchip .pchk{width:16px;height:16px;border-radius:50%;border:1.5px solid rgba(185,163,227,.5);display:flex;align-items:center;justify-content:center;font-size:10px;color:transparent}
-.pchip.on{border-color:var(--gold);color:var(--gold-pale);background:rgba(201,168,76,.08)}
-.pchip.on .pchk{border-color:var(--gold);background:rgba(201,168,76,.15);color:var(--gold-pale)}
+.pchip.on .pchk{color:inherit}
+.pchip.s1.on{border-color:var(--aqua);color:var(--aqua-hi);background:rgba(47,224,198,.1)}
+.pchip.s1.on .pchk{border-color:var(--aqua);background:rgba(47,224,198,.18)}
+.pchip.s2.on{border-color:var(--blu);color:var(--blu-hi);background:rgba(58,123,255,.12)}
+.pchip.s2.on .pchk{border-color:var(--blu);background:rgba(58,123,255,.2)}
 .dd-kw input{background:rgba(10,8,14,.5);border:1px solid rgba(185,163,227,.2);border-radius:8px;width:100%;font-size:15.5px;font-family:'Cormorant Garamond',serif;color:#f4eefc;outline:none;padding:10px 12px}
 .dd-kw input:focus{border-color:rgba(205,178,242,.7)}
 .seclbl{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--txt-dim);margin:26px 0 12px;padding-left:2px}
@@ -260,6 +271,8 @@ input:focus,textarea:focus{border-color:rgba(205,178,242,.85);box-shadow:0 0 14p
 .stat{border:1px solid var(--card-line);background:var(--card);border-radius:12px;padding:16px 10px 14px;text-align:center;transition:box-shadow 1.1s ease, border-color 1.1s ease}
 .stat .sv{font-family:'Cinzel',serif;font-size:clamp(26px,6vw,36px);font-weight:700;color:var(--glic-hi);line-height:1.1;text-shadow:0 0 22px rgba(185,163,227,.55)}
 .stat .sv.g{color:var(--gold-pale);text-shadow:0 0 22px rgba(201,168,76,.55)}
+#st-s1{color:var(--aqua-hi);text-shadow:0 0 22px rgba(47,224,198,.5)}
+#st-s2{color:var(--blu-hi);text-shadow:0 0 22px rgba(58,123,255,.5)}
 .stat .sl{font-family:'Cinzel',serif;font-size:8.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--txt-dim);margin-top:8px;line-height:1.6}
 .chartcard{border:1px solid var(--card-line);background:var(--card);border-radius:12px;padding:16px 14px 10px;margin-bottom:14px;transition:box-shadow 1.1s ease, border-color 1.1s ease}
 .chartcard.lit{border-color:rgba(205,178,242,.9);box-shadow:0 0 22px rgba(170,135,230,.4)}
@@ -532,7 +545,6 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
       <div class="stat"><div class="sv" id="st-s2">0</div><div class="sl">Sessioni<br>Osservatorio</div></div>
       <div class="stat"><div class="sv g" id="st-days">0</div><div class="sl">Giorni<br>di pratica</div></div>
     </div>
-    <div class="chartcard"><div class="cht">Le tue pratiche · ultimi 14 giorni</div><div class="chs">Ogni colonna è un giorno: più è alta, più hai praticato.</div><canvas id="ch-act"></canvas><div class="legend"><span><i class="lg1"></i>Spazio Emotivo</span><span><i class="lg2"></i>Osservatorio</span></div></div>
     <div class="chartcard"><div class="cht">Il tuo umore · ultimi 14 giorni</div><div class="chs">La linea segue gli umori che hai scelto nel Diario.</div><canvas id="ch-mood"></canvas><div class="rempty" id="mood-empty" style="display:none">Scegli gli umori nel Diario e qui apparirà la tua linea dell'anima.</div></div>
 
     <div class="seclbl">Riflessioni periodiche</div>
@@ -871,8 +883,8 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
           '<div class="dd-moods">'+moods+'</div>'+
         '</div>'+
         '<div class="dd-prac">'+
-          '<button class="pchip'+(s1on?' on':'')+'" onclick="togglePrac(this,\''+di+'\',\'s1\')"><span class="pchk">✓</span>Spazio Emotivo</button>'+
-          '<button class="pchip'+(s2on?' on':'')+'" onclick="togglePrac(this,\''+di+'\',\'s2\')"><span class="pchk">✓</span>Osservatorio</button>'+
+          '<button class="pchip s1'+(s1on?' on':'')+'" onclick="togglePrac(this,\''+di+'\',\'s1\')"><span class="pchk">✓</span>Spazio Emotivo</button>'+
+          '<button class="pchip s2'+(s2on?' on':'')+'" onclick="togglePrac(this,\''+di+'\',\'s2\')"><span class="pchk">✓</span>Osservatorio</button>'+
         '</div>'+
         '<div class="dd-kw"><input type="text" placeholder="una parola per oggi…" data-k="cal-'+di+'-kw"></div>';
       box.appendChild(card);
@@ -967,7 +979,7 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
     if(el=document.getElementById('st-s1'))el.textContent=countSessions('s1');
     if(el=document.getElementById('st-s2'))el.textContent=countSessions('s2');
     if(el=document.getElementById('st-streak'))el.textContent=streak();
-    requestAnimationFrame(function(){ renderActivity(); renderMood(); });
+    requestAnimationFrame(function(){ renderMood(); });
   }
 
   /* ============ RIFLESSIONI (carosello: puntini, frecce, +nuovo) ============ */
