@@ -435,7 +435,7 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
         <div class="pbar" id="s1-bar"><div class="pfill" id="s1-fill"></div><div class="pknob" id="s1-knob" style="left:0"></div></div>
         <div class="pwait" id="s1-wait" style="display:none">La voce di Elisa sarà disponibile a breve 🎧</div>
         <div class="pchaps" id="s1-chaps"></div>
-        <audio id="s1-audio" preload="none"></audio>
+        <audio id="s1-audio" preload="metadata"></audio>
       </div>
     </div>
 
@@ -485,7 +485,7 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
         <div class="pbar" id="s2-bar"><div class="pfill" id="s2-fill"></div><div class="pknob" id="s2-knob" style="left:0"></div></div>
         <div class="pwait" id="s2-wait" style="display:none">La voce di Elisa sarà disponibile a breve 🎧</div>
         <div class="pchaps" id="s2-chaps"></div>
-        <audio id="s2-audio" preload="none"></audio>
+        <audio id="s2-audio" preload="metadata"></audio>
       </div>
     </div>
 
@@ -697,26 +697,25 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
   function lumeHome(){ var x=Math.max(30, innerWidth/2 - 400); moveLume(x, 84 + (document.querySelector('.hd')?document.querySelector('.hd').offsetTop:0)); }
   function moveLume(x,y){ lume.style.transform='translate3d('+(x|0)+'px,'+(y|0)+'px,0)'; }
   function lumeAt(x,y,boost){ moveLume(x,y); if(boost)lume.classList.add('boost'); else lume.classList.remove('boost'); }
-  function lightUp(el){
-    lume.classList.remove('boost');
-    if(litEl===el)return;
-    if(litEl)litEl.classList.remove('lit');
+  function lightUp(el, noBoost){
+    if(!el){ if(litEl)litEl.classList.remove('lit'); litEl=null; lume.classList.remove('boost'); lumeHome(); return; }
+    if(litEl && litEl!==el)litEl.classList.remove('lit');
     litEl=el;
-    if(!el){ lumeHome(); return; }
     el.classList.add('lit');
     var r=el.getBoundingClientRect();
-    var docY=r.top + scrollY + Math.min(r.height/2, 70);
-    var x=r.left - 26; if(x<30) x=Math.min(innerWidth-30, r.right + 26);
+    var docY=r.top + scrollY + Math.min(r.height/2, 80);
+    /* SEMPRE di lato all'elemento (non sopra): a sinistra, o a destra se non c'è spazio */
+    var x=r.left + scrollX - 30; if(x < scrollX+30) x=Math.min(scrollX+innerWidth-30, r.right + scrollX + 30);
     moveLume(x, docY);
+    if(noBoost)lume.classList.remove('boost'); else lume.classList.add('boost');
   }
   document.addEventListener('focusin',function(e){ var b=e.target.closest('.blk, .intenz'); if(b)lightUp(b); });
-  /* la luce segue i click; sui blocchi li illumina, altrove va sotto il dito */
+  /* la luce va ACCANTO alla sezione che tocchi e la illumina di più */
   document.addEventListener('click',function(e){
     if(e.target.closest('#lume'))return;
-    if(e.target.closest('.pplay'))return; /* il play la gestisce da sé, con boost */
-    var b=e.target.closest('.blk, .intenz, .dday, .pcard, .chartcard');
-    if(b){ lightUp(b); return; }
-    if(e.target.closest('.page')){ if(litEl){litEl.classList.remove('lit');litEl=null;} lumeAt(e.pageX-22, e.pageY-22, false); }
+    if(e.target.closest('.pplay'))return; /* il play la gestisce da sé */
+    var b=e.target.closest('.blk, .intenz, .dday, .pcard, .chartcard, .stat, .vsbtn, .segna, .pchip, .mood, .pcrow, .daynav, .dots, .refl, .home-prog, .home-note, .player, .mantra, .tbox, .wnav');
+    if(b)lightUp(b);
   });
   addEventListener('resize',function(){ if(litEl)lightUp(litEl); else lumeHome(); });
 
@@ -744,7 +743,7 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
         fill=document.getElementById(s+'-fill'), knob=document.getElementById(s+'-knob'), bar=document.getElementById(s+'-bar'),
         chapLab=document.getElementById(s+'-chap'), timeLab=document.getElementById(s+'-time'), wait=document.getElementById(s+'-wait'),
         chapsBox=document.getElementById(s+'-chaps'), cov=document.getElementById(s+'-cov');
-    var chaps=CHAPS[s], ready=false, curChap=-1;
+    var chaps=CHAPS[s], ready=false, broken=false, curChap=-1;
     cov.onload=function(){ cov.style.display='block'; };
     cov.onerror=function(){ cov.style.display='none'; };
     cov.src=COVER[s];
@@ -763,7 +762,7 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
       chaps.forEach(function(c){ if(c.t<=0)return; var tk=document.createElement('div'); tk.className='ptick'; tk.style.left=(c.t/au.duration*100)+'%'; bar.appendChild(tk); });
       highlight(0);
     });
-    au.addEventListener('error',function(){ ready=false; play.setAttribute('disabled',''); wait.style.display='block'; chapLab.textContent='Anteprima della pratica'; });
+    au.addEventListener('error',function(){ ready=false; broken=true; play.setAttribute('disabled',''); wait.style.display='block'; chapLab.textContent='Anteprima della pratica'; });
     au.addEventListener('timeupdate',function(){
       if(!au.duration)return;
       var f=au.currentTime/au.duration;
@@ -775,11 +774,12 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
     au.addEventListener('ended',function(){ play.textContent='▶'; });
     play.addEventListener('click',function(ev){
       ev.stopPropagation();
-      if(ready){ if(au.paused)au.play(); else au.pause(); }
-      /* la luce si affianca al play e lo illumina di più */
+      if(!broken){ if(au.paused){ var pr=au.play(); if(pr&&pr['catch'])pr['catch'](function(){}); } else au.pause(); }
+      /* la luce si affianca al play, DI LATO (non sopra), e lo illumina di più */
       var r=play.getBoundingClientRect();
       if(litEl){litEl.classList.remove('lit');litEl=null;}
-      lumeAt(r.left+window.scrollX + r.width/2, r.top+window.scrollY + r.height/2, true);
+      var x=r.left+window.scrollX-30; if(x<30)x=r.right+window.scrollX+30;
+      lumeAt(x, r.top+window.scrollY + r.height/2, true);
     });
     bar.addEventListener('click',function(e){ if(!ready||!au.duration)return; var r=bar.getBoundingClientRect(); var f=(e.clientX-r.left)/r.width; au.currentTime=Math.max(0,Math.min(1,f))*au.duration; });
   }
