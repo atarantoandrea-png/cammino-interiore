@@ -69,7 +69,7 @@ app.post('/api/store', saveStore);   /* per sendBeacon all'uscita dalla pagina *
 
 const SHEETS_ID  = process.env.SHEETS_ID  || '';
 const SHEETS_TAB = process.env.SHEETS_TAB || 'annuali';
-const SESSION_TTL = 2 * 60 * 60 * 1000; /* 2 ore */
+const SESSION_TTL = 30 * 24 * 60 * 60 * 1000; /* 30 giorni */
 const EMAIL_CACHE_TTL = 5 * 60 * 1000;  /* 5 min */
 
 let saKey = null;
