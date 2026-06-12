@@ -51,14 +51,21 @@ body{
 
 #bookgl{position:fixed;inset:0;z-index:3;pointer-events:none}
 
-/* i passi fantasma lungo il cammino: si materializzano scorrendo */
+/* i passi fantasma lungo il cammino: ogni orma nasce accesa di lilla,
+   poi si spegne nello stato spettrale mentre nasce la successiva */
 #passi{position:absolute;left:0;top:0;width:100%;pointer-events:none;z-index:6;overflow:hidden}
 #passi .step{
-  position:absolute;color:rgba(210,197,238,.9);
-  opacity:0;transition:opacity 1.8s ease;
-  filter:blur(.4px) drop-shadow(0 0 7px rgba(170,140,225,.4));
+  position:absolute;color:rgba(214,200,242,.95);
+  opacity:0;transition:opacity .9s ease, filter 1.1s ease;
+  filter:blur(.3px) drop-shadow(0 0 6px rgba(175,145,230,.4));
 }
-#passi .step.on{opacity:.24}
+#passi .step.on{opacity:.38}
+#passi .step.new{
+  opacity:1;color:#ecdfff;
+  filter:blur(0)
+    drop-shadow(0 0 9px rgba(205,165,255,.95))
+    drop-shadow(0 0 22px rgba(180,130,255,.6));
+}
 
 .vignette{position:fixed;inset:0;z-index:4;pointer-events:none;
   background:radial-gradient(ellipse at 50% 44%,
@@ -1097,12 +1104,11 @@ async function init(){
   }
   /* ---- i passi fantasma: un sentiero irregolare lungo il lato ---- */
   const passiEl = document.getElementById('passi');
-  const FOOT = '<svg viewBox="0 0 20 34" width="12" height="20">'+
-    '<ellipse cx="10" cy="11" rx="5.6" ry="9.5" fill="currentColor"/>'+
-    '<ellipse cx="4.6" cy="25.5" rx="2.0" ry="2.8" fill="currentColor"/>'+
-    '<ellipse cx="9"   cy="27.8" rx="2.1" ry="3.0" fill="currentColor"/>'+
-    '<ellipse cx="13.4" cy="26.8" rx="1.9" ry="2.6" fill="currentColor"/>'+
-    '<ellipse cx="16.8" cy="24.6" rx="1.5" ry="2.1" fill="currentColor"/></svg>';
+  /* orma di scarpa che cammina verso il basso: tacco in alto, suola in basso */
+  const FOOT = '<svg viewBox="0 0 20 36" width="14" height="25">'+
+    '<rect x="5.6" y="2" width="8.8" height="8.4" rx="4" fill="currentColor"/>'+
+    '<path d="M10 13 C14.6 13 16.9 16.6 16.6 22.6 C16.3 28.8 14.3 34 10 34 '+
+    'C5.7 34 3.7 28.8 3.4 22.6 C3.1 16.6 5.4 13 10 13 Z" fill="currentColor"/></svg>';
   let stepEls = [];
   function buildPassi(){
     passiEl.innerHTML = ''; stepEls = [];
@@ -1131,11 +1137,23 @@ async function init(){
     }
     revealPassi();
   }
+  /* le orme nascono UNA ALLA VOLTA: si accendono di lilla, poi si spengono */
+  const passiQueue = [];
+  let igniting = false;
+  function igniteNext(){
+    if (igniting || !passiQueue.length) return;
+    igniting = true;
+    const s = passiQueue.shift();
+    s.el.classList.add('on','new');
+    setTimeout(()=>{ s.el.classList.remove('new'); }, 950);
+    setTimeout(()=>{ igniting = false; igniteNext(); }, 330);
+  }
   function revealPassi(){
     const lim = scrollY + innerHeight*.78;
     for (const s of stepEls){
-      if (!s.on && s.y < lim){ s.on = true; s.el.classList.add('on'); }
+      if (!s.on && s.y < lim){ s.on = true; passiQueue.push(s); }
     }
+    igniteNext();
   }
   addEventListener('scroll', revealPassi, {passive:true});
   buildPassi();
