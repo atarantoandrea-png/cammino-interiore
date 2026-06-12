@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="it">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>I miei Esercizi Â· Il Cammino Interiore</title>
+<title>I miei Esercizi · Il Cammino Interiore</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -30,7 +30,7 @@ body{
 }
 
 /* ================= LA LUCE GUIDA =================
-   la luce fiorisce col Cammino: margherita â†’ bucaneve â†’ stella alpina â†’ ortensia â†’ fiordaliso â†’ viola del pensiero â†’ glicine */
+   la luce fiorisce col Cammino: margherita → bucaneve → stella alpina → ortensia → fiordaliso → viola del pensiero → glicine */
 body{--lm-c1:#beb8ca;--lm-mid:#6e6880;
   --lm-g1:rgba(200,195,215,.55);--lm-g2:rgba(160,152,180,.3);--lm-g3:rgba(120,112,145,.16)}
 body.lt1{--lm-c1:#ffffff;--lm-mid:#f0f2fa;
@@ -235,7 +235,7 @@ header.hd{padding:54px 0 8px;text-align:center;position:relative;z-index:2}
 }
 .excard.start.first-time{border-color:rgba(201,168,76,.55);animation:startglow 2.8s ease-in-out infinite}
 
-/* tappe piÃ¹ avanti nel cammino: vive ma in attesa */
+/* tappe più avanti nel cammino: vive ma in attesa */
 .excard.next .excover{filter:saturate(.4) brightness(.82)}
 .excard.next .exgo{color:var(--txt-dim)}
 .excard.next:hover .exgo{color:var(--txt-soft)}
@@ -386,6 +386,7 @@ details.gd[open]{border-color:rgba(205,178,242,.5);box-shadow:0 0 16px rgba(170,
 .chat-note{font-size:13.5px;color:var(--txt-dim);text-align:center;padding:6px 14px 14px}
 .msg .mtxt{white-space:pre-line}
 .msg .mode{display:block;margin-top:10px;font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-pale);opacity:.85}
+.msg .fonte{display:block;margin-top:12px;padding-top:8px;border-top:1px solid rgba(185,163,227,.18);font-size:13.5px;color:var(--txt-dim);line-height:1.5}
 .msg.typing .mtxt{color:var(--txt-dim);letter-spacing:.25em}
 .msg .avviso{
   display:block;margin-bottom:10px;padding:8px 11px;
@@ -455,7 +456,7 @@ details.qdrop[open]{border-color:rgba(185,221,246,.5);box-shadow:0 0 14px rgba(1
   box-shadow:0 0 18px rgba(150,110,215,.3)}
 #saved.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-/* ================= la lucetta quando la chat Ã¨ aperta =================
+/* ================= la lucetta quando la chat è aperta =================
    si appollaia sull'angolo del pannello e danza piano, curiosa */
 html.chat-viva #lume{
   z-index:63;
@@ -502,13 +503,13 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
   <section id="login">
     <div class="lbox">
       <h2>Entra nel tuo spazio</h2>
-      <p class="sub">Scrivi la mail con cui hai acquistato il corso:<br>Ã¨ la tua chiave per gli esercizi.</p>
+      <p class="sub">Scrivi la mail con cui hai acquistato il corso:<br>è la tua chiave per gli esercizi.</p>
       <label for="mail">La tua email</label>
       <input id="mail" type="email" autocomplete="email" inputmode="email"
              placeholder="nome@esempio.it" onkeydown="if(event.key==='Enter')entra()">
       <div class="lerr" id="lerr"></div>
       <button class="btn-gold" onclick="entra()">Entra nel Cammino</button>
-      <p class="lnote">Questo dispositivo ricorderÃ  il tuo accesso:<br>non dovrai riscrivere la mail ogni volta.</p>
+      <p class="lnote">Questo dispositivo ricorderà il tuo accesso:<br>non dovrai riscrivere la mail ogni volta.</p>
     </div>
   </section>
 
@@ -527,13 +528,13 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
         <button class="excard start" id="card-start" onclick="apriGuida('start',this)">
           <div class="excover">
             <div class="ring"></div>
-            <span class="sym">ðŸ•¯ï¸</span>
+            <span class="sym">🕯️</span>
           </div>
           <div class="exbody">
             <div class="exbadge">La prima tappa</div>
             <h3>Inizia da qui</h3>
-            <p class="exdesc">Cos'Ã¨ quest'area, come funziona il sentiero e cosa significa la piccola luce che ti accompagna. Due minuti per orientarti: poi il cammino Ã¨ tuo.</p>
-            <span class="exgo">Apri la guida â†’</span>
+            <p class="exdesc">Cos'è quest'area, come funziona il sentiero e cosa significa la piccola luce che ti accompagna. Due minuti per orientarti: poi il cammino è tuo.</p>
+            <span class="exgo">Apri la guida →</span>
           </div>
         </button>
       </li>
@@ -545,7 +546,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
 
 </div>
 
-<footer>Il Cammino Interiore Â· Elisa Soul Medium Â· <a href="/">Torna al Libro</a></footer>
+<footer>Il Cammino Interiore · Elisa Soul Medium · <a href="/">Torna al Libro</a></footer>
 
 <!-- l'orma riusata per tutte le impronte -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -564,7 +565,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
   <div class="gp-hd">
     <div class="gp-orb"></div>
     <h2>Guida del Cammino</h2>
-    <button class="gp-chat" id="chat-btn" aria-label="Scrivi a Elisa â€” in preparazione" title="Scrivi a Elisa">
+    <button class="gp-chat" id="chat-btn" aria-label="La Conoscenza di Elisa" title="La Conoscenza di Elisa">
       <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <path d="M21 11.5a8.4 8.4 0 0 1-8.6 8.2c-1.4 0-2.7-.3-3.9-.9L3.5 20l1.2-4.3a8 8 0 0 1-1.2-4.2A8.4 8.4 0 0 1 12.1 3.3a8.4 8.4 0 0 1 8.9 8.2z"/>
         <circle cx="8.6" cy="11.6" r=".9" fill="currentColor" stroke="none"/>
@@ -572,7 +573,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
         <circle cx="15.8" cy="11.6" r=".9" fill="currentColor" stroke="none"/>
       </svg>
     </button>
-    <button class="gp-x" id="gpan-x" aria-label="Chiudi la guida">âœ•</button>
+    <button class="gp-x" id="gpan-x" aria-label="Chiudi la guida">✕</button>
   </div>
   <div class="gp-bd">
 
@@ -595,35 +596,35 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     <div class="gp-sec">Come funziona</div>
 
     <details class="gd" open>
-      <summary><span class="gi">ðŸ•¯ï¸</span>Cos'Ã¨ quest'area<span class="arr">â–¶</span></summary>
+      <summary><span class="gi">🕯️</span>Cos'è quest'area<span class="arr">▶</span></summary>
       <div class="gd-c">
-        <p>Questa Ã¨ la tua <b>area di pratica personale</b>. Tiene traccia di tutto quello che fai: ogni scheda, ogni nota, ogni giorno di pratica resta <b>salvato nel tuo account</b> â€” non devi ricordare nulla a memoria, e riprendi sempre da dove eri rimasta.</p>
-        <p>Ãˆ pensata per <b>accompagnarti passo dopo passo</b>, con calma: ti dice sempre qual Ã¨ la tappa consigliata per oggi e ti protegge dal correre troppo. <span class="gold">Non serve la perfezione: conta la direzione, non la velocitÃ .</span></p>
+        <p>Questa è la tua <b>area di pratica personale</b>. Tiene traccia di tutto quello che fai: ogni scheda, ogni nota, ogni giorno di pratica resta <b>salvato nel tuo account</b> — non devi ricordare nulla a memoria, e riprendi sempre da dove eri rimasta.</p>
+        <p>È pensata per <b>accompagnarti passo dopo passo</b>, con calma: ti dice sempre qual è la tappa consigliata per oggi e ti protegge dal correre troppo. <span class="gold">Non serve la perfezione: conta la direzione, non la velocità.</span></p>
       </div>
     </details>
 
     <details class="gd">
-      <summary><span class="gi">ðŸ‘£</span>Come funziona il sentiero<span class="arr">â–¶</span></summary>
+      <summary><span class="gi">👣</span>Come funziona il sentiero<span class="arr">▶</span></summary>
       <div class="gd-c">
-        <p>La pagina che hai davanti Ã¨ un <b>sentiero</b>, da percorrere dall'alto verso il basso. Si comincia da <b>Â«Inizia da quiÂ»</b>, poi c'Ã¨ <b>il Giornaliero</b> â€” la pratica di ogni giorno â€” e piÃ¹ in basso le tappe che verranno.</p>
-        <p>Le <b>impronte</b> tra una tappa e l'altra sono i tuoi passi: il cammino si crea camminando. La tappa con il <b>bordo luminoso</b> Ã¨ quella consigliata per oggi.</p>
-        <p>Gli esercizi piÃ¹ avanti <b>si aprono con la costanza</b>: ti consiglieremo sempre quanti giorni di pratica fare prima di proseguire. Ma la scelta resta tua, sempre.</p>
+        <p>La pagina che hai davanti è un <b>sentiero</b>, da percorrere dall'alto verso il basso. Si comincia da <b>«Inizia da qui»</b>, poi c'è <b>il Giornaliero</b> — la pratica di ogni giorno — e più in basso le tappe che verranno.</p>
+        <p>Le <b>impronte</b> tra una tappa e l'altra sono i tuoi passi: il cammino si crea camminando. La tappa con il <b>bordo luminoso</b> è quella consigliata per oggi.</p>
+        <p>Gli esercizi più avanti <b>si aprono con la costanza</b>: ti consiglieremo sempre quanti giorni di pratica fare prima di proseguire. Ma la scelta resta tua, sempre.</p>
       </div>
     </details>
 
     <details class="gd">
-      <summary><span class="gi">ðŸŒ¸</span>La scala dei fiori<span class="arr">â–¶</span></summary>
+      <summary><span class="gi">🌸</span>La scala dei fiori<span class="arr">▶</span></summary>
       <div class="gd-c">
-        <p>La tua piccola luce <b>cambia colore con i giorni di pratica</b>, come un fiore che sboccia. Si parte dalla <b>margherita</b>, il fiore semplice dell'inizio; con la costanza arrivano il bucaneve, la stella alpina, l'ortensia, il fiordaliso, la violaâ€¦ fino al <span class="gold">glicine</span>, il fiore del Cammino.</p>
-        <p>Conta ogni giorno in cui fai <b>almeno una pratica</b>. Non Ã¨ una gara: i fiori arrivano da soli, un giorno alla volta. La scala qui sopra ti mostra sempre a che punto sei.</p>
+        <p>La tua piccola luce <b>cambia colore con i giorni di pratica</b>, come un fiore che sboccia. Si parte dalla <b>margherita</b>, il fiore semplice dell'inizio; con la costanza arrivano il bucaneve, la stella alpina, l'ortensia, il fiordaliso, la viola… fino al <span class="gold">glicine</span>, il fiore del Cammino.</p>
+        <p>Conta ogni giorno in cui fai <b>almeno una pratica</b>. Non è una gara: i fiori arrivano da soli, un giorno alla volta. La scala qui sopra ti mostra sempre a che punto sei.</p>
       </div>
     </details>
 
     <details class="gd">
-      <summary><span class="gi">âœ¨</span>La piccola luce<span class="arr">â–¶</span></summary>
+      <summary><span class="gi">✨</span>La piccola luce<span class="arr">▶</span></summary>
       <div class="gd-c">
-        <p>La luce che vedi sulla pagina Ã¨ la tua <b>compagna di cammino</b>. Ti segue mentre scorri, si ferma accanto alla tappa consigliata e â€” dentro gli esercizi â€” si posa sulla sezione in cui stai lavorando.</p>
-        <p><b>Toccala in qualsiasi momento</b>: si apre questa guida, con la spiegazione di dove ti trovi e di cosa fare. Quando hai un dubbio, la luce Ã¨ lÃ¬ per questo.</p>
+        <p>La luce che vedi sulla pagina è la tua <b>compagna di cammino</b>. Ti segue mentre scorri, si ferma accanto alla tappa consigliata e — dentro gli esercizi — si posa sulla sezione in cui stai lavorando.</p>
+        <p><b>Toccala in qualsiasi momento</b>: si apre questa guida, con la spiegazione di dove ti trovi e di cosa fare. Quando hai un dubbio, la luce è lì per questo.</p>
       </div>
     </details>
 
@@ -631,24 +632,24 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
 </aside>
 
 <!-- ============ SCRIVI A ELISA (predisposta) ============ -->
-<aside id="chatpan" role="dialog" aria-modal="true" aria-label="Scrivi a Elisa">
+<aside id="chatpan" role="dialog" aria-modal="true" aria-label="La Conoscenza di Elisa">
   <div class="gp-hd">
     <div class="gp-orb"></div>
-    <h2>Scrivi a Elisa</h2>
-    <button class="gp-x" id="chat-x" aria-label="Torna alla guida">âœ•</button>
+    <h2>La Conoscenza di Elisa</h2>
+    <button class="gp-x" id="chat-x" aria-label="Torna alla guida">✕</button>
   </div>
   <div class="chat-msgs" id="chat-msgs">
     <div class="msg elisa">
-      <span class="mwho">Elisa</span>
-      Benvenuta/o in questo piccolo spazio ðŸ’› Qui sono raccolte, con cura, le parole di Elisa sui temi piÃ¹ importanti. Apri un tema qui sotto e scegli una domanda â€” oppure scrivimi liberamente.
+      <span class="mwho">La Guida</span>
+      Benvenuta/o 💛 Questo spazio custodisce la conoscenza di Elisa: ti riporto i suoi insegnamenti così come li ha condivisi — nel libro, nelle lezioni e nelle sue risposte — indicandoti sempre la fonte. Apri un tema qui sotto e scegli una domanda, oppure scrivimi liberamente.
     </div>
     <div id="chat-menu"></div>
   </div>
   <div class="chat-bar" id="chat-bar">
-    <input id="chat-in" type="text" placeholder="Scrivi qui la tua domandaâ€¦" autocomplete="off" aria-label="La tua domanda per Elisa">
-    <button class="chat-send" id="chat-send" aria-label="Invia">âž¤</button>
+    <input id="chat-in" type="text" placeholder="Scrivi qui la tua domanda…" autocomplete="off" aria-label="La tua domanda per Elisa">
+    <button class="chat-send" id="chat-send" aria-label="Invia">➤</button>
   </div>
-  <div class="chat-note">Le risposte nascono dalle parole di Elisa e crescono nel tempo. Questo spazio non Ã¨ un consulto nÃ© una lettura.</div>
+  <div class="chat-note">Le risposte riportano gli insegnamenti di Elisa con le loro fonti — non è Elisa a rispondere di persona. Questo spazio non è un consulto né una lettura.</div>
 </aside>
 
 <!-- ============ IL CONSIGLIO DELLA LUCE (tappa non ancora consigliata) ============ -->
@@ -660,10 +661,10 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
   <button class="btn-ghost" id="lkGo">Vai avanti comunque</button>
 </div>
 
-<div id="saved">âœ“ Salvato</div>
+<div id="saved">✓ Salvato</div>
 
 <script src="/app/lume.js?v=1"></script>
-<script src="/app/elisa-chat.js?v=8"></script>
+<script src="/app/elisa-chat.js?v=9"></script>
 <script>
 (function(){
   var KEY='ovl-user';
@@ -675,22 +676,22 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
      ogni nuovo esercizio = una riga qui (la tappa nasce da sola).
      requires.days = giorni di pratica consigliati prima di aprirlo. */
   var EXERCISES=[
-    {id:'day', title:'Il Giornaliero', badge:'Pratica quotidiana', sym:'ðŸ“œ', route:'/app/day/',
+    {id:'day', title:'Il Giornaliero', badge:'Pratica quotidiana', sym:'📜', route:'/app/day/',
      desc:'Le tue schede di pratica giorno per giorno: lo Spazio Emotivo, l\'Osservatorio Interiore e il Diario della Settimana. Tutto resta salvato nel tuo account.',
      requires:null},
-    {id:'ex2', title:'Prossimo esercizio', badge:'PiÃ¹ avanti nel cammino', sym:'ðŸŒ™', route:null,
-     desc:'Un nuovo strumento del Cammino sta prendendo forma. Lo troverai qui, quando il Giornaliero ti avrÃ  accompagnato abbastanza a lungo.',
+    {id:'ex2', title:'Prossimo esercizio', badge:'Più avanti nel cammino', sym:'🌙', route:null,
+     desc:'Un nuovo strumento del Cammino sta prendendo forma. Lo troverai qui, quando il Giornaliero ti avrà accompagnato abbastanza a lungo.',
      requires:{days:20}, soon:true}
   ];
 
-  /* ---- la guida sa DOVE Ã¨ posata la luce: contesti del sentiero ---- */
+  /* ---- la guida sa DOVE è posata la luce: contesti del sentiero ---- */
   var DCTX={
     start:{t:'Inizia da qui',
-      h:'<p>Benvenuta/o nella tua area di pratica. Qui sotto trovi tutto quello che serve per cominciare: leggi con calma <b>Â«Cos\'Ã¨ quest\'areaÂ»</b> e <b>Â«Come funziona il sentieroÂ»</b>, poi apri il Giornaliero e fai la tua prima pratica. Al resto pensa l\'app: tiene traccia di tutto e ti accompagna passo dopo passo.</p>'},
+      h:'<p>Benvenuta/o nella tua area di pratica. Qui sotto trovi tutto quello che serve per cominciare: leggi con calma <b>«Cos\'è quest\'area»</b> e <b>«Come funziona il sentiero»</b>, poi apri il Giornaliero e fai la tua prima pratica. Al resto pensa l\'app: tiene traccia di tutto e ti accompagna passo dopo passo.</p>'},
     day:{t:'Il Giornaliero',
-      h:'<p>Ãˆ la pratica di ogni giorno: lo <b>Spazio Emotivo</b>, l\'<b>Osservatorio Interiore</b> e il <b>Diario della Settimana</b>. Sulla card vedi i tuoi giorni di pratica e il tuo fiore. Apri l\'esercizio e lasciati guidare: dentro, la luce sarÃ  con te sezione per sezione.</p>'},
-    ex2:{t:'Le tappe piÃ¹ avanti',
-      h:'<p>PiÃ¹ in basso nel sentiero ci sono gli esercizi che verranno. Si aprono con la costanza: per il prossimo ti consigliamo almeno <b>20 giorni</b> di Giornaliero. Non c\'Ã¨ fretta â€” il sentiero non scappa.</p>'}
+      h:'<p>È la pratica di ogni giorno: lo <b>Spazio Emotivo</b>, l\'<b>Osservatorio Interiore</b> e il <b>Diario della Settimana</b>. Sulla card vedi i tuoi giorni di pratica e il tuo fiore. Apri l\'esercizio e lasciati guidare: dentro, la luce sarà con te sezione per sezione.</p>'},
+    ex2:{t:'Le tappe più avanti',
+      h:'<p>Più in basso nel sentiero ci sono gli esercizi che verranno. Si aprono con la costanza: per il prossimo ti consigliamo almeno <b>20 giorni</b> di Giornaliero. Non c\'è fretta — il sentiero non scappa.</p>'}
   };
 
   /* ================= toast ================= */
@@ -776,7 +777,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
           (ex.id==='day'?'<div class="mini" id="mini-day"></div>':'')+
           '<span class="exgo">'+(locked
             ?('Consigliato dopo '+ex.requires.days+' giorni di Giornaliero')
-            :'Apri l\'esercizio â†’')+'</span>'+
+            :'Apri l\'esercizio →')+'</span>'+
         '</div>';
       li.appendChild(el);
       ol.appendChild(li);
@@ -798,13 +799,13 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
   function renderMini(){
     var el=document.getElementById('mini-day'); if(!el)return;
     if(days===0){
-      el.textContent='Il sentiero inizia con il primo passo â€” apri e comincia.';
+      el.textContent='Il sentiero inizia con il primo passo — apri e comincia.';
       return;
     }
     var t=OVL_LUME.TIERS[tier];
     el.innerHTML='<span class="mini-dot" style="background:'+t.col+';box-shadow:0 0 8px '+t.col+'88"></span>'+
-      '<span>'+t.nome+' Â· '+days+(days===1?' giorno':' giorni')+' di pratica'+
-      (strk>=2?' Â· '+strk+' di fila':'')+'</span>';
+      '<span>'+t.nome+' · '+days+(days===1?' giorno':' giorni')+' di pratica'+
+      (strk>=2?' · '+strk+' di fila':'')+'</span>';
   }
 
   function recommendedStage(){
@@ -893,14 +894,14 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     if(!pos.rest){
       x=pos.homeX; y=pos.homeY;
     } else {
-      /* parte dalla soglia e cammina un po' piÃ¹ veloce di chi scorre,
-         cosÃ¬ raggiunge la tappa consigliata quando la card Ã¨ in vista */
+      /* parte dalla soglia e cammina un po' più veloce di chi scorre,
+         così raggiunge la tappa consigliata quando la card è in vista */
       var follow=pos.homeY+scrollY*1.35;
       y=Math.max(pos.homeY, Math.min(pos.rest.y, follow));
       x=(y>=pos.rest.y-4)?pos.rest.x:pos.pathX;
     }
     if(firstPlace){
-      /* il primo posizionamento Ã¨ immediato: niente viaggio dall'angolo della pagina */
+      /* il primo posizionamento è immediato: niente viaggio dall'angolo della pagina */
       firstPlace=false;
       lume.style.transition='none';
       moveLume(x,y);
@@ -933,7 +934,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     calcProgress();
     var t=OVL_LUME.TIERS[tier];
     document.getElementById('lvlT').textContent=days+(days===1?' giorno':' giorni')+' di pratica';
-    document.getElementById('lvlD').textContent='La tua luce Ã¨ '+t.art+t.nome.toLowerCase()+
+    document.getElementById('lvlD').textContent='La tua luce è '+t.art+t.nome.toLowerCase()+
       ': fiorisce con la costanza, non con la fretta.';
     var nx=OVL_LUME.TIERS[tier+1];
     var fill=nx ? Math.max(0,Math.min(1,(days-t.d)/Math.max(1,nx.d-t.d))) : 1;
@@ -957,7 +958,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     renderGuida();
     var ctx=document.getElementById('gctx');
     if(key && DCTX[key]){
-      document.getElementById('gctxT').textContent='In questa sezione â€” '+DCTX[key].t;
+      document.getElementById('gctxT').textContent='In questa sezione — '+DCTX[key].t;
       document.getElementById('gctxB').innerHTML=DCTX[key].h;
       ctx.style.display='block';
     } else {
@@ -981,7 +982,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
   document.getElementById('gpan-x').addEventListener('click',chiudiTutto);
   veil.addEventListener('click',chiudiTutto);
 
-  /* il contesto della luce: la tappa su cui Ã¨ posata */
+  /* il contesto della luce: la tappa su cui è posata */
   function ctxKey(){ return recommendedStage(); }
   function lumeTap(){
     if(document.documentElement.classList.contains('chat-viva')){ chiudiChat(); return; }
@@ -996,7 +997,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
   });
 
   /* ================= Scrivi a Elisa ================= */
-  /* la lucetta si appollaia sull'angolo del pannello finchÃ© la chat Ã¨ aperta */
+  /* la lucetta si appollaia sull'angolo del pannello finché la chat è aperta */
   function lumeAllaChat(){
     var r=chatpan.getBoundingClientRect();
     moveLume(r.left+scrollX+10, r.top+scrollY+6);
@@ -1025,16 +1026,19 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     var d=document.createElement('div');
     d.className='msg '+(role==='user'?'io':'elisa');
     if(role!=='user'){
-      var w=document.createElement('span'); w.className='mwho'; w.textContent='Elisa'; d.appendChild(w);
+      var w=document.createElement('span'); w.className='mwho'; w.textContent='La Guida'; d.appendChild(w);
     }
     if(opts.avviso){
-      var a=document.createElement('span'); a.className='avviso'; a.textContent='ðŸ”Ž '+opts.avviso; d.appendChild(a);
+      var a=document.createElement('span'); a.className='avviso'; a.textContent='🔎 '+opts.avviso; d.appendChild(a);
     }
     var p=document.createElement('span'); p.className='mtxt'; p.textContent=text; d.appendChild(p);
+    if(opts.fonte){
+      var f=document.createElement('span'); f.className='fonte'; f.textContent='📚 Fonte: '+opts.fonte; d.appendChild(f);
+    }
     if(opts.mode==='faq'||opts.mode==='doc'){
-      var b=document.createElement('span'); b.className='mode'; b.textContent='ðŸ’› dalle parole di Elisa'; d.appendChild(b);
+      var b=document.createElement('span'); b.className='mode'; b.textContent='💛 dalla conoscenza di Elisa'; d.appendChild(b);
     } else if(opts.mode==='deep'){
-      var b2=document.createElement('span'); b2.className='mode'; b2.textContent='ðŸ“– approfondimento Â· dalle fonti di Elisa'; d.appendChild(b2);
+      var b2=document.createElement('span'); b2.className='mode'; b2.textContent='📖 approfondimento · dalle fonti di Elisa'; d.appendChild(b2);
     }
     chatMsgs.appendChild(d);
     chatMsgs.scrollTop=chatMsgs.scrollHeight;
@@ -1047,26 +1051,26 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     if(deepLoading){ setTimeout(function(){ cb(!!window.OVL_ELISA_DEEP); },1200); return; }
     deepLoading=true;
     var s=document.createElement('script');
-    s.src='/app/elisa-deep.js?v=3';
+    s.src='/app/elisa-deep.js?v=4';
     s.onload=function(){ cb(!!window.OVL_ELISA_DEEP); };
     s.onerror=function(){ deepLoading=false; cb(false); };
     document.body.appendChild(s);
   }
   function chatReply(r){
-    var d=chatBubble('bot',r.answer,{mode:r.mode,avviso:r.avviso});
+    var d=chatBubble('bot',r.answer,{mode:r.mode,avviso:r.avviso,fonte:r.fonte});
     chatHist.push({role:'bot',text:r.answer});
     if(r.id && window.OVL_ELISA && OVL_ELISA.DEEP_IDS.indexOf(r.id)>=0){
       var btn=document.createElement('button');
-      btn.type='button'; btn.className='deep-btn'; btn.textContent='ðŸ“– Approfondisci';
+      btn.type='button'; btn.className='deep-btn'; btn.textContent='📖 Approfondisci';
       btn.addEventListener('click',function(){
-        btn.disabled=true; btn.textContent='ðŸ“– Sto aprendo le pagineâ€¦';
+        btn.disabled=true; btn.textContent='📖 Sto aprendo le pagine…';
         caricaDeep(function(ok){
           if(ok && OVL_ELISA_DEEP[r.id]){
             if(btn.parentNode)btn.parentNode.removeChild(btn);
             chatBubble('bot',OVL_ELISA_DEEP[r.id],{mode:'deep'});
             chatHist.push({role:'bot',text:'[approfondimento: '+r.id+']'});
           } else {
-            btn.disabled=false; btn.textContent='ðŸ“– Approfondisci';
+            btn.disabled=false; btn.textContent='📖 Approfondisci';
             toast('Non riesco ad aprire l\'approfondimento, riprova');
           }
         });
@@ -1081,7 +1085,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     var r=OVL_ELISA.byId(id); if(!r)return;
     chatBubble('user',label);
     chatHist.push({role:'user',text:label});
-    var typing=chatBubble('bot','Â· Â· Â·',{}); typing.classList.add('typing');
+    var typing=chatBubble('bot','· · ·',{}); typing.classList.add('typing');
     setTimeout(function(){
       if(typing.parentNode)typing.parentNode.removeChild(typing);
       chatReply(r);
@@ -1092,13 +1096,13 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     text=(text||'').trim(); if(!text)return;
     document.getElementById('chat-in').value='';
     chatBubble('user',text);
-    var typing=chatBubble('bot','Â· Â· Â·',{}); typing.classList.add('typing');
+    var typing=chatBubble('bot','· · ·',{}); typing.classList.add('typing');
     var prior=chatHist.slice();
     chatHist.push({role:'user',text:text});
     setTimeout(function(){
       if(!window.OVL_ELISA){
         if(typing.parentNode)typing.parentNode.removeChild(typing);
-        chatBubble('bot','In questo momento non riesco a risponderti ðŸ™ðŸ» Riprova tra poco, ricaricando la pagina.',{});
+        chatBubble('bot','In questo momento non riesco a risponderti 🙏🏻 Riprova tra poco, ricaricando la pagina.',{});
         return;
       }
       OVL_ELISA.rispondi(text,prior,function(r){
@@ -1122,7 +1126,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
       det.className='qdrop';
       var sum=document.createElement('summary');
       sum.innerHTML='<span class="qi">'+cat.icon+'</span>'+cat.t+
-        '<span class="qn">'+cat.ids.length+'</span><span class="arr">â–¶</span>';
+        '<span class="qn">'+cat.ids.length+'</span><span class="arr">▶</span>';
       det.appendChild(sum);
       var list=document.createElement('div'); list.className='qlist';
       cat.ids.forEach(function(id){
@@ -1137,7 +1141,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     });
   })();
 
-  /* ================= il consiglio della luce (tappa piÃ¹ avanti) ================= */
+  /* ================= il consiglio della luce (tappa più avanti) ================= */
   var lockTarget=null;
   function openLock(ex,fromEl){
     lockTarget=ex; lastFocus=fromEl;
@@ -1149,7 +1153,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
          days===1?'Finora ne hai fatto uno.':'Finora ne hai fatti '+days+'.');
     } else {
       msg='Questa tappa sta prendendo forma: la troverai qui appena pronta. Intanto il Giornaliero ti accompagna'+
-        (ex.requires?' â€” ti consigliamo almeno '+ex.requires.days+' giorni di pratica prima di proseguire.':'.');
+        (ex.requires?' — ti consigliamo almeno '+ex.requires.days+' giorni di pratica prima di proseguire.':'.');
     }
     document.getElementById('lkB').textContent=msg;
     document.getElementById('lkGo').style.display=ex.route?'':'none';
@@ -1167,7 +1171,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     else chiudiTutto();
   });
 
-  /* giÃ  dentro? vai dritto alla dashboard */
+  /* già dentro? vai dritto alla dashboard */
   var u=null;
   try{ u=localStorage.getItem(KEY); }catch(e){}
   show(u?'dash':'login');
