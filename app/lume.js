@@ -12,8 +12,8 @@ window.OVL_LUME=(function(){
   /* ---- il Sentiero della Luce: la luce fiorisce coi giorni di pratica ---- */
   var TIERS=[
     {d:0,  cls:'',    nome:'Margherita',    art:'una ', col:'#e8924a'},
-    {d:3,  cls:'lt1', nome:'Bucaneve',      art:'un ',  col:'#f5d96a'},
-    {d:10, cls:'lt2', nome:'Stella Alpina', art:'una ', col:'#d8e8f4'},
+    {d:3,  cls:'lt1', nome:'Bucaneve',      art:'un ',  col:'#a8c8e0'},
+    {d:10, cls:'lt2', nome:'Stella Alpina', art:'una ', col:'#f0c840'},
     {d:25, cls:'lt3', nome:'Ortensia',      art:'un\'', col:'#b9ddf6'},
     {d:50, cls:'lt4', nome:'Fiordaliso',    art:'un ',  col:'#a7b6ef'},
     {d:90, cls:'lt5', nome:'Viola',         art:'una ', col:'#ad7ff0'},
