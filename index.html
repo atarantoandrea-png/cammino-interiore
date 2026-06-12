@@ -51,6 +51,15 @@ body{
 
 #bookgl{position:fixed;inset:0;z-index:3;pointer-events:none}
 
+/* i passi fantasma lungo il cammino: si materializzano scorrendo */
+#passi{position:absolute;left:0;top:0;width:100%;pointer-events:none;z-index:6;overflow:hidden}
+#passi .step{
+  position:absolute;color:rgba(210,197,238,.9);
+  opacity:0;transition:opacity 1.8s ease;
+  filter:blur(.4px) drop-shadow(0 0 7px rgba(170,140,225,.4));
+}
+#passi .step.on{opacity:.24}
+
 .vignette{position:fixed;inset:0;z-index:4;pointer-events:none;
   background:radial-gradient(ellipse at 50% 44%,
     transparent 40%, rgba(0,0,0,.4) 78%, rgba(0,0,0,.75) 100%)}
@@ -341,6 +350,8 @@ footer .f2{margin-top:1.6vh;color:#6e6580;font-size:15px}
 </div>
 
 <div id="spacer"></div>
+
+<div id="passi" aria-hidden="true"></div>
 
 <!-- ================= IL SITO ================= -->
 <main id="sito">
@@ -1084,6 +1095,54 @@ async function init(){
       if (k<1) requestAnimationFrame(step);
     })(t0);
   }
+  /* ---- i passi fantasma: un sentiero irregolare lungo il lato ---- */
+  const passiEl = document.getElementById('passi');
+  const FOOT = '<svg viewBox="0 0 20 34" width="12" height="20">'+
+    '<ellipse cx="10" cy="11" rx="5.6" ry="9.5" fill="currentColor"/>'+
+    '<ellipse cx="4.6" cy="25.5" rx="2.0" ry="2.8" fill="currentColor"/>'+
+    '<ellipse cx="9"   cy="27.8" rx="2.1" ry="3.0" fill="currentColor"/>'+
+    '<ellipse cx="13.4" cy="26.8" rx="1.9" ry="2.6" fill="currentColor"/>'+
+    '<ellipse cx="16.8" cy="24.6" rx="1.5" ry="2.1" fill="currentColor"/></svg>';
+  let stepEls = [];
+  function buildPassi(){
+    passiEl.innerHTML = ''; stepEls = [];
+    const docH = document.body.scrollHeight;
+    passiEl.style.height = docH + 'px';
+    const xMin = 10, xMax = Math.max(42, Math.min(innerWidth*.085, 92));
+    let x = (xMin+xMax)/2, dir = 0, foot = 0;
+    for (let y = innerHeight*.5; y < docH-180; y += 105 + Math.random()*55){
+      /* la strada serpeggia in modo irregolare */
+      dir += (Math.random()-.5)*.8;
+      dir = Math.max(-.75, Math.min(.75, dir));
+      x += Math.sin(dir)*24;
+      if (x < xMin){ x = xMin; dir = Math.abs(dir)*.4; }
+      if (x > xMax){ x = xMax; dir = -Math.abs(dir)*.4; }
+      const side = (foot ? 1 : -1) * 8;
+      const rot = dir*34 + (foot ? 7 : -7);
+      const d = document.createElement('div');
+      d.className = 'step';
+      d.style.left = (x + side).toFixed(0)+'px';
+      d.style.top = y.toFixed(0)+'px';
+      d.style.transform = 'rotate('+rot.toFixed(1)+'deg)'+(foot?' scaleX(-1)':'');
+      d.innerHTML = FOOT;
+      passiEl.appendChild(d);
+      stepEls.push({el:d, y:y, on:false});
+      foot ^= 1;
+    }
+    revealPassi();
+  }
+  function revealPassi(){
+    const lim = scrollY + innerHeight*.78;
+    for (const s of stepEls){
+      if (!s.on && s.y < lim){ s.on = true; s.el.classList.add('on'); }
+    }
+  }
+  addEventListener('scroll', revealPassi, {passive:true});
+  buildPassi();
+  addEventListener('load', buildPassi);
+  let passiRsz;
+  addEventListener('resize', ()=>{ clearTimeout(passiRsz); passiRsz = setTimeout(buildPassi, 300); });
+
   navItems.forEach(it=>{
     it.addEventListener('click', ()=>{
       closeNav();
