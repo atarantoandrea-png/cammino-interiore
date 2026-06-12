@@ -68,11 +68,83 @@ window.OVL_ELISA=(function(){
   function overlap(a,b){ var n=0,k; for(k in a){ if(b[k])n++; } return n; }
 
   var QA_THRESHOLD=2;
+
+  /* ---------- la rete dei concetti: parole → temi affini (per i suggerimenti) ---------- */
+  var RETE={
+    "luce":["luce_come","spiriti_evoluti","dimensioni"],
+    "spiriti":["spiriti_evoluti","spiriti_ci_vedono","personalita_resta"],
+    "spirito":["spiriti_evoluti","spiriti_ci_vedono","dopo_morte"],
+    "anima":["famiglia_spirituale","senso_vita","spiriti_evoluti"],
+    "anime":["famiglia_spirituale","spiriti_evoluti"],
+    "gemella":["famiglia_spirituale"],"gemelle":["famiglia_spirituale"],"fiamme":["famiglia_spirituale"],
+    "angelo":["spiriti_evoluti"],"angeli":["spiriti_evoluti"],"custode":["spiriti_evoluti"],
+    "guida":["spiriti_evoluti"],"guide":["spiriti_evoluti"],
+    "paradiso":["luce_come","dimensioni","dio_religione"],
+    "inferno":["dimensioni","male_giustizia"],"purgatorio":["dimensioni"],
+    "tribunale":["male_giustizia","dopo_morte"],"giudizio":["male_giustizia","dopo_morte"],"specchio":["dopo_morte","male_giustizia"],
+    "sogno":["segni_sogni","non_sogno","permessi_segni"],"sogni":["segni_sogni","non_sogno","permessi_segni"],"sognato":["segni_sogni","non_sogno","permessi_segni"],
+    "permesso":["permessi_segni"],"concesso":["permessi_segni"],
+    "funerale":["tre_giorni"],"trapasso":["tre_giorni","dopo_morte"],
+    "cremazione":["tre_giorni","lasciare_andare"],"sepoltura":["tre_giorni","lasciare_andare"],"tomba":["colpa_lutto","lasciare_andare"],"cimitero":["colpa_lutto","lasciare_andare"],
+    "farfalla":["segni_sogni"],"farfalle":["segni_sogni"],"piuma":["segni_sogni"],"piume":["segni_sogni"],"cuori":["segni_sogni"],"numeri":["segni_sogni"],"canzone":["segni_sogni"],
+    "freddo":["segni_sogni","protezione_energie"],"brividi":["segni_sogni","protezione_energie"],"soffio":["segni_sogni"],"odore":["segni_sogni"],"profumo":["segni_sogni"],
+    "televisione":["segni_sogni"],"luci":["segni_sogni"],"lampadina":["segni_sogni"],
+    "fantasma":["protezione_energie","dimensioni"],"fantasmi":["protezione_energie","dimensioni"],"ombra":["protezione_energie","non_sogno"],
+    "demone":["protezione_energie","dio_religione"],"demoni":["protezione_energie"],"diavolo":["protezione_energie","dio_religione"],"esorcista":["protezione_energie","dio_religione"],"esorcismo":["protezione_energie"],
+    "karma":["karma_cose","reincarnazione_scelta"],"destino":["karma_cose","reincarnazione_scelta"],"scritto":["karma_cose"],
+    "rinascere":["reincarnazione_scelta"],"rinascita":["reincarnazione_scelta","segni_sogni"],"vite":["ricordare_vite","reincarnazione_scelta"],
+    "energia":["energia_frequenza","protezione_energie"],"frequenza":["energia_frequenza","dimensioni"],"vibrazione":["energia_frequenza"],"chakra":["energia_frequenza","cinque_ferite"],
+    "meditazione":["sensibilita","lasciare_andare"],"meditare":["sensibilita","lasciare_andare"],
+    "ferita":["cinque_ferite"],"ferite":["cinque_ferite"],"abbandono":["cinque_ferite"],"rifiuto":["cinque_ferite"],"umiliazione":["cinque_ferite"],"tradimento":["cinque_ferite","amore_coppia"],"ingiustizia":["cinque_ferite","male_giustizia"],"osservatore":["cinque_ferite"],"maschera":["cinque_ferite"],"ego":["cinque_ferite"],
+    "tumore":["malattia_senso"],"cancro":["malattia_senso"],"somatizzare":["malattia_senso","energia_frequenza"],
+    "depressione":["salute_mentale","fine_volontaria"],"ansia":["salute_mentale","cinque_ferite"],"psicologo":["salute_mentale"],"psichiatra":["salute_mentale"],
+    "medium":["metodo_connessione","medium_serio","sensibilita"],"sensitiva":["sensibilita","metodo_connessione"],"canalizzazione":["metodo_connessione","consulto"],"tramite":["metodo_connessione","chi_e_elisa"],
+    "truffa":["medium_serio"],"pagamento":["medium_serio"],"soldi":["medium_serio"],"gratis":["medium_serio"],
+    "preghiera":["aiutare_caro","dio_religione"],"pregare":["aiutare_caro","dio_religione"],"messa":["dio_religione","aiutare_caro"],
+    "madonna":["dio_religione","spiriti_evoluti"],"santo":["dio_religione","spiriti_evoluti"],"croce":["dio_religione"],
+    "premorte":["paura_morte","dopo_morte"],"tunnel":["paura_morte","dopo_morte"],"coma":["paura_morte","tre_giorni"],
+    "velo":["sensibilita","dopo_morte"],"maya":["sensibilita"],
+    "bambino":["luce_come","reincarnazione_scelta"],"bambini":["luce_come","reincarnazione_scelta"],"neonato":["reincarnazione_scelta","luce_come"],
+    "ministero":["luce_come"],"ministeri":["luce_come"],"città":["luce_come"],"ospedale":["luce_come","dimensioni"],"ospedali":["luce_come"],
+    "piani":["dimensioni","spiriti_evoluti"],"loop":["dimensioni","male_giustizia"],"umbral":["dimensioni"],"bardo":["dimensioni"],
+    "nosso":["dimensioni","metodo_connessione"],"xavier":["dimensioni","metodo_connessione"],"kardec":["metodo_connessione","medium_serio"],
+    "guarigione":["dimensioni","luce_come"],"buio":["dimensioni"],"buia":["dimensioni"],
+    "eredità":["oggetti_defunti"],"testamento":["oggetti_defunti"],"casa":["protezione_energie","oggetti_defunti"],
+    "scettico":["scettici"],"prove":["scettici"],"scienza":["scettici","dio_religione"],"quantistica":["dio_religione","scettici"],
+    "libro":["chi_e_elisa"],"community":["chi_e_elisa"],
+    "amore":["amore_coppia","rivedro_contatto"],"matrimonio":["amore_coppia"],"vedova":["amore_coppia","lasciare_andare"],"vedovo":["amore_coppia","lasciare_andare"],
+    "lettera":["aiutare_caro","lasciare_andare"],"candela":["lasciare_andare","aiutare_caro"],
+    "memoria":["memoria_aldila","ricordare_vite"],"alzheimer":["memoria_aldila"],
+    "tempo":["tre_giorni","dimensioni"],"aspetta":["rivedro_contatto","famiglia_spirituale"],"aspettano":["rivedro_contatto"]
+  };
+  var RETE_STEM={};
+
   function prepara(){
     BANK.forEach(function(e){
       e._terms=merge(stems(contentWords(e.domande.join(" ")+" "+e.label)), stems(e.keys));
       e._gate=stems(e.keys);
     });
+    var w;
+    for(w in RETE){
+      var s=stem(w);
+      if(!RETE_STEM[s])RETE_STEM[s]=[];
+      RETE[w].forEach(function(id){ if(RETE_STEM[s].indexOf(id)<0)RETE_STEM[s].push(id); });
+    }
+  }
+
+  /* quando la soglia non è raggiunta: propone i temi affini alle parole usate */
+  function suggerisci(question){
+    var us=merge(stems(contentWords(question)), stems(expand(kw(question))));
+    var punti={},k;
+    for(k in us){
+      (RETE_STEM[k]||[]).forEach(function(id){ punti[id]=(punti[id]||0)+2; });
+    }
+    BANK.forEach(function(e){
+      var sc=overlap(us,e._terms);
+      if(sc>0)punti[e.id]=(punti[e.id]||0)+sc;
+    });
+    var ids=Object.keys(punti).sort(function(a,b){ return punti[b]-punti[a]; }).slice(0,4);
+    return ids.map(function(id){ var v=byId(id); return v?{id:id,label:v.label}:null; }).filter(function(x){return !!x;});
   }
   function qaMatch(question){
     var us=merge(stems(contentWords(question)), stems(expand(kw(question))));
@@ -105,6 +177,8 @@ window.OVL_ELISA=(function(){
     var rq=(question.split(/\s+/).length>4||!lastUser)?question:(lastUser+" "+question);
     var hit=qaMatch(rq);
     if(hit)return {answer:hit.risposta,mode:"faq",tema:hit.tema,avviso:AVVISO,id:hit.id,fonte:hit.fonte};
+    var sug=suggerisci(rq);
+    if(sug.length)return {answer:"Su questa domanda non ho una voce precisa — ma dalle parole che hai usato, forse stavi cercando uno di questi temi. Tocca quello che ti somiglia di più:",mode:"suggest",suggerimenti:sug};
     return {answer:FALLBACK,mode:"empty"};
   }
   function rispondi(question,history,cb){
