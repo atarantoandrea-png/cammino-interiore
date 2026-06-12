@@ -314,7 +314,8 @@ input:focus,textarea:focus{border-color:rgba(205,178,242,.85);box-shadow:0 0 14p
 .refl-arr.prev{left:-8px}.refl-arr.next{right:-8px}
 @media(min-width:740px){.refl-arr{display:flex}.refl-track{margin:0 18px}}
 
-.back-home{display:inline-block;margin-top:14px;padding:7px 18px;
+.back-row{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px}
+.back-home{padding:7px 18px;
   font-family:'Cinzel',serif;font-size:11px;letter-spacing:.12em;color:var(--txt-dim);
   border:1px solid rgba(185,163,227,.2);border-radius:20px;text-decoration:none;
   transition:color .2s,border-color .2s}
@@ -388,7 +389,11 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
     <div class="orn"><div class="l"></div><div class="d"></div><div class="l"></div></div>
     <h1>Il Giornaliero</h1>
     <p id="oggiMsg">Il tuo spazio di pratica</p>
-    <a href="/app/" class="back-home">← Torna indietro</a>
+    <div class="back-row">
+      <a href="javascript:history.back()" class="back-home">← Torna indietro</a>
+      <a href="/app/" class="back-home">Il percorso</a>
+      <a href="/" class="back-home">Il sito</a>
+    </div>
   </header>
 
   <nav class="tabs">
