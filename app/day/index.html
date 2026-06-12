@@ -89,9 +89,6 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
   border-color:rgba(205,178,242,.7);
   box-shadow:0 6px 18px rgba(120,80,200,.45), inset 0 1px 0 rgba(255,255,255,.22), 0 0 0 1px rgba(205,178,242,.35), 0 0 22px rgba(170,135,230,.35)}
 .tab.on .lbl{color:#f4eefc;text-shadow:0 0 12px rgba(220,205,250,.6)}
-.tab.done .lbl::after{content:' ✦';color:var(--gold-pale)}
-.tab:nth-child(2).done .lbl::after{color:var(--aqua-hi)}
-.tab:nth-child(3).done .lbl::after{color:var(--blu-hi)}
 @media(max-width:470px){.tab{border-radius:13px;padding:11px 3px}.tab .lbl{font-size:10.5px}}
 
 /* ================= pannelli ================= */
@@ -314,6 +311,11 @@ input:focus,textarea:focus{border-color:rgba(205,178,242,.85);box-shadow:0 0 14p
 .refl-arr.prev{left:-8px}.refl-arr.next{right:-8px}
 @media(min-width:740px){.refl-arr{display:flex}.refl-track{margin:0 18px}}
 
+.pspeed{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;padding:10px 0 4px}
+.spbtn{padding:5px 11px;border:1px solid rgba(47,224,198,.25);border-radius:20px;background:transparent;
+  font-family:'Cinzel',serif;font-size:11px;color:var(--txt-dim);cursor:pointer;transition:all .18s}
+.spbtn:hover{border-color:rgba(47,224,198,.6);color:var(--aqua-hi)}
+.spbtn.on{background:rgba(47,224,198,.15);border-color:var(--aqua-hi);color:var(--aqua-hi)}
 .back-row{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px}
 .back-home{padding:7px 18px;
   font-family:'Cinzel',serif;font-size:11px;letter-spacing:.12em;color:var(--txt-dim);
@@ -397,8 +399,8 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
 
   <nav class="tabs">
     <button class="tab on" onclick="goTab(0)"><span class="lbl">Home</span></button>
-    <button class="tab" onclick="goTab(1)"><span class="lbl">Spazio Emotivo</span></button>
-    <button class="tab" onclick="goTab(2)"><span class="lbl">Osservatorio</span></button>
+    <button class="tab" onclick="goTab(1)"><span class="lbl">Osservatorio</span></button>
+    <button class="tab" onclick="goTab(2)"><span class="lbl">Spazio Emotivo</span></button>
     <button class="tab" onclick="goTab(3)"><span class="lbl">Diario</span></button>
   </nav>
 
@@ -413,73 +415,22 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
     </div>
     <div class="pcards">
       <button class="pcard" onclick="goTab(1)">
-        <div class="pc-tag">Pratica · 3 volte a settimana</div>
-        <h3>Spazio Emotivo</h3>
-        <div class="pc-d">Sciogli un blocco emotivo: la voce di Elisa ti accompagna tra le domande, il respiro e la luce che lascia andare.</div>
-        <div class="pc-row"><span class="pc-meta">~10 min · <span class="au">voce di Elisa</span></span><span class="pc-go">Entra →</span></div>
-      </button>
-      <button class="pcard" onclick="goTab(2)">
         <div class="pc-tag">Pratica · ogni giorno</div>
         <h3>Osservatorio</h3>
         <div class="pc-d">Osserva un giudizio e trasformalo. Un allenamento quotidiano per parlarti con gentilezza.</div>
         <div class="pc-row"><span class="pc-meta">~8 min · <span class="au">voce di Elisa</span></span><span class="pc-go">Entra →</span></div>
       </button>
+      <button class="pcard" onclick="goTab(2)">
+        <div class="pc-tag">Pratica · 3 volte a settimana</div>
+        <h3>Spazio Emotivo</h3>
+        <div class="pc-d">Sciogli un blocco emotivo: la voce di Elisa ti accompagna tra le domande, il respiro e la luce che lascia andare.</div>
+        <div class="pc-row"><span class="pc-meta">~10 min · <span class="au">voce di Elisa</span></span><span class="pc-go">Entra →</span></div>
+      </button>
     </div>
     <div class="home-note"><b>Non serve la perfezione.</b> Anche pochi minuti contano: ciò che importa è la direzione, non la velocità. Tocca la <b>piccola luce</b> in alto in qualunque momento per la guida del Cammino.</div>
   </section>
 
-  <!-- ============ 1 · SPAZIO EMOTIVO ============ -->
-  <section class="panel" id="p1">
-    <button class="back-btn" onclick="goTab(0)">Torna alla Home</button>
-    <div class="shdr">
-      <div><div class="stag">Pratica · Sblocco Emotivo</div><div class="sh1">Spazio Emotivo</div></div>
-      <div class="tbox"><div class="tn">20'</div><div class="tl">minuti</div><div class="tf">3× a settimana</div></div>
-    </div>
-    <p class="intro">Metti una musica rilassante, portati in uno spazio tranquillo e, quando vuoi, premi play: ti guido io.</p>
-
-    <div class="player" id="s1-player">
-      <div class="pbody">
-        <div class="pmain">
-          <div class="pring" id="s1-ring"><button class="pplay" id="s1-play" aria-label="Riproduci">▶</button></div>
-          <div class="pmeta"><div class="pchap" id="s1-chap">Premi play per iniziare</div><div class="ptime" id="s1-time">0:00 / --:--</div></div>
-          <img class="pthumb" id="s1-cov" alt="Spazio Emotivo" style="display:none">
-        </div>
-        <div class="pbar" id="s1-bar"><div class="pfill" id="s1-fill"></div><div class="pknob" id="s1-knob" style="left:0"></div></div>
-        <div class="pwait" id="s1-wait" style="display:none">La voce di Elisa sarà disponibile a breve 🎧</div>
-        <div class="pchaps" id="s1-chaps"></div>
-        <audio id="s1-audio" preload="metadata"></audio>
-      </div>
-    </div>
-
-    <div class="daynav">
-      <button class="dn-btn" onclick="dayGo('s1',-1)">←</button>
-      <div class="dn-mid"><span class="dn-lab" id="s1-daylab">Oggi</span><input type="date" id="s1-day" onchange="daySet('s1',this.value)"></div>
-      <button class="dn-btn" id="s1-next" onclick="dayGo('s1',1)">→</button>
-    </div>
-    <div class="dots" id="s1-dots"></div>
-
-    <button class="vsbtn" onclick="apriVS('s1')"><span class="gi">📖</span> Versione scritta della pratica</button>
-
-    <div class="blk"><label>Il pensiero / la frase che è arrivata</label><input type="text" placeholder="Scrivi qui, oppure lascia vuoto…" data-f="think"></div>
-    <div class="phase"><div class="pnum">1</div><div class="ptxt">Le quattro domande</div></div>
-    <div class="qg">
-      <div class="blk"><p class="qt">È reale, viene da me o è automatico?</p><textarea rows="2" placeholder="La tua risposta…" data-f="q1"></textarea></div>
-      <div class="blk"><p class="qt">Nasce dal presente o dal mio passato?</p><textarea rows="2" placeholder="La tua risposta…" data-f="q2"></textarea></div>
-      <div class="blk"><p class="qt">Mi aiuta o mi toglie la possibilità di fare ciò che sento?</p><textarea rows="2" placeholder="La tua risposta…" data-f="q3"></textarea></div>
-      <div class="blk"><p class="qt">Se al mio posto ci fosse qualcuno che amo, agirei così?</p><textarea rows="2" placeholder="La tua risposta…" data-f="q4"></textarea></div>
-    </div>
-    <div class="phase"><div class="pnum">2</div><div class="ptxt">Il respiro · dove sento il blocco</div></div>
-    <div class="blk"><textarea rows="2" placeholder="Petto, stomaco, gola, gambe…" data-f="body"></textarea></div>
-    <div class="phase"><div class="pnum">3</div><div class="ptxt">L'emozione</div></div>
-    <div class="blk"><textarea rows="2" placeholder="Rabbia, tristezza, frustrazione, dolore… come la senti?" data-f="emo"></textarea></div>
-    <div class="mantra"><div class="ml">Il mantra — 3 volte ad alta voce</div><p class="mt">"Io posso vedermi senza ferirmi. Posso sentirmi amato senza sentirmi sbagliato.<br>Posso riconoscere ciò che provo, senza giudicarlo, senza condannarlo."</p></div>
-    <div class="blk"><span class="blab">Come mi sento ora →</span><textarea rows="2" placeholder="Dopo la pratica…" data-f="after"></textarea></div>
-
-    <button class="segna" id="s1-segna" onclick="segnaPratica('s1')">Segna la pratica come fatta</button>
-    <div class="segna-foot" id="s1-foot"></div>
-  </section>
-
-  <!-- ============ 2 · OSSERVATORIO ============ -->
+  <!-- ============ 1 · OSSERVATORIO ============ -->
   <section class="panel" id="p2">
     <button class="back-btn" onclick="goTab(0)">Torna alla Home</button>
     <div class="shdr">
@@ -498,6 +449,7 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
         <div class="pbar" id="s2-bar"><div class="pfill" id="s2-fill"></div><div class="pknob" id="s2-knob" style="left:0"></div></div>
         <div class="pwait" id="s2-wait" style="display:none">La voce di Elisa sarà disponibile a breve 🎧</div>
         <div class="pchaps" id="s2-chaps"></div>
+        <div class="pspeed" id="s2-speed"></div>
         <audio id="s2-audio" preload="metadata"></audio>
       </div>
     </div>
@@ -535,6 +487,58 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
 
     <button class="segna" id="s2-segna" onclick="segnaPratica('s2')">Segna la pratica come fatta</button>
     <div class="segna-foot" id="s2-foot"></div>
+  </section>
+
+  <!-- ============ 2 · SPAZIO EMOTIVO ============ -->
+  <section class="panel" id="p1">
+    <button class="back-btn" onclick="goTab(0)">Torna alla Home</button>
+    <div class="shdr">
+      <div><div class="stag">Pratica · Sblocco Emotivo</div><div class="sh1">Spazio Emotivo</div></div>
+      <div class="tbox"><div class="tn">20'</div><div class="tl">minuti</div><div class="tf">3× a settimana</div></div>
+    </div>
+    <p class="intro">Metti una musica rilassante, portati in uno spazio tranquillo e, quando vuoi, premi play: ti guido io.</p>
+
+    <div class="player" id="s1-player">
+      <div class="pbody">
+        <div class="pmain">
+          <div class="pring" id="s1-ring"><button class="pplay" id="s1-play" aria-label="Riproduci">▶</button></div>
+          <div class="pmeta"><div class="pchap" id="s1-chap">Premi play per iniziare</div><div class="ptime" id="s1-time">0:00 / --:--</div></div>
+          <img class="pthumb" id="s1-cov" alt="Spazio Emotivo" style="display:none">
+        </div>
+        <div class="pbar" id="s1-bar"><div class="pfill" id="s1-fill"></div><div class="pknob" id="s1-knob" style="left:0"></div></div>
+        <div class="pwait" id="s1-wait" style="display:none">La voce di Elisa sarà disponibile a breve 🎧</div>
+        <div class="pchaps" id="s1-chaps"></div>
+        <div class="pspeed" id="s1-speed"></div>
+        <audio id="s1-audio" preload="metadata"></audio>
+      </div>
+    </div>
+
+    <div class="daynav">
+      <button class="dn-btn" onclick="dayGo('s1',-1)">←</button>
+      <div class="dn-mid"><span class="dn-lab" id="s1-daylab">Oggi</span><input type="date" id="s1-day" onchange="daySet('s1',this.value)"></div>
+      <button class="dn-btn" id="s1-next" onclick="dayGo('s1',1)">→</button>
+    </div>
+    <div class="dots" id="s1-dots"></div>
+
+    <button class="vsbtn" onclick="apriVS('s1')"><span class="gi">📖</span> Versione scritta della pratica</button>
+
+    <div class="blk"><label>Il pensiero / la frase che è arrivata</label><input type="text" placeholder="Scrivi qui, oppure lascia vuoto…" data-f="think"></div>
+    <div class="phase"><div class="pnum">1</div><div class="ptxt">Le quattro domande</div></div>
+    <div class="qg">
+      <div class="blk"><p class="qt">È reale, viene da me o è automatico?</p><textarea rows="2" placeholder="La tua risposta…" data-f="q1"></textarea></div>
+      <div class="blk"><p class="qt">Nasce dal presente o dal mio passato?</p><textarea rows="2" placeholder="La tua risposta…" data-f="q2"></textarea></div>
+      <div class="blk"><p class="qt">Mi aiuta o mi toglie la possibilità di fare ciò che sento?</p><textarea rows="2" placeholder="La tua risposta…" data-f="q3"></textarea></div>
+      <div class="blk"><p class="qt">Se al mio posto ci fosse qualcuno che amo, agirei così?</p><textarea rows="2" placeholder="La tua risposta…" data-f="q4"></textarea></div>
+    </div>
+    <div class="phase"><div class="pnum">2</div><div class="ptxt">Il respiro · dove sento il blocco</div></div>
+    <div class="blk"><textarea rows="2" placeholder="Petto, stomaco, gola, gambe…" data-f="body"></textarea></div>
+    <div class="phase"><div class="pnum">3</div><div class="ptxt">L'emozione</div></div>
+    <div class="blk"><textarea rows="2" placeholder="Rabbia, tristezza, frustrazione, dolore… come la senti?" data-f="emo"></textarea></div>
+    <div class="mantra"><div class="ml">Il mantra — 3 volte ad alta voce</div><p class="mt">"Io posso vedermi senza ferirmi. Posso sentirmi amato senza sentirmi sbagliato.<br>Posso riconoscere ciò che provo, senza giudicarlo, senza condannarlo."</p></div>
+    <div class="blk"><span class="blab">Come mi sento ora →</span><textarea rows="2" placeholder="Dopo la pratica…" data-f="after"></textarea></div>
+
+    <button class="segna" id="s1-segna" onclick="segnaPratica('s1')">Segna la pratica come fatta</button>
+    <div class="segna-foot" id="s1-foot"></div>
   </section>
 
   <!-- ============ 3 · DIARIO ============ -->
@@ -756,6 +760,18 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
         fill=document.getElementById(s+'-fill'), knob=document.getElementById(s+'-knob'), bar=document.getElementById(s+'-bar'),
         chapLab=document.getElementById(s+'-chap'), timeLab=document.getElementById(s+'-time'), wait=document.getElementById(s+'-wait'),
         chapsBox=document.getElementById(s+'-chaps'), cov=document.getElementById(s+'-cov');
+    var speedBox=document.getElementById(s+'-speed');
+    var SPEEDS=[1,1.2,1.5,1.7,2,2.5,3];
+    SPEEDS.forEach(function(sp){
+      var b=document.createElement('button'); b.className='spbtn'+(sp===1?' on':'');
+      b.textContent=sp+'×';
+      b.onclick=function(){
+        au.playbackRate=sp;
+        speedBox.querySelectorAll('.spbtn').forEach(function(x){x.classList.remove('on');});
+        b.classList.add('on');
+      };
+      speedBox.appendChild(b);
+    });
     var chaps=CHAPS[s], ready=false, broken=false, curChap=-1;
     cov.onload=function(){ cov.style.display='block'; };
     cov.onerror=function(){ cov.style.display='none'; };
@@ -1049,7 +1065,7 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
     var mv=store['cal-'+t+'-mood'], kw=store['cal-'+t+'-kw'];
     var d3=!!((mv!==undefined&&mv!==null&&mv!=='')||(kw&&String(kw).trim()));
     var tabs=document.querySelectorAll('.tabs .tab');
-    tabs[1].classList.toggle('done',!!d1); tabs[2].classList.toggle('done',!!d2); tabs[3].classList.toggle('done',d3);
+    tabs[1].classList.toggle('done',!!d2); tabs[2].classList.toggle('done',!!d1); tabs[3].classList.toggle('done',d3);
     var n=(d1?1:0)+(d2?1:0)+(d3?1:0);
     document.getElementById('oggiMsg').textContent = n===0?'La tua luce ti aspetta' : n===3?'✨ Le pratiche di oggi sono complete' : 'Le pratiche di oggi: '+n+' su 3';
   }
