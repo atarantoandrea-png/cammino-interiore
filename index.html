@@ -237,6 +237,13 @@ body{
 .vcard h3{font-family:'Cinzel',serif;font-size:16.5px;font-weight:600;color:#e6e1ee;line-height:1.35}
 .vcard .go{font-family:'Cinzel',serif;font-size:10.5px;font-weight:700;
   letter-spacing:.2em;text-transform:uppercase;color:#b9a3e3;margin-top:7px;display:block}
+/* lezioni non ancora pronte: card spente, in attesa */
+.vcard.vsoon{cursor:default}
+.vcard.vsoon:hover{transform:none;border-color:rgba(185,163,227,.18);box-shadow:none}
+.vcard.vsoon img{filter:brightness(.5) saturate(.6)}
+.vcard.vsoon:hover img{filter:brightness(.5) saturate(.6);transform:none}
+.vcard.vsoon h3{color:#b7aec4}
+.vcard.vsoon .go{color:#8d8499;letter-spacing:.16em}
 
 /* esercizi */
 .eserc{display:flex;align-items:center;gap:5vw;flex-wrap:wrap}
@@ -387,12 +394,45 @@ footer .f2{margin-top:1.6vh;color:#6e6580;font-size:15px}
   </section>
 
   <section class="sez" id="cap2">
-    <div class="sez-eyebrow">Il viaggio continua</div>
-    <h2>Capitolo Secondo</h2>
+    <div class="sez-eyebrow">Capitolo Secondo</div>
+    <h2>Il Mondo Interiore</h2>
+    <p class="sez-sub">Hai imparato a riconoscere i blocchi: ora si va più in fondo,
+    a conoscere davvero chi sei. Otto incontri con le parti che compongono il tuo
+    io interiore — per vederle, accettarle e integrarle.</p>
     <div class="sez-rule"><div class="l"></div><div class="d"></div></div>
-    <div class="soon">
-      <div class="moon">☽ ✦ ☾</div>
-      <p>Le prossime pagine si stanno scrivendo.<br>Presto disponibile.</p>
+    <div class="vgrid">
+      <div class="vcard vsoon">
+        <div class="im"><img src="/src/cap2-1.jpg" alt="" loading="lazy"><span class="rom">I</span></div>
+        <div class="cap"><h3>Il Mondo Interiore</h3><span class="go">Presto in arrivo</span></div>
+      </div>
+      <div class="vcard vsoon">
+        <div class="im"><img src="/src/cap2-2.jpg" alt="" loading="lazy"><span class="rom">II</span></div>
+        <div class="cap"><h3>Bambino Interiore</h3><span class="go">Presto in arrivo</span></div>
+      </div>
+      <div class="vcard vsoon">
+        <div class="im"><img src="/src/cap2-3.jpg" alt="" loading="lazy"><span class="rom">III</span></div>
+        <div class="cap"><h3>Adulto Interiore</h3><span class="go">Presto in arrivo</span></div>
+      </div>
+      <div class="vcard vsoon">
+        <div class="im"><img src="/src/cap2-4.jpg" alt="" loading="lazy"><span class="rom">IV</span></div>
+        <div class="cap"><h3>Padre e Madre</h3><span class="go">Presto in arrivo</span></div>
+      </div>
+      <div class="vcard vsoon">
+        <div class="im"><img src="/src/cap2-5.jpg" alt="" loading="lazy"><span class="rom">V</span></div>
+        <div class="cap"><h3>Ombra Interiore</h3><span class="go">Presto in arrivo</span></div>
+      </div>
+      <div class="vcard vsoon">
+        <div class="im"><img src="/src/cap2-6.jpg" alt="" loading="lazy"><span class="rom">VI</span></div>
+        <div class="cap"><h3>Maschile e Femminile</h3><span class="go">Presto in arrivo</span></div>
+      </div>
+      <div class="vcard vsoon">
+        <div class="im"><img src="/src/cap2-7.jpg" alt="" loading="lazy"><span class="rom">VII</span></div>
+        <div class="cap"><h3>Adolescente Interiore</h3><span class="go">Presto in arrivo</span></div>
+      </div>
+      <div class="vcard vsoon">
+        <div class="im"><img src="/src/cap2-8.jpg" alt="" loading="lazy"><span class="rom">VIII</span></div>
+        <div class="cap"><h3>L'Osservatore</h3><span class="go">Presto in arrivo</span></div>
+      </div>
     </div>
   </section>
 
