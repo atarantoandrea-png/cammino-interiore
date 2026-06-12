@@ -129,12 +129,8 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
 
 /* ================= LETTORE AUDIO (verde acqua) ================= */
 .player{border:1px solid var(--aqua-line);border-radius:18px;overflow:hidden;background:linear-gradient(165deg, rgba(12,34,32,.55), rgba(8,18,18,.72));margin-bottom:14px;box-shadow:0 0 30px rgba(47,224,198,.08)}
-.pcover{position:relative;height:150px;background:linear-gradient(135deg,#0e8f7f 0%, #0a5048 70%);display:flex;align-items:flex-end;overflow:hidden}
-.pcover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.pcover::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,20,18,0) 38%, rgba(6,16,16,.84) 100%)}
-.pcover .pcap{position:relative;z-index:1;padding:12px 16px}
-.pcover .pcap .pk{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--aqua-hi);margin-bottom:3px}
-.pcover .pcap .pt{font-family:'Cinzel',serif;font-size:18px;color:#eafffb;text-shadow:0 1px 10px rgba(0,0,0,.6)}
+.pthumb{width:86px;height:58px;border-radius:10px;object-fit:cover;flex:0 0 auto;margin-left:auto;border:1px solid var(--aqua-line);box-shadow:0 2px 10px rgba(0,0,0,.35)}
+@media(max-width:430px){.pthumb{width:74px;height:50px}}
 .pbody{padding:15px 15px 14px}
 .pmain{display:flex;align-items:center;gap:14px;margin-bottom:13px}
 .pring{width:74px;height:74px;border-radius:50%;flex-shrink:0;padding:5px;background:conic-gradient(var(--aqua) calc(var(--p,0)*1%), rgba(47,224,198,.16) 0);box-shadow:0 0 18px rgba(47,224,198,.25)}
@@ -426,11 +422,11 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
     <p class="intro">Metti una musica rilassante, portati in uno spazio tranquillo e, quando vuoi, premi play: ti guido io.</p>
 
     <div class="player" id="s1-player">
-      <div class="pcover"><img id="s1-cov" alt="Spazio Emotivo" style="display:none"></div>
       <div class="pbody">
         <div class="pmain">
           <div class="pring" id="s1-ring"><button class="pplay" id="s1-play" aria-label="Riproduci">▶</button></div>
           <div class="pmeta"><div class="pchap" id="s1-chap">Premi play per iniziare</div><div class="ptime" id="s1-time">0:00 / --:--</div></div>
+          <img class="pthumb" id="s1-cov" alt="Spazio Emotivo" style="display:none">
         </div>
         <div class="pbar" id="s1-bar"><div class="pfill" id="s1-fill"></div><div class="pknob" id="s1-knob" style="left:0"></div></div>
         <div class="pwait" id="s1-wait" style="display:none">La voce di Elisa sarà disponibile a breve 🎧</div>
@@ -476,11 +472,11 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
     <p class="intro">Quando arriva un giudizio su di te, fermati. Fai un respiro e premi play: lo osserviamo insieme.</p>
 
     <div class="player" id="s2-player">
-      <div class="pcover"><img id="s2-cov" alt="Osservatorio Interiore" style="display:none"></div>
       <div class="pbody">
         <div class="pmain">
           <div class="pring" id="s2-ring"><button class="pplay" id="s2-play" aria-label="Riproduci">▶</button></div>
           <div class="pmeta"><div class="pchap" id="s2-chap">Premi play per iniziare</div><div class="ptime" id="s2-time">0:00 / --:--</div></div>
+          <img class="pthumb" id="s2-cov" alt="Osservatorio Interiore" style="display:none">
         </div>
         <div class="pbar" id="s2-bar"><div class="pfill" id="s2-fill"></div><div class="pknob" id="s2-knob" style="left:0"></div></div>
         <div class="pwait" id="s2-wait" style="display:none">La voce di Elisa sarà disponibile a breve 🎧</div>
