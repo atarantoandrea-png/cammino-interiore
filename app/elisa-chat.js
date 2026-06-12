@@ -115,7 +115,8 @@ window.OVL_ELISA=(function(){
     "amore":["amore_coppia","rivedro_contatto"],"matrimonio":["amore_coppia"],"vedova":["amore_coppia","lasciare_andare"],"vedovo":["amore_coppia","lasciare_andare"],
     "lettera":["aiutare_caro","lasciare_andare"],"candela":["lasciare_andare","aiutare_caro"],
     "memoria":["memoria_aldila","ricordare_vite"],"alzheimer":["memoria_aldila"],
-    "tempo":["tre_giorni","dimensioni"],"aspetta":["rivedro_contatto","famiglia_spirituale"],"aspettano":["rivedro_contatto"]
+    "aspetta":["rivedro_contatto","famiglia_spirituale"],"aspettano":["rivedro_contatto"],
+    "malocchio":["protezione_energie"],"fattura":["protezione_energie"],"maledizione":["protezione_energie"],"possessione":["protezione_energie"],"posseduta":["protezione_energie"],"posseduto":["protezione_energie"],"incenso":["protezione_energie"],"rosmarino":["protezione_energie","metodo_connessione"]
   };
   var RETE_STEM={};
 
