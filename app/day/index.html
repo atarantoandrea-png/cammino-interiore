@@ -76,9 +76,7 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
 
 /* ================= MENU 3D ARROTONDATO ================= */
 .tabs{position:sticky;top:0;z-index:30;display:flex;gap:7px;justify-content:center;align-items:stretch;
-  padding:12px 12px 13px;background:rgba(9,7,12,.86);
-  backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);
-  border-bottom:1px solid rgba(185,163,227,.12)}
+  padding:12px 12px 13px}
 .tab{flex:1;max-width:172px;border:1px solid rgba(185,163,227,.2);border-radius:16px;cursor:pointer;
   padding:12px 5px;display:flex;align-items:center;justify-content:center;text-align:center;
   background:linear-gradient(180deg, rgba(46,37,62,.85), rgba(20,16,28,.92));
@@ -316,10 +314,11 @@ input:focus,textarea:focus{border-color:rgba(205,178,242,.85);box-shadow:0 0 14p
 .refl-arr.prev{left:-8px}.refl-arr.next{right:-8px}
 @media(min-width:740px){.refl-arr{display:flex}.refl-track{margin:0 18px}}
 
-/* ================= nav bassa ================= */
-.bnav{border-top:1px solid rgba(185,163,227,.18);padding:18px 18px 24px;margin-top:8px}
-.bnav-foot{text-align:center;font-size:14px;color:var(--txt-dim)}
-.bnav-foot a{color:var(--glic-hi);text-decoration:none}
+.back-home{display:inline-block;margin-top:14px;padding:7px 18px;
+  font-family:'Cinzel',serif;font-size:11px;letter-spacing:.12em;color:var(--txt-dim);
+  border:1px solid rgba(185,163,227,.2);border-radius:20px;text-decoration:none;
+  transition:color .2s,border-color .2s}
+.back-home:hover{color:var(--glic-hi);border-color:rgba(185,163,227,.5)}
 
 /* ================= toast ================= */
 #saved{position:fixed;bottom:18px;left:50%;transform:translateX(-50%) translateY(60px);background:rgba(22,17,28,.96);color:var(--glic-hi);border:1px solid rgba(185,163,227,.5);border-radius:30px;padding:9px 20px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:.1em;z-index:70;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;box-shadow:0 0 18px rgba(150,110,215,.3)}
@@ -389,6 +388,7 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
     <div class="orn"><div class="l"></div><div class="d"></div><div class="l"></div></div>
     <h1>Il Giornaliero</h1>
     <p id="oggiMsg">Il tuo spazio di pratica</p>
+    <a href="/app/" class="back-home">← Torna indietro</a>
   </header>
 
   <nav class="tabs">
@@ -572,7 +572,6 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
     </div>
   </section>
 
-  <footer class="bnav"><div class="bnav-foot">Il Cammino Interiore · <a href="/app/">← Dashboard</a> · <a href="/">Torna al Libro</a> · <a href="#" onclick="esci();return false">Esci</a></div></footer>
 
 </div>
 
