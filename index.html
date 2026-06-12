@@ -276,32 +276,93 @@ body{
 }
 .btn-gl:hover{filter:brightness(1.08);transform:translateY(-2px)}
 .eserc-note{font-size:15px;color:#7d7490;margin-top:14px}
-.mockwrap{flex:0 0 auto;margin:0 auto}
-.mock{
-  width:min(230px,56vw);border-radius:30px;
-  border:1px solid rgba(185,163,227,.3);
-  background:linear-gradient(165deg,#3a3144,#16121c);
-  padding:9px;box-shadow:0 24px 60px rgba(0,0,0,.6), 0 0 40px rgba(160,128,215,.08);
+/* ===== IL TELEFONO 3D: sollevato, inclinabile, con la home dell'app dentro ===== */
+.mockwrap{flex:0 0 auto;margin:0 auto;perspective:1100px;padding:30px 26px}
+.phoneStage{position:relative;width:min(290px,70vw)}
+
+/* lucine che orbitano dietro al telefono, sbucando dai bordi */
+.orb{position:absolute;border-radius:50%;pointer-events:none;z-index:0;
+  background:radial-gradient(circle at 35% 30%, #fff 0%, #cdb2f2 55%, rgba(170,135,230,0) 78%);
+  filter:drop-shadow(0 0 9px rgba(186,150,240,.85));}
+.orb.o1{width:13px;height:13px;top:9%;left:-15px;animation:orbA 9s ease-in-out infinite}
+.orb.o2{width:9px;height:9px;top:32%;right:-11px;animation:orbB 12s ease-in-out infinite}
+.orb.o3{width:15px;height:15px;bottom:20%;left:-18px;animation:orbB 10.5s ease-in-out infinite reverse}
+.orb.o4{width:8px;height:8px;bottom:7%;right:-9px;animation:orbA 13s ease-in-out infinite reverse}
+.orb.o5{width:6px;height:6px;top:55%;left:-8px;animation:orbA 7.5s ease-in-out infinite}
+@keyframes orbA{0%,100%{transform:translate(0,0);opacity:.9}50%{transform:translate(30px,-34px);opacity:.35}}
+@keyframes orbB{0%,100%{transform:translate(0,0);opacity:.85}50%{transform:translate(-34px,26px);opacity:.3}}
+
+.phone3d{
+  position:relative;z-index:1;
+  width:100%;aspect-ratio:9/19;
+  border-radius:42px;
+  background:linear-gradient(160deg,#453b54 0%,#171221 48%,#2a2238 100%);
+  box-shadow:
+    inset 0 0 0 2px rgba(185,163,227,.3),
+    inset 0 0 0 5px rgba(10,8,14,.9),
+    0 34px 60px -14px rgba(0,0,0,.85),
+    0 70px 130px -30px rgba(120,90,200,.3);
+  transform:translateY(150px) rotateX(22deg) rotateY(-16deg);
+  opacity:0;
+  transition:transform .6s cubic-bezier(.2,1.25,.35,1), opacity .45s ease;
+  transform-style:preserve-3d;
+  touch-action:pan-y;
 }
-.mock .scr{
-  border-radius:22px;overflow:hidden;display:block;position:relative;
-  background:url('/src/pagina.jpg') center/cover;
+.phone3d.in{
+  opacity:1;
+  transform:translateY(0) rotateX(var(--rx,6deg)) rotateY(var(--ry,-10deg));
 }
-.mock .bar{background:#241b26;padding:10px 6px;text-align:center;
-  font-family:'Cinzel',serif;font-size:9px;letter-spacing:.18em;color:#c9a84c}
-.mock .card{margin:10px;padding:11px 12px;border-radius:9px;
-  background:rgba(255,250,238,.88);border-left:3px solid #c9a84c}
-.mock .card b{font-family:'Cinzel',serif;font-size:11.5px;color:#3f2c12;display:block}
-.mock .card i{font-size:11px;color:#8a6c2c}
-/* da PC il telefono è bello grande */
-@media(min-width:900px){
-  .mock{width:320px;border-radius:38px;padding:12px}
-  .mock .scr{border-radius:28px}
-  .mock .bar{font-size:12px;padding:14px 8px}
-  .mock .card{margin:14px;padding:15px 16px;border-radius:12px}
-  .mock .card b{font-size:15px}
-  .mock .card i{font-size:14px}
+.ph-notch{position:absolute;top:21px;left:50%;transform:translateX(-50%);
+  width:33%;height:16px;border-radius:12px;background:#07050c;z-index:3;
+  box-shadow:inset 0 1px 3px rgba(255,255,255,.07)}
+.ph-screen{position:absolute;inset:12px;border-radius:32px;overflow:hidden;
+  background:
+    linear-gradient(180deg, rgba(11,9,16,.96), rgba(13,10,17,.94)),
+    url('/src/pagina.jpg') center top/cover;
 }
+.ph-scroll{padding:46px 15px 18px;animation:phscroll 17s ease-in-out infinite}
+@keyframes phscroll{
+  0%,11%{transform:translateY(0)}
+  47%,60%{transform:translateY(-44%)}
+  94%,100%{transform:translateY(0)}
+}
+/* la mini-home dell'app dentro lo schermo */
+.ph-orn{text-align:center;color:#b9a3e3;font-size:9px;margin-bottom:7px;opacity:.8}
+.ph-h1{font-family:'Cinzel',serif;font-size:16.5px;font-weight:600;color:#f0eaf6;
+  text-align:center;letter-spacing:.04em;text-shadow:0 0 14px rgba(185,163,227,.4)}
+.ph-sub{font-size:10.5px;color:#b7aec4;text-align:center;margin:5px 0 12px}
+.ph-who{display:flex;align-items:center;justify-content:space-between;gap:6px;
+  border:1px solid rgba(185,163,227,.18);border-radius:9px;background:rgba(22,18,29,.75);
+  padding:7px 10px;font-size:9.5px;color:#b7aec4;margin-bottom:13px}
+.ph-who b{color:#dccdf6;font-weight:600}
+.ph-who span{border:1px solid rgba(185,163,227,.4);border-radius:20px;padding:3px 8px;
+  font-family:'Cinzel',serif;font-size:6.5px;letter-spacing:.1em;color:#b7aec4}
+.ph-lab{font-family:'Cinzel',serif;font-size:7.5px;letter-spacing:.3em;text-transform:uppercase;
+  color:#8d8499;text-align:center;margin-bottom:10px}
+.ph-card{border:1px solid rgba(185,163,227,.2);border-radius:13px;overflow:hidden;
+  background:rgba(20,16,26,.8);margin-bottom:14px}
+.ph-card.gold{border-color:rgba(201,168,76,.55);box-shadow:0 0 16px rgba(201,168,76,.12)}
+.ph-hero{height:86px;display:flex;align-items:center;justify-content:center;font-size:30px;
+  background:radial-gradient(220px 90px at 50% 110%, rgba(150,110,215,.4), rgba(150,110,215,.06) 60%, transparent 80%),
+    linear-gradient(180deg, rgba(26,20,34,.9), rgba(16,12,22,.9));
+  filter:drop-shadow(0 0 12px rgba(255,210,140,.45))}
+.ph-tag{font-family:'Cinzel',serif;font-size:6.5px;letter-spacing:.24em;text-transform:uppercase;
+  color:#b9a3e3;padding:10px 12px 0}
+.ph-t{font-family:'Cinzel',serif;font-size:13px;font-weight:600;color:#f0eaf6;padding:4px 12px 0}
+.ph-d{font-size:9.5px;line-height:1.55;color:#b7aec4;padding:5px 12px 0}
+.ph-go{font-family:'Cinzel',serif;font-size:7.5px;letter-spacing:.18em;text-transform:uppercase;
+  color:#e8d9ae;padding:9px 12px 12px}
+/* i passi che si muovono dentro lo schermo */
+.ph-steps{position:relative;height:96px;margin:2px 0 6px}
+.ph-steps span{position:absolute;width:5px;height:9px;border-radius:50%;
+  background:#cdb2f2;opacity:.16;
+  animation:mstep 4.8s ease-in-out infinite;animation-delay:var(--d)}
+@keyframes mstep{
+  0%,52%,100%{opacity:.16;box-shadow:none}
+  7%{opacity:1;box-shadow:0 0 9px 3px rgba(200,160,255,.95)}
+  24%{opacity:.34;box-shadow:0 0 4px rgba(200,160,255,.3)}
+}
+.ph-foot{font-size:8px;color:#8d8499;text-align:center;padding:4px 0 8px}
 
 /* capitolo secondo */
 .soon{
@@ -401,12 +462,44 @@ footer .f2{margin-top:1.6vh;color:#6e6580;font-size:15px}
         <p class="eserc-note">Spazio Emotivo · Osservatorio Interiore · Diario della Settimana</p>
       </div>
       <div class="mockwrap">
-        <div class="mock"><div class="scr">
-          <div class="bar">STRUMENTI DEL CAMMINO</div>
-          <div class="card"><b>Spazio Emotivo</b><i>Scheda 1 · 20 min</i></div>
-          <div class="card"><b>Osservatorio Interiore</b><i>Scheda 2 · 15 min</i></div>
-          <div class="card" style="margin-bottom:14px"><b>Diario della Settimana</b><i>ogni sera · 2 min</i></div>
-        </div></div>
+        <div class="phoneStage" id="phoneStage">
+          <i class="orb o1"></i><i class="orb o2"></i><i class="orb o3"></i><i class="orb o4"></i><i class="orb o5"></i>
+          <div class="phone3d" id="phone3d">
+            <div class="ph-notch"></div>
+            <div class="ph-screen">
+              <div class="ph-scroll">
+                <div class="ph-orn">◇</div>
+                <div class="ph-h1">Il Cammino Interiore</div>
+                <div class="ph-sub">La tua area di pratica personale</div>
+                <div class="ph-who"><span>Benvenuta/o, <b>tu@cammino.it</b></span><span>Esci</span></div>
+                <div class="ph-lab">Il tuo sentiero</div>
+                <div class="ph-card gold">
+                  <div class="ph-hero">🕯️</div>
+                  <div class="ph-tag">La prima tappa</div>
+                  <div class="ph-t">Inizia da qui</div>
+                  <div class="ph-d">Cos'è quest'area, come funziona il sentiero e cosa significa la piccola luce che ti accompagna.</div>
+                  <div class="ph-go">Apri la guida →</div>
+                </div>
+                <div class="ph-steps">
+                  <span style="--d:0s;left:47%;top:2%"></span>
+                  <span style="--d:.7s;left:55%;top:18%"></span>
+                  <span style="--d:1.4s;left:45%;top:36%"></span>
+                  <span style="--d:2.1s;left:54%;top:54%"></span>
+                  <span style="--d:2.8s;left:46%;top:72%"></span>
+                  <span style="--d:3.5s;left:53%;top:88%"></span>
+                </div>
+                <div class="ph-card">
+                  <div class="ph-hero">📜</div>
+                  <div class="ph-tag">Pratica quotidiana</div>
+                  <div class="ph-t">Il Giornaliero</div>
+                  <div class="ph-d">Le tue schede giorno per giorno: Spazio Emotivo, Osservatorio e Diario, con il Resoconto del tuo andamento.</div>
+                  <div class="ph-go">Apri l'esercizio →</div>
+                </div>
+                <div class="ph-foot">Il Cammino Interiore · Elisa Soul Medium</div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -1114,16 +1207,16 @@ async function init(){
     passiEl.innerHTML = ''; stepEls = [];
     const docH = document.body.scrollHeight;
     passiEl.style.height = docH + 'px';
-    const xMin = 10, xMax = Math.max(42, Math.min(innerWidth*.085, 92));
+    const xMin = 8, xMax = Math.max(32, Math.min(innerWidth*.045, 56));
     let x = (xMin+xMax)/2, dir = 0, foot = 0;
     for (let y = innerHeight*.5; y < docH-180; y += 105 + Math.random()*55){
-      /* la strada serpeggia in modo irregolare */
+      /* la strada serpeggia in modo irregolare, in una corsia stretta */
       dir += (Math.random()-.5)*.8;
       dir = Math.max(-.75, Math.min(.75, dir));
-      x += Math.sin(dir)*24;
+      x += Math.sin(dir)*15;
       if (x < xMin){ x = xMin; dir = Math.abs(dir)*.4; }
       if (x > xMax){ x = xMax; dir = -Math.abs(dir)*.4; }
-      const side = (foot ? 1 : -1) * 8;
+      const side = (foot ? 1 : -1) * 6;
       const rot = dir*34 + (foot ? 7 : -7);
       const d = document.createElement('div');
       d.className = 'step';
@@ -1160,6 +1253,29 @@ async function init(){
   addEventListener('load', buildPassi);
   let passiRsz;
   addEventListener('resize', ()=>{ clearTimeout(passiRsz); passiRsz = setTimeout(buildPassi, 300); });
+
+  /* ---- il telefono 3D: sale da sotto, si inclina col mouse o col dito ---- */
+  const phStage = document.getElementById('phoneStage');
+  const ph3d = document.getElementById('phone3d');
+  if (phStage && ph3d){
+    const phIn = ()=>{
+      const r = phStage.getBoundingClientRect();
+      if (r.top < innerHeight*.88 && r.bottom > 0) ph3d.classList.add('in');
+    };
+    addEventListener('scroll', phIn, {passive:true});
+    phIn();
+    phStage.addEventListener('pointermove', e=>{
+      const r = phStage.getBoundingClientRect();
+      const nx = (e.clientX - r.left)/r.width - .5;
+      const ny = (e.clientY - r.top)/r.height - .5;
+      ph3d.style.setProperty('--ry', (-10 + nx*24).toFixed(1)+'deg');
+      ph3d.style.setProperty('--rx', (6 - ny*18).toFixed(1)+'deg');
+    });
+    phStage.addEventListener('pointerleave', ()=>{
+      ph3d.style.setProperty('--ry','-10deg');
+      ph3d.style.setProperty('--rx','6deg');
+    });
+  }
 
   navItems.forEach(it=>{
     it.addEventListener('click', ()=>{
