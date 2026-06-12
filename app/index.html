@@ -730,16 +730,42 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     var v=(el.value||'').trim().toLowerCase();
     var err=document.getElementById('lerr');
     if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)){
-      err.textContent='Scrivi una mail valida, per favore.';
-      el.focus();
-      return;
+      err.textContent='Scrivi una mail valida, per favore.'; el.focus(); return;
     }
-    err.textContent='';
-    try{ localStorage.setItem(KEY, v); }catch(e){}
-    show('dash');
+    err.style.color=''; err.textContent='Verifica accesso…';
+    fetch('/api/auth/check?email='+encodeURIComponent(v))
+      .then(function(r){return r.json();})
+      .then(function(d){
+        if(!d.ok){ err.style.color='#c0392b'; err.textContent='Email non autorizzata. Contatta Elisa per accedere.'; return; }
+        var tk=''; try{tk=localStorage.getItem('ovl-session')||'';}catch(e){}
+        return fetch('/api/auth/session',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:v,token:tk})})
+          .then(function(r){return r.json();}).then(function(s){
+            if(s.ok){
+              try{localStorage.setItem(KEY,v);localStorage.setItem('ovl-session',s.token);}catch(e){}
+              err.textContent=''; show('dash');
+            } else if(s.reason==='active'){
+              err.style.color='#c0392b';
+              err.innerHTML='Account gi\xe0 connesso da un altro dispositivo. <a href="#" style="color:inherit;text-decoration:underline" onclick="entrForce(\''+v+'\');return false">Forza accesso</a>';
+            } else { err.style.color='#c0392b'; err.textContent='Errore. Riprova.'; }
+          });
+      })
+      .catch(function(){ err.style.color='#c0392b'; err.textContent='Errore di rete. Riprova.'; });
+  };
+  window.entrForce=function(v){
+    var err=document.getElementById('lerr'); err.textContent='Forza accesso…';
+    fetch('/api/auth/session',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:v,force:true})})
+      .then(function(r){return r.json();}).then(function(s){
+        if(s.ok){ try{localStorage.setItem(KEY,v);localStorage.setItem('ovl-session',s.token);}catch(e){} err.textContent=''; show('dash'); }
+        else{ err.style.color='#c0392b'; err.textContent='Errore. Riprova.'; }
+      }).catch(function(){ err.style.color='#c0392b'; err.textContent='Errore di rete.'; });
   };
   window.esci=function(){
-    try{ localStorage.removeItem(KEY); }catch(e){}
+    try{
+      var em=(localStorage.getItem(KEY)||'').trim().toLowerCase();
+      var tk=localStorage.getItem('ovl-session')||'';
+      if(em&&tk) navigator.sendBeacon('/api/auth/logout',new Blob([JSON.stringify({email:em,token:tk})],{type:'application/json'}));
+      localStorage.removeItem(KEY); localStorage.removeItem('ovl-session');
+    }catch(e){}
     show('login');
   };
 
@@ -1190,10 +1216,17 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     else chiudiTutto();
   });
 
-  /* già dentro? vai dritto alla dashboard */
-  var u=null;
-  try{ u=localStorage.getItem(KEY); }catch(e){}
-  show(u?'dash':'login');
+  /* già dentro? verifica sessione poi vai alla dashboard */
+  var u=null; try{ u=localStorage.getItem(KEY); }catch(e){}
+  if(u){
+    var tk=''; try{tk=localStorage.getItem('ovl-session')||'';}catch(e){}
+    if(tk){
+      fetch('/api/auth/verify',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:u,token:tk})})
+        .then(function(r){return r.json();})
+        .then(function(d){ show(d.ok?'dash':'login'); })
+        .catch(function(){ show('dash'); }); /* offline: entra */
+    } else { show('login'); }
+  } else { show('login'); }
 })();
 </script>
 </body>
