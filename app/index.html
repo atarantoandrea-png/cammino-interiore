@@ -745,7 +745,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
               err.textContent=''; show('dash');
             } else if(s.reason==='active'){
               err.style.color='#c0392b';
-              err.innerHTML='Account gi\xe0 connesso da un altro dispositivo. <a href="#" style="color:inherit;text-decoration:underline" onclick="entrForce(\''+v+'\');return false">Forza accesso</a>';
+              err.innerHTML='Account gi\xe0 connesso da un altro dispositivo.<br><button onclick="entrForce(\''+v+'\');return false" style="margin-top:12px;width:100%;padding:13px;background:linear-gradient(135deg,#8a3030,#c0392b);border:none;border-radius:10px;color:#fff;font-family:Cinzel,serif;font-size:13px;letter-spacing:.1em;cursor:pointer;">Forza accesso</button>';
             } else { err.style.color='#c0392b'; err.textContent='Errore. Riprova.'; }
           });
       })
