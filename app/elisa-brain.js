@@ -18,7 +18,8 @@ window.OVL_BRAIN=(function(){
 
   var STOP={};
   ("come cosa dopo prima secondo della dello delle degli dell per con che chi quando dove cui sono essere stato elisa piu meno una uno due gli del dei nel nella alla allo agli sul sui sulla quale quali questo questa questi queste loro miei mia mio noi voi cose tutto tutti molto anche quindi perche poi gia ecco fare farsi "+
-   "presente andare faccio riesco avanti vorrei voglio posso deve dovrei ancora sempre adesso niente qualcosa qualcuno proprio davvero magari invece senza dentro stesso stessa cioe allora insomma significa vuol dire").split(" ").forEach(function(w){ STOP[w]=1; });
+   "presente andare faccio riesco avanti vorrei voglio posso deve dovrei ancora sempre adesso niente qualcosa qualcuno proprio davvero magari invece senza dentro stesso stessa cioe allora insomma significa vuol dire "+
+   "tempo domani ieri oggi ora ore volta volte modo cosi pero quanto quanti quante").split(" ").forEach(function(w){ STOP[w]=1; });
   var SUF=["issimo","issima","amento","azione","zione","mente","eranno","iranno","arono","erono","irono","ando","endo","iamo","iate","arsi","ersi","irsi","are","ere","ire","ato","ata","ati","ate","ito","ita","iti","ite","uto","uta","uti","ute","ono","ano","amo","ete","ità","ore","ori","oso","osa","osi","ose","ico","ica","ici","che","i","e","a","o","ò","à"];
   function stem(w){
     w=(w||'').toLowerCase();
@@ -95,6 +96,16 @@ window.OVL_BRAIN=(function(){
     if(!r.idxs.length)return null;
     var top=r.score[r.idxs[0]];
     if(top<3.4)return null;
+    /* guardia anti-deriva: con 2+ radici nella domanda, il frammento
+       migliore deve contenerne almeno 2 — una sola parola in comune
+       non basta per comporre una risposta */
+    var distinti={}; ws.forEach(function(s){ distinti[s]=1; });
+    var dlist=Object.keys(distinti);
+    if(dlist.length>=2){
+      var match=0, mi;
+      for(mi=0;mi<dlist.length;mi++){ if(FR[r.idxs[0]]._t[dlist[mi]])match++; }
+      if(match<2)return null;
+    }
     var scelti=[FR[r.idxs[0]]], voci={}; voci[FR[r.idxs[0]].voce]=1;
     var i;
     for(i=1;i<r.idxs.length && scelti.length<3;i++){
