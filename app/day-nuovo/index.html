@@ -426,7 +426,7 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
     <p class="intro">Metti una musica rilassante, portati in uno spazio tranquillo e, quando vuoi, premi play: ti guido io.</p>
 
     <div class="player" id="s1-player">
-      <div class="pcover"><img id="s1-cov" alt="" style="display:none"><div class="pcap"><div class="pk">Con la voce di Elisa</div><div class="pt">Sblocco Emotivo</div></div></div>
+      <div class="pcover"><img id="s1-cov" alt="Spazio Emotivo" style="display:none"></div>
       <div class="pbody">
         <div class="pmain">
           <div class="pring" id="s1-ring"><button class="pplay" id="s1-play" aria-label="Riproduci">▶</button></div>
@@ -476,7 +476,7 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
     <p class="intro">Quando arriva un giudizio su di te, fermati. Fai un respiro e premi play: lo osserviamo insieme.</p>
 
     <div class="player" id="s2-player">
-      <div class="pcover"><img id="s2-cov" alt="" style="display:none"><div class="pcap"><div class="pk">Con la voce di Elisa</div><div class="pt">Osservatorio Interiore</div></div></div>
+      <div class="pcover"><img id="s2-cov" alt="Osservatorio Interiore" style="display:none"></div>
       <div class="pbody">
         <div class="pmain">
           <div class="pring" id="s2-ring"><button class="pplay" id="s2-play" aria-label="Riproduci">▶</button></div>
@@ -736,7 +736,7 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
     s2:[ {t:0,l:'Fermati e accorgiti del giudizio'},{t:110,l:'Scrivi la frase e il tono'},{t:260,l:'Risali alla fonte'},{t:310,l:'Parleresti così a chi ami?'},{t:360,l:'Trasforma il giudizio'},{t:400,l:'Il mantra e la canzone'} ]
   };
   var SRC={ s1:'audio/sblocco.m4a', s2:'audio/osservatorio.m4a' };
-  var COVER={ s1:'audio/cover-sblocco.jpg', s2:'audio/cover-osservatorio.jpg' };
+  var COVER={ s1:'/src/mod3.jpg?v=2', s2:'/src/mod4.jpg?v=2' };
   function mmss(s){ s=Math.max(0,Math.floor(s||0)); var m=Math.floor(s/60); var r=s%60; return m+':'+String(r).padStart(2,'0'); }
   function initPlayer(s){
     var au=document.getElementById(s+'-audio'), play=document.getElementById(s+'-play'), ring=document.getElementById(s+'-ring'),
