@@ -175,6 +175,9 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
 
 /* ================= header scheda ================= */
 .shdr{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid rgba(185,163,227,.3)}
+.back-btn{display:inline-flex;align-items:center;gap:6px;background:none;border:none;color:var(--txt-dim);font-family:'Cinzel',serif;font-size:11px;letter-spacing:.12em;cursor:pointer;padding:6px 0 14px;opacity:.7;transition:opacity .2s,color .2s}
+.back-btn:hover{opacity:1;color:var(--glic)}
+.back-btn::before{content:'←';font-size:14px;line-height:1}
 .stag{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:var(--glic);margin-bottom:7px}
 .sh1{font-family:'Cinzel',serif;font-size:clamp(21px,5vw,30px);font-weight:600;line-height:1.2;color:#f0eaf6}
 .tbox{border:1px solid rgba(185,163,227,.4);text-align:center;padding:9px 14px;flex-shrink:0;border-radius:10px;background:rgba(185,163,227,.06)}
@@ -471,6 +474,7 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
 
   <!-- ============ 1 · SPAZIO EMOTIVO ============ -->
   <section class="panel" id="p1">
+    <button class="back-btn" onclick="goTab(0)">Torna alla Home</button>
     <div class="shdr">
       <div><div class="stag">Pratica · Sblocco Emotivo</div><div class="sh1">Spazio Emotivo</div></div>
       <div class="tbox"><div class="tn">20'</div><div class="tl">minuti</div><div class="tf">3× a settimana</div></div>
@@ -521,6 +525,7 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
 
   <!-- ============ 2 · OSSERVATORIO ============ -->
   <section class="panel" id="p2">
+    <button class="back-btn" onclick="goTab(0)">Torna alla Home</button>
     <div class="shdr">
       <div><div class="stag">Pratica · Osservazione del giudizio</div><div class="sh1">Osservatorio</div></div>
       <div class="tbox"><div class="tn">15'</div><div class="tl">minuti</div><div class="tf">ogni giorno</div></div>
@@ -578,6 +583,7 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
 
   <!-- ============ 3 · DIARIO ============ -->
   <section class="panel" id="p3">
+    <button class="back-btn" onclick="goTab(0)">Torna alla Home</button>
     <div class="shdr"><div><div class="stag">Diario · Settimana per settimana</div><div class="sh1">Il mio Diario</div></div></div>
     <div class="cal-istr"><b>Ogni giorno:</b> scegli come ti senti e, se vuoi, una parola che racconta la giornata.<br>Le pratiche fatte si segnano da sole. Puoi navigare tra le settimane: ognuna ricorda ciò che hai scritto.</div>
     <div class="wnav">
