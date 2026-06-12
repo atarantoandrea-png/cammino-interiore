@@ -240,11 +240,11 @@ input:focus,textarea:focus{border-color:rgba(205,178,242,.85);box-shadow:0 0 14p
 .dd-date{font-family:'Cinzel',serif;font-size:14.5px;color:var(--glic-hi);min-width:78px}
 .dd-date .fut{color:#5f5870}
 .dd-today{font-family:'Cinzel',serif;font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-pale);border:1px solid rgba(201,168,76,.5);border-radius:20px;padding:3px 8px}
-.dd-moods{display:flex;gap:5px;margin-left:auto}
-.mood{background:none;border:none;cursor:pointer;padding:1px;opacity:.32;transition:opacity .15s,transform .15s;line-height:0}
-.mood svg{width:23px;height:23px;display:block}
+.dd-moodlab{font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--txt-dim);margin:2px 0 5px}
+.dd-moods{display:flex;gap:7px}
+.mood{background:none;border:none;cursor:pointer;padding:2px 3px;font-size:24px;line-height:1;opacity:.34;transition:opacity .15s,transform .15s}
 .mood:hover{opacity:.7}
-.mood.on{opacity:1;transform:scale(1.14)}
+.mood.on{opacity:1;transform:scale(1.18)}
 .dd-prac{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:11px}
 .pchip{display:flex;align-items:center;gap:8px;border:1px solid rgba(185,163,227,.3);border-radius:24px;padding:8px 14px;cursor:pointer;font-family:'Cinzel',serif;font-size:11.5px;letter-spacing:.03em;color:var(--txt-soft);transition:all .18s}
 .pchip .pchk{width:16px;height:16px;border-radius:50%;border:1.5px solid rgba(185,163,227,.5);display:flex;align-items:center;justify-content:center;font-size:10px;color:transparent}
@@ -836,12 +836,7 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
   var DAYS=['Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato','Domenica'];
   var MONTHS=['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
   var weekOffset=0;
-  var MOOD_COL=['#9aa0b8','#a3a0c0','#b9a3e3','#cbb0ea','#e8d9ae'];
-  function moodSVG(i){
-    var col=MOOD_COL[i];
-    var mouth=['M8 16 Q12 13 16 16','M8 15.5 Q12 14 16 15.5','M8 15 L16 15','M8 14.5 Q12 16.5 16 14.5','M8 14 Q12 17.5 16 14'][i];
-    return '<svg viewBox="0 0 24 24" fill="none" stroke="'+col+'" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="9.2"/><circle cx="8.8" cy="10" r="1" fill="'+col+'" stroke="none"/><circle cx="15.2" cy="10" r="1" fill="'+col+'" stroke="none"/><path d="'+mouth+'"/></svg>';
-  }
+  var MOODS=['😔','😕','😐','🙂','😊'];
   function monday(off){ var n=new Date(); n.setHours(0,0,0,0); var d=n.getDay(); var diff=n.getDate()-d+(d===0?-6:1); var m=new Date(n); m.setDate(diff+off*7); return m; }
   function iso(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
   function fmt(d){ return d.getDate()+' '+MONTHS[d.getMonth()]+' '+d.getFullYear(); }
@@ -874,18 +869,19 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
       var moodSel=store['cal-'+di+'-mood'];
       var s1on=!!store['cal-'+di+'-s1'], s2on=!!store['cal-'+di+'-s2'];
       var moods='';
-      for(var mi=0;mi<5;mi++){ moods+='<button class="mood'+(moodSel===mi?' on':'')+'" onclick="setMood(this,\''+di+'\','+mi+')" aria-label="umore '+(mi+1)+'">'+moodSVG(mi)+'</button>'; }
+      for(var mi=0;mi<5;mi++){ moods+='<button class="mood'+(moodSel===mi?' on':'')+'" onclick="setMood(this,\''+di+'\','+mi+')" aria-label="umore '+(mi+1)+'">'+MOODS[mi]+'</button>'; }
       var card=document.createElement('div'); card.className='dday'+(today?' today':'');
       card.innerHTML=
         '<div class="dd-top">'+
           '<span class="dd-date'+(fut?' fut':'')+'">'+DAYS[i]+' '+date.getDate()+'</span>'+
           (today?'<span class="dd-today">oggi</span>':'')+
-          '<div class="dd-moods">'+moods+'</div>'+
         '</div>'+
         '<div class="dd-prac">'+
           '<button class="pchip s1'+(s1on?' on':'')+'" onclick="togglePrac(this,\''+di+'\',\'s1\')"><span class="pchk">✓</span>Spazio Emotivo</button>'+
           '<button class="pchip s2'+(s2on?' on':'')+'" onclick="togglePrac(this,\''+di+'\',\'s2\')"><span class="pchk">✓</span>Osservatorio</button>'+
         '</div>'+
+        '<div class="dd-moodlab">'+(today?'Come ti senti oggi?':'Come ti senti?')+'</div>'+
+        '<div class="dd-moods">'+moods+'</div>'+
         '<div class="dd-kw"><input type="text" placeholder="una parola per oggi…" data-k="cal-'+di+'-kw"></div>';
       box.appendChild(card);
     }
@@ -959,7 +955,8 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
     var cv=document.getElementById('ch-mood'); if(!cv)return; var c=setupCanvas(cv), x=c.x, W=c.w, H=c.h; x.clearRect(0,0,W,H);
     var t=todayIso(), n=14, slot=(W-58)/(n-1), top=16, bot=H-30, span=bot-top, pts=[];
     for(var i=0;i<n;i++){ var isoD=isoAdd(t,-(n-1-i)), v=store['cal-'+isoD+'-mood']; if(v!==undefined&&v!==null&&v!=='')pts.push({i:i,v:+v,iso:isoD}); }
-    MOOD_COL.forEach(function(col,mi){ x.fillStyle=col; x.globalAlpha=.9; x.beginPath(); x.arc(13,bot-(mi/4)*span,5,0,7); x.fill(); }); x.globalAlpha=1;
+    x.font='15px serif'; x.textAlign='left'; x.globalAlpha=.92; x.fillStyle='#fff';
+    MOODS.forEach(function(m,mi){ x.fillText(m, 4, bot-(mi/4)*span+5); }); x.globalAlpha=1;
     x.strokeStyle='rgba(185,163,227,.1)'; for(var g=0;g<5;g++){ x.beginPath(); x.moveTo(28,bot-(g/4)*span); x.lineTo(W-6,bot-(g/4)*span); x.stroke(); }
     document.getElementById('mood-empty').style.display=pts.length?'none':'block';
     if(!pts.length)return;
