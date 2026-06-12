@@ -122,24 +122,27 @@ body{
   position:fixed;top:3vh;right:3vw;z-index:22;
   display:flex;align-items:center;gap:11px;
   padding:10px 22px;border-radius:50px;cursor:pointer;
-  background:linear-gradient(165deg, rgba(34,30,22,.9), rgba(22,19,14,.9));
-  border:1px solid rgba(201,168,76,.4);
+  background:linear-gradient(165deg, rgba(28,23,38,.95), rgba(13,10,19,.95));
+  border:1px solid rgba(185,163,227,.35);
   box-shadow:0 6px 22px rgba(0,0,0,.55);
-  transition:border-color .3s ease;user-select:none;
+  transition:border-color .3s ease, box-shadow .3s ease;user-select:none;
 }
-#navBtn:hover{border-color:rgba(201,168,76,.85)}
+#navBtn:hover{border-color:rgba(205,178,242,.8);
+  box-shadow:0 6px 22px rgba(0,0,0,.55), 0 0 14px rgba(170,135,230,.35)}
 #navBtn.lit{border-color:rgba(205,178,242,.85);
   box-shadow:0 6px 22px rgba(0,0,0,.55), 0 0 18px rgba(170,135,230,.55)}
-#navBtn .ic{font-size:15px;color:#c9a84c}
+#navBtn .ic{font-size:15px;color:#b9a3e3}
 #navBtn .tx{font-family:'Cinzel',serif;font-size:13px;font-weight:600;
-  letter-spacing:.22em;text-transform:uppercase;color:#e8d9ae}
+  letter-spacing:.22em;text-transform:uppercase;color:#dccdf6}
 
 #nav{
   position:fixed;top:calc(3vh + 54px);right:3vw;z-index:21;
   width:min(330px, 86vw);
-  border-radius:10px;overflow:hidden;
-  background:url('/src/pagina.jpg') center/cover;
-  box-shadow:0 22px 60px rgba(0,0,0,.75), 0 0 0 1px rgba(90,66,30,.5), inset 0 0 60px rgba(120,90,45,.25);
+  border-radius:14px;overflow:hidden;
+  background:
+    linear-gradient(180deg, rgba(15,12,21,.97), rgba(11,9,16,.97)),
+    url('/src/pagina.jpg') center/cover;
+  box-shadow:0 22px 60px rgba(0,0,0,.75), 0 0 0 1px rgba(185,163,227,.3), inset 0 0 60px rgba(120,90,200,.08);
   transform-origin:50% 0;
   transform:scaleY(.02);opacity:0;pointer-events:none;
   transition:transform .42s cubic-bezier(.22,1.25,.36,1), opacity .28s ease, box-shadow .6s ease;
@@ -168,34 +171,39 @@ body{
   100%{opacity:0;transform:translateY(240%)}
 }
 #nav::after{content:'';position:absolute;left:0;right:0;bottom:0;height:14px;
-  background:linear-gradient(180deg, rgba(70,50,22,0), rgba(70,50,22,.35) 50%, rgba(40,28,12,.55))}
+  background:linear-gradient(180deg, rgba(8,6,12,0), rgba(8,6,12,.6))}
 #nav .inner{padding:26px 24px 30px}
 #nav h4{font-family:'Cinzel',serif;font-size:15px;font-weight:700;
   letter-spacing:.4em;text-indent:.4em;text-transform:uppercase;
-  color:#4a3318;text-align:center;margin-bottom:6px}
+  color:#dccdf6;text-align:center;margin-bottom:6px;
+  text-shadow:0 0 18px rgba(185,163,227,.45)}
 #nav .rule{height:1px;margin:10px 14px 18px;
-  background:linear-gradient(90deg,transparent,rgba(110,80,40,.6),transparent)}
+  background:linear-gradient(90deg,transparent,rgba(185,163,227,.55),transparent)}
 .navItem{
   display:flex;align-items:center;gap:12px;
-  padding:13px 16px;margin-bottom:10px;border-radius:8px;cursor:pointer;
-  border:1px solid rgba(110,80,40,.30);
-  background:rgba(255,250,235,.22);
-  transform:translateX(8px) scale(.97);opacity:.78;
+  padding:13px 16px;margin-bottom:10px;border-radius:11px;cursor:pointer;
+  border:1px solid rgba(185,163,227,.16);
+  background:rgba(22,18,29,.72);
+  transform:translateX(8px) scale(.97);opacity:.8;
   transition:all .3s ease;
 }
-.navItem:hover{border-color:rgba(110,80,40,.7);background:rgba(255,250,235,.4)}
+.navItem:hover{border-color:rgba(185,163,227,.5);background:rgba(30,24,40,.85)}
+/* la voce della sezione in cui ti trovi si accende */
 .navItem.cur{transform:translateX(-6px) scale(1.03);opacity:1;
-  border-color:rgba(150,110,50,.85);background:rgba(255,250,235,.5);
-  box-shadow:0 6px 16px rgba(80,55,20,.3)}
-.navItem .n{font-family:'Cinzel',serif;font-size:12px;font-weight:700;color:#8a6520;
+  border-color:rgba(205,178,242,.9);background:rgba(30,24,40,.95);
+  box-shadow:0 0 0 1px rgba(205,178,242,.3), 0 0 18px rgba(170,135,230,.4),
+    inset 0 0 18px rgba(170,135,230,.08)}
+.navItem .n{font-family:'Cinzel',serif;font-size:12px;font-weight:700;color:#c9a84c;
   width:26px;text-align:center;flex-shrink:0}
-.navItem .t{font-family:'Cinzel',serif;font-size:14px;font-weight:600;color:#4a3318;letter-spacing:.06em}
+.navItem .t{font-family:'Cinzel',serif;font-size:14px;font-weight:600;color:#e6e0ec;letter-spacing:.06em}
+.navItem.cur .n{color:#e8d9ae;text-shadow:0 0 10px rgba(201,168,76,.6)}
+.navItem.cur .t{color:#ffffff;text-shadow:0 0 12px rgba(190,160,240,.5)}
 #navClose{display:block;margin:16px auto 0;padding:9px 34px;
   font-family:'Cinzel',serif;font-size:12px;font-weight:700;
   letter-spacing:.32em;text-indent:.32em;text-transform:uppercase;
-  color:#5e4014;background:none;border:1px solid rgba(110,80,40,.55);
-  border-radius:40px;cursor:pointer}
-#navClose:hover{background:rgba(110,80,40,.18)}
+  color:#b7aec4;background:none;border:1px solid rgba(185,163,227,.4);
+  border-radius:40px;cursor:pointer;transition:all .25s ease}
+#navClose:hover{background:rgba(185,163,227,.12);color:#dccdf6}
 
 /* ================================================================
    IL SITO — pergamena scurissima, rivelata dalla luce
@@ -1048,6 +1056,9 @@ async function init(){
   const glEl = document.getElementById('bookgl');
   const atmoEl = document.getElementById('atmo');
   const navItems = [...document.querySelectorAll('.navItem')];
+  const secCap1 = document.getElementById('cap1');
+  const secEserc = document.getElementById('eserc');
+  const secCap2 = document.getElementById('cap2');
 
   let scrollRaw = 0, ps = 0, solid = false;
   const updateScroll = ()=>{
@@ -1172,7 +1183,12 @@ async function init(){
 
     hint.style.opacity = 1 - ph(.008,.05);
 
-    const cur = ps < .4 ? 0 : (ps < .92 ? 1 : 2);
+    /* la voce del menu si accende in base alla sezione in cui ti trovi */
+    let cur;
+    if (secCap2.getBoundingClientRect().top < innerHeight*.45) cur = 4;
+    else if (secEserc.getBoundingClientRect().top < innerHeight*.45) cur = 3;
+    else if (secCap1.getBoundingClientRect().top < innerHeight*.6) cur = 2;
+    else cur = ps < .4 ? 0 : 1;
     navItems.forEach((it,i)=>it.classList.toggle('cur', i===cur));
 
     renderer.render(scene, camera);
