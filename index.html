@@ -280,17 +280,16 @@ body{
 .mockwrap{flex:0 0 auto;margin:0 auto;perspective:1100px;padding:30px 26px}
 .phoneStage{position:relative;width:min(290px,70vw)}
 
-/* lucine che orbitano dietro al telefono, sbucando dai bordi */
-.orb{position:absolute;border-radius:50%;pointer-events:none;z-index:0;
-  background:radial-gradient(circle at 35% 30%, #fff 0%, #cdb2f2 55%, rgba(170,135,230,0) 78%);
-  filter:drop-shadow(0 0 9px rgba(186,150,240,.85));}
-.orb.o1{width:13px;height:13px;top:9%;left:-15px;animation:orbA 9s ease-in-out infinite}
-.orb.o2{width:9px;height:9px;top:32%;right:-11px;animation:orbB 12s ease-in-out infinite}
-.orb.o3{width:15px;height:15px;bottom:20%;left:-18px;animation:orbB 10.5s ease-in-out infinite reverse}
-.orb.o4{width:8px;height:8px;bottom:7%;right:-9px;animation:orbA 13s ease-in-out infinite reverse}
-.orb.o5{width:6px;height:6px;top:55%;left:-8px;animation:orbA 7.5s ease-in-out infinite}
-@keyframes orbA{0%,100%{transform:translate(0,0);opacity:.9}50%{transform:translate(30px,-34px);opacity:.35}}
-@keyframes orbB{0%,100%{transform:translate(0,0);opacity:.85}50%{transform:translate(-34px,26px);opacity:.3}}
+/* tantissime palline di luce bianca (come il nome di Elisa) dietro al telefono */
+.stardot{position:absolute;border-radius:50%;pointer-events:none;z-index:0;
+  background:radial-gradient(circle, #ffffff 0%, rgba(255,255,255,.85) 38%, transparent 75%);
+  filter:drop-shadow(0 0 5px rgba(240,238,255,.9));
+  animation:stw var(--sd) ease-in-out var(--so) infinite;
+}
+@keyframes stw{
+  0%,100%{opacity:.12;transform:translate(0,0)}
+  50%{opacity:.95;transform:translate(var(--sx),var(--sy))}
+}
 
 .phone3d{
   position:relative;z-index:1;
@@ -306,11 +305,17 @@ body{
   opacity:0;
   transition:transform .6s cubic-bezier(.2,1.25,.35,1), opacity .45s ease;
   transform-style:preserve-3d;
-  touch-action:pan-y;
+  cursor:pointer;
 }
 .phone3d.in{
   opacity:1;
-  transform:translateY(0) rotateX(var(--rx,6deg)) rotateY(var(--ry,-10deg));
+  transform:translateY(0) rotateX(6deg) rotateY(-10deg);
+}
+/* al click si ingrandisce prendendo lo schermo, poi porta agli esercizi */
+.phone3d.zoom{
+  z-index:60;
+  transform:translateY(-4vh) rotateX(0) rotateY(0) scale(2.4);
+  transition:transform .8s cubic-bezier(.55,0,.2,1), opacity .4s ease;
 }
 .ph-notch{position:absolute;top:21px;left:50%;transform:translateX(-50%);
   width:33%;height:16px;border-radius:12px;background:#07050c;z-index:3;
@@ -363,6 +368,12 @@ body{
   24%{opacity:.34;box-shadow:0 0 4px rgba(200,160,255,.3)}
 }
 .ph-foot{font-size:8px;color:#8d8499;text-align:center;padding:4px 0 8px}
+/* da PC il telefono sale in alto, allineato col titolo della sezione */
+@media(min-width:900px){
+  #eserc{position:relative;min-height:660px}
+  #eserc .mockwrap{position:absolute;right:1vw;top:-14px;margin:0;padding:0 26px 0 0}
+  #eserc .sez-sub{max-width:460px}
+}
 
 /* capitolo secondo */
 .soon{
@@ -463,7 +474,6 @@ footer .f2{margin-top:1.6vh;color:#6e6580;font-size:15px}
       </div>
       <div class="mockwrap">
         <div class="phoneStage" id="phoneStage">
-          <i class="orb o1"></i><i class="orb o2"></i><i class="orb o3"></i><i class="orb o4"></i><i class="orb o5"></i>
           <div class="phone3d" id="phone3d">
             <div class="ph-notch"></div>
             <div class="ph-screen">
@@ -1207,13 +1217,13 @@ async function init(){
     passiEl.innerHTML = ''; stepEls = [];
     const docH = document.body.scrollHeight;
     passiEl.style.height = docH + 'px';
-    const xMin = 8, xMax = Math.max(32, Math.min(innerWidth*.045, 56));
+    const xMin = 8, xMax = Math.max(36, Math.min(innerWidth*.055, 66));
     let x = (xMin+xMax)/2, dir = 0, foot = 0;
     for (let y = innerHeight*.5; y < docH-180; y += 105 + Math.random()*55){
       /* la strada serpeggia in modo irregolare, in una corsia stretta */
       dir += (Math.random()-.5)*.8;
       dir = Math.max(-.75, Math.min(.75, dir));
-      x += Math.sin(dir)*15;
+      x += Math.sin(dir)*17;
       if (x < xMin){ x = xMin; dir = Math.abs(dir)*.4; }
       if (x > xMax){ x = xMax; dir = -Math.abs(dir)*.4; }
       const side = (foot ? 1 : -1) * 6;
@@ -1230,13 +1240,20 @@ async function init(){
     }
     revealPassi();
   }
-  /* le orme nascono UNA ALLA VOLTA: si accendono di lilla, poi si spengono */
+  /* le orme nascono UNA ALLA VOLTA: si accendono di lilla, poi si spengono.
+     Tornando indietro si cancellano, così rinascono sempre da sopra a sotto */
   const passiQueue = [];
   let igniting = false;
   function igniteNext(){
-    if (igniting || !passiQueue.length) return;
+    if (igniting) return;
+    let s;
+    while (passiQueue.length){
+      s = passiQueue.shift();
+      if (s.on) break;          /* salta quelle spente mentre erano in coda */
+      s = null;
+    }
+    if (!s) return;
     igniting = true;
-    const s = passiQueue.shift();
     s.el.classList.add('on','new');
     setTimeout(()=>{ s.el.classList.remove('new'); }, 950);
     setTimeout(()=>{ igniting = false; igniteNext(); }, 330);
@@ -1244,7 +1261,13 @@ async function init(){
   function revealPassi(){
     const lim = scrollY + innerHeight*.78;
     for (const s of stepEls){
-      if (!s.on && s.y < lim){ s.on = true; passiQueue.push(s); }
+      if (!s.on && s.y < lim){
+        s.on = true; passiQueue.push(s);
+      } else if (s.on && s.y > lim){
+        /* risalendo, l'orma si dissolve: riapparirà al prossimo passaggio */
+        s.on = false;
+        s.el.classList.remove('on','new');
+      }
     }
     igniteNext();
   }
@@ -1254,7 +1277,7 @@ async function init(){
   let passiRsz;
   addEventListener('resize', ()=>{ clearTimeout(passiRsz); passiRsz = setTimeout(buildPassi, 300); });
 
-  /* ---- il telefono 3D: sale da sotto, si inclina col mouse o col dito ---- */
+  /* ---- il telefono 3D: sale da sotto, al click si ingrandisce e apre gli esercizi ---- */
   const phStage = document.getElementById('phoneStage');
   const ph3d = document.getElementById('phone3d');
   if (phStage && ph3d){
@@ -1264,17 +1287,26 @@ async function init(){
     };
     addEventListener('scroll', phIn, {passive:true});
     phIn();
-    phStage.addEventListener('pointermove', e=>{
-      const r = phStage.getBoundingClientRect();
-      const nx = (e.clientX - r.left)/r.width - .5;
-      const ny = (e.clientY - r.top)/r.height - .5;
-      ph3d.style.setProperty('--ry', (-10 + nx*24).toFixed(1)+'deg');
-      ph3d.style.setProperty('--rx', (6 - ny*18).toFixed(1)+'deg');
+    ph3d.addEventListener('click', ()=>{
+      if (ph3d.classList.contains('zoom')) return;
+      ph3d.classList.add('zoom');
+      setTimeout(()=>{ location.href='/app/'; }, 820);
     });
-    phStage.addEventListener('pointerleave', ()=>{
-      ph3d.style.setProperty('--ry','-10deg');
-      ph3d.style.setProperty('--rx','6deg');
-    });
+    /* la pioggia di lucine bianche dietro al telefono */
+    for (let i=0;i<44;i++){
+      const s = document.createElement('i');
+      s.className = 'stardot';
+      const sz = 2 + Math.random()*3.5;
+      s.style.cssText =
+        'width:'+sz.toFixed(1)+'px;height:'+sz.toFixed(1)+'px;'+
+        'left:'+(-6+Math.random()*112).toFixed(1)+'%;'+
+        'top:'+(-3+Math.random()*106).toFixed(1)+'%;'+
+        '--sd:'+(3.5+Math.random()*5.5).toFixed(1)+'s;'+
+        '--so:'+(-Math.random()*8).toFixed(1)+'s;'+
+        '--sx:'+((Math.random()-.5)*30).toFixed(0)+'px;'+
+        '--sy:'+((Math.random()-.5)*26).toFixed(0)+'px';
+      phStage.insertBefore(s, ph3d);
+    }
   }
 
   navItems.forEach(it=>{
