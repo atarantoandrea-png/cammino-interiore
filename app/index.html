@@ -671,6 +671,9 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
 
 <audio id="mu-audio" preload="none"></audio>
 
+<!-- il Giornaliero vive qui dentro: così /app/ non si ricarica e la musica continua -->
+<iframe id="dayframe" title="Il Giornaliero" style="display:none;position:fixed;inset:0;width:100%;height:100%;border:0;z-index:200;background:#0a070b"></iframe>
+
 <footer>Il Cammino Interiore · Elisa Soul Medium · <a href="/">Torna al Libro</a></footer>
 
 <!-- l'orma riusata per tutte le impronte -->
@@ -922,7 +925,8 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
         el=document.createElement('a');
         el.href=ex.route;
         el.addEventListener('click',function(e){
-          if(!unlockOk(ex)){ e.preventDefault(); openLock(ex, el); }
+          if(!unlockOk(ex)){ e.preventDefault(); openLock(ex, el); return; }
+          if(ex.id==='day' && window.openDay){ e.preventDefault(); window.openDay(); }
         });
       } else {
         el=document.createElement('button');
@@ -1337,7 +1341,10 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
   }
   document.getElementById('lkBack').addEventListener('click',chiudiTutto);
   document.getElementById('lkGo').addEventListener('click',function(){
-    if(lockTarget&&lockTarget.route)location.href=lockTarget.route;
+    if(!lockTarget||!lockTarget.route)return;
+    chiudiTutto();
+    if(lockTarget.id==='day' && window.openDay)window.openDay();
+    else location.href=lockTarget.route;
   });
 
   document.addEventListener('keydown',function(e){
@@ -1412,7 +1419,39 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     var mm=document.getElementById('mm-play'); if(mm)mm.innerHTML=playing?SVG_PAUSE:SVG_PLAY;
     var orb=document.getElementById('mu-orb'); if(orb)orb.classList.toggle('playing',playing);
     var mini=document.getElementById('mu-mini'); if(mini)mini.style.display=(muIdx>=0)?'block':'none';
+    postState();
   }
+
+  /* ---- ponte con il Giornaliero (iframe): la musica resta del contenitore /app/ ---- */
+  var dayFrame=document.getElementById('dayframe');
+  function postState(){
+    if(!dayFrame||dayFrame.style.display!=='block'||!dayFrame.contentWindow) return;
+    var tr=muIdx>=0?TRACKS[muIdx]:null;
+    var f=au.duration?(au.currentTime/au.duration):0;
+    dayFrame.contentWindow.postMessage({
+      t:'mu:state', active:muIdx>=0, playing:!au.paused,
+      title:tr?tr.t:'', cat:tr?tr.cat:'', frac:f,
+      cur:mmss(au.currentTime), dur:mmss(au.duration||0)
+    }, location.origin);
+  }
+  window.openDay=function(){
+    if(dayFrame.getAttribute('data-loaded')!=='1'){ dayFrame.src='/app/day/'; dayFrame.setAttribute('data-loaded','1'); }
+    dayFrame.style.display='block';
+    document.documentElement.style.overflow='hidden';
+  };
+  function closeDay(){ dayFrame.style.display='none'; document.documentElement.style.overflow=''; }
+  window.closeDay=closeDay;
+  window.addEventListener('message', function(e){
+    if(e.origin!==location.origin) return;
+    var m=e.data||{}; if(!m.t) return;
+    if(m.t==='day:back'){ closeDay(); return; }
+    if(m.t!=='mu:cmd') return;
+    if(m.cmd==='toggle') window.muToggle();
+    else if(m.cmd==='next') window.muNext();
+    else if(m.cmd==='prev') window.muPrev();
+    else if(m.cmd==='seek'){ if(au.duration&&muIdx>=0) au.currentTime=Math.max(0,Math.min(1,m.v))*au.duration; }
+    else if(m.cmd==='state'){ postState(); }
+  });
 
   au.addEventListener('play',  function(){ setPlayBtn(true); });
   au.addEventListener('pause', function(){ setPlayBtn(false); });
@@ -1422,6 +1461,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     muDur=au.duration;
     setText('mu-dur',  mmss(au.duration));
     setText('mu-dur2', mmss(au.duration));
+    postState();
   });
 
   au.addEventListener('timeupdate', function(){
@@ -1432,6 +1472,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     setW('mm-fill', pct);
     setText('mu-cur',  mmss(au.currentTime));
     setText('mu-cur2', mmss(au.currentTime));
+    postState();
   });
 
   /* barre con scrubbing a trascinamento (i pointer events coprono mouse + tocco) */
