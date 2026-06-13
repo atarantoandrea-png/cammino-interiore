@@ -645,9 +645,9 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
       <div class="mu-times"><span id="mu-cur2">0:00</span><span id="mu-dur2">--:--</span></div>
     </div>
     <div class="mu-ctrls">
-      <button class="mu-btn" onclick="muPrev()" aria-label="Precedente">⏮</button>
-      <button class="mu-btn mu-play" id="mu-play" onclick="muToggle()" aria-label="Play/Pausa">▶</button>
-      <button class="mu-btn" onclick="muNext()" aria-label="Successiva">⏭</button>
+      <button class="mu-btn" onclick="muPrev()" aria-label="Precedente"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><rect x="4" y="5" width="2.5" height="14" rx="1.2"/><path d="M8 12 19 5v14z"/></svg></button>
+      <button class="mu-btn mu-play" id="mu-play" onclick="muToggle()" aria-label="Play/Pausa"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
+      <button class="mu-btn" onclick="muNext()" aria-label="Successiva"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><rect x="17.5" y="5" width="2.5" height="14" rx="1.2"/><path d="M16 12 5 5v14z"/></svg></button>
     </div>
     <div class="mu-list-hd">Tutte le tracce</div>
     <div id="mu-list"></div>
@@ -693,9 +693,9 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
       <div class="mm-label">In riproduzione</div>
       <div class="mm-title" id="mm-title">—</div>
       <div class="mm-ctrls">
-        <button class="mm-btn" onclick="muPrev()" aria-label="Precedente">⏮</button>
-        <button class="mm-btn mm-play" id="mm-play" onclick="muToggle()" aria-label="Play/Pausa">▶</button>
-        <button class="mm-btn" onclick="muNext()" aria-label="Successiva">⏭</button>
+        <button class="mm-btn" onclick="muPrev()" aria-label="Precedente"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><rect x="4" y="5" width="2.5" height="14" rx="1.2"/><path d="M8 12 19 5v14z"/></svg></button>
+        <button class="mm-btn mm-play" id="mm-play" onclick="muToggle()" aria-label="Play/Pausa"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
+        <button class="mm-btn" onclick="muNext()" aria-label="Successiva"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><rect x="17.5" y="5" width="2.5" height="14" rx="1.2"/><path d="M16 12 5 5v14z"/></svg></button>
       </div>
       <div class="mm-bar"><div class="mm-fill" id="mm-fill"></div></div>
     </div>
@@ -1391,13 +1391,13 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
   window.muNext=function(){ muPlay((muIdx+1)%TRACKS.length); };
   window.muPrev=function(){ muPlay((muIdx-1+TRACKS.length)%TRACKS.length); };
 
+  var SVG_PLAY='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
+  var SVG_PAUSE='<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>';
   function setPlayBtn(playing){
-    var sym=playing?'⏸':'▶';
-    setText('mu-play', sym); setText('mm-play', sym);
-    var orb=document.getElementById('mu-orb');
-    if(orb) orb.classList.toggle('playing', playing);
-    var mini=document.getElementById('mu-mini');
-    if(mini) mini.style.display=(muIdx>=0)?'block':'none';
+    var el=document.getElementById('mu-play'); if(el)el.innerHTML=playing?SVG_PAUSE:SVG_PLAY;
+    var mm=document.getElementById('mm-play'); if(mm)mm.innerHTML=playing?SVG_PAUSE:SVG_PLAY;
+    var orb=document.getElementById('mu-orb'); if(orb)orb.classList.toggle('playing',playing);
+    var mini=document.getElementById('mu-mini'); if(mini)mini.style.display=(muIdx>=0)?'block':'none';
   }
 
   au.addEventListener('play',  function(){ setPlayBtn(true); });
@@ -1435,7 +1435,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     row.className='mu-row';
     row.innerHTML='<span class="mu-num">'+(i+1)+'</span>'
       +'<div class="mu-rinfo"><span class="mu-rtitle">'+tr.t+'</span><span class="mu-rcat">'+tr.cat+'</span></div>'
-      +'<button class="mu-rplay" onclick="muPlay('+i+')" aria-label="Riproduci '+tr.t+'">▶</button>';
+      +'<button class="mu-rplay" onclick="muPlay('+i+')" aria-label="Riproduci '+tr.t+'"><svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>';
     row.addEventListener('click', function(e){
       if(e.target.tagName==='BUTTON') return;
       muPlay(i);
