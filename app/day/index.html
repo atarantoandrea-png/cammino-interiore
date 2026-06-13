@@ -61,6 +61,12 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
   transition:box-shadow 1.2s ease, inset 1.2s ease}
 #lume.boost::after{inset:15px;
   box-shadow:0 0 18px 7px var(--lm-g1),0 0 60px 26px var(--lm-g2),0 0 150px 70px var(--lm-g3),inset 0 0 7px rgba(230,225,255,.7)}
+/* su mobile la luce è più piccola e discreta: resta al bordo, non invade le sezioni */
+@media(max-width:760px){
+  #lume{width:42px;height:42px;margin:-21px 0 0 -21px}
+  #lume::after{inset:13px;box-shadow:0 0 8px 3px var(--lm-g1),0 0 24px 9px var(--lm-g2),0 0 54px 22px var(--lm-g3),inset 0 0 4px rgba(220,215,245,.5)}
+  #lume.boost::after{inset:11px;box-shadow:0 0 11px 4px var(--lm-g1),0 0 34px 13px var(--lm-g2),0 0 74px 32px var(--lm-g3),inset 0 0 5px rgba(230,225,255,.6)}
+}
 
 /* ================= colonna ================= */
 .page{max-width:760px;margin:0 auto;padding:0 0 30px;position:relative}
@@ -734,7 +740,11 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
 
   /* ============ LA LUCE GUIDA ============ */
   var lume=document.getElementById('lume'), litEl=null;
-  function lumeHome(){ var x=Math.max(30, innerWidth/2 - 400); moveLume(x, 84 + (document.querySelector('.hd')?document.querySelector('.hd').offsetTop:0)); }
+  function isNarrow(){ return innerWidth < 760; }   /* sotto questa soglia la colonna riempie lo schermo: niente margine laterale */
+  function lumeHome(){
+    var x = isNarrow() ? (scrollX - 8) : Math.max(30, innerWidth/2 - 400);
+    moveLume(x, 84 + (document.querySelector('.hd')?document.querySelector('.hd').offsetTop:0));
+  }
   function moveLume(x,y){ lume.style.transform='translate3d('+(x|0)+'px,'+(y|0)+'px,0)'; }
   function lumeAt(x,y,boost){ moveLume(x,y); if(boost)lume.classList.add('boost'); else lume.classList.remove('boost'); }
   function lightUp(el, noBoost){
@@ -743,11 +753,20 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
     litEl=el;
     el.classList.add('lit');
     var r=el.getBoundingClientRect();
-    var docY=r.top + scrollY + Math.min(r.height/2, 80);
-    /* SEMPRE di lato all'elemento (non sopra): a sinistra, o a destra se non c'è spazio */
-    var x=r.left + scrollX - 30; if(x < scrollX+30) x=Math.min(scrollX+innerWidth-30, r.right + scrollX + 30);
+    var narrow=isNarrow();
+    var docY, x;
+    if(narrow){
+      /* schermo stretto: la luce resta SEMPRE al bordo sinistro, accanto alla sezione,
+         mai sopra il testo; si posa verso la cima della sezione */
+      x = scrollX - 8;
+      docY = r.top + scrollY + 24;
+    } else {
+      /* schermo largo: nel margine accanto all'elemento (a sinistra, o a destra se manca spazio) */
+      docY = r.top + scrollY + Math.min(r.height/2, 80);
+      x = r.left + scrollX - 30; if(x < scrollX+30) x=Math.min(scrollX+innerWidth-30, r.right + scrollX + 30);
+    }
     moveLume(x, docY);
-    if(noBoost)lume.classList.remove('boost'); else lume.classList.add('boost');
+    if(noBoost||narrow)lume.classList.remove('boost'); else lume.classList.add('boost');
   }
   document.addEventListener('focusin',function(e){ var b=e.target.closest('.blk, .intenz'); if(b)lightUp(b); });
   /* la luce va ACCANTO alla sezione che tocchi e la illumina di più */
@@ -775,7 +794,7 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
     s1:[ {t:0,l:'Prepara: musica e respiro'},{t:85,l:'Le quattro domande'},{t:240,l:'La frase con cui ti giudichi'},{t:330,l:'Il respiro e il blocco nel corpo'},{t:480,l:'Il mantra'},{t:550,l:'La luce che lascia andare'} ],
     s2:[ {t:0,l:'Fermati e accorgiti del giudizio'},{t:110,l:'Scrivi la frase e il tono'},{t:260,l:'Risali alla fonte'},{t:310,l:'Parleresti così a chi ami?'},{t:360,l:'Trasforma il giudizio'},{t:400,l:'Il mantra e la canzone'} ]
   };
-  var SRC={ s1:'audio/sblocco.m4a', s2:'audio/osservatorio.m4a' };
+  var SRC={ s1:'audio/sblocco.m4a?v=2', s2:'audio/osservatorio.m4a?v=2' };
   var COVER={ s1:'/src/mod3.jpg?v=2', s2:'/src/mod4.jpg?v=2' };
   function mmss(s){ s=Math.max(0,Math.floor(s||0)); var m=Math.floor(s/60); var r=s%60; return m+':'+String(r).padStart(2,'0'); }
   function initPlayer(s){
@@ -830,8 +849,13 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
       /* la luce si affianca al play, DI LATO (non sopra), e lo illumina di più */
       var r=play.getBoundingClientRect();
       if(litEl){litEl.classList.remove('lit');litEl=null;}
-      var x=r.left+window.scrollX-30; if(x<30)x=r.right+window.scrollX+30;
-      lumeAt(x, r.top+window.scrollY + r.height/2, true);
+      if(isNarrow()){
+        /* mobile: resta al bordo sinistro accanto al lettore, mai sopra */
+        lumeAt(window.scrollX-8, r.top+window.scrollY + r.height/2, false);
+      } else {
+        var x=r.left+window.scrollX-30; if(x<30)x=r.right+window.scrollX+30;
+        lumeAt(x, r.top+window.scrollY + r.height/2, true);
+      }
     });
     bar.addEventListener('click',function(e){ if(!ready||!au.duration)return; var r=bar.getBoundingClientRect(); var f=(e.clientX-r.left)/r.width; au.currentTime=Math.max(0,Math.min(1,f))*au.duration; });
   }
