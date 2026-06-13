@@ -743,7 +743,7 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
   var lume=document.getElementById('lume'), litEl=null;
   function isNarrow(){ return innerWidth < 760; }   /* sotto questa soglia la colonna riempie lo schermo: niente margine laterale */
   function lumeHome(){
-    var x = isNarrow() ? (scrollX - 8) : Math.max(30, innerWidth/2 - 400);
+    var x = isNarrow() ? (scrollX + 34) : Math.max(30, innerWidth/2 - 400);
     moveLume(x, 84 + (document.querySelector('.hd')?document.querySelector('.hd').offsetTop:0));
   }
   function moveLume(x,y){ lume.style.transform='translate3d('+(x|0)+'px,'+(y|0)+'px,0)'; }
@@ -757,10 +757,10 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
     var narrow=isNarrow();
     var docY, x;
     if(narrow){
-      /* schermo stretto: la luce resta SEMPRE al bordo sinistro, accanto alla sezione,
-         mai sopra il testo; si posa verso la cima della sezione */
-      x = scrollX - 8;
-      docY = r.top + scrollY + 24;
+      /* schermo stretto: niente margine laterale, quindi la luce si posa APPENA SOPRA
+         l'elemento cliccato — ben visibile, senza coprirne il contenuto */
+      x = r.left + scrollX + 28; if(x < scrollX+26) x = scrollX+26;
+      docY = r.top + scrollY - 26; if(docY < scrollY+26) docY = scrollY+26;
     } else {
       /* schermo largo: nel margine accanto all'elemento (a sinistra, o a destra se manca spazio) */
       docY = r.top + scrollY + Math.min(r.height/2, 80);
@@ -851,8 +851,10 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
       var r=play.getBoundingClientRect();
       if(litEl){litEl.classList.remove('lit');litEl=null;}
       if(isNarrow()){
-        /* mobile: resta al bordo sinistro accanto al lettore, mai sopra */
-        lumeAt(window.scrollX-8, r.top+window.scrollY + r.height/2, false);
+        /* mobile: appena sopra il pulsante, visibile, senza coprire il lettore */
+        var nx=r.left+window.scrollX+28; if(nx<window.scrollX+26)nx=window.scrollX+26;
+        var ny=r.top+window.scrollY-26; if(ny<window.scrollY+26)ny=window.scrollY+26;
+        lumeAt(nx, ny, false);
       } else {
         var x=r.left+window.scrollX-30; if(x<30)x=r.right+window.scrollX+30;
         lumeAt(x, r.top+window.scrollY + r.height/2, true);
