@@ -1,0 +1,25 @@
+{
+  "name": "Cammino Interiore",
+  "short_name": "Cammino",
+  "description": "Il tuo percorso di crescita interiore con Elisa Soul Medium",
+  "start_url": "/app",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#100d18",
+  "theme_color": "#b9a3e3",
+  "icons": [
+    {
+      "src": "/src/logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/src/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
