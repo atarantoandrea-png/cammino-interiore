@@ -492,6 +492,70 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
   .excard.start.first-time{animation:none;box-shadow:0 0 0 1px rgba(201,168,76,.4), 0 0 24px rgba(201,168,76,.25)}
   .excard,.excard:hover{transition:none;transform:none}
 }
+
+/* ================= MUSICA ================= */
+.start-row{display:flex;gap:16px;align-items:stretch}
+.start-row .excard{flex:1;min-width:0}
+@media(max-width:600px){.start-row{flex-direction:column}}
+
+.excard.mu-entry .excover{background:linear-gradient(145deg,rgba(10,42,38,.9),rgba(6,28,26,.95));border-bottom:1px solid rgba(47,224,198,.12)}
+.excard.mu-entry .excover .ring{border-color:rgba(47,224,198,.3);animation:none}
+.excard.mu-entry .excover .sym{font-size:52px}
+.excard.mu-entry .exbadge{color:var(--aqua)}
+.excard.mu-entry .exgo{color:var(--aqua-hi)}
+.excard.mu-entry:hover .exgo{color:#fff}
+.excard.mu-entry:hover{border-color:rgba(47,224,198,.4);box-shadow:0 8px 28px rgba(47,224,198,.15),0 0 0 1px rgba(47,224,198,.2)}
+
+#music{display:none;padding:0 18px 48px;max-width:640px;margin:0 auto;width:100%}
+#music.on{display:block}
+.mu-back{background:none;border:1px solid rgba(47,224,198,.22);border-radius:20px;padding:7px 18px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:.1em;color:var(--txt-dim);cursor:pointer;margin:20px 0 28px;transition:all .2s}
+.mu-back:hover{color:var(--aqua-hi);border-color:rgba(47,224,198,.55)}
+.mu-hero{display:flex;align-items:center;gap:20px;margin-bottom:28px;padding:22px 20px;background:rgba(10,36,32,.6);border:1px solid rgba(47,224,198,.16);border-radius:18px}
+.mu-orb-wrap{position:relative;width:64px;height:64px;flex-shrink:0}
+.mu-orb{width:64px;height:64px;border-radius:50%;background:radial-gradient(circle at 38% 34%,#fff 0%,#fff 22%,var(--aqua) 58%,transparent 80%);box-shadow:0 0 14px 5px rgba(47,224,198,.5),0 0 40px 18px rgba(47,224,198,.25),0 0 80px 38px rgba(47,224,198,.12);animation:lflick 3.1s ease-in-out infinite;flex-shrink:0}
+.mu-orb.playing{animation:lflick 1.4s ease-in-out infinite}
+.mu-meta{flex:1;min-width:0}
+.mu-cat{font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--aqua);margin-bottom:5px}
+.mu-title{font-family:'Cinzel',serif;font-size:19px;font-weight:600;color:#f0eaf6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mu-timing{font-size:13px;color:var(--txt-dim);margin-top:4px;font-variant-numeric:tabular-nums}
+
+.mu-bar-wrap{margin-bottom:18px}
+.mu-bar{position:relative;height:6px;border-radius:6px;background:rgba(47,224,198,.14);cursor:pointer;margin-bottom:6px}
+.mu-fill{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--aqua),var(--aqua-hi));width:0%;transition:width .4s linear;box-shadow:0 0 8px rgba(47,224,198,.5)}
+.mu-knob{position:absolute;top:50%;width:14px;height:14px;border-radius:50%;transform:translate(-7px,-50%);background:var(--aqua-hi);box-shadow:0 0 6px rgba(47,224,198,.8);left:0;transition:left .4s linear}
+.mu-times{display:flex;justify-content:space-between;font-size:12px;color:var(--txt-dim);font-variant-numeric:tabular-nums}
+
+.mu-ctrls{display:flex;justify-content:center;align-items:center;gap:18px;margin-bottom:28px}
+.mu-btn{background:none;border:none;cursor:pointer;font-size:22px;color:var(--aqua-hi);padding:8px;border-radius:50%;transition:all .18s;width:48px;height:48px;display:flex;align-items:center;justify-content:center}
+.mu-btn:hover{background:rgba(47,224,198,.1);color:#fff}
+.mu-btn.mu-play{width:56px;height:56px;font-size:26px;background:rgba(47,224,198,.15);border:1px solid rgba(47,224,198,.35)}
+.mu-btn.mu-play:hover{background:rgba(47,224,198,.28)}
+
+.mu-list-hd{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--txt-dim);margin-bottom:12px}
+.mu-row{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;cursor:pointer;transition:background .18s;border:1px solid transparent}
+.mu-row:hover{background:rgba(47,224,198,.06);border-color:rgba(47,224,198,.12)}
+.mu-row.on{background:rgba(47,224,198,.1);border-color:rgba(47,224,198,.25)}
+.mu-num{font-family:'Cinzel',serif;font-size:12px;color:var(--txt-dim);min-width:22px;text-align:center}
+.mu-row.on .mu-num{color:var(--aqua-hi)}
+.mu-rinfo{flex:1;min-width:0}
+.mu-rtitle{display:block;font-family:'Cinzel',serif;font-size:14px;color:#f0eaf6;font-weight:600}
+.mu-row.on .mu-rtitle{color:var(--aqua-hi)}
+.mu-rcat{font-size:12px;color:var(--txt-dim)}
+.mu-rdur{font-size:12px;color:var(--txt-dim);font-variant-numeric:tabular-nums;min-width:36px;text-align:right}
+.mu-rplay{background:none;border:1px solid rgba(47,224,198,.25);border-radius:50%;width:32px;height:32px;color:var(--aqua-hi);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .18s}
+.mu-rplay:hover{background:rgba(47,224,198,.15);border-color:var(--aqua-hi)}
+.mu-foot{font-size:13px;color:var(--txt-dim);text-align:center;margin-top:24px;font-style:italic}
+
+/* mini-player nella guida (luce) */
+#mu-mini{border-bottom:1px solid rgba(47,224,198,.18);margin-bottom:16px;padding-bottom:14px}
+.mm-label{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--aqua);margin-bottom:5px}
+.mm-title{font-size:14px;color:#f0eaf6;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:8px}
+.mm-ctrls{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:8px}
+.mm-btn{background:none;border:none;cursor:pointer;font-size:18px;color:var(--aqua-hi);padding:4px;border-radius:50%;transition:all .18s;width:34px;height:34px;display:flex;align-items:center;justify-content:center}
+.mm-btn:hover{background:rgba(47,224,198,.12)}
+.mm-btn.mm-play{font-size:20px;background:rgba(47,224,198,.14);border:1px solid rgba(47,224,198,.3);width:38px;height:38px}
+.mm-bar{height:4px;border-radius:4px;background:rgba(47,224,198,.14);margin:0 4px;overflow:hidden}
+.mm-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--aqua),var(--aqua-hi));width:0%;box-shadow:0 0 6px rgba(47,224,198,.5)}
 </style>
 </head>
 <body>
@@ -532,18 +596,32 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     <ol id="sentiero" class="path" aria-label="Le tappe del tuo cammino">
 
       <li class="stage" data-stage="start">
-        <button class="excard start" id="card-start" onclick="apriGuida('start',this)">
-          <div class="excover">
-            <div class="ring"></div>
-            <span class="sym">🕯️</span>
-          </div>
-          <div class="exbody">
-            <div class="exbadge">La prima tappa</div>
-            <h3>Inizia da qui</h3>
-            <p class="exdesc">Cos'è quest'area, come funziona il sentiero e cosa significa la piccola luce che ti accompagna. Due minuti per orientarti: poi il cammino è tuo.</p>
-            <span class="exgo">Apri la guida →</span>
-          </div>
-        </button>
+        <div class="start-row">
+          <button class="excard start" id="card-start" onclick="apriGuida('start',this)">
+            <div class="excover">
+              <div class="ring"></div>
+              <span class="sym">🕯️</span>
+            </div>
+            <div class="exbody">
+              <div class="exbadge">La prima tappa</div>
+              <h3>Inizia da qui</h3>
+              <p class="exdesc">Cos'è quest'area, come funziona il sentiero e cosa significa la piccola luce che ti accompagna. Due minuti per orientarti: poi il cammino è tuo.</p>
+              <span class="exgo">Apri la guida →</span>
+            </div>
+          </button>
+          <button class="excard mu-entry" onclick="show('music')">
+            <div class="excover">
+              <div class="ring"></div>
+              <span class="sym">🎵</span>
+            </div>
+            <div class="exbody">
+              <div class="exbadge">Playlist di Elisa</div>
+              <h3>Musica per Meditare</h3>
+              <p class="exdesc">Le musiche scelte da Elisa per accompagnare le tue meditazioni. Ascoltale quando vuoi: la riproduzione continua anche se navighi nel sentiero.</p>
+              <span class="exgo">Apri il player →</span>
+            </div>
+          </button>
+        </div>
       </li>
 
       <!-- le tappe successive nascono qui dal registro degli esercizi -->
@@ -551,7 +629,34 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     </ol>
   </section>
 
+  <!-- ============ MUSICA PER MEDITARE ============ -->
+  <section id="music">
+    <button class="mu-back" onclick="show('dash')">← Torna al Sentiero</button>
+    <div class="mu-hero">
+      <div class="mu-orb" id="mu-orb"></div>
+      <div class="mu-meta">
+        <div class="mu-cat" id="mu-cat">Scegli una traccia</div>
+        <div class="mu-title" id="mu-title">Musica per Meditare</div>
+        <div class="mu-timing"><span id="mu-cur">0:00</span> / <span id="mu-dur">--:--</span></div>
+      </div>
+    </div>
+    <div class="mu-bar-wrap">
+      <div class="mu-bar" id="mu-bar"><div class="mu-fill" id="mu-fill"></div><div class="mu-knob" id="mu-knob" style="left:0"></div></div>
+      <div class="mu-times"><span id="mu-cur2">0:00</span><span id="mu-dur2">--:--</span></div>
+    </div>
+    <div class="mu-ctrls">
+      <button class="mu-btn" onclick="muPrev()" aria-label="Precedente">⏮</button>
+      <button class="mu-btn mu-play" id="mu-play" onclick="muToggle()" aria-label="Play/Pausa">▶</button>
+      <button class="mu-btn" onclick="muNext()" aria-label="Successiva">⏭</button>
+    </div>
+    <div class="mu-list-hd">Tutte le tracce</div>
+    <div id="mu-list"></div>
+    <p class="mu-foot">La riproduzione continua anche se torni al sentiero.</p>
+  </section>
+
 </div>
+
+<audio id="mu-audio" preload="none"></audio>
 
 <footer>Il Cammino Interiore · Elisa Soul Medium · <a href="/">Torna al Libro</a></footer>
 
@@ -583,6 +688,17 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     <button class="gp-x" id="gpan-x" aria-label="Chiudi la guida">✕</button>
   </div>
   <div class="gp-bd">
+
+    <div id="mu-mini" style="display:none">
+      <div class="mm-label">In riproduzione</div>
+      <div class="mm-title" id="mm-title">—</div>
+      <div class="mm-ctrls">
+        <button class="mm-btn" onclick="muPrev()" aria-label="Precedente">⏮</button>
+        <button class="mm-btn mm-play" id="mm-play" onclick="muToggle()" aria-label="Play/Pausa">▶</button>
+        <button class="mm-btn" onclick="muNext()" aria-label="Successiva">⏭</button>
+      </div>
+      <div class="mm-bar"><div class="mm-fill" id="mm-fill"></div></div>
+    </div>
 
     <div class="gctx" id="gctx" style="display:none">
       <div class="gctx-t" id="gctxT"></div>
@@ -715,6 +831,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
   function show(view){
     document.getElementById('login').classList.toggle('on', view==='login');
     document.getElementById('dash').classList.toggle('on', view==='dash');
+    document.getElementById('music').classList.toggle('on', view==='music');
     if(view==='dash'){
       var u='';
       try{ u=localStorage.getItem(KEY)||''; }catch(e){}
@@ -1227,6 +1344,103 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
         .catch(function(){ show('dash'); }); /* offline: entra */
     } else { show('login'); }
   } else { show('login'); }
+})();
+</script>
+<script>
+/* ================= MUSIC PLAYER ================= */
+(function(){
+  var TRACKS=[
+    {f:'celtica-1.m4a',    t:'Celtica I',       cat:'Celtica'},
+    {f:'celtica-2.m4a',    t:'Celtica II',      cat:'Celtica'},
+    {f:'heteryc-1.m4a',    t:'Heteryc I',       cat:'Heteryc'},
+    {f:'heteryc-2.m4a',    t:'Heteryc II',      cat:'Heteryc'},
+    {f:'heteryc-3.m4a',    t:'Heteryc III',     cat:'Heteryc'},
+    {f:'natura.m4a',       t:'Natura',          cat:'Ambient'},
+    {f:'purificazione.m4a',t:'Purificazione',   cat:'Sacro'},
+    {f:'sciamana.m4a',     t:'Sciamana',        cat:'Sacro'}
+  ];
+  var au=document.getElementById('mu-audio');
+  var muIdx=-1, muDur=0;
+
+  function mmss(s){ s=Math.max(0,Math.floor(s||0)); return Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); }
+
+  function setText(id,v){ var el=document.getElementById(id); if(el)el.textContent=v; }
+  function setW(id,v){ var el=document.getElementById(id); if(el)el.style.width=v; }
+  function setL(id,v){ var el=document.getElementById(id); if(el)el.style.left=v; }
+
+  function muPlay(idx){
+    muIdx=idx;
+    var tr=TRACKS[idx];
+    au.src='/app/music/'+tr.f;
+    au.load();
+    au.play()['catch'](function(){});
+    setText('mu-cat', tr.cat);
+    setText('mu-title', tr.t);
+    setText('mm-title', tr.t);
+    document.querySelectorAll('.mu-row').forEach(function(r,i){
+      r.classList.toggle('on', i===idx);
+    });
+  }
+  window.muPlay=muPlay;
+
+  window.muToggle=function(){
+    if(muIdx<0){ muPlay(0); return; }
+    if(au.paused) au.play()['catch'](function(){}); else au.pause();
+  };
+  window.muNext=function(){ muPlay((muIdx+1)%TRACKS.length); };
+  window.muPrev=function(){ muPlay((muIdx-1+TRACKS.length)%TRACKS.length); };
+
+  function setPlayBtn(playing){
+    var sym=playing?'⏸':'▶';
+    setText('mu-play', sym); setText('mm-play', sym);
+    var orb=document.getElementById('mu-orb');
+    if(orb) orb.classList.toggle('playing', playing);
+    var mini=document.getElementById('mu-mini');
+    if(mini) mini.style.display=(muIdx>=0)?'block':'none';
+  }
+
+  au.addEventListener('play',  function(){ setPlayBtn(true); });
+  au.addEventListener('pause', function(){ setPlayBtn(false); });
+  au.addEventListener('ended', function(){ window.muNext(); });
+
+  au.addEventListener('loadedmetadata', function(){
+    muDur=au.duration;
+    setText('mu-dur',  mmss(au.duration));
+    setText('mu-dur2', mmss(au.duration));
+  });
+
+  au.addEventListener('timeupdate', function(){
+    if(!au.duration) return;
+    var f=au.currentTime/au.duration;
+    var pct=(f*100).toFixed(1)+'%';
+    setW('mu-fill', pct); setL('mu-knob', pct);
+    setW('mm-fill', pct);
+    setText('mu-cur',  mmss(au.currentTime));
+    setText('mu-cur2', mmss(au.currentTime));
+  });
+
+  /* barra cliccabile */
+  var bar=document.getElementById('mu-bar');
+  if(bar) bar.addEventListener('click', function(e){
+    if(!au.duration||muIdx<0) return;
+    var r=bar.getBoundingClientRect();
+    au.currentTime=Math.max(0,Math.min(1,(e.clientX-r.left)/r.width))*au.duration;
+  });
+
+  /* costruisci playlist */
+  var list=document.getElementById('mu-list');
+  if(list) TRACKS.forEach(function(tr,i){
+    var row=document.createElement('div');
+    row.className='mu-row';
+    row.innerHTML='<span class="mu-num">'+(i+1)+'</span>'
+      +'<div class="mu-rinfo"><span class="mu-rtitle">'+tr.t+'</span><span class="mu-rcat">'+tr.cat+'</span></div>'
+      +'<button class="mu-rplay" onclick="muPlay('+i+')" aria-label="Riproduci '+tr.t+'">▶</button>';
+    row.addEventListener('click', function(e){
+      if(e.target.tagName==='BUTTON') return;
+      muPlay(i);
+    });
+    list.appendChild(row);
+  });
 })();
 </script>
 </body>
