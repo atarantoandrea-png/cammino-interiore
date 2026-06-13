@@ -556,6 +556,19 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
 .mm-btn.mm-play{font-size:20px;background:radial-gradient(circle at 38% 32%,rgba(220,205,250,.24) 0%,rgba(185,163,227,.16) 45%,rgba(80,50,120,.3) 100%);border:1px solid rgba(185,163,227,.4);border-top-color:rgba(236,223,248,.5);width:38px;height:38px;box-shadow:0 4px 14px rgba(0,0,0,.42),0 0 16px rgba(185,163,227,.18),inset 0 1px 0 rgba(255,255,255,.08)}
 .mm-bar{height:5px;border-radius:5px;background:rgba(10,8,16,.75);margin:0 4px;cursor:pointer;box-shadow:inset 0 2px 4px rgba(0,0,0,.55),0 1px 0 rgba(255,255,255,.04)}
 .mm-fill{height:100%;border-radius:5px;background:linear-gradient(180deg,var(--glic-hi) 0%,var(--glic) 55%,#9070c8 100%);width:0%;box-shadow:0 0 8px rgba(185,163,227,.5),inset 0 1px 0 rgba(255,255,255,.18)}
+
+/* icone sempre dimensionate, anche dopo lo swap play/pausa via JS */
+.mu-btn svg{width:22px;height:22px;display:block}
+.mu-btn.mu-play svg{width:26px;height:26px}
+.mm-btn svg{width:16px;height:16px;display:block}
+.mm-btn.mm-play svg{width:18px;height:18px}
+.mu-rplay svg{width:13px;height:13px;display:block}
+/* le barre: il dito scorre la traccia, non la pagina; figli non intercettano il tap */
+.mu-bar,.mm-bar{touch-action:none}
+.mu-fill,.mu-knob,.mm-fill{pointer-events:none}
+/* area di tocco più ampia attorno alla barra sottile, senza alterarne il box */
+.mm-bar{position:relative}
+.mu-bar::before,.mm-bar::before{content:'';position:absolute;left:0;right:0;top:-11px;bottom:-11px}
 </style>
 </head>
 <body>
@@ -1421,16 +1434,31 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     setText('mu-cur2', mmss(au.currentTime));
   });
 
-  /* barre cliccabili */
-  function seekFromBar(el, e){
-    if(!au.duration||muIdx<0) return;
-    var r=el.getBoundingClientRect();
-    au.currentTime=Math.max(0,Math.min(1,(e.clientX-r.left)/r.width))*au.duration;
+  /* barre con scrubbing a trascinamento (i pointer events coprono mouse + tocco) */
+  function attachSeek(el){
+    if(!el) return;
+    function apply(e){
+      if(!au.duration||muIdx<0) return;
+      var r=el.getBoundingClientRect();
+      au.currentTime=Math.max(0,Math.min(1,(e.clientX-r.left)/r.width))*au.duration;
+    }
+    el.addEventListener('pointerdown', function(e){
+      if(!au.duration||muIdx<0) return;
+      e.preventDefault();
+      apply(e);
+      function move(ev){ apply(ev); }
+      function up(){
+        document.removeEventListener('pointermove',move);
+        document.removeEventListener('pointerup',up);
+        document.removeEventListener('pointercancel',up);
+      }
+      document.addEventListener('pointermove',move);
+      document.addEventListener('pointerup',up);
+      document.addEventListener('pointercancel',up);
+    });
   }
-  var bar=document.getElementById('mu-bar');
-  if(bar) bar.addEventListener('click', function(e){ seekFromBar(bar,e); });
-  var mmbar=document.getElementById('mm-bar');
-  if(mmbar) mmbar.addEventListener('click', function(e){ seekFromBar(mmbar,e); });
+  attachSeek(document.getElementById('mu-bar'));
+  attachSeek(document.getElementById('mm-bar'));
 
   /* costruisci playlist */
   var list=document.getElementById('mu-list');
