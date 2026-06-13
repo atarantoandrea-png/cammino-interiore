@@ -656,7 +656,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
 
 </div>
 
-<audio id="mu-audio" preload="none"></audio>
+<audio id="mu-audio" preload="metadata"></audio>
 
 <footer>Il Cammino Interiore · Elisa Soul Medium · <a href="/">Torna al Libro</a></footer>
 
@@ -697,7 +697,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
         <button class="mm-btn mm-play" id="mm-play" onclick="muToggle()" aria-label="Play/Pausa"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
         <button class="mm-btn" onclick="muNext()" aria-label="Successiva"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><rect x="17.5" y="5" width="2.5" height="14" rx="1.2"/><path d="M16 12 5 5v14z"/></svg></button>
       </div>
-      <div class="mm-bar"><div class="mm-fill" id="mm-fill"></div></div>
+      <div class="mm-bar" id="mm-bar"><div class="mm-fill" id="mm-fill"></div></div>
     </div>
 
     <div class="gctx" id="gctx" style="display:none">
@@ -832,6 +832,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     document.getElementById('login').classList.toggle('on', view==='login');
     document.getElementById('dash').classList.toggle('on', view==='dash');
     document.getElementById('music').classList.toggle('on', view==='music');
+    if(view==='music')muWarm();
     if(view==='dash'){
       var u='';
       try{ u=localStorage.getItem(KEY)||''; }catch(e){}
@@ -1369,11 +1370,26 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
   function setW(id,v){ var el=document.getElementById(id); if(el)el.style.width=v; }
   function setL(id,v){ var el=document.getElementById(id); if(el)el.style.left=v; }
 
+  function srcFor(i){ return '/app/music/'+TRACKS[i].f; }
+
+  /* scalda la connessione + il moov della prima traccia appena si apre
+     il player, così il primo tap su Play parte all'istante */
+  var warmed=-1;
+  function muWarm(){
+    if(muIdx>=0||warmed>=0) return;     /* già in riproduzione o già scaldato */
+    warmed=0;
+    au.src=srcFor(0);
+    au.load();                          /* fetch del moov + primo buffer, in anticipo */
+  }
+  window.muWarm=muWarm;
+
   function muPlay(idx){
     muIdx=idx;
     var tr=TRACKS[idx];
-    au.src='/app/music/'+tr.f;
-    au.load();
+    var url=srcFor(idx);
+    /* non ricaricare se è già la traccia caricata (es. quella scaldata):
+       evita un restart inutile e parte subito */
+    if(au.src.indexOf(url)===-1){ au.src=url; }
     au.play()['catch'](function(){});
     setText('mu-cat', tr.cat);
     setText('mu-title', tr.t);
