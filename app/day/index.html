@@ -324,10 +324,11 @@ input:focus,textarea:focus{border-color:rgba(205,178,242,.85);box-shadow:0 0 14p
 .spbtn.on{background:rgba(47,224,198,.15);border-color:var(--aqua-hi);color:var(--aqua-hi)}
 .back-row{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px}
 .back-home{padding:7px 18px;
-  font-family:'Cinzel',serif;font-size:11px;letter-spacing:.12em;color:var(--txt-dim);
-  border:1px solid rgba(185,163,227,.2);border-radius:20px;text-decoration:none;
-  transition:color .2s,border-color .2s}
-.back-home:hover{color:var(--glic-hi);border-color:rgba(185,163,227,.5)}
+  font-family:'Cinzel',serif;font-size:11px;letter-spacing:.12em;color:#ffd83a;
+  border:1px solid rgba(255,216,58,.55);border-radius:20px;text-decoration:none;
+  text-shadow:0 0 10px rgba(255,216,58,.5);box-shadow:0 0 12px rgba(255,216,58,.18);
+  transition:color .2s,border-color .2s,box-shadow .2s}
+.back-home:hover{color:#fff1a8;border-color:rgba(255,216,58,.9);box-shadow:0 0 18px rgba(255,216,58,.35)}
 
 /* ================= toast ================= */
 #saved{position:fixed;bottom:18px;left:50%;transform:translateX(-50%) translateY(60px);background:rgba(22,17,28,.96);color:var(--glic-hi);border:1px solid rgba(185,163,227,.5);border-radius:30px;padding:9px 20px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:.1em;z-index:70;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;box-shadow:0 0 18px rgba(150,110,215,.3)}
