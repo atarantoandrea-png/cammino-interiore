@@ -656,7 +656,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
 
 </div>
 
-<audio id="mu-audio" preload="metadata"></audio>
+<audio id="mu-audio" preload="none"></audio>
 
 <footer>Il Cammino Interiore · Elisa Soul Medium · <a href="/">Torna al Libro</a></footer>
 
@@ -832,7 +832,6 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     document.getElementById('login').classList.toggle('on', view==='login');
     document.getElementById('dash').classList.toggle('on', view==='dash');
     document.getElementById('music').classList.toggle('on', view==='music');
-    if(view==='music')muWarm();
     if(view==='dash'){
       var u='';
       try{ u=localStorage.getItem(KEY)||''; }catch(e){}
@@ -1352,14 +1351,14 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
 /* ================= MUSIC PLAYER ================= */
 (function(){
   var TRACKS=[
-    {f:'celtica-1.m4a',    t:'Celtica I',       cat:'Celtica'},
-    {f:'celtica-2.m4a',    t:'Celtica II',      cat:'Celtica'},
-    {f:'heteryc-1.m4a',    t:'Heteryc I',       cat:'Heteryc'},
-    {f:'heteryc-2.m4a',    t:'Heteryc II',      cat:'Heteryc'},
-    {f:'heteryc-3.m4a',    t:'Heteryc III',     cat:'Heteryc'},
-    {f:'natura.m4a',       t:'Natura',          cat:'Ambient'},
-    {f:'purificazione.m4a',t:'Purificazione',   cat:'Sacro'},
-    {f:'sciamana.m4a',     t:'Sciamana',        cat:'Sacro'}
+    {f:'celtica-1.mp3',    t:'Celtica I',       cat:'Celtica'},
+    {f:'celtica-2.mp3',    t:'Celtica II',      cat:'Celtica'},
+    {f:'heteryc-1.mp3',    t:'Heteryc I',       cat:'Heteryc'},
+    {f:'heteryc-2.mp3',    t:'Heteryc II',      cat:'Heteryc'},
+    {f:'heteryc-3.mp3',    t:'Heteryc III',     cat:'Heteryc'},
+    {f:'natura.mp3',       t:'Natura',          cat:'Ambient'},
+    {f:'purificazione.mp3',t:'Purificazione',   cat:'Sacro'},
+    {f:'sciamana.mp3',     t:'Sciamana',        cat:'Sacro'}
   ];
   var au=document.getElementById('mu-audio');
   var muIdx=-1, muDur=0;
@@ -1370,27 +1369,13 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
   function setW(id,v){ var el=document.getElementById(id); if(el)el.style.width=v; }
   function setL(id,v){ var el=document.getElementById(id); if(el)el.style.left=v; }
 
-  function srcFor(i){ return '/app/music/'+TRACKS[i].f; }
-
-  /* scalda la connessione + il moov della prima traccia appena si apre
-     il player, così il primo tap su Play parte all'istante */
-  var warmed=-1;
-  function muWarm(){
-    if(muIdx>=0||warmed>=0) return;     /* già in riproduzione o già scaldato */
-    warmed=0;
-    au.src=srcFor(0);
-    au.load();                          /* fetch del moov + primo buffer, in anticipo */
-  }
-  window.muWarm=muWarm;
-
   function muPlay(idx){
     muIdx=idx;
     var tr=TRACKS[idx];
-    var url=srcFor(idx);
-    /* non ricaricare se è già la traccia caricata (es. quella scaldata):
-       evita un restart inutile e parte subito */
-    if(au.src.indexOf(url)===-1){ au.src=url; }
-    au.play()['catch'](function(){});
+    au.src='/app/music/'+tr.f;
+    au.load();
+    au.play()['catch'](function(){ setPlayBtn(false); });
+    setPlayBtn(true);                 /* mostra subito la pausa, senza attendere l'evento */
     setText('mu-cat', tr.cat);
     setText('mu-title', tr.t);
     setText('mm-title', tr.t);
