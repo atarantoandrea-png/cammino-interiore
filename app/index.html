@@ -494,9 +494,9 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
 }
 
 /* ================= MUSICA ================= */
-.start-row{display:flex;gap:16px;align-items:stretch}
+.start-row{display:flex;gap:10px;align-items:stretch}
 .start-row .excard{flex:1;min-width:0}
-@media(max-width:600px){.start-row{flex-direction:column}}
+@media(max-width:480px){.start-row .excard .excover{height:100px}.start-row .excard h3{font-size:15px}.start-row .excard .exdesc{display:none}}
 
 .excard.mu-entry .excover{background:linear-gradient(145deg,rgba(10,42,38,.9),rgba(6,28,26,.95));border-bottom:1px solid rgba(47,224,198,.12)}
 .excard.mu-entry .excover .ring{border-color:rgba(47,224,198,.3);animation:none}
@@ -609,7 +609,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
               <span class="exgo">Apri la guida →</span>
             </div>
           </button>
-          <button class="excard mu-entry" onclick="show('music')">
+          <button class="excard mu-entry" onclick="showView('music')">
             <div class="excover">
               <div class="ring"></div>
               <span class="sym">🎵</span>
@@ -631,7 +631,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
 
   <!-- ============ MUSICA PER MEDITARE ============ -->
   <section id="music">
-    <button class="mu-back" onclick="show('dash')">← Torna al Sentiero</button>
+    <button class="mu-back" onclick="showView('dash')">← Torna al Sentiero</button>
     <div class="mu-hero">
       <div class="mu-orb" id="mu-orb"></div>
       <div class="mu-meta">
@@ -1344,6 +1344,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
         .catch(function(){ show('dash'); }); /* offline: entra */
     } else { show('login'); }
   } else { show('login'); }
+  window.showView = show;
 })();
 </script>
 <script>
