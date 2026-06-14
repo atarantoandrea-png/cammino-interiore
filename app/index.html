@@ -1523,5 +1523,108 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
 })();
 </script>
 <script src="https://pwa.elisasoulmedium.com/cammino-interiore/init.js"></script>
+
+<!-- ─── Invito attivazione notifiche (compare dentro l'app) ─────────────── -->
+<style>
+#ci-notif-ask{
+  position:fixed;left:0;right:0;bottom:0;z-index:9999;
+  display:flex;justify-content:center;
+  padding:0 16px calc(18px + env(safe-area-inset-bottom));
+  transform:translateY(140%);transition:transform .5s cubic-bezier(.2,.85,.25,1);
+  pointer-events:none;
+}
+#ci-notif-ask.show{transform:translateY(0)}
+#ci-notif-ask .sheet{
+  pointer-events:auto;width:100%;max-width:420px;
+  background:linear-gradient(180deg,rgba(34,28,46,.97),rgba(22,18,29,.97));
+  border:1px solid rgba(185,163,227,.25);border-radius:22px;
+  padding:22px 20px 20px;text-align:center;
+  box-shadow:0 18px 50px rgba(0,0,0,.6);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  animation:ci-rise .5s ease both;
+}
+#ci-notif-ask .bell{
+  width:54px;height:54px;margin:0 auto 12px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:26px;
+  background:radial-gradient(circle,rgba(185,163,227,.35),rgba(185,163,227,.08));
+  border:1px solid rgba(220,205,246,.3);
+}
+#ci-notif-ask h4{
+  font-family:'Cinzel',serif;font-weight:600;font-size:19px;letter-spacing:.02em;
+  color:var(--glic-hi,#dccdf6);margin:0 0 6px;
+}
+#ci-notif-ask p{
+  font-family:'Cormorant Garamond',serif;font-size:17px;line-height:1.4;
+  color:var(--txt-soft,#b7aec4);margin:0 0 16px;
+}
+#ci-notif-ask .row{display:flex;gap:10px}
+#ci-notif-ask button{
+  flex:1;border:none;cursor:pointer;border-radius:13px;padding:13px;
+  font-family:'Cinzel',serif;font-weight:600;font-size:14px;letter-spacing:.03em;
+  transition:transform .15s,opacity .2s;
+}
+#ci-notif-ask button:active{transform:scale(.97)}
+#ci-notif-ask .yes{background:linear-gradient(135deg,#c9b3ef,#a98fd6);color:#1c1428;box-shadow:0 6px 18px rgba(185,163,227,.35)}
+#ci-notif-ask .no{background:transparent;color:var(--txt-dim,#8d8499);border:1px solid rgba(185,163,227,.18)}
+</style>
+
+<div id="ci-notif-ask" role="dialog" aria-live="polite">
+  <div class="sheet">
+    <div class="bell">🔔</div>
+    <h4>Resta in contatto</h4>
+    <p>Attiva le notifiche per ricevere i messaggi e gli inviti di Elisa lungo il tuo cammino.</p>
+    <div class="row">
+      <button class="no" id="ci-notif-no">Più tardi</button>
+      <button class="yes" id="ci-notif-yes">Attiva</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  if (!('Notification' in window) || !('serviceWorker' in navigator)) return;
+
+  var ask = document.getElementById('ci-notif-ask');
+  var yes = document.getElementById('ci-notif-yes');
+  var no  = document.getElementById('ci-notif-no');
+
+  function hide(){ ask.classList.remove('show'); }
+
+  function maybeShow(){
+    // Già concesse o già negate dal browser: non chiedere
+    if (Notification.permission !== 'default') return;
+    // Rinviato di recente (entro 3 giorni)? non insistere
+    var snooze = parseInt(localStorage.getItem('ci_notif_snooze') || '0', 10);
+    if (snooze && (Date.now() - snooze) < 3 * 24 * 60 * 60 * 1000) return;
+    setTimeout(function(){ ask.classList.add('show'); }, 3500);
+  }
+
+  no.addEventListener('click', function(){
+    try { localStorage.setItem('ci_notif_snooze', String(Date.now())); } catch(e){}
+    hide();
+  });
+
+  yes.addEventListener('click', async function(){
+    yes.disabled = true; yes.textContent = 'Attivazione…';
+    try {
+      var sub = (window.PWAManager && window.PWAManager.subscribe)
+        ? await window.PWAManager.subscribe()
+        : null;
+      if (sub) {
+        yes.textContent = '✦ Attivate';
+        setTimeout(hide, 900);
+      } else {
+        // permesso negato o non disponibile
+        try { localStorage.setItem('ci_notif_snooze', String(Date.now())); } catch(e){}
+        hide();
+      }
+    } catch(e){ hide(); }
+  });
+
+  // window.PWAManager arriva da init.js; diamo un attimo che il SW sia pronto
+  if (document.readyState === 'complete') maybeShow();
+  else window.addEventListener('load', maybeShow);
+})();
+</script>
 </body>
 </html>
