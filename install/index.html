@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Installa · Il Cammino Interiore</title>
+
+<!-- Se l'app è già installata e viene aperta, vai subito all'app vera -->
+<script>
+  (function(){
+    var standalone = window.navigator.standalone === true ||
+      (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches);
+    if (standalone) { window.location.replace('/app'); }
+  })();
+</script>
+
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#b9a3e3">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Cammino">
+<link rel="apple-touch-icon" href="/src/icon-180.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cormorant+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --glic:#b9a3e3; --glic-hi:#dccdf6;
+  --gold:#c9a84c; --gold-pale:#e8d9ae;
+  --cele:#b9ddf6;
+  --txt:#e9e4f0; --txt-soft:#bcb3c9; --txt-dim:#8d8499;
+  --card:rgba(28,23,38,.66); --card-line:rgba(185,163,227,.18);
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Cormorant Garamond',Georgia,serif;
+  color:var(--txt);
+  min-height:100vh; min-height:100dvh;
+  background:
+    radial-gradient(120% 80% at 50% -10%, rgba(185,163,227,.16), transparent 60%),
+    radial-gradient(100% 70% at 50% 110%, rgba(201,168,76,.10), transparent 60%),
+    linear-gradient(180deg,#120e1b 0%,#0c0913 100%);
+  background-attachment:fixed;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding:28px 20px calc(28px + env(safe-area-inset-bottom));
+  position:relative; overflow-x:hidden;
+}
+/* stelline soffuse */
+body::before{
+  content:""; position:fixed; inset:0; pointer-events:none; opacity:.5;
+  background-image:
+    radial-gradient(1.5px 1.5px at 18% 22%, rgba(255,255,255,.5), transparent),
+    radial-gradient(1.5px 1.5px at 78% 16%, rgba(220,205,246,.45), transparent),
+    radial-gradient(1.2px 1.2px at 62% 70%, rgba(185,221,246,.4), transparent),
+    radial-gradient(1.3px 1.3px at 30% 80%, rgba(232,217,174,.4), transparent),
+    radial-gradient(1px 1px at 88% 60%, rgba(255,255,255,.4), transparent);
+}
+.card{
+  position:relative; z-index:1;
+  width:100%; max-width:430px;
+  background:var(--card);
+  border:1px solid var(--card-line);
+  border-radius:26px;
+  padding:34px 26px 30px;
+  text-align:center;
+  backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+  box-shadow:0 24px 70px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.05);
+  animation:rise .7s cubic-bezier(.2,.8,.25,1) both;
+}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.icon-wrap{
+  width:108px;height:108px;margin:0 auto 18px;position:relative;
+}
+.icon-wrap::after{
+  content:"";position:absolute;inset:-10px;border-radius:30px;
+  background:radial-gradient(circle,rgba(185,163,227,.35),transparent 70%);
+  filter:blur(8px);z-index:0;
+}
+.app-icon{
+  position:relative;z-index:1;
+  width:108px;height:108px;border-radius:25px;object-fit:cover;
+  border:1px solid rgba(220,205,246,.3);
+  box-shadow:0 10px 28px rgba(0,0,0,.5);
+}
+h1{
+  font-family:'Cinzel',serif;font-weight:600;
+  font-size:26px;letter-spacing:.02em;
+  color:var(--glic-hi);margin-bottom:6px;
+  text-shadow:0 2px 20px rgba(185,163,227,.3);
+}
+.tagline{font-size:18px;color:var(--txt-soft);line-height:1.45;margin-bottom:4px}
+.social{font-size:15px;color:var(--txt-dim);margin-top:8px;font-style:italic}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--card-line),transparent);margin:24px 0}
+
+/* Bottoni */
+.btn{
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  width:100%;border:none;cursor:pointer;
+  font-family:'Cinzel',serif;font-weight:600;font-size:16px;letter-spacing:.03em;
+  border-radius:15px;padding:16px 22px;
+  transition:transform .15s ease,box-shadow .25s ease,opacity .2s;
+}
+.btn:active{transform:scale(.975)}
+.btn-primary{
+  background:linear-gradient(135deg,#c9b3ef,#a98fd6);
+  color:#1c1428;
+  box-shadow:0 8px 26px rgba(185,163,227,.4);
+}
+.btn-primary:hover{box-shadow:0 10px 32px rgba(185,163,227,.55)}
+.btn-ghost{
+  background:transparent;color:var(--glic-hi);
+  border:1.5px solid var(--card-line);margin-top:12px;
+  font-family:'Cormorant Garamond',serif;font-weight:600;font-size:17px;letter-spacing:0;
+}
+.btn-ghost:hover{border-color:var(--glic);background:rgba(185,163,227,.07)}
+
+/* Istruzioni iOS */
+.steps{text-align:left;margin-top:4px}
+.steps-title{
+  font-family:'Cinzel',serif;font-size:13px;font-weight:600;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--gold-pale);margin-bottom:18px;text-align:center;
+}
+.step{display:flex;gap:14px;align-items:flex-start;margin-bottom:18px}
+.step-num{
+  flex-shrink:0;width:30px;height:30px;border-radius:50%;
+  background:linear-gradient(135deg,#c9b3ef,#a98fd6);color:#1c1428;
+  font-family:'Cinzel',serif;font-weight:700;font-size:14px;
+  display:flex;align-items:center;justify-content:center;margin-top:1px;
+  box-shadow:0 4px 12px rgba(185,163,227,.35);
+}
+.step-txt{font-size:18px;line-height:1.4;color:var(--txt);padding-top:3px}
+.step-txt strong{color:var(--glic-hi);font-weight:600}
+.ios-share{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:26px;height:26px;vertical-align:-7px;margin:0 2px;
+  border-radius:6px;background:rgba(185,221,246,.16);
+}
+.ios-share svg{width:15px;height:15px;fill:none;stroke:var(--cele);stroke-width:1.7}
+.hint{
+  font-size:15px;color:var(--txt-dim);text-align:center;
+  margin-top:6px;font-style:italic;line-height:1.4;
+}
+.success{
+  display:none;align-items:center;justify-content:center;gap:8px;
+  background:rgba(120,200,150,.12);border:1px solid rgba(120,200,150,.3);
+  color:#a8e0bd;border-radius:13px;padding:13px;font-size:16px;
+  font-family:'Cinzel',serif;font-weight:500;letter-spacing:.02em;margin-top:10px;
+}
+.success.show{display:flex;animation:rise .4s ease both}
+footer{
+  position:relative;z-index:1;
+  margin-top:22px;font-size:13px;color:var(--txt-dim);letter-spacing:.04em;opacity:.7;
+}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="icon-wrap">
+    <img class="app-icon" src="/src/icon-192.png" alt="Cammino Interiore">
+  </div>
+  <h1>Cammino Interiore</h1>
+  <p class="tagline">Il tuo percorso di crescita interiore</p>
+  <p class="social" id="social" hidden></p>
+
+  <div class="divider"></div>
+
+  <!-- ANDROID / DESKTOP: pulsante installa nativo -->
+  <button class="btn btn-primary" id="installBtn" hidden>⬇ Installa l'app</button>
+
+  <!-- ISTRUZIONI iOS -->
+  <div class="steps" id="iosSteps" hidden>
+    <p class="steps-title">Installa su iPhone / iPad</p>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-txt">Tocca l'icona <span class="ios-share"><svg viewBox="0 0 24 24"><path d="M12 15V4M12 4l-4 4M12 4l4 4M5 12v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg></span> <strong>Condividi</strong> nella barra di Safari</div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-txt">Scorri e tocca <strong>"Aggiungi a Home"</strong></div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-txt">Tocca <strong>Aggiungi</strong> in alto a destra</div>
+    </div>
+    <p class="hint">L'icona apparirà sulla tua schermata Home ✦<br>aprila per entrare nel Cammino</p>
+  </div>
+
+  <!-- ISTRUZIONI ANDROID fallback (se il prompt nativo non è disponibile) -->
+  <div class="steps" id="androidSteps" hidden>
+    <p class="steps-title">Installa su Android</p>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-txt">Tocca il menu <strong>⋮</strong> in alto a destra del browser</div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-txt">Tocca <strong>"Installa app"</strong> o <strong>"Aggiungi a schermata Home"</strong></div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-txt">Conferma con <strong>Installa</strong></div>
+    </div>
+  </div>
+
+  <div class="success" id="installedMsg">✦ App installata!</div>
+
+  <div class="divider"></div>
+
+  <button class="btn btn-ghost" id="notifBtn">🔔 Attiva le notifiche</button>
+  <div class="success" id="notifMsg">✦ Notifiche attivate!</div>
+</div>
+
+<footer>Il Cammino Interiore · Elisa Soul Medium</footer>
+
+<!-- Script PWA Manager: registra il service worker e gestisce le notifiche push -->
+<script src="https://pwa.elisasoulmedium.com/cammino-interiore/init.js"></script>
+
+<script>
+(function(){
+  var ua = navigator.userAgent || '';
+  var isIOS = /iPad|iPhone|iPod/.test(ua) ||
+              (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  var isAndroid = /Android/.test(ua);
+  var standalone = window.navigator.standalone === true ||
+    (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches);
+
+  var installBtn   = document.getElementById('installBtn');
+  var iosSteps     = document.getElementById('iosSteps');
+  var androidSteps = document.getElementById('androidSteps');
+  var installedMsg = document.getElementById('installedMsg');
+  var notifBtn     = document.getElementById('notifBtn');
+  var notifMsg     = document.getElementById('notifMsg');
+
+  // Se è già installata, mostra conferma (e in teoria il redirect a /app è già scattato)
+  if (standalone) {
+    installedMsg.classList.add('show');
+  } else if (isIOS) {
+    iosSteps.hidden = false;
+  } else if (isAndroid) {
+    // mostra le istruzioni manuali; se arriva il prompt nativo le sostituiamo col pulsante
+    androidSteps.hidden = false;
+  } else {
+    androidSteps.hidden = false;
+  }
+
+  // Prompt di installazione nativo (Chrome / Edge / Android)
+  var deferred = null;
+  window.addEventListener('beforeinstallprompt', function(e){
+    e.preventDefault();
+    deferred = e;
+    androidSteps.hidden = true;
+    installBtn.hidden = false;
+  });
+
+  installBtn.addEventListener('click', async function(){
+    if (!deferred) return;
+    deferred.prompt();
+    var res = await deferred.userChoice;
+    if (res.outcome === 'accepted') {
+      installBtn.hidden = true;
+      installedMsg.classList.add('show');
+    }
+    deferred = null;
+  });
+
+  window.addEventListener('appinstalled', function(){
+    installBtn.hidden = true;
+    androidSteps.hidden = true;
+    installedMsg.classList.add('show');
+  });
+
+  // Notifiche
+  if (!('Notification' in window)) {
+    notifBtn.hidden = true;
+  } else if (Notification.permission === 'granted') {
+    notifBtn.hidden = true;
+    notifMsg.classList.add('show');
+  }
+
+  notifBtn.addEventListener('click', async function(){
+    notifBtn.disabled = true;
+    var original = notifBtn.textContent;
+    notifBtn.textContent = 'Attivazione…';
+    try {
+      var sub = (window.PWAManager && window.PWAManager.subscribe)
+        ? await window.PWAManager.subscribe()
+        : null;
+      if (sub) {
+        notifBtn.hidden = true;
+        notifMsg.classList.add('show');
+      } else {
+        notifBtn.textContent = original;
+        notifBtn.disabled = false;
+      }
+    } catch(e) {
+      notifBtn.textContent = original;
+      notifBtn.disabled = false;
+    }
+  });
+})();
+</script>
+</body>
+</html>
