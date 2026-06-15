@@ -100,6 +100,21 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
   transition:color .2s,border-color .2s,box-shadow .2s}
 .back-home:hover{color:#fff1a8;border-color:rgba(255,216,58,.9);box-shadow:0 0 18px rgba(255,216,58,.35)}
 
+/* freccetta indietro FISSA: sempre visibile, piccola, elegante, semi-trasparente */
+.back-fab{position:fixed;z-index:50;
+  top:calc(12px + env(safe-area-inset-top,0px));
+  left:calc(12px + env(safe-area-inset-left,0px));
+  width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:var(--glic-hi);
+  background:rgba(16,12,24,.42);border:1px solid rgba(205,178,242,.32);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  box-shadow:0 4px 14px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.08);
+  transition:background .2s,border-color .2s,transform .2s,box-shadow .2s}
+.back-fab:hover{background:rgba(40,30,60,.62);border-color:rgba(220,205,250,.7);transform:translateY(-1px);
+  box-shadow:0 6px 18px rgba(120,80,200,.35), inset 0 1px 0 rgba(255,255,255,.12)}
+.back-fab svg{width:18px;height:18px;display:block;filter:drop-shadow(0 0 4px rgba(185,163,227,.4))}
+@media(max-width:520px){.back-fab{width:38px;height:38px}}
+
 /* ================= avanzamento del cammino ================= */
 .prog{margin:14px 18px 6px;padding:15px 18px;border:1px solid var(--card-line);border-radius:16px;
   background:linear-gradient(180deg, rgba(30,24,42,.8), rgba(18,14,26,.86));
@@ -207,6 +222,11 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
 </head>
 <body>
 
+<!-- freccetta indietro fissa: sempre visibile, torna alla pagina precedente -->
+<button id="back-fab" class="back-fab" type="button" aria-label="Torna indietro" title="Torna indietro">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+</button>
+
 <!-- la luce guida: sempre presente, si posa accanto alla sezione toccata; toccala per la sua voce -->
 <div id="lume" title="Tocca la luce per saperne di più"></div>
 
@@ -264,10 +284,13 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
 (function(){
   var inShell=false;
   try{ inShell = window.parent && window.parent!==window; }catch(e){ inShell=false; }
-  var back=document.getElementById('back-btn');
-  if(back) back.addEventListener('click', function(e){
-    if(inShell){ e.preventDefault(); window.parent.postMessage({t:'day:back'}, location.origin); }
-  });
+  function goBack(e){
+    if(e)e.preventDefault();
+    if(inShell){ window.parent.postMessage({t:'day:back'}, location.origin); }
+    else { history.back(); }
+  }
+  var back=document.getElementById('back-btn'); if(back) back.addEventListener('click', goBack);
+  var fab=document.getElementById('back-fab'); if(fab) fab.addEventListener('click', goBack);
 })();
 
 /* ====== il cammino: video + tracciamento + completamento manuale + luce guida ====== */
