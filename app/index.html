@@ -839,8 +839,26 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     {id:'capitolo2', title:'Il Mondo Interiore', badge:'Capitolo Secondo', sym:'🌌', route:'/app/capitolo2/', shell:true,
      desc:'Otto video con Elisa per conoscere le parti che ti compongono: il Bambino, l\'Adulto, l\'Ombra e le altre. Guardali con calma — poi si apriranno gli esercizi.',
      requires:{days:10}},
-    {id:'ex2', title:'Gli esercizi del Mondo Interiore', badge:'Più avanti nel cammino', sym:'🌙', route:null,
-     desc:'Dopo aver conosciuto le tue parti, qui le incontrerai una a una — con la voce di Elisa, la meditazione e il tuo diario. Stanno prendendo forma.',
+    {id:'bambino', title:'Il Bambino Interiore', badge:'Esercizi · 1ª parte', sym:'🌱', route:'/app/bambino/', shell:true,
+     desc:'La prima parte da incontrare: la più emotiva e vulnerabile di te. Due passi — il foglio delle tre domande e la meditazione.',
+     requires:{days:10}, needCap2:true},
+    {id:'adulto', title:'L\'Adulto Interiore', badge:'Esercizi · 2ª parte', sym:'🌳', route:null,
+     desc:'La parte presente e stabile, che contiene ed equilibra. Gli esercizi stanno prendendo forma.',
+     requires:{days:10}, soon:true},
+    {id:'ombra', title:'L\'Ombra Interiore', badge:'Esercizi · 3ª parte', sym:'🌑', route:null,
+     desc:'La parte rifiutata, da conoscere e integrare senza paura. Gli esercizi stanno prendendo forma.',
+     requires:{days:10}, soon:true},
+    {id:'padremadre', title:'Il Padre e la Madre', badge:'Esercizi · 4ª parte', sym:'🤲', route:null,
+     desc:'Le energie della cura e della protezione. Gli esercizi stanno prendendo forma.',
+     requires:{days:10}, soon:true},
+    {id:'mf', title:'Maschile e Femminile', badge:'Esercizi · 5ª parte', sym:'☯', route:null,
+     desc:'Le due energie che convivono in te. Gli esercizi stanno prendendo forma.',
+     requires:{days:10}, soon:true},
+    {id:'adolescente', title:'L\'Adolescente Interiore', badge:'Esercizi · 6ª parte', sym:'🔥', route:null,
+     desc:'La ricerca dell\'identità e della libertà. Gli esercizi stanno prendendo forma.',
+     requires:{days:10}, soon:true},
+    {id:'osservatore', title:'Creare l\'Osservatore', badge:'Esercizi · 7ª parte', sym:'👁', route:null,
+     desc:'La presenza che osserva tutte le parti. Lo alleni già con il Giornaliero; presto avrà i suoi esercizi.',
      requires:{days:10}, soon:true}
   ];
 
@@ -852,8 +870,10 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
       h:'<p>È la pratica di ogni giorno: lo <b>Spazio Emotivo</b>, l\'<b>Osservatorio Interiore</b> e il <b>Diario della Settimana</b>. Sulla card vedi i tuoi giorni di pratica e il tuo fiore. Apri l\'esercizio e lasciati guidare: dentro, la luce sarà con te sezione per sezione.</p>'},
     capitolo2:{t:'Il Mondo Interiore',
       h:'<p>Il secondo capitolo: otto video in cui Elisa ti presenta le parti che ti compongono. Si apre dopo <b>10 giorni</b> di Giornaliero — il tempo di prendere l\'abitudine di osservarti. Guardali liberamente, nell\'ordine che senti.</p>'},
+    bambino:{t:'Il Bambino Interiore',
+      h:'<p>La prima parte da incontrare. Si apre quando avrai <b>completato le otto lezioni</b> del Mondo Interiore. Dentro trovi due esercizi: il <b>foglio delle tre domande</b>, per ascoltare la tua emozione e da dove nasce, e la <b>meditazione</b>, per dare un volto al tuo bambino interiore.</p>'},
     ex2:{t:'Le tappe più avanti',
-      h:'<p>Dopo aver conosciuto le tue parti nel Mondo Interiore, arriveranno gli esercizi per incontrarle una a una. Non c\'è fretta — il sentiero non scappa.</p>'}
+      h:'<p>Dopo il Bambino arriveranno l\'Adulto, l\'Ombra e le altre parti, una a una. Non c\'è fretta — il sentiero non scappa.</p>'}
   };
 
   /* ================= toast ================= */
@@ -927,7 +947,11 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
 
   /* ================= il sentiero ================= */
   function guidaVista(){ try{ return !!localStorage.getItem('ovl-guida-vista'); }catch(e){ return false; } }
-  function unlockOk(ex){ return !ex.requires || days>=ex.requires.days; }
+  function cap2Done(){ try{ return localStorage.getItem('ovl-cap2-done:'+EMAIL)==='1'; }catch(e){ return false; } }
+  function unlockOk(ex){
+    if(ex.needCap2 && !cap2Done()) return false;   /* le parti si aprono dopo il Mondo Interiore */
+    return !ex.requires || days>=ex.requires.days;
+  }
 
   function fpSvg(){
     return '<svg class="fp" viewBox="0 0 24 40" width="22" height="36" fill="currentColor" aria-hidden="true"><use href="#fp-shoe"/></svg>';
@@ -1008,7 +1032,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     if(days===0 && !guidaVista())return 'start';
     for(var i=0;i<EXERCISES.length;i++){
       var ex=EXERCISES[i];
-      if(ex.route && ex.requires && days>=ex.requires.days)return ex.id;
+      if(ex.route && ex.requires && unlockOk(ex))return ex.id;
     }
     return 'day';
   }
@@ -1362,6 +1386,9 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     if(ex.id==='capitolo2'){
       msg='Il «Mondo Interiore» si apre dopo '+ex.requires.days+' giorni di Giornaliero: così arrivi con l\'osservatore già allenato e le lezioni ti parlano di più. '+fatti+
         ' Se senti di volerlo, puoi entrare comunque.';
+    } else if(ex.needCap2){
+      msg='Questa parte si apre quando avrai completato le otto lezioni del «Mondo Interiore» — è lì che conosci chi andrai a incontrare. '+
+        (cap2Done()?'':'Ti manca ancora qualche lezione. ')+'Se senti di volerlo, puoi entrare comunque.';
     } else if(ex.route){
       msg='Questa tappa si apre dopo '+ex.requires.days+' giorni di Giornaliero. '+fatti+' Se senti di volerlo, puoi entrare comunque.';
     } else {

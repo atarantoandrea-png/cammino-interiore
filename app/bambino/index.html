@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<script>
+/* accesso controllato da /app/ — qui si verifica solo la sessione, senza form */
+(function(){
+  var email, token;
+  try{ email=(localStorage.getItem('ovl-user')||'').trim().toLowerCase(); token=localStorage.getItem('ovl-session')||''; }
+  catch(e){ location.replace('/app/'); return; }
+  if(!email||!token){ location.replace('/app/'); return; }
+  fetch('/api/auth/verify',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,token:token})})
+    .then(function(r){return r.json();})
+    .then(function(d){ if(!d.ok) location.replace('/app/'); })
+    .catch(function(){});
+})();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Il Bambino Interiore · Esercizi · Elisa Soul Medium</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:rgba(0,0,0,0)}
+:root{
+  --glic:#b9a3e3; --glic-hi:#dccdf6; --glic-deep:#8a6fc0;
+  --gold:#c9a84c; --gold-pale:#e8d9ae;
+  --txt:#e6e0ec; --txt-soft:#b7aec4; --txt-dim:#8d8499;
+  --card:rgba(22,18,29,.72); --card-line:rgba(185,163,227,.16);
+  --field:rgba(10,8,14,.55); --field-line:rgba(185,163,227,.3);
+  --seen:#7fd6a0; --seen-glow:rgba(127,214,160,.5);
+}
+html{scroll-behavior:smooth}
+body{
+  background:
+    linear-gradient(180deg, rgba(8,7,11,.95) 0%, rgba(10,9,13,.92) 8%, rgba(11,10,14,.91) 100%),
+    url('/src/pagina.jpg') center top/100% auto repeat;
+  background-attachment:fixed;
+  font-family:'Cormorant Garamond',Georgia,serif;color:var(--txt);min-height:100vh;
+  --lm-c1:#fff0e4;--lm-mid:#e8924a;--lm-g1:rgba(240,178,108,.68);--lm-g2:rgba(215,138,68,.44);--lm-g3:rgba(185,98,42,.22);
+}
+/* colore della luce = livello (fiore) della persona */
+body.lt1{--lm-c1:#eef4f8;--lm-mid:#a8c8e0;--lm-g1:rgba(190,218,240,.88);--lm-g2:rgba(148,188,218,.54);--lm-g3:rgba(108,158,196,.27)}
+body.lt2{--lm-c1:#fffbe0;--lm-mid:#f0c840;--lm-g1:rgba(248,216,96,.88);--lm-g2:rgba(232,182,50,.54);--lm-g3:rgba(208,148,28,.27)}
+body.lt3{--lm-c1:#ffffff;--lm-mid:#b9ddf6;--lm-g1:rgba(190,225,252,.9);--lm-g2:rgba(126,190,242,.52);--lm-g3:rgba(88,160,228,.26)}
+body.lt4{--lm-c1:#ffffff;--lm-mid:#a7b6ef;--lm-g1:rgba(180,194,252,.9);--lm-g2:rgba(128,148,238,.52);--lm-g3:rgba(98,118,222,.26)}
+body.lt5{--lm-c1:#ffffff;--lm-mid:#ad7ff0;--lm-g1:rgba(206,170,255,.9);--lm-g2:rgba(164,112,246,.5);--lm-g3:rgba(128,76,226,.26)}
+body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:rgba(186,150,240,.56);--lm-g3:rgba(150,110,215,.3)}
+
+/* ===== luce guida ===== */
+#lume{position:absolute;left:0;top:0;z-index:40;width:56px;height:56px;margin:-28px 0 0 -28px;
+  pointer-events:auto;cursor:pointer;transition:transform 1.4s cubic-bezier(.45,.05,.25,1), opacity .8s ease;
+  animation:lflick 3.1s ease-in-out infinite}
+@keyframes lflick{0%,100%{filter:brightness(1)}50%{filter:brightness(1.28)}}
+#lume::after{content:'';position:absolute;inset:19px;border-radius:50%;
+  background:radial-gradient(circle at 38% 34%, var(--lm-c1) 0%, var(--lm-c1) 28%, var(--lm-mid) 58%, transparent 78%);
+  box-shadow:0 0 12px 4px var(--lm-g1),0 0 38px 16px var(--lm-g2),0 0 95px 44px var(--lm-g3),inset 0 0 4px rgba(220,215,245,.5)}
+#lume::before{content:'';position:absolute;inset:-6px;border-radius:50%;animation:lpulse 2.6s ease-in-out infinite}
+@keyframes lpulse{0%,100%{box-shadow:0 0 0 0 var(--lm-g2)}50%{box-shadow:0 0 0 7px transparent}}
+@media(max-width:760px){
+  #lume{width:42px;height:42px;margin:-21px 0 0 -21px}
+  #lume::after{inset:13px;box-shadow:0 0 8px 3px var(--lm-g1),0 0 24px 9px var(--lm-g2),0 0 54px 22px var(--lm-g3),inset 0 0 4px rgba(220,215,245,.5)}
+}
+
+/* ===== freccetta indietro fissa ===== */
+.back-fab{position:fixed;z-index:50;
+  top:calc(12px + env(safe-area-inset-top,0px));
+  left:calc(12px + env(safe-area-inset-left,0px));
+  width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:var(--glic-hi);
+  background:rgba(16,12,24,.42);border:1px solid rgba(205,178,242,.32);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  box-shadow:0 4px 14px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.08);
+  transition:background .2s,border-color .2s,transform .2s,box-shadow .2s}
+.back-fab:hover{background:rgba(40,30,60,.62);border-color:rgba(220,205,250,.7);transform:translateY(-1px);
+  box-shadow:0 6px 18px rgba(120,80,200,.35), inset 0 1px 0 rgba(255,255,255,.12)}
+.back-fab svg{width:18px;height:18px;display:block;filter:drop-shadow(0 0 4px rgba(185,163,227,.4))}
+@media(max-width:520px){.back-fab{width:38px;height:38px}}
+
+/* ===== colonna ===== */
+.page{max-width:760px;margin:0 auto;padding:calc(env(safe-area-inset-top,0px) + 8px) 0 48px;position:relative}
+@media(min-width:920px){.page{padding-top:calc(env(safe-area-inset-top,0px) + 14px)}}
+
+/* ===== header ===== */
+.hd{padding:26px 22px 16px;text-align:center}
+.hd .orn{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:12px}
+.hd .orn .l{width:80px;height:1px;background:linear-gradient(90deg,transparent,rgba(185,163,227,.6),transparent)}
+.hd .orn .d{width:6px;height:6px;border:1px solid var(--glic);transform:rotate(45deg)}
+.hd .cap{font-family:'Cinzel',serif;font-size:11px;font-weight:600;letter-spacing:.3em;color:var(--gold);text-shadow:0 0 14px rgba(201,168,76,.4);margin-bottom:8px}
+.hd h1{font-family:'Cinzel',serif;font-weight:600;font-size:clamp(23px,5.4vw,32px);letter-spacing:.07em;color:#f0eaf6;text-shadow:0 0 30px rgba(185,163,227,.35)}
+.hd .lead{font-size:16px;color:var(--txt-soft);margin:13px auto 0;max-width:560px;line-height:1.55}
+.hd .lead b{color:var(--gold-pale);font-weight:600}
+
+/* ===== HUB: le due icone/esercizi ===== */
+.exwrap{padding:8px 18px 0;display:flex;flex-direction:column;gap:14px}
+.exitem{display:flex;align-items:center;gap:15px;width:100%;text-align:left;cursor:pointer;
+  border:1px solid var(--card-line);border-radius:18px;padding:17px 18px;color:inherit;font-family:inherit;
+  background:linear-gradient(180deg, rgba(26,21,36,.8), rgba(16,13,23,.86));
+  box-shadow:0 6px 20px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.05);
+  transition:box-shadow .3s, border-color .3s, transform .3s}
+.exitem:hover{transform:translateY(-2px);border-color:rgba(205,178,242,.55);box-shadow:0 12px 30px rgba(120,80,200,.3)}
+.exitem.locked{opacity:.78}
+.exitem.seen{border-color:rgba(127,214,160,.42)}
+.exic{flex:none;width:54px;height:54px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;
+  background:radial-gradient(circle at 38% 30%, rgba(120,95,184,.5), rgba(40,30,62,.7));
+  border:1px solid rgba(185,163,227,.3);box-shadow:inset 0 1px 2px rgba(255,255,255,.12), 0 3px 10px rgba(0,0,0,.4)}
+.exitem.seen .exic{background:radial-gradient(circle at 38% 30%, rgba(127,214,160,.4), rgba(30,52,40,.7));border-color:rgba(127,214,160,.45)}
+.exmeta{flex:1;min-width:0}
+.extag{font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:.16em;color:var(--gold);opacity:.85;margin-bottom:3px}
+.exitem h3{font-family:'Cinzel',serif;font-weight:600;font-size:17px;color:#f0eaf6;line-height:1.25;margin-bottom:5px}
+.exitem p{font-size:14.5px;color:var(--txt-soft);line-height:1.45}
+.exarrow{flex:none;color:var(--glic);font-size:20px;opacity:.7}
+.exstate{flex:none;font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:.08em;color:var(--txt-dim);white-space:nowrap}
+.exitem.seen .exstate{color:var(--seen);text-shadow:0 0 8px var(--seen-glow)}
+.exitem.locked .exarrow{color:var(--gold-pale)}
+
+.hubnote{margin:18px 18px 0;text-align:center;font-size:14px;color:var(--txt-dim);line-height:1.55}
+.hubnote b{color:var(--gold-pale);font-weight:600}
+
+/* ===== vista esercizio (foglio) ===== */
+.view{display:none}
+.view.on{display:block}
+.vback{margin:2px 18px 10px;display:inline-flex;align-items:center;gap:6px;cursor:pointer;background:none;border:none;
+  font-family:'Cinzel',serif;font-size:11px;letter-spacing:.1em;color:var(--glic);padding:6px 0}
+.vback::before{content:'←'}
+.fbox{margin:0 18px;border:1px solid var(--card-line);border-radius:18px;padding:20px 18px 22px;
+  background:linear-gradient(180deg, rgba(26,21,36,.78), rgba(16,13,23,.85));box-shadow:0 6px 20px rgba(0,0,0,.4)}
+.fintro{font-size:15.5px;color:var(--txt-soft);line-height:1.6;margin-bottom:8px}
+.fintro b{color:var(--gold-pale);font-weight:600}
+.fq{margin-top:22px}
+.fq-n{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.2em;color:var(--gold);margin-bottom:6px}
+.fq-q{font-size:17px;color:#f0eaf6;line-height:1.4;margin-bottom:10px;font-weight:600}
+.fld label{display:block;font-family:'Cinzel',serif;font-size:10px;letter-spacing:.1em;color:var(--txt-dim);margin:12px 0 5px}
+textarea,input.fperche{width:100%;font-family:'Cormorant Garamond',serif;color:var(--txt);
+  background:var(--field);border:1px solid var(--field-line);border-radius:10px;padding:11px 13px;font-size:16px;line-height:1.5}
+textarea{min-height:70px;resize:vertical}
+textarea:focus,input.fperche:focus{outline:none;border-color:var(--glic-hi);box-shadow:0 0 0 1px rgba(220,205,250,.4), 0 0 16px rgba(150,110,215,.2)}
+.fperche-wrap{margin-top:6px;display:flex;flex-direction:column;gap:7px}
+.fperche{font-size:15px}
+.fwhy{font-style:italic;color:var(--txt-dim);font-size:13.5px;margin:14px 0 2px}
+
+.factions{display:flex;flex-wrap:wrap;gap:10px;margin:24px 18px 0;align-items:center;justify-content:center}
+.fbtn{font-family:'Cinzel',serif;font-size:11px;letter-spacing:.08em;cursor:pointer;padding:10px 20px;border-radius:22px;
+  border:1px solid rgba(185,163,227,.5);color:var(--glic-hi);background:linear-gradient(180deg, rgba(60,46,92,.6), rgba(34,26,52,.7));
+  box-shadow:0 3px 10px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.1);transition:all .2s}
+.fbtn:hover{border-color:rgba(205,178,242,.8);color:#fff;box-shadow:0 4px 14px rgba(120,80,200,.4)}
+.fbtn.gold{color:#2a2208;border-color:rgba(201,168,76,.8);background:linear-gradient(180deg, #e8d9ae, var(--gold));text-shadow:none}
+.fbtn.done{color:#0e2a1b;border-color:rgba(127,214,160,.8);background:linear-gradient(180deg, #9fe6bd, var(--seen))}
+.fbtn.done::before{content:'✓ '}
+.fhint{width:100%;text-align:center;font-size:13px;color:var(--txt-dim);font-style:italic}
+
+/* ===== area meditazione (placeholder) ===== */
+.medbox{margin:0 18px;border:1px dashed rgba(185,163,227,.32);border-radius:18px;padding:34px 22px;text-align:center;
+  background:linear-gradient(180deg, rgba(22,17,30,.6), rgba(14,11,20,.7))}
+.medbox .glyph{font-size:42px;filter:drop-shadow(0 0 16px var(--lm-g1));margin-bottom:14px}
+.medbox h3{font-family:'Cinzel',serif;font-size:18px;color:#f0eaf6;margin-bottom:10px}
+.medbox p{font-size:15px;color:var(--txt-soft);line-height:1.55;max-width:440px;margin:0 auto}
+.medbox p b{color:var(--gold-pale)}
+
+/* ===== pannello GUIDA (luce) ===== */
+#veil{position:fixed;inset:0;z-index:60;background:rgba(4,3,8,.72);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);opacity:0;pointer-events:none;transition:opacity .45s ease}
+#veil.on{opacity:1;pointer-events:auto}
+#gpan{position:fixed;z-index:61;left:50%;top:50%;transform:translate(-50%,-50%) scale(.96);width:min(720px,94vw);height:min(86vh,820px);
+  display:flex;flex-direction:column;border:1px solid rgba(185,163,227,.35);border-radius:18px;
+  background:linear-gradient(180deg, rgba(13,10,18,.97), rgba(10,8,14,.97)), url('/src/pagina.jpg') center/cover;
+  box-shadow:0 0 60px rgba(150,110,215,.25), 0 30px 80px rgba(0,0,0,.7);opacity:0;pointer-events:none;transition:opacity .45s ease, transform .45s ease}
+#gpan.on{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1)}
+.gp-hd{display:flex;align-items:center;gap:12px;padding:18px 20px 14px;border-bottom:1px solid rgba(185,163,227,.2)}
+.gp-orb{width:34px;height:34px;border-radius:50%;flex-shrink:0;background:radial-gradient(circle at 38% 34%, #fff 0%, #fff 30%, var(--lm-mid) 60%, transparent 80%);box-shadow:0 0 10px 3px var(--lm-g1), 0 0 26px 10px var(--lm-g2);animation:lflick 3.1s ease-in-out infinite}
+.gp-hd h2{font-family:'Cinzel',serif;font-size:17px;font-weight:600;color:#f0eaf6;flex:1}
+.gp-x{background:none;border:1px solid rgba(185,163,227,.4);color:var(--txt-soft);width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:15px}
+.gp-x:hover{color:#fff;border-color:var(--glic-hi)}
+.gp-bd{flex:1;overflow-y:auto;padding:18px 20px 26px;-webkit-overflow-scrolling:touch}
+.gp-bd p{font-size:16px;line-height:1.62;color:var(--txt-soft);margin-bottom:12px}
+.gp-bd p b{color:var(--gold-pale);font-weight:600}
+.gp-giorn{margin-top:18px;padding:14px 16px;border:1px solid rgba(201,168,76,.3);border-radius:14px;background:rgba(40,33,22,.45)}
+.gp-giorn p{margin:0;font-size:15px;color:var(--txt-soft)}
+
+#saved{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(60px);background:rgba(22,17,28,.96);color:var(--glic-hi);border:1px solid rgba(185,163,227,.5);border-radius:30px;padding:9px 20px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:.1em;z-index:70;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none}
+#saved.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media(max-width:520px){
+  .exwrap{padding:6px 13px 0}
+  .fbox{margin:0 13px}.factions{margin-left:13px;margin-right:13px}.medbox{margin:0 13px}
+  .exic{width:48px;height:48px;font-size:23px}
+}
+
+/* ===== stampa / salva come PDF ===== */
+@media print{
+  body{background:#fff;color:#111}
+  .back-fab,#lume,#gpan,#veil,#saved,.hd .orn,.vback,.factions{display:none!important}
+  #hub,#medit{display:none!important}
+  #foglio{display:block!important}
+  .fbox{border:none;box-shadow:none;background:none;margin:0;padding:0}
+  .fintro{color:#333}
+  .fq-q{color:#000}
+  textarea,input.fperche{border:1px solid #aaa;color:#000;background:#fff;min-height:48px}
+  .fwhy{color:#444}
+  .page{padding:0}
+}
+</style>
+</head>
+<body>
+
+<button id="back-fab" class="back-fab" type="button" aria-label="Indietro" title="Indietro">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+</button>
+
+<div id="lume" title="Tocca la luce per saperne di più"></div>
+
+<div class="page">
+
+  <header class="hd">
+    <div class="orn"><div class="l"></div><div class="d"></div><div class="l"></div></div>
+    <div class="cap">Esercizi · Mondo Interiore</div>
+    <h1>Il Bambino Interiore</h1>
+    <p class="lead">La parte emotiva e vulnerabile di te. Qui la incontri in <b>due passi</b>: prima ascoltandola con il foglio, poi accogliendola nella meditazione.</p>
+  </header>
+
+  <!-- ===== HUB: le due icone ===== -->
+  <section id="hub" class="view on">
+    <div class="exwrap">
+      <button class="exitem" id="ex-foglio" type="button">
+        <span class="exic">📝</span>
+        <span class="exmeta">
+          <span class="extag">Esercizio 1 · Il foglio</span>
+          <h3>Le tre domande</h3>
+          <p>Un foglio da compilare per ascoltare davvero la tua emozione e da dove nasce.</p>
+        </span>
+        <span class="exstate" id="st-foglio">Da fare</span>
+        <span class="exarrow">→</span>
+      </button>
+
+      <button class="exitem locked" id="ex-medit" type="button">
+        <span class="exic">🧘</span>
+        <span class="exmeta">
+          <span class="extag">Esercizio 2 · La meditazione</span>
+          <h3>Incontra il Bambino</h3>
+          <p>L'area di meditazione guidata dove dare un volto al tuo bambino interiore.</p>
+        </span>
+        <span class="exstate">In arrivo</span>
+        <span class="exarrow">→</span>
+      </button>
+    </div>
+    <div class="hubnote"><b>Un passo alla volta.</b> Fai questo esercizio una volta, con calma. E continua ogni giorno il Giornaliero: è ciò che integra tutto il cammino.</div>
+  </section>
+
+  <!-- ===== ESERCIZIO 1 · IL FOGLIO ===== -->
+  <section id="foglio" class="view">
+    <button class="vback" type="button" onclick="goHub()">Torna agli esercizi del Bambino</button>
+    <div class="fbox">
+      <p class="fintro">Dopo un'azione o una situazione che ti ha smosso qualcosa, fermati e osserva. Rispondi <b>scrivendo</b>, senza giudicarti. Per ogni risposta, chiediti <b>«perché» tre volte</b>: è così che si scende in profondità, oltre la prima risposta razionale.</p>
+
+      <div class="fq">
+        <div class="fq-n">Domanda 1</div>
+        <div class="fq-q">Che emozione sto provando in questo momento? È proporzionata a ciò che sta succedendo?</div>
+        <div class="fld"><label>La mia risposta</label><textarea data-k="q1" placeholder="Rabbia, frustrazione, gioia… senza giudicarla."></textarea></div>
+        <div class="fwhy">E ora, per tre volte: perché?</div>
+        <div class="fperche-wrap">
+          <input class="fperche" data-k="q1a" placeholder="Perché…">
+          <input class="fperche" data-k="q1b" placeholder="Perché…">
+          <input class="fperche" data-k="q1c" placeholder="Perché…">
+        </div>
+      </div>
+
+      <div class="fq">
+        <div class="fq-n">Domanda 2</div>
+        <div class="fq-q">Questa emozione mi ricorda qualcosa che sentivo già da piccola/o?</div>
+        <div class="fld"><label>La mia risposta</label><textarea data-k="q2" placeholder="Un ricordo, una sensazione, un momento…"></textarea></div>
+        <div class="fwhy">E ora, per tre volte: perché?</div>
+        <div class="fperche-wrap">
+          <input class="fperche" data-k="q2a" placeholder="Perché…">
+          <input class="fperche" data-k="q2b" placeholder="Perché…">
+          <input class="fperche" data-k="q2c" placeholder="Perché…">
+        </div>
+      </div>
+
+      <div class="fq">
+        <div class="fq-n">Domanda 3</div>
+        <div class="fq-q">Di cosa avrei avuto bisogno in quel momento?</div>
+        <div class="fld"><label>La mia risposta</label><textarea data-k="q3" placeholder="Tutte le volte che mi sono sentita/o così…"></textarea></div>
+        <div class="fwhy">E ora, per tre volte: perché?</div>
+        <div class="fperche-wrap">
+          <input class="fperche" data-k="q3a" placeholder="Perché…">
+          <input class="fperche" data-k="q3b" placeholder="Perché…">
+          <input class="fperche" data-k="q3c" placeholder="Perché…">
+        </div>
+      </div>
+    </div>
+
+    <div class="factions">
+      <button class="fbtn" type="button" id="btnSave">Salva</button>
+      <button class="fbtn" type="button" id="btnPrint">Stampa / Salva PDF</button>
+      <button class="fbtn gold" type="button" id="btnDone">Segna come completato</button>
+      <div class="fhint">Tutto resta salvato nel tuo account: potrai rileggerlo tra qualche mese e vedere quanto sei cambiata/o.</div>
+    </div>
+  </section>
+
+  <!-- ===== ESERCIZIO 2 · MEDITAZIONE (area placeholder) ===== -->
+  <section id="medit" class="view">
+    <button class="vback" type="button" onclick="goHub()">Torna agli esercizi del Bambino</button>
+    <div class="medbox">
+      <div class="glyph">🧘</div>
+      <h3>L'area di meditazione sta arrivando</h3>
+      <p>Qui Elisa ti guiderà, con la sua voce e una musica di sottofondo, a <b>incontrare e dare un volto</b> al tuo bambino interiore. La stiamo preparando con cura: la troverai qui a breve.</p>
+    </div>
+  </section>
+
+</div>
+
+<!-- pannello GUIDA -->
+<div id="veil"></div>
+<aside id="gpan" role="dialog" aria-label="La voce della Guida">
+  <div class="gp-hd"><div class="gp-orb"></div><h2 id="gpTitle">La Guida del Cammino</h2><button class="gp-x" id="gpX" aria-label="Chiudi">✕</button></div>
+  <div class="gp-bd" id="gpBody"></div>
+</aside>
+
+<div id="saved"></div>
+
+<script src="/app/lume.js?v=2"></script>
+<script>
+(function(){
+  var who='';
+  try{ who=(localStorage.getItem('ovl-user')||'').trim().toLowerCase(); }catch(e){}
+  /* colore della luce = livello della persona */
+  try{ if(window.OVL_LUME){ var _S=OVL_LUME.loadLocal(who); OVL_LUME.applyTier(OVL_LUME.allActiveDays(_S.store).length); } }catch(e){}
+
+  var inShell=false; try{ inShell=window.parent && window.parent!==window; }catch(e){}
+
+  /* ===== viste ===== */
+  var hub=document.getElementById('hub'), foglio=document.getElementById('foglio'), medit=document.getElementById('medit');
+  var view='hub';
+  function showView(v){
+    view=v;
+    hub.classList.toggle('on', v==='hub');
+    foglio.classList.toggle('on', v==='foglio');
+    medit.classList.toggle('on', v==='medit');
+    window.scrollTo({top:0,behavior:'smooth'});
+    lumeHome();
+  }
+  window.goHub=function(){ showView('hub'); };
+  document.getElementById('ex-foglio').addEventListener('click', function(){ showView('foglio'); });
+  document.getElementById('ex-medit').addEventListener('click', function(){ showView('medit'); });
+
+  /* ===== freccetta: dalla vista torna all'hub; dall'hub torna al Cammino ===== */
+  function goBack(){
+    if(view!=='hub'){ showView('hub'); return; }
+    if(inShell){ window.parent.postMessage({t:'day:back'}, location.origin); }
+    else { history.back(); }
+  }
+  document.getElementById('back-fab').addEventListener('click', goBack);
+
+  /* ===== il foglio: salvataggio nell'account ===== */
+  var FKEY='ovl-bambino-foglio:'+who;
+  var PKEY='ovl-bambino-prog:'+who;     /* { foglio:true, medit:true } */
+  var fields=[].slice.call(document.querySelectorAll('#foglio [data-k]'));
+  var data={};
+  try{ data=JSON.parse(localStorage.getItem(FKEY)||'{}')||{}; }catch(e){ data={}; }
+  fields.forEach(function(el){ if(data[el.getAttribute('data-k')]!=null) el.value=data[el.getAttribute('data-k')]; });
+  function collect(){ var o={}; fields.forEach(function(el){ o[el.getAttribute('data-k')]=el.value; }); return o; }
+  function saveForm(silent){
+    data=collect();
+    try{ localStorage.setItem(FKEY, JSON.stringify(data)); }catch(e){}
+    if(!silent) toast('Salvato nel tuo account');
+  }
+  var autoT=null;
+  fields.forEach(function(el){ el.addEventListener('input', function(){ clearTimeout(autoT); autoT=setTimeout(function(){ saveForm(true); }, 700); }); });
+  document.getElementById('btnSave').addEventListener('click', function(){ saveForm(false); });
+  document.getElementById('btnPrint').addEventListener('click', function(){ saveForm(true); window.print(); });
+
+  /* progresso esercizio */
+  var prog={}; try{ prog=JSON.parse(localStorage.getItem(PKEY)||'{}')||{}; }catch(e){ prog={}; }
+  function saveProg(){ try{ localStorage.setItem(PKEY, JSON.stringify(prog)); }catch(e){} }
+  function refreshProg(){
+    var bF=document.getElementById('btnDone'), it=document.getElementById('ex-foglio'), st=document.getElementById('st-foglio');
+    if(prog.foglio){ bF.classList.add('done'); bF.textContent='Completato'; it.classList.add('seen'); st.textContent='✓ Fatto'; }
+    else { bF.classList.remove('done'); bF.textContent='Segna come completato'; it.classList.remove('seen'); st.textContent='Da fare'; }
+  }
+  document.getElementById('btnDone').addEventListener('click', function(){
+    saveForm(true);
+    prog.foglio = !prog.foglio; saveProg(); refreshProg();
+    toast(prog.foglio?'Esercizio completato 🌱':'Segno rimosso');
+  });
+  refreshProg();
+
+  function toast(m){ var t=document.getElementById('saved'); t.textContent=m; t.classList.add('show'); clearTimeout(toast._t); toast._t=setTimeout(function(){ t.classList.remove('show'); }, 1800); }
+
+  /* ===== luce guida ===== */
+  var lume=document.getElementById('lume');
+  function isNarrow(){ return innerWidth<760; }
+  function moveLume(x,y){ lume.style.transform='translate3d('+(x|0)+'px,'+(y|0)+'px,0)'; }
+  function lumeHome(){ var hd=document.querySelector('.hd'); var x=isNarrow()?34:Math.max(34, innerWidth/2-400); moveLume(x, (hd?hd.offsetTop:20)+64); }
+  addEventListener('resize', lumeHome);
+
+  var INFO={
+    hub:{t:'Il Bambino Interiore', h:'<p>Il bambino interiore è la parte <b>emotiva, spontanea e vulnerabile</b> di te: custodisce i bisogni e le ferite dell\'infanzia che, da adulti, tornano a parlarci quando ci sentiamo non visti o non ascoltati.</p><p>Lo incontri in due passi: il <b>foglio delle tre domande</b> per ascoltarlo, e poi la <b>meditazione</b> per dargli un volto e accoglierlo.</p>'},
+    foglio:{t:'Le tre domande', h:'<p>Questo foglio nasce per <b>interrompere le reazioni automatiche</b>. Dopo qualcosa che ti ha smosso, fermati e osserva l\'emozione senza giudicarla.</p><p>Rispondi scrivendo, e per ogni risposta chiediti <b>«perché» tre volte</b>: le prime risposte sono razionali, è dal terzo perché che emerge la verità più profonda. Collegherai così il presente con il tuo passato emotivo.</p>'},
+    medit:{t:'La meditazione', h:'<p>Nel secondo esercizio entrerai nell\'area di meditazione: Elisa ti guiderà, con la voce e una musica di sottofondo, a <b>incontrare e dare un volto</b> al tuo bambino interiore. La stiamo preparando.</p>'}
+  };
+  var GIORN='<div class="gp-giorn"><p><b>Mentre fai questo lavoro, non smettere il Giornaliero.</b> La pratica di ogni giorno radica e integra tutto il cammino.</p></div>';
+  var veil=document.getElementById('veil'), gpan=document.getElementById('gpan');
+  function openGuide(){
+    var info=INFO[view]||INFO.hub;
+    document.getElementById('gpTitle').textContent=info.t;
+    document.getElementById('gpBody').innerHTML=info.h+GIORN;
+    document.getElementById('gpBody').scrollTop=0;
+    veil.classList.add('on'); gpan.classList.add('on');
+  }
+  function closeGuide(){ veil.classList.remove('on'); gpan.classList.remove('on'); }
+  lume.addEventListener('click', function(e){ e.stopPropagation(); openGuide(); });
+  veil.addEventListener('click', closeGuide);
+  document.getElementById('gpX').addEventListener('click', closeGuide);
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ if(gpan.classList.contains('on'))closeGuide(); else goBack(); } });
+
+  lumeHome();
+})();
+</script>
+
+</body>
+</html>
