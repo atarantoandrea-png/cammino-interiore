@@ -39,10 +39,10 @@ body{
 }
 
 /* ================= colonna ================= */
-.page{max-width:760px;margin:0 auto;padding:0 0 44px;position:relative}
+.page{max-width:760px;margin:0 auto;padding:0 0 48px;position:relative}
 @media(min-width:920px){.page{padding-top:14px}}
 
-/* ================= header ================= */
+/* ================= header del corso ================= */
 .hd{padding:26px 22px 14px;text-align:center}
 .hd .orn{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:12px}
 .hd .orn .l{width:80px;height:1px;background:linear-gradient(90deg,transparent,rgba(185,163,227,.6),transparent)}
@@ -51,7 +51,7 @@ body{
   color:var(--gold);text-shadow:0 0 14px rgba(201,168,76,.4);margin-bottom:8px}
 .hd h1{font-family:'Cinzel',serif;font-weight:600;font-size:clamp(23px,5.4vw,33px);letter-spacing:.07em;
   color:#f0eaf6;text-shadow:0 0 30px rgba(185,163,227,.35)}
-.hd .lead{font-size:16px;color:var(--txt-soft);margin:12px auto 0;max-width:540px;line-height:1.5}
+.hd .lead{font-size:16px;color:var(--txt-soft);margin:12px auto 0;max-width:560px;line-height:1.5}
 .hd .lead b{color:var(--gold-pale);font-weight:600}
 
 .back-row{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:18px}
@@ -62,53 +62,70 @@ body{
   transition:color .2s,border-color .2s,box-shadow .2s}
 .back-home:hover{color:#fff1a8;border-color:rgba(255,216,58,.9);box-shadow:0 0 18px rgba(255,216,58,.35)}
 
-/* ================= barra di avanzamento del capitolo ================= */
-.prog{margin:18px 18px 4px;padding:14px 18px;border:1px solid var(--card-line);border-radius:16px;
+/* ================= avanzamento del corso ================= */
+.prog{margin:18px 18px 6px;padding:15px 18px;border:1px solid var(--card-line);border-radius:16px;
   background:linear-gradient(180deg, rgba(30,24,42,.8), rgba(18,14,26,.86));
   box-shadow:0 4px 14px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.05)}
 .prog-top{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
-.prog-lab{font-family:'Cinzel',serif;font-size:12px;letter-spacing:.08em;color:var(--txt-soft)}
+.prog-lab{font-family:'Cinzel',serif;font-size:12px;letter-spacing:.07em;color:var(--txt-soft)}
 .prog-num{font-family:'Cinzel',serif;font-size:13px;color:var(--glic-hi)}
-.prog-bar{height:7px;border-radius:6px;margin-top:10px;overflow:hidden;
+.prog-bar{height:8px;border-radius:6px;margin-top:11px;overflow:hidden;
   background:rgba(10,8,14,.7);box-shadow:inset 0 1px 3px rgba(0,0,0,.6)}
 .prog-fill{height:100%;width:0;border-radius:6px;transition:width .7s cubic-bezier(.45,.05,.25,1);
   background:linear-gradient(90deg, var(--glic-deep), var(--glic-hi));
   box-shadow:0 0 12px rgba(185,163,227,.7)}
-.prog-note{font-size:14px;color:var(--txt-dim);margin-top:10px;line-height:1.45}
+.prog-note{font-size:14px;color:var(--txt-dim);margin-top:11px;line-height:1.45}
 .prog-note b{color:var(--gold-pale);font-weight:600}
 .prog.done .prog-fill{background:linear-gradient(90deg, #4fae78, var(--seen));box-shadow:0 0 14px var(--seen-glow)}
 
-/* ================= lista video ================= */
-.vlist{list-style:none;padding:18px 18px 0;display:flex;flex-direction:column;gap:20px}
-.vcard{border:1px solid var(--card-line);border-radius:18px;overflow:hidden;
+/* ================= curriculum (lezioni) ================= */
+.curr{list-style:none;padding:16px 18px 0;display:flex;flex-direction:column;gap:12px}
+.lesson{border:1px solid var(--card-line);border-radius:16px;overflow:hidden;
   background:linear-gradient(180deg, rgba(26,21,36,.78), rgba(16,13,23,.85));
-  box-shadow:0 8px 26px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.05);
-  transition:box-shadow .3s, border-color .3s, transform .3s}
-.vcard:hover{border-color:rgba(205,178,242,.5);box-shadow:0 12px 34px rgba(120,80,200,.3), inset 0 1px 0 rgba(255,255,255,.07)}
-.vcard.seen{border-color:rgba(127,214,160,.45);box-shadow:0 8px 26px rgba(0,0,0,.45), 0 0 0 1px rgba(127,214,160,.25), inset 0 1px 0 rgba(255,255,255,.05)}
+  box-shadow:0 6px 20px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.05);
+  transition:box-shadow .3s, border-color .3s}
+.lesson.open{border-color:rgba(205,178,242,.5);box-shadow:0 12px 32px rgba(120,80,200,.3), inset 0 1px 0 rgba(255,255,255,.07)}
+.lesson.seen{border-color:rgba(127,214,160,.4)}
 
-.vhead{display:flex;align-items:flex-start;gap:14px;padding:17px 18px 14px}
-.vnum{flex:none;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;
-  font-family:'Cinzel',serif;font-size:14px;font-weight:600;color:#2a2036;
+.lhead{width:100%;display:flex;align-items:center;gap:13px;padding:15px 16px;cursor:pointer;
+  background:none;border:none;text-align:left;color:inherit;font-family:inherit}
+.lnum{flex:none;width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-family:'Cinzel',serif;font-size:13px;font-weight:600;color:#2a2036;
   background:radial-gradient(circle at 38% 32%, var(--glic-hi), var(--glic) 62%, var(--glic-deep));
-  box-shadow:0 3px 10px rgba(120,80,200,.5), inset 0 1px 2px rgba(255,255,255,.6);
-  transition:background .3s, box-shadow .3s}
-.vcard.seen .vnum{background:radial-gradient(circle at 38% 32%, #d6f3e2, var(--seen) 62%, #4fae78);
-  box-shadow:0 3px 10px var(--seen-glow), inset 0 1px 2px rgba(255,255,255,.6)}
-.vmeta{flex:1;min-width:0}
-.vmeta h3{font-family:'Cinzel',serif;font-weight:600;font-size:17px;letter-spacing:.02em;color:#f0eaf6;line-height:1.3}
-.vmeta p{font-size:15px;color:var(--txt-soft);margin-top:6px;line-height:1.5}
-.vseen{flex:none;display:none;align-items:center;gap:5px;align-self:center;
-  font-family:'Cinzel',serif;font-size:10.5px;letter-spacing:.08em;color:var(--seen);
-  border:1px solid rgba(127,214,160,.5);border-radius:14px;padding:4px 10px;white-space:nowrap;
-  text-shadow:0 0 8px var(--seen-glow)}
-.vseen::before{content:'✓';font-size:12px}
-.vcard.seen .vseen{display:inline-flex}
+  box-shadow:0 3px 9px rgba(120,80,200,.5), inset 0 1px 2px rgba(255,255,255,.6);transition:background .3s, box-shadow .3s}
+.lesson.seen .lnum{color:#173a26;background:radial-gradient(circle at 38% 32%, #d6f3e2, var(--seen) 62%, #4fae78);
+  box-shadow:0 3px 9px var(--seen-glow), inset 0 1px 2px rgba(255,255,255,.6)}
+.lmeta{flex:1;min-width:0}
+.ltag{display:block;font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:.16em;color:var(--gold);opacity:.85;margin-bottom:3px}
+.ltitle{display:block;font-family:'Cinzel',serif;font-weight:600;font-size:15.5px;letter-spacing:.02em;color:#f0eaf6;line-height:1.25}
+.lstatus{flex:none;font-family:'Cinzel',serif;font-size:10px;letter-spacing:.06em;color:var(--txt-dim);white-space:nowrap}
+.lesson.seen .lstatus{color:var(--seen);text-shadow:0 0 8px var(--seen-glow)}
+.lchev{flex:none;width:11px;height:11px;border-right:2px solid var(--glic);border-bottom:2px solid var(--glic);
+  transform:rotate(45deg);transition:transform .3s;margin-left:2px;opacity:.7}
+.lesson.open .lchev{transform:rotate(-135deg)}
 
-/* contenitore video responsive 16:9 */
-.vframe{position:relative;padding-top:56.25%;height:0;overflow:hidden;background:#000;
-  border-top:1px solid rgba(185,163,227,.12)}
-.vframe iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
+/* corpo della lezione: si apre a fisarmonica */
+.lbody{max-height:0;overflow:hidden;transition:max-height .45s cubic-bezier(.4,0,.2,1)}
+.lesson.open .lbody{max-height:1400px}
+.ldesc{font-size:15px;color:var(--txt-soft);line-height:1.55;padding:2px 18px 14px}
+.lframe{position:relative;padding-top:56.25%;height:0;overflow:hidden;background:#000;
+  border-top:1px solid rgba(185,163,227,.12);border-bottom:1px solid rgba(185,163,227,.12)}
+.lframe iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
+.lframe .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-family:'Cinzel',serif;font-size:11px;letter-spacing:.12em;color:var(--txt-dim)}
+
+.lfoot{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:14px 16px 16px}
+.ldur{font-size:13px;color:var(--txt-dim);font-style:italic}
+.lcomplete{font-family:'Cinzel',serif;font-size:11px;letter-spacing:.08em;cursor:pointer;
+  padding:9px 18px;border-radius:22px;color:var(--glic-hi);
+  border:1px solid rgba(185,163,227,.5);background:linear-gradient(180deg, rgba(60,46,92,.6), rgba(34,26,52,.7));
+  box-shadow:0 3px 10px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.1);
+  transition:all .22s}
+.lcomplete:hover{border-color:rgba(205,178,242,.8);color:#fff;box-shadow:0 4px 14px rgba(120,80,200,.4)}
+.lcomplete.is-done{color:#0e2a1b;border-color:rgba(127,214,160,.8);
+  background:linear-gradient(180deg, #9fe6bd, var(--seen));text-shadow:none;
+  box-shadow:0 3px 12px var(--seen-glow), inset 0 1px 0 rgba(255,255,255,.4)}
+.lcomplete.is-done::before{content:'✓ '}
 
 /* ================= piè di pagina ================= */
 .foot{margin:30px 18px 0;text-align:center;font-size:14px;color:var(--txt-dim);line-height:1.55}
@@ -118,12 +135,13 @@ body{
 .foot b{color:var(--gold-pale);font-weight:600}
 
 @media(max-width:520px){
-  .vhead{padding:14px 14px 12px;gap:11px}
-  .vnum{width:34px;height:34px;font-size:12px}
-  .vmeta h3{font-size:15.5px}
-  .vmeta p{font-size:14px}
-  .vlist{padding:14px 13px 0;gap:16px}
-  .prog{margin:16px 13px 4px}
+  .lhead{padding:13px 13px;gap:11px}
+  .lnum{width:34px;height:34px;font-size:12px}
+  .ltitle{font-size:14.5px}
+  .ldesc{font-size:14px;padding:2px 14px 12px}
+  .curr{padding:14px 13px 0;gap:10px}
+  .prog{margin:16px 13px 6px}
+  .lfoot{padding:13px 14px 15px}
 }
 </style>
 </head>
@@ -135,123 +153,25 @@ body{
     <div class="orn"><div class="l"></div><div class="d"></div><div class="l"></div></div>
     <div class="cap">Capitolo Secondo</div>
     <h1>Il Mondo Interiore</h1>
-    <p class="lead">Otto incontri con le parti che ti compongono. Guardali con calma, nell'ordine che senti — <b>non c'è fretta</b>. Quando li avrai visti tutti, si apriranno gli esercizi per incontrarle una a una.</p>
+    <p class="lead">Otto lezioni con Elisa per conoscere le parti che ti compongono. Apri ogni lezione, guarda il video e <b>segnala come completata</b>. Quando le avrai completate tutte, si apriranno gli esercizi.</p>
     <div class="back-row">
       <a href="javascript:history.back()" id="back-btn" class="back-home">← Torna indietro</a>
       <a href="https://oltreilvelo.elisasoulmedium.com" target="_top" class="back-home">Il percorso</a>
     </div>
   </header>
 
-  <!-- avanzamento del capitolo -->
+  <!-- avanzamento del corso -->
   <div class="prog" id="prog">
     <div class="prog-top">
-      <span class="prog-lab">Il tuo cammino nel capitolo</span>
-      <span class="prog-num"><span id="seenN">0</span> di 8</span>
+      <span class="prog-lab">Avanzamento del corso</span>
+      <span class="prog-num"><span id="seenN">0</span> di 8 lezioni</span>
     </div>
     <div class="prog-bar"><div class="prog-fill" id="progFill"></div></div>
-    <div class="prog-note" id="progNote">Gli esercizi si sbloccano quando avrai conosciuto tutte le parti.</div>
+    <div class="prog-note" id="progNote">Gli esercizi si sbloccano quando avrai completato tutte le lezioni.</div>
   </div>
 
-  <!-- ====== gli 8 video (ordine: Ombra dopo Adulto, prima di Padre e Madre) ====== -->
-  <ol class="vlist">
-
-    <li class="vcard" data-id="mondo" data-vid="1200559554">
-      <div class="vhead">
-        <span class="vnum">I</span>
-        <div class="vmeta">
-          <h3>Il Mondo Interiore</h3>
-          <p>Il punto di partenza: perché conoscere le parti che ci compongono cambia tutto. Qui Elisa introduce il lavoro — e spiega perché questi esercizi si fanno una volta sola, non ogni giorno.</p>
-        </div>
-        <span class="vseen">Visto</span>
-      </div>
-      <div class="vframe"><iframe src="https://player.vimeo.com/video/1200559554?title=0&byline=0&portrait=0&badge=0" allow="fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
-    </li>
-
-    <li class="vcard" data-id="bambino" data-vid="1200559555">
-      <div class="vhead">
-        <span class="vnum">II</span>
-        <div class="vmeta">
-          <h3>Il Bambino Interiore</h3>
-          <p>La parte emotiva, spontanea e vulnerabile di noi. Custodisce i bisogni e le ferite dell'infanzia che, da adulti, continuano a parlarci.</p>
-        </div>
-        <span class="vseen">Visto</span>
-      </div>
-      <div class="vframe"><iframe src="https://player.vimeo.com/video/1200559555?title=0&byline=0&portrait=0&badge=0" allow="fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
-    </li>
-
-    <li class="vcard" data-id="adulto" data-vid="1200563875">
-      <div class="vhead">
-        <span class="vnum">III</span>
-        <div class="vmeta">
-          <h3>Adulto Interiore</h3>
-          <p>La parte presente e stabile. Se il bambino sente, l'adulto contiene: ascolta, rassicura e tiene insieme le emozioni senza esserne travolto.</p>
-        </div>
-        <span class="vseen">Visto</span>
-      </div>
-      <div class="vframe"><iframe src="https://player.vimeo.com/video/1200563875?title=0&byline=0&portrait=0&badge=0" allow="fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
-    </li>
-
-    <li class="vcard" data-id="ombra" data-vid="1200561278">
-      <div class="vhead">
-        <span class="vnum">IV</span>
-        <div class="vmeta">
-          <h3>L'Ombra Interiore</h3>
-          <p>La parte rifiutata. Non solo rabbia e paura, ma anche forza, creatività e verità che abbiamo imparato a reprimere. Non si combatte: si conosce.</p>
-        </div>
-        <span class="vseen">Visto</span>
-      </div>
-      <div class="vframe"><iframe src="https://player.vimeo.com/video/1200561278?title=0&byline=0&portrait=0&badge=0" allow="fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
-    </li>
-
-    <li class="vcard" data-id="padremadre" data-vid="1200563735">
-      <div class="vhead">
-        <span class="vnum">V</span>
-        <div class="vmeta">
-          <h3>Il Padre e la Madre</h3>
-          <p>Le energie della cura e della protezione. Imparare a diventare, per noi stessi, quella presenza che a volte ci è mancata.</p>
-        </div>
-        <span class="vseen">Visto</span>
-      </div>
-      <div class="vframe"><iframe src="https://player.vimeo.com/video/1200563735?title=0&byline=0&portrait=0&badge=0" allow="fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
-    </li>
-
-    <li class="vcard" data-id="mf" data-vid="1200561010">
-      <div class="vhead">
-        <span class="vnum">VI</span>
-        <div class="vmeta">
-          <h3>Maschile e Femminile</h3>
-          <p>Due energie che convivono in ognuno: l'ascolto e l'intuizione, l'azione e la direzione. L'equilibrio nasce quando collaborano.</p>
-        </div>
-        <span class="vseen">Visto</span>
-      </div>
-      <div class="vframe"><iframe src="https://player.vimeo.com/video/1200561010?title=0&byline=0&portrait=0&badge=0" allow="fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
-    </li>
-
-    <li class="vcard" data-id="adolescente" data-vid="1200559557">
-      <div class="vhead">
-        <span class="vnum">VII</span>
-        <div class="vmeta">
-          <h3>Adolescente Interiore</h3>
-          <p>La ricerca dell'identità: il bisogno di libertà, di essere visti e riconosciuti. La parte ribelle che chiede ascolto, non giudizio.</p>
-        </div>
-        <span class="vseen">Visto</span>
-      </div>
-      <div class="vframe"><iframe src="https://player.vimeo.com/video/1200559557?title=0&byline=0&portrait=0&badge=0" allow="fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
-    </li>
-
-    <li class="vcard" data-id="osservatore" data-vid="1200559556">
-      <div class="vhead">
-        <span class="vnum">VIII</span>
-        <div class="vmeta">
-          <h3>Creare l'Osservatore</h3>
-          <p>La presenza che guarda tutte le parti dall'esterno, senza giudicare. È il prerequisito di ogni esercizio — e lo alleni già ogni giorno con il Giornaliero.</p>
-        </div>
-        <span class="vseen">Visto</span>
-      </div>
-      <div class="vframe"><iframe src="https://player.vimeo.com/video/1200559556?title=0&byline=0&portrait=0&badge=0" allow="fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
-    </li>
-
-  </ol>
+  <!-- curriculum: generato da JS (lezioni a fisarmonica, video caricato all'apertura) -->
+  <ol class="curr" id="curr"></ol>
 
   <div class="foot">
     <div class="sep"><span class="l"></span><span class="d"></span><span class="l"></span></div>
@@ -260,8 +180,7 @@ body{
 
 </div>
 
-<!-- SDK del player Vimeo: serve solo per tracciare il progresso nell'app.
-     Le statistiche native di Vimeo (visualizzazioni, tempo guardato) si registrano comunque da sole. -->
+<!-- SDK del player Vimeo: per il tracciamento del progresso. Le statistiche native di Vimeo si registrano comunque da sole. -->
 <script src="https://player.vimeo.com/api/player.js"></script>
 <script>
 /* ====== integrazione con la shell /app/ (il capitolo apre in iframe) ====== */
@@ -274,27 +193,132 @@ body{
   });
 })();
 
-/* ====== tracciamento del progresso per-utente (segna "visto" e sblocca gli esercizi) ====== */
+/* ====== il corso: curriculum + tracciamento + completamento manuale ====== */
 (function(){
-  var SEEN_AT=0.85;          /* visto = guardato almeno l'85% */
+  /* ordine: Ombra dopo Adulto, prima di Padre e Madre */
+  var LESSONS=[
+    {id:'mondo',      n:'I',    vid:'1200559554', t:'Il Mondo Interiore',
+     d:'Il punto di partenza: perché conoscere le parti che ci compongono cambia tutto. Qui Elisa introduce il lavoro — e spiega perché questi esercizi si fanno una volta sola, non ogni giorno.'},
+    {id:'bambino',    n:'II',   vid:'1200559555', t:'Il Bambino Interiore',
+     d:'La parte emotiva, spontanea e vulnerabile di noi. Custodisce i bisogni e le ferite dell\'infanzia che, da adulti, continuano a parlarci.'},
+    {id:'adulto',     n:'III',  vid:'1200563875', t:'Adulto Interiore',
+     d:'La parte presente e stabile. Se il bambino sente, l\'adulto contiene: ascolta, rassicura e tiene insieme le emozioni senza esserne travolto.'},
+    {id:'ombra',      n:'IV',   vid:'1200561278', t:'L\'Ombra Interiore',
+     d:'La parte rifiutata. Non solo rabbia e paura, ma anche forza, creatività e verità che abbiamo imparato a reprimere. Non si combatte: si conosce.'},
+    {id:'padremadre', n:'V',    vid:'1200563735', t:'Il Padre e la Madre',
+     d:'Le energie della cura e della protezione. Imparare a diventare, per noi stessi, quella presenza che a volte ci è mancata.'},
+    {id:'mf',         n:'VI',   vid:'1200561010', t:'Maschile e Femminile',
+     d:'Due energie che convivono in ognuno: l\'ascolto e l\'intuizione, l\'azione e la direzione. L\'equilibrio nasce quando collaborano.'},
+    {id:'adolescente',n:'VII',  vid:'1200559557', t:'Adolescente Interiore',
+     d:'La ricerca dell\'identità: il bisogno di libertà, di essere visti e riconosciuti. La parte ribelle che chiede ascolto, non giudizio.'},
+    {id:'osservatore',n:'VIII', vid:'1200559556', t:'Creare l\'Osservatore',
+     d:'La presenza che guarda tutte le parti dall\'esterno, senza giudicare. È il prerequisito di ogni esercizio — e lo alleni già ogni giorno con il Giornaliero.'}
+  ];
+  var TOT=LESSONS.length;
+  var SEEN_AT=0.85;     /* visto = guardato almeno l'85% (oltre a poterlo segnare a mano) */
+
   var who='';
   try{ who=(localStorage.getItem('ovl-user')||'').trim().toLowerCase(); }catch(e){}
-  var KEY='ovl-cap2:'+who;   /* mappa { idVideo: percentualeMassima } */
+  var KEY='ovl-cap2:'+who;            /* { idLezione: percentualeMassima (1 = completata) } */
   var DONE='ovl-cap2-done:'+who;
 
   var prog={};
   try{ prog=JSON.parse(localStorage.getItem(KEY)||'{}')||{}; }catch(e){ prog={}; }
   function save(){ try{ localStorage.setItem(KEY, JSON.stringify(prog)); }catch(e){} }
 
-  var cards=[].slice.call(document.querySelectorAll('.vcard'));
-  var TOT=cards.length;
-
   function isSeen(id){ return (prog[id]||0) >= SEEN_AT; }
+  function mmss(s){ if(!s||isNaN(s))return ''; s=Math.round(s); var m=Math.floor(s/60); var r=s%60; return m+':'+(r<10?'0':'')+r; }
+
+  /* costruisco il curriculum */
+  var curr=document.getElementById('curr');
+  var players={};   /* id -> Vimeo.Player (creato all'apertura) */
+  var nodes={};     /* id -> {li, status, btn, dur} */
+
+  LESSONS.forEach(function(L, i){
+    var li=document.createElement('li');
+    li.className='lesson'; li.setAttribute('data-id', L.id);
+    li.innerHTML=
+      '<button class="lhead" aria-expanded="false">'+
+        '<span class="lnum">'+L.n+'</span>'+
+        '<span class="lmeta"><span class="ltag">Lezione '+(i+1)+' di '+TOT+'</span><span class="ltitle">'+L.t+'</span></span>'+
+        '<span class="lstatus"></span>'+
+        '<span class="lchev"></span>'+
+      '</button>'+
+      '<div class="lbody">'+
+        '<p class="ldesc">'+L.d+'</p>'+
+        '<div class="lframe"><div class="ph">Tocca per caricare il video…</div></div>'+
+        '<div class="lfoot">'+
+          '<span class="ldur">Voce di Elisa</span>'+
+          '<button class="lcomplete" type="button">Segna come completata</button>'+
+        '</div>'+
+      '</div>';
+    curr.appendChild(li);
+
+    var head=li.querySelector('.lhead');
+    var status=li.querySelector('.lstatus');
+    var btn=li.querySelector('.lcomplete');
+    var dur=li.querySelector('.ldur');
+    nodes[L.id]={li:li, status:status, btn:btn, dur:dur};
+
+    head.addEventListener('click', function(){ toggle(L, li, head); });
+    btn.addEventListener('click', function(){
+      var done = isSeen(L.id);
+      prog[L.id] = done ? 0 : 1;   /* toggle: completa / annulla */
+      save(); refresh();
+    });
+  });
+
+  function toggle(L, li, head){
+    var opening = !li.classList.contains('open');
+    /* fisarmonica: una lezione aperta alla volta (più leggera, stile corso) */
+    LESSONS.forEach(function(O){
+      var n=nodes[O.id];
+      if(n.li!==li && n.li.classList.contains('open')){
+        n.li.classList.remove('open');
+        n.li.querySelector('.lhead').setAttribute('aria-expanded','false');
+        if(players[O.id] && players[O.id].pause) try{ players[O.id].pause(); }catch(e){}
+      }
+    });
+    li.classList.toggle('open', opening);
+    head.setAttribute('aria-expanded', opening?'true':'false');
+    if(opening){ ensurePlayer(L, li); setTimeout(function(){ head.scrollIntoView({behavior:'smooth', block:'start'}); }, 120); }
+  }
+
+  /* crea l'iframe + il player solo alla prima apertura della lezione */
+  function ensurePlayer(L, li){
+    if(players[L.id]) return;
+    var frame=li.querySelector('.lframe');
+    var ifr=document.createElement('iframe');
+    ifr.src='https://player.vimeo.com/video/'+L.vid+'?title=0&byline=0&portrait=0&badge=0';
+    ifr.setAttribute('allow','autoplay; fullscreen; picture-in-picture');
+    ifr.setAttribute('allowfullscreen','');
+    frame.innerHTML=''; frame.appendChild(ifr);
+
+    if(!(window.Vimeo && Vimeo.Player)){ players[L.id]=true; return; }
+    var p;
+    try{ p=new Vimeo.Player(ifr); }catch(e){ players[L.id]=true; return; }
+    players[L.id]=p;
+    var dur=nodes[L.id].dur;
+    p.getDuration().then(function(s){ if(s) dur.textContent='Voce di Elisa · '+mmss(s); }).catch(function(){});
+    var lastSaved=prog[L.id]||0;
+    p.on('timeupdate', function(d){
+      if(d.percent>(prog[L.id]||0)){
+        prog[L.id]=d.percent;
+        if(d.percent-lastSaved>=0.05){ lastSaved=d.percent; save(); }
+        if(d.percent>=SEEN_AT && !nodes[L.id].li.classList.contains('seen')){ save(); refresh(); }
+      }
+    });
+    p.on('ended', function(){ prog[L.id]=1; save(); refresh(); });
+  }
+
   function refresh(){
     var n=0;
-    cards.forEach(function(li){
-      var id=li.getAttribute('data-id');
-      if(isSeen(id)){ li.classList.add('seen'); n++; }
+    LESSONS.forEach(function(L){
+      var nd=nodes[L.id]; var done=isSeen(L.id);
+      nd.li.classList.toggle('seen', done);
+      if(done){ n++; nd.status.textContent='✓ Completata'; nd.btn.classList.add('is-done'); nd.btn.textContent='Completata'; }
+      else if((prog[L.id]||0)>0){ nd.status.textContent='In corso'; nd.btn.classList.remove('is-done'); nd.btn.textContent='Segna come completata'; }
+      else { nd.status.textContent='Da vedere'; nd.btn.classList.remove('is-done'); nd.btn.textContent='Segna come completata'; }
     });
     document.getElementById('seenN').textContent=n;
     document.getElementById('progFill').style.width=(n/TOT*100)+'%';
@@ -302,35 +326,14 @@ body{
     var box=document.getElementById('prog');
     if(n>=TOT){
       box.classList.add('done');
-      note.innerHTML='Hai conosciuto tutte le parti del tuo mondo interiore. <b>Gli esercizi sono pronti per te.</b>';
+      note.innerHTML='Hai completato tutte le lezioni del Mondo Interiore. <b>Gli esercizi sono pronti per te.</b>';
       try{ localStorage.setItem(DONE,'1'); }catch(e){}
     } else {
       box.classList.remove('done');
-      note.innerHTML='Gli esercizi si sbloccano quando avrai conosciuto tutte le parti. <b>Te ne mancano '+(TOT-n)+'.</b>';
+      note.innerHTML='Gli esercizi si sbloccano quando avrai completato tutte le lezioni. <b>Te ne mancano '+(TOT-n)+'.</b>';
     }
   }
   refresh();
-
-  /* aggancio il player Vimeo a ogni video, se l'SDK è disponibile */
-  if(window.Vimeo && Vimeo.Player){
-    cards.forEach(function(li){
-      var id=li.getAttribute('data-id');
-      var iframe=li.querySelector('iframe');
-      if(!iframe) return;
-      var player;
-      try{ player=new Vimeo.Player(iframe); }catch(e){ return; }
-      var lastSaved=prog[id]||0;
-      player.on('timeupdate', function(d){
-        if(d.percent>(prog[id]||0)){
-          prog[id]=d.percent;
-          /* salvo a scatti dell'~5% per non scrivere a ogni frame */
-          if(d.percent-lastSaved>=0.05){ lastSaved=d.percent; save(); }
-          if(d.percent>=SEEN_AT && !li.classList.contains('seen')){ save(); refresh(); }
-        }
-      });
-      player.on('ended', function(){ prog[id]=1; save(); refresh(); });
-    });
-  }
 })();
 </script>
 
