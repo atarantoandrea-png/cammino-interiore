@@ -149,6 +149,28 @@ textarea:focus,input.fperche:focus{outline:none;border-color:var(--glic-hi);box-
 .fbtn.done::before{content:'✓ '}
 .fhint{width:100%;text-align:center;font-size:13px;color:var(--txt-dim);font-style:italic}
 
+/* video di Elisa in cima al foglio */
+.fvideo{margin:0 18px 16px}
+.fvintro{font-size:15px;color:var(--txt-soft);line-height:1.55;margin-bottom:10px;text-align:center}
+.fvintro b{color:var(--gold-pale);font-weight:600}
+.lframe{position:relative;padding-top:56.25%;height:0;overflow:hidden;background:#000;border-radius:14px;border:1px solid rgba(185,163,227,.2)}
+.lframe iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
+.lframe .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif;font-size:11px;letter-spacing:.12em;color:var(--txt-dim)}
+
+/* zone del foglio (ogni domanda = una zona per la luce) */
+.fzone{position:relative;padding:18px 4px 16px;border-top:1px solid rgba(185,163,227,.12);scroll-margin-top:70px;transition:background .3s}
+.fzone:first-of-type{border-top:none}
+.fzone.lit{background:linear-gradient(90deg, rgba(185,163,227,.07), transparent 70%)}
+.fq-help{font-size:14.5px;color:var(--txt-soft);line-height:1.55;margin:8px 0 6px}
+.fq-help b{color:var(--gold-pale);font-weight:600}
+.fprop{display:flex;flex-direction:column;gap:8px;margin-top:4px}
+.fradio{display:flex;align-items:center;gap:9px;font-size:15px;color:var(--txt-soft);cursor:pointer;
+  padding:9px 12px;border:1px solid var(--field-line);border-radius:10px;background:var(--field);transition:border-color .2s}
+.fradio:hover{border-color:rgba(205,178,242,.6)}
+.fradio input{accent-color:var(--glic);width:16px;height:16px}
+.fclose{font-size:15px;color:var(--txt-soft);line-height:1.6;margin-top:20px;padding-top:16px;border-top:1px solid rgba(185,163,227,.14)}
+.fclose b{color:var(--gold-pale);font-weight:600}
+
 /* ===== area meditazione (placeholder) ===== */
 .medbox{margin:0 18px;border:1px dashed rgba(185,163,227,.32);border-radius:18px;padding:34px 22px;text-align:center;
   background:linear-gradient(180deg, rgba(22,17,30,.6), rgba(14,11,20,.7))}
@@ -188,12 +210,14 @@ textarea:focus,input.fperche:focus{outline:none;border-color:var(--glic-hi);box-
 /* ===== stampa / salva come PDF ===== */
 @media print{
   body{background:#fff;color:#111}
-  .back-fab,#lume,#gpan,#veil,#saved,.hd .orn,.vback,.factions{display:none!important}
+  .back-fab,#lume,#gpan,#veil,#saved,.hd .orn,.vback,.factions,.fvideo{display:none!important}
   #hub,#medit{display:none!important}
   #foglio{display:block!important}
   .fbox{border:none;box-shadow:none;background:none;margin:0;padding:0}
-  .fintro{color:#333}
+  .fintro,.fq-help,.fclose{color:#333}
+  .fzone{border-top:1px solid #ccc;background:none}
   .fq-q{color:#000}
+  .fradio{border:1px solid #aaa;color:#000}
   textarea,input.fperche{border:1px solid #aaa;color:#000;background:#fff;min-height:48px}
   .fwhy{color:#444}
   .page{padding:0}
@@ -248,44 +272,69 @@ textarea:focus,input.fperche:focus{outline:none;border-color:var(--glic-hi);box-
   <!-- ===== ESERCIZIO 1 · IL FOGLIO ===== -->
   <section id="foglio" class="view">
     <button class="vback" type="button" onclick="goHub()">Torna agli esercizi del Bambino</button>
-    <div class="fbox">
-      <p class="fintro">Dopo un'azione o una situazione che ti ha smosso qualcosa, fermati e osserva. Rispondi <b>scrivendo</b>, senza giudicarti. Per ogni risposta, chiediti <b>«perché» tre volte</b>: è così che si scende in profondità, oltre la prima risposta razionale.</p>
+    <div class="fvideo">
+      <p class="fvintro">Guarda prima il video: <b>Elisa ti spiega l'esercizio</b>. Poi compila il foglio qui sotto, con calma.</p>
+      <div class="lframe" id="fvframe"><div class="ph">Carico il video…</div></div>
+    </div>
 
-      <div class="fq">
-        <div class="fq-n">Domanda 1</div>
-        <div class="fq-q">Che emozione sto provando in questo momento? È proporzionata a ciò che sta succedendo?</div>
-        <div class="fld"><label>La mia risposta</label><textarea data-k="q1" placeholder="Rabbia, frustrazione, gioia… senza giudicarla."></textarea></div>
-        <div class="fwhy">E ora, per tre volte: perché?</div>
+    <div class="fbox">
+      <p class="fintro">Questo esercizio si fa <b>quando senti un disagio dopo un'azione o una situazione</b>. Prima ferma quel momento, poi osserva — rispondi <b>scrivendo</b>, senza giudicarti. Dopo ogni risposta chiediti <b>«perché» tre volte</b>: le prime risposte sono razionali, è dal terzo perché che emerge la verità più profonda.</p>
+
+      <div class="fzone" data-zone="situazione">
+        <div class="fq-n">Per cominciare · Il momento</div>
+        <div class="fq-q">Da quale situazione parti?</div>
+        <p class="fq-help">Pensa a un momento recente in cui hai reagito, o hai sentito qualcosa che ti ha lasciato un disagio: una discussione, una reazione tua o di qualcun altro, un dolore dopo un gesto. Tutto l'esercizio parte da qui: le domande dopo si riferiscono a <b>questo</b> momento.</p>
+        <div class="fld"><label>La situazione o l'azione</label><textarea data-k="sit" placeholder="Cos'è successo? Cosa hai fatto, o cosa è accaduto?"></textarea></div>
+      </div>
+
+      <div class="fzone" data-zone="emozione">
+        <div class="fq-n">Domanda 1 · L'emozione</div>
+        <div class="fq-q">Che emozione sto provando rispetto a questa situazione?</div>
+        <p class="fq-help">Dalle un nome, <b>senza giudicarla</b>: può essere negativa o positiva — rabbia, frustrazione, rancore, gioia… Non esiste un'emozione sbagliata.</p>
+        <div class="fld"><label>L'emozione che provo</label><textarea data-k="q1" placeholder="Sto provando…"></textarea></div>
+        <p class="fq-help"><b>È proporzionata a ciò che è successo?</b> Cioè: questa emozione è grande quanto la situazione la giustifica, oppure è <i>più forte</i> di quanto il momento richiederebbe? Se la senti amplificata, vuol dire che qualcosa di più profondo dentro di te — il tuo bambino interiore — si è attivato.</p>
+        <div class="fld"><label>La tua risposta</label>
+          <div class="fprop">
+            <label class="fradio"><input type="radio" name="prop" data-k="prop" value="proporzionata"> Sì, è proporzionata alla situazione</label>
+            <label class="fradio"><input type="radio" name="prop" data-k="prop" value="amplificata"> No, è più forte — la sento amplificata</label>
+            <label class="fradio"><input type="radio" name="prop" data-k="prop" value="non-so"> Non riesco ancora a dirlo</label>
+          </div>
+        </div>
+        <div class="fwhy">E ora, per tre volte: perché provo questa emozione?</div>
         <div class="fperche-wrap">
           <input class="fperche" data-k="q1a" placeholder="Perché…">
-          <input class="fperche" data-k="q1b" placeholder="Perché…">
-          <input class="fperche" data-k="q1c" placeholder="Perché…">
+          <input class="fperche" data-k="q1b" placeholder="Perché… (vai più a fondo)">
+          <input class="fperche" data-k="q1c" placeholder="Perché… (la verità vera)">
         </div>
       </div>
 
-      <div class="fq">
-        <div class="fq-n">Domanda 2</div>
+      <div class="fzone" data-zone="ricordo">
+        <div class="fq-n">Domanda 2 · Il ricordo</div>
         <div class="fq-q">Questa emozione mi ricorda qualcosa che sentivo già da piccola/o?</div>
-        <div class="fld"><label>La mia risposta</label><textarea data-k="q2" placeholder="Un ricordo, una sensazione, un momento…"></textarea></div>
+        <p class="fq-help">Serve a <b>collegare il presente con il tuo passato emotivo</b>: spesso l'emozione di oggi è la stessa di allora, e capire da dove viene la rende meno potente.</p>
+        <div class="fld"><label>La mia risposta</label><textarea data-k="q2" placeholder="Un ricordo, una sensazione, un momento dell'infanzia…"></textarea></div>
         <div class="fwhy">E ora, per tre volte: perché?</div>
         <div class="fperche-wrap">
           <input class="fperche" data-k="q2a" placeholder="Perché…">
-          <input class="fperche" data-k="q2b" placeholder="Perché…">
-          <input class="fperche" data-k="q2c" placeholder="Perché…">
+          <input class="fperche" data-k="q2b" placeholder="Perché… (vai più a fondo)">
+          <input class="fperche" data-k="q2c" placeholder="Perché… (la verità vera)">
         </div>
       </div>
 
-      <div class="fq">
-        <div class="fq-n">Domanda 3</div>
+      <div class="fzone" data-zone="bisogno">
+        <div class="fq-n">Domanda 3 · Il bisogno</div>
         <div class="fq-q">Di cosa avrei avuto bisogno in quel momento?</div>
-        <div class="fld"><label>La mia risposta</label><textarea data-k="q3" placeholder="Tutte le volte che mi sono sentita/o così…"></textarea></div>
+        <p class="fq-help">Pensa a tutte le volte che ti sei sentita/o così — nel passato e adesso. <b>Di cosa avresti avuto bisogno</b> per stare bene? È la voce del tuo bambino interiore che chiede di essere ascoltata.</p>
+        <div class="fld"><label>La mia risposta</label><textarea data-k="q3" placeholder="Avrei avuto bisogno di…"></textarea></div>
         <div class="fwhy">E ora, per tre volte: perché?</div>
         <div class="fperche-wrap">
           <input class="fperche" data-k="q3a" placeholder="Perché…">
-          <input class="fperche" data-k="q3b" placeholder="Perché…">
-          <input class="fperche" data-k="q3c" placeholder="Perché…">
+          <input class="fperche" data-k="q3b" placeholder="Perché… (vai più a fondo)">
+          <input class="fperche" data-k="q3c" placeholder="Perché… (la verità vera)">
         </div>
       </div>
+
+      <p class="fclose">Questo lavoro interrompe le <b>reazioni automatiche</b> che vengono dalle ferite del passato. Dopo il foglio, nel secondo esercizio darai un <b>volto</b> al tuo bambino interiore con la meditazione. E ricorda: continua ogni giorno il Giornaliero — è ciò che integra tutto il cammino.</p>
     </div>
 
     <div class="factions">
@@ -317,6 +366,7 @@ textarea:focus,input.fperche:focus{outline:none;border-color:var(--glic-hi);box-
 
 <div id="saved"></div>
 
+<script src="https://player.vimeo.com/api/player.js"></script>
 <script src="/app/lume.js?v=2"></script>
 <script>
 (function(){
@@ -336,7 +386,11 @@ textarea:focus,input.fperche:focus{outline:none;border-color:var(--glic-hi);box-
     foglio.classList.toggle('on', v==='foglio');
     medit.classList.toggle('on', v==='medit');
     window.scrollTo({top:0,behavior:'smooth'});
-    lumeHome();
+    if(v==='foglio'){
+      ensureVideo();
+      var z0=foglio.querySelector('.fzone');
+      if(z0){ setTimeout(function(){ lightUp(z0); }, 420); } else lumeHome();
+    } else { lumeHome(); }
   }
   window.goHub=function(){ showView('hub'); };
   document.getElementById('ex-foglio').addEventListener('click', function(){ showView('foglio'); });
@@ -356,15 +410,24 @@ textarea:focus,input.fperche:focus{outline:none;border-color:var(--glic-hi);box-
   var fields=[].slice.call(document.querySelectorAll('#foglio [data-k]'));
   var data={};
   try{ data=JSON.parse(localStorage.getItem(FKEY)||'{}')||{}; }catch(e){ data={}; }
-  fields.forEach(function(el){ if(data[el.getAttribute('data-k')]!=null) el.value=data[el.getAttribute('data-k')]; });
-  function collect(){ var o={}; fields.forEach(function(el){ o[el.getAttribute('data-k')]=el.value; }); return o; }
+  fields.forEach(function(el){
+    var k=el.getAttribute('data-k'); if(data[k]==null) return;
+    if(el.type==='radio'){ el.checked=(el.value===data[k]); } else { el.value=data[k]; }
+  });
+  function collect(){ var o={}; fields.forEach(function(el){
+    var k=el.getAttribute('data-k');
+    if(el.type==='radio'){ if(el.checked) o[k]=el.value; } else { o[k]=el.value; }
+  }); return o; }
   function saveForm(silent){
     data=collect();
     try{ localStorage.setItem(FKEY, JSON.stringify(data)); }catch(e){}
     if(!silent) toast('Salvato nel tuo account');
   }
   var autoT=null;
-  fields.forEach(function(el){ el.addEventListener('input', function(){ clearTimeout(autoT); autoT=setTimeout(function(){ saveForm(true); }, 700); }); });
+  fields.forEach(function(el){
+    var ev=el.type==='radio'?'change':'input';
+    el.addEventListener(ev, function(){ clearTimeout(autoT); autoT=setTimeout(function(){ saveForm(true); }, 600); });
+  });
   document.getElementById('btnSave').addEventListener('click', function(){ saveForm(false); });
   document.getElementById('btnPrint').addEventListener('click', function(){ saveForm(true); window.print(); });
 
@@ -385,22 +448,68 @@ textarea:focus,input.fperche:focus{outline:none;border-color:var(--glic-hi);box-
 
   function toast(m){ var t=document.getElementById('saved'); t.textContent=m; t.classList.add('show'); clearTimeout(toast._t); toast._t=setTimeout(function(){ t.classList.remove('show'); }, 1800); }
 
-  /* ===== luce guida ===== */
+  /* ===== video di Elisa nel foglio (caricato alla prima apertura) ===== */
+  function ensureVideo(){
+    var f=document.getElementById('fvframe'); if(!f || f.getAttribute('data-loaded')==='1') return;
+    f.setAttribute('data-loaded','1');
+    var ifr=document.createElement('iframe');
+    ifr.src='https://player.vimeo.com/video/1201477236?title=0&byline=0&portrait=0&badge=0';
+    ifr.setAttribute('allow','autoplay; fullscreen; picture-in-picture');
+    ifr.setAttribute('allowfullscreen','');
+    f.innerHTML=''; f.appendChild(ifr);
+  }
+
+  /* anteprima: la card "Esercizio 1" mostra la copertina del video (da Vimeo) */
+  (function(){
+    var ic=document.querySelector('#ex-foglio .exic'); if(!ic) return;
+    fetch('https://vimeo.com/api/oembed.json?url=https://vimeo.com/1201477236')
+      .then(function(r){ return r.json(); })
+      .then(function(d){ if(d&&d.thumbnail_url){ ic.textContent=''; ic.style.backgroundImage='url('+d.thumbnail_url+')'; ic.style.backgroundSize='cover'; ic.style.backgroundPosition='center'; } })
+      .catch(function(){});
+  })();
+
+  /* ===== luce guida: per-domanda, come nel Giornaliero ===== */
   var lume=document.getElementById('lume');
+  var litZone=null, curZone=null;
   function isNarrow(){ return innerWidth<760; }
   function moveLume(x,y){ lume.style.transform='translate3d('+(x|0)+'px,'+(y|0)+'px,0)'; }
-  function lumeHome(){ var hd=document.querySelector('.hd'); var x=isNarrow()?34:Math.max(34, innerWidth/2-400); moveLume(x, (hd?hd.offsetTop:20)+64); }
-  addEventListener('resize', lumeHome);
+  function docPos(el){ var x=0,y=0; while(el){ x+=el.offsetLeft; y+=el.offsetTop; el=el.offsetParent; } return {x:x,y:y}; }
+  function lumeHome(){ if(litZone)litZone.classList.remove('lit'); litZone=null; curZone=null;
+    var hd=document.querySelector('.hd'); var x=isNarrow()?34:Math.max(34, innerWidth/2-400); moveLume(x, (hd?hd.offsetTop:20)+64); }
+  function lightUp(zone){
+    if(!zone){ lumeHome(); return; }
+    if(litZone && litZone!==zone) litZone.classList.remove('lit');
+    litZone=zone; curZone=zone.getAttribute('data-zone'); zone.classList.add('lit');
+    var p=docPos(zone), w=zone.offsetWidth;
+    if(isNarrow()){
+      /* alto a DESTRA della domanda: il testo è a sinistra, la destra resta libera */
+      var y=p.y-16; if(y<6)y=6;
+      moveLume(p.x + w - 18, y);
+    } else {
+      /* desktop: nel margine a sinistra accanto alla domanda */
+      var lx=p.x-34;
+      if(lx<28){ moveLume(p.x + w - 18, Math.max(6, p.y-16)); }
+      else { moveLume(lx, p.y + 22); }
+    }
+  }
+  /* la luce segue la domanda toccata o in cui si scrive (solo nel foglio) */
+  document.addEventListener('focusin', function(e){ if(view!=='foglio')return; var z=e.target.closest('.fzone'); if(z)lightUp(z); });
+  document.addEventListener('click', function(e){ if(view!=='foglio'||e.target.closest('#lume'))return; var z=e.target.closest('.fzone'); if(z)lightUp(z); });
+  addEventListener('resize', function(){ if(view==='foglio' && litZone) lightUp(litZone); else lumeHome(); });
 
   var INFO={
     hub:{t:'Il Bambino Interiore', h:'<p>Il bambino interiore è la parte <b>emotiva, spontanea e vulnerabile</b> di te: custodisce i bisogni e le ferite dell\'infanzia che, da adulti, tornano a parlarci quando ci sentiamo non visti o non ascoltati.</p><p>Lo incontri in due passi: il <b>foglio delle tre domande</b> per ascoltarlo, e poi la <b>meditazione</b> per dargli un volto e accoglierlo.</p>'},
-    foglio:{t:'Le tre domande', h:'<p>Questo foglio nasce per <b>interrompere le reazioni automatiche</b>. Dopo qualcosa che ti ha smosso, fermati e osserva l\'emozione senza giudicarla.</p><p>Rispondi scrivendo, e per ogni risposta chiediti <b>«perché» tre volte</b>: le prime risposte sono razionali, è dal terzo perché che emerge la verità più profonda. Collegherai così il presente con il tuo passato emotivo.</p>'},
+    situazione:{t:'Il momento da cui parti', h:'<p>Tutto parte da un <b>momento concreto</b>. Elisa lo dice chiaramente: si tratta di «vivere il momento nel quale stiamo sentendo il dolore <i>dopo quell\'azione che abbiamo compiuto</i>».</p><p>Non analizzare a vuoto: scegli una situazione reale e recente in cui hai reagito o sentito un disagio. È l\'ancora di tutto l\'esercizio — l\'emozione, il ricordo e il bisogno si riferiscono <b>a questo momento</b>.</p>'},
+    emozione:{t:'L\'emozione e la sua proporzione', h:'<p>Dai un nome all\'emozione <b>senza giudicarla</b> — può essere negativa o positiva.</p><p>Poi la domanda chiave: <b>è proporzionata?</b> Cioè è grande quanto la situazione la giustifica, o è più forte? Se la senti <b>amplificata</b>, non è il presente a determinarla: è una ferita più profonda — del bambino interiore — che si è riattivata. I tre «perché» servono a superare la prima risposta razionale e arrivare al perché vero.</p>'},
+    ricordo:{t:'Il ricordo', h:'<p>Questa domanda <b>collega il presente al tuo passato emotivo</b>. Spesso l\'emozione di oggi l\'hai già sentita da piccola/o: riconoscere da dove viene la rende meno potente e più comprensibile.</p><p>Anche qui: rispondi, poi tre «perché» per scendere in profondità.</p>'},
+    bisogno:{t:'Il bisogno', h:'<p>Chiediti di cosa avresti avuto bisogno — in quel momento e tutte le volte che ti sei sentita/o così. Questa risposta è la <b>voce diretta del bambino interiore</b>.</p><p>Riconoscere quel bisogno interrompe le reazioni automatiche e ti prepara all\'incontro: nella meditazione gli darai un volto.</p>'},
     medit:{t:'La meditazione', h:'<p>Nel secondo esercizio entrerai nell\'area di meditazione: Elisa ti guiderà, con la voce e una musica di sottofondo, a <b>incontrare e dare un volto</b> al tuo bambino interiore. La stiamo preparando.</p>'}
   };
   var GIORN='<div class="gp-giorn"><p><b>Mentre fai questo lavoro, non smettere il Giornaliero.</b> La pratica di ogni giorno radica e integra tutto il cammino.</p></div>';
   var veil=document.getElementById('veil'), gpan=document.getElementById('gpan');
   function openGuide(){
-    var info=INFO[view]||INFO.hub;
+    var key=(view==='foglio' && curZone) ? curZone : view;
+    var info=INFO[key]||INFO.hub;
     document.getElementById('gpTitle').textContent=info.t;
     document.getElementById('gpBody').innerHTML=info.h+GIORN;
     document.getElementById('gpBody').scrollTop=0;
