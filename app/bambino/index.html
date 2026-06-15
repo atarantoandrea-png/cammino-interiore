@@ -207,20 +207,25 @@ textarea:focus,input.fperche:focus{outline:none;border-color:var(--glic-hi);box-
   .exic{width:48px;height:48px;font-size:23px}
 }
 
-/* ===== stampa / salva come PDF ===== */
+/* ===== foglio stampabile (da scrivere a mano), visibile solo in stampa ===== */
+#printsheet{display:none}
 @media print{
+  @page{margin:14mm 12mm}
   body{background:#fff;color:#111}
-  .back-fab,#lume,#gpan,#veil,#saved,.hd .orn,.vback,.factions,.fvideo{display:none!important}
-  #hub,#medit{display:none!important}
-  #foglio{display:block!important}
-  .fbox{border:none;box-shadow:none;background:none;margin:0;padding:0}
-  .fintro,.fq-help,.fclose{color:#333}
-  .fzone{border-top:1px solid #ccc;background:none}
-  .fq-q{color:#000}
-  .fradio{border:1px solid #aaa;color:#000}
-  textarea,input.fperche{border:1px solid #aaa;color:#000;background:#fff;min-height:48px}
-  .fwhy{color:#444}
-  .page{padding:0}
+  .page,.back-fab,#lume,#gpan,#veil,#saved{display:none!important}
+  #printsheet{display:block;font-family:'Cormorant Garamond',Georgia,serif;color:#111}
+  #printsheet h1{font-family:'Cinzel',serif;font-size:22pt;text-align:center;margin:0 0 2mm}
+  .ps-sub{font-family:'Cinzel',serif;font-size:12pt;font-weight:600;text-align:center;color:#555;margin:0 0 10mm}
+  .ps-cover p{font-size:12pt;line-height:1.6;margin:0 0 6mm}
+  .ps-cover{page-break-after:always}
+  .ps-q{page-break-before:always}
+  .ps-q h2{font-family:'Cinzel',serif;font-size:16pt;margin:0 0 3mm;border-bottom:1px solid #999;padding-bottom:2mm}
+  .ps-help{font-size:11.5pt;font-style:italic;color:#333;margin:0 0 5mm}
+  .ps-why{page-break-inside:avoid;margin-top:5mm}
+  .ps-wl{font-size:11pt;color:#444;margin:0 0 2mm}
+  .wlines{width:100%;background-image:repeating-linear-gradient(to bottom, transparent 0, transparent calc(7mm - 1px), #bcbcbc calc(7mm - 1px), #bcbcbc 7mm);page-break-inside:avoid}
+  .wlines.ans{height:70mm}
+  .wlines.why{height:42mm}
 }
 </style>
 </head>
@@ -278,70 +283,56 @@ textarea:focus,input.fperche:focus{outline:none;border-color:var(--glic-hi);box-
     </div>
 
     <div class="fbox">
-      <p class="fintro">Questo esercizio si fa <b>quando senti un disagio dopo un'azione o una situazione</b>. Prima ferma quel momento, poi osserva — rispondi <b>scrivendo</b>, senza giudicarti. Dopo ogni risposta chiediti <b>«perché» tre volte</b>: le prime risposte sono razionali, è dal terzo perché che emerge la verità più profonda.</p>
-
-      <div class="fzone" data-zone="situazione">
-        <div class="fq-n">Per cominciare · Il momento</div>
-        <div class="fq-q">Da quale situazione parti?</div>
-        <p class="fq-help">Pensa a un momento recente in cui hai reagito, o hai sentito qualcosa che ti ha lasciato un disagio: una discussione, una reazione tua o di qualcun altro, un dolore dopo un gesto. Tutto l'esercizio parte da qui: le domande dopo si riferiscono a <b>questo</b> momento.</p>
-        <div class="fld"><label>La situazione o l'azione</label><textarea data-k="sit" placeholder="Cos'è successo? Cosa hai fatto, o cosa è accaduto?"></textarea></div>
-      </div>
+      <p class="fintro">Questo non è un esercizio di testa, è un esercizio del <b>sentire</b>. Si parte dal video e dal tuo <b>bambino interiore</b>: rispondi <b>di getto</b>, senza pensarci troppo e senza giudicarti — sii sincera/o con te stessa/o.</p>
+      <p class="fintro"><b>I tre «perché».</b> Dopo ogni risposta, chiediti «perché» tre volte. Serve perché la <b>prima risposta è sempre razionale</b>; poi inizi a scavare e a sentirti dentro. La seconda è più pensata, la terza più intuitiva, la quarta arriva da <b>ciò che senti davvero dentro — dalla tua anima</b>. Il cammino interiore è proprio questo: imparare a sentirsi.</p>
 
       <div class="fzone" data-zone="emozione">
         <div class="fq-n">Domanda 1 · L'emozione</div>
-        <div class="fq-q">Che emozione sto provando rispetto a questa situazione?</div>
-        <p class="fq-help">Dalle un nome, <b>senza giudicarla</b>: può essere negativa o positiva — rabbia, frustrazione, rancore, gioia… Non esiste un'emozione sbagliata.</p>
-        <div class="fld"><label>L'emozione che provo</label><textarea data-k="q1" placeholder="Sto provando…"></textarea></div>
-        <p class="fq-help"><b>È proporzionata a ciò che è successo?</b> Cioè: questa emozione è grande quanto la situazione la giustifica, oppure è <i>più forte</i> di quanto il momento richiederebbe? Se la senti amplificata, vuol dire che qualcosa di più profondo dentro di te — il tuo bambino interiore — si è attivato.</p>
-        <div class="fld"><label>La tua risposta</label>
-          <div class="fprop">
-            <label class="fradio"><input type="radio" name="prop" data-k="prop" value="proporzionata"> Sì, è proporzionata alla situazione</label>
-            <label class="fradio"><input type="radio" name="prop" data-k="prop" value="amplificata"> No, è più forte — la sento amplificata</label>
-            <label class="fradio"><input type="radio" name="prop" data-k="prop" value="non-so"> Non riesco ancora a dirlo</label>
-          </div>
-        </div>
-        <div class="fwhy">E ora, per tre volte: perché provo questa emozione?</div>
+        <div class="fq-q">Dopo il video, pensando al tuo bambino interiore, che emozioni senti?</div>
+        <p class="fq-help">Non cercare la risposta "giusta". Lascia che arrivi <b>di getto</b>: può essere positiva o negativa — tenerezza, tristezza, rabbia, gioia, vuoto, nostalgia… <b>Non giudicarla</b> e non giudicarti. Scrivi quello che senti, sinceramente.</p>
+        <div class="fld"><label>Le emozioni che sento</label><textarea data-k="q1" placeholder="Sento…"></textarea></div>
+        <div class="fwhy">E ora, per tre volte: perché sento questo?</div>
         <div class="fperche-wrap">
-          <input class="fperche" data-k="q1a" placeholder="Perché…">
-          <input class="fperche" data-k="q1b" placeholder="Perché… (vai più a fondo)">
-          <input class="fperche" data-k="q1c" placeholder="Perché… (la verità vera)">
+          <input class="fperche" data-k="q1a" placeholder="Perché… (la prima, di pancia)">
+          <input class="fperche" data-k="q1b" placeholder="Perché… (più a fondo, più intuitiva)">
+          <input class="fperche" data-k="q1c" placeholder="Perché… (ciò che senti davvero, dall'anima)">
         </div>
       </div>
 
       <div class="fzone" data-zone="ricordo">
         <div class="fq-n">Domanda 2 · Il ricordo</div>
-        <div class="fq-q">Questa emozione mi ricorda qualcosa che sentivo già da piccola/o?</div>
-        <p class="fq-help">Serve a <b>collegare il presente con il tuo passato emotivo</b>: spesso l'emozione di oggi è la stessa di allora, e capire da dove viene la rende meno potente.</p>
+        <div class="fq-q">Queste emozioni mi ricordano qualcosa che sentivo già da piccola/o?</div>
+        <p class="fq-help">Serve a <b>collegare il presente con il tuo passato emotivo</b>: spesso l'emozione di oggi è la stessa di allora. Anche qui, lascia arrivare la risposta senza forzarla.</p>
         <div class="fld"><label>La mia risposta</label><textarea data-k="q2" placeholder="Un ricordo, una sensazione, un momento dell'infanzia…"></textarea></div>
         <div class="fwhy">E ora, per tre volte: perché?</div>
         <div class="fperche-wrap">
-          <input class="fperche" data-k="q2a" placeholder="Perché…">
-          <input class="fperche" data-k="q2b" placeholder="Perché… (vai più a fondo)">
-          <input class="fperche" data-k="q2c" placeholder="Perché… (la verità vera)">
+          <input class="fperche" data-k="q2a" placeholder="Perché… (la prima, di pancia)">
+          <input class="fperche" data-k="q2b" placeholder="Perché… (più a fondo, più intuitiva)">
+          <input class="fperche" data-k="q2c" placeholder="Perché… (ciò che senti davvero, dall'anima)">
         </div>
       </div>
 
       <div class="fzone" data-zone="bisogno">
         <div class="fq-n">Domanda 3 · Il bisogno</div>
-        <div class="fq-q">Di cosa avrei avuto bisogno in quel momento?</div>
-        <p class="fq-help">Pensa a tutte le volte che ti sei sentita/o così — nel passato e adesso. <b>Di cosa avresti avuto bisogno</b> per stare bene? È la voce del tuo bambino interiore che chiede di essere ascoltata.</p>
+        <div class="fq-q">Di cosa avrei avuto bisogno — e di cosa ho bisogno ora?</div>
+        <p class="fq-help">Pensa a tutte le volte che ti sei sentita/o così. <b>Di cosa avresti avuto bisogno</b> per stare bene? È la voce diretta del tuo bambino interiore che chiede di essere ascoltata.</p>
         <div class="fld"><label>La mia risposta</label><textarea data-k="q3" placeholder="Avrei avuto bisogno di…"></textarea></div>
         <div class="fwhy">E ora, per tre volte: perché?</div>
         <div class="fperche-wrap">
-          <input class="fperche" data-k="q3a" placeholder="Perché…">
-          <input class="fperche" data-k="q3b" placeholder="Perché… (vai più a fondo)">
-          <input class="fperche" data-k="q3c" placeholder="Perché… (la verità vera)">
+          <input class="fperche" data-k="q3a" placeholder="Perché… (la prima, di pancia)">
+          <input class="fperche" data-k="q3b" placeholder="Perché… (più a fondo, più intuitiva)">
+          <input class="fperche" data-k="q3c" placeholder="Perché… (ciò che senti davvero, dall'anima)">
         </div>
       </div>
 
-      <p class="fclose">Questo lavoro interrompe le <b>reazioni automatiche</b> che vengono dalle ferite del passato. Dopo il foglio, nel secondo esercizio darai un <b>volto</b> al tuo bambino interiore con la meditazione. E ricorda: continua ogni giorno il Giornaliero — è ciò che integra tutto il cammino.</p>
+      <p class="fclose">È un esercizio pratico, quasi banale, ma serve a <b>imparare a leggerti dentro</b> — a sentire con la tua anima. Dopo il foglio, nel secondo esercizio darai un <b>volto</b> al tuo bambino interiore con la meditazione. E ricorda: continua ogni giorno il Giornaliero — è ciò che integra tutto il cammino.</p>
     </div>
 
     <div class="factions">
       <button class="fbtn" type="button" id="btnSave">Salva</button>
-      <button class="fbtn" type="button" id="btnPrint">Stampa / Salva PDF</button>
+      <button class="fbtn" type="button" id="btnPrint">Stampa il foglio (da scrivere a mano)</button>
       <button class="fbtn gold" type="button" id="btnDone">Segna come completato</button>
-      <div class="fhint">Tutto resta salvato nel tuo account: potrai rileggerlo tra qualche mese e vedere quanto sei cambiata/o.</div>
+      <div class="fhint">Puoi scrivere qui — resta salvato nel tuo account, e potrai rileggerlo tra qualche mese — oppure <b>stampare il foglio e scriverlo a mano</b>, come consiglia Elisa.</div>
     </div>
   </section>
 
@@ -355,6 +346,43 @@ textarea:focus,input.fperche:focus{outline:none;border-color:var(--glic-hi);box-
     </div>
   </section>
 
+</div>
+
+<!-- ===== FOGLIO STAMPABILE (da scrivere a mano) — visibile solo in stampa ===== -->
+<div id="printsheet" aria-hidden="true">
+  <div class="ps-cover">
+    <h1>Il Bambino Interiore</h1>
+    <h2 class="ps-sub">Le tre domande · un foglio da compilare a mano</h2>
+    <p>Questo non è un esercizio di testa, è un esercizio del <b>sentire</b>. Parti dal video e dal tuo bambino interiore: rispondi <b>di getto</b>, senza pensarci troppo e senza giudicarti. Sii sincera/o con te stessa/o.</p>
+    <p><b>I tre «perché».</b> Dopo ogni risposta, chiediti «perché» tre volte. La prima risposta è sempre razionale; poi inizi a scavare e a sentirti dentro. La seconda è più pensata, la terza più intuitiva, la quarta arriva da ciò che senti davvero dentro — dalla tua anima. Il cammino interiore è proprio questo: imparare a sentirsi.</p>
+  </div>
+
+  <div class="ps-q">
+    <h2>1 · L'emozione</h2>
+    <p class="ps-help">Dopo il video, pensando al tuo bambino interiore, che emozioni senti? Di getto, senza giudicarti.</p>
+    <div class="wlines ans"></div>
+    <div class="ps-why"><div class="ps-wl">Perché? — la prima, di pancia</div><div class="wlines why"></div></div>
+    <div class="ps-why"><div class="ps-wl">Perché? — più a fondo, più intuitiva</div><div class="wlines why"></div></div>
+    <div class="ps-why"><div class="ps-wl">Perché? — ciò che senti davvero, dall'anima</div><div class="wlines why"></div></div>
+  </div>
+
+  <div class="ps-q">
+    <h2>2 · Il ricordo</h2>
+    <p class="ps-help">Queste emozioni ti ricordano qualcosa che sentivi già da piccola/o?</p>
+    <div class="wlines ans"></div>
+    <div class="ps-why"><div class="ps-wl">Perché? — la prima, di pancia</div><div class="wlines why"></div></div>
+    <div class="ps-why"><div class="ps-wl">Perché? — più a fondo, più intuitiva</div><div class="wlines why"></div></div>
+    <div class="ps-why"><div class="ps-wl">Perché? — ciò che senti davvero, dall'anima</div><div class="wlines why"></div></div>
+  </div>
+
+  <div class="ps-q">
+    <h2>3 · Il bisogno</h2>
+    <p class="ps-help">Di cosa avresti avuto bisogno — e di cosa hai bisogno ora?</p>
+    <div class="wlines ans"></div>
+    <div class="ps-why"><div class="ps-wl">Perché? — la prima, di pancia</div><div class="wlines why"></div></div>
+    <div class="ps-why"><div class="ps-wl">Perché? — più a fondo, più intuitiva</div><div class="wlines why"></div></div>
+    <div class="ps-why"><div class="ps-wl">Perché? — ciò che senti davvero, dall'anima</div><div class="wlines why"></div></div>
+  </div>
 </div>
 
 <!-- pannello GUIDA -->
@@ -499,8 +527,7 @@ textarea:focus,input.fperche:focus{outline:none;border-color:var(--glic-hi);box-
 
   var INFO={
     hub:{t:'Il Bambino Interiore', h:'<p>Il bambino interiore è la parte <b>emotiva, spontanea e vulnerabile</b> di te: custodisce i bisogni e le ferite dell\'infanzia che, da adulti, tornano a parlarci quando ci sentiamo non visti o non ascoltati.</p><p>Lo incontri in due passi: il <b>foglio delle tre domande</b> per ascoltarlo, e poi la <b>meditazione</b> per dargli un volto e accoglierlo.</p>'},
-    situazione:{t:'Il momento da cui parti', h:'<p>Tutto parte da un <b>momento concreto</b>. Elisa lo dice chiaramente: si tratta di «vivere il momento nel quale stiamo sentendo il dolore <i>dopo quell\'azione che abbiamo compiuto</i>».</p><p>Non analizzare a vuoto: scegli una situazione reale e recente in cui hai reagito o sentito un disagio. È l\'ancora di tutto l\'esercizio — l\'emozione, il ricordo e il bisogno si riferiscono <b>a questo momento</b>.</p>'},
-    emozione:{t:'L\'emozione e la sua proporzione', h:'<p>Dai un nome all\'emozione <b>senza giudicarla</b> — può essere negativa o positiva.</p><p>Poi la domanda chiave: <b>è proporzionata?</b> Cioè è grande quanto la situazione la giustifica, o è più forte? Se la senti <b>amplificata</b>, non è il presente a determinarla: è una ferita più profonda — del bambino interiore — che si è riattivata. I tre «perché» servono a superare la prima risposta razionale e arrivare al perché vero.</p>'},
+    emozione:{t:'L\'emozione che senti', h:'<p>Questo non è un esercizio di testa: è un esercizio del <b>sentire</b>. Dopo il video, pensando al tuo bambino interiore, lascia arrivare l\'emozione <b>di getto</b> — senza cercarla, senza giudicarla, senza giudicarti.</p><p>Poi i tre «perché»: la prima risposta è sempre razionale, poi scendi. La seconda è più pensata, la terza più intuitiva, la quarta arriva da <b>ciò che senti davvero dentro, dalla tua anima</b>. È così che impari a leggerti dentro: il cammino interiore è imparare a sentirsi.</p>'},
     ricordo:{t:'Il ricordo', h:'<p>Questa domanda <b>collega il presente al tuo passato emotivo</b>. Spesso l\'emozione di oggi l\'hai già sentita da piccola/o: riconoscere da dove viene la rende meno potente e più comprensibile.</p><p>Anche qui: rispondi, poi tre «perché» per scendere in profondità.</p>'},
     bisogno:{t:'Il bisogno', h:'<p>Chiediti di cosa avresti avuto bisogno — in quel momento e tutte le volte che ti sei sentita/o così. Questa risposta è la <b>voce diretta del bambino interiore</b>.</p><p>Riconoscere quel bisogno interrompe le reazioni automatiche e ti prepara all\'incontro: nella meditazione gli darai un volto.</p>'},
     medit:{t:'La meditazione', h:'<p>Nel secondo esercizio entrerai nell\'area di meditazione: Elisa ti guiderà, con la voce e una musica di sottofondo, a <b>incontrare e dare un volto</b> al tuo bambino interiore. La stiamo preparando.</p>'}
