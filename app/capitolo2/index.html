@@ -36,13 +36,36 @@ body{
     url('/src/pagina.jpg') center top/100% auto repeat;
   background-attachment:fixed;
   font-family:'Cormorant Garamond',Georgia,serif;color:var(--txt);min-height:100vh;
+  /* colore della luce guida: glicine, in tono con la pagina */
+  --lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:rgba(186,150,240,.56);--lm-g3:rgba(150,110,215,.3);
+}
+
+/* ================= LA LUCE GUIDA ================= */
+#lume{position:absolute;left:0;top:0;z-index:40;width:56px;height:56px;margin:-28px 0 0 -28px;
+  pointer-events:auto;cursor:pointer;transition:transform 1.4s cubic-bezier(.45,.05,.25,1), opacity .8s ease;
+  animation:lflick 3.1s ease-in-out infinite}
+@keyframes lflick{0%,100%{filter:brightness(1)}50%{filter:brightness(1.28)}}
+#lume::after{content:'';position:absolute;inset:19px;border-radius:50%;
+  background:radial-gradient(circle at 38% 34%, var(--lm-c1) 0%, var(--lm-c1) 28%, var(--lm-mid) 58%, transparent 78%);
+  box-shadow:0 0 12px 4px var(--lm-g1),0 0 38px 16px var(--lm-g2),0 0 95px 44px var(--lm-g3),inset 0 0 4px rgba(220,215,245,.5);
+  transition:box-shadow 1.2s ease, inset 1.2s ease}
+#lume.boost::after{inset:15px;
+  box-shadow:0 0 18px 7px var(--lm-g1),0 0 60px 26px var(--lm-g2),0 0 150px 70px var(--lm-g3),inset 0 0 7px rgba(230,225,255,.7)}
+/* invito gentile a toccarla */
+#lume::before{content:'';position:absolute;inset:-6px;border-radius:50%;border:1px solid rgba(220,205,255,.0);
+  animation:lpulse 2.6s ease-in-out infinite}
+@keyframes lpulse{0%,100%{box-shadow:0 0 0 0 rgba(200,170,255,.22)}50%{box-shadow:0 0 0 7px rgba(200,170,255,0)}}
+@media(max-width:760px){
+  #lume{width:42px;height:42px;margin:-21px 0 0 -21px}
+  #lume::after{inset:13px;box-shadow:0 0 8px 3px var(--lm-g1),0 0 24px 9px var(--lm-g2),0 0 54px 22px var(--lm-g3),inset 0 0 4px rgba(220,215,245,.5)}
+  #lume.boost::after{inset:11px;box-shadow:0 0 11px 4px var(--lm-g1),0 0 34px 13px var(--lm-g2),0 0 74px 32px var(--lm-g3),inset 0 0 5px rgba(230,225,255,.6)}
 }
 
 /* ================= colonna ================= */
 .page{max-width:760px;margin:0 auto;padding:0 0 48px;position:relative}
 @media(min-width:920px){.page{padding-top:14px}}
 
-/* ================= header del corso ================= */
+/* ================= header del cammino ================= */
 .hd{padding:26px 22px 14px;text-align:center}
 .hd .orn{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:12px}
 .hd .orn .l{width:80px;height:1px;background:linear-gradient(90deg,transparent,rgba(185,163,227,.6),transparent)}
@@ -51,8 +74,17 @@ body{
   color:var(--gold);text-shadow:0 0 14px rgba(201,168,76,.4);margin-bottom:8px}
 .hd h1{font-family:'Cinzel',serif;font-weight:600;font-size:clamp(23px,5.4vw,33px);letter-spacing:.07em;
   color:#f0eaf6;text-shadow:0 0 30px rgba(185,163,227,.35)}
-.hd .lead{font-size:16px;color:var(--txt-soft);margin:12px auto 0;max-width:560px;line-height:1.5}
+.hd .lead{font-size:16px;color:var(--txt-soft);margin:13px auto 0;max-width:580px;line-height:1.55}
 .hd .lead b{color:var(--gold-pale);font-weight:600}
+.hd .lead .em{color:var(--glic-hi)}
+
+/* riquadro "il primo passo" — dà peso a questa parte */
+.intro{margin:18px 18px 4px;padding:16px 18px;border:1px solid rgba(201,168,76,.28);border-radius:16px;
+  background:linear-gradient(180deg, rgba(40,33,22,.55), rgba(22,17,28,.7));
+  box-shadow:0 4px 14px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.05);
+  font-size:15px;color:var(--txt-soft);line-height:1.55;text-align:center}
+.intro b{color:var(--gold-pale);font-weight:600}
+.intro .lampada{display:block;font-family:'Cinzel',serif;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--glic);margin-top:10px}
 
 .back-row{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:18px}
 .back-home{padding:7px 18px;
@@ -62,8 +94,8 @@ body{
   transition:color .2s,border-color .2s,box-shadow .2s}
 .back-home:hover{color:#fff1a8;border-color:rgba(255,216,58,.9);box-shadow:0 0 18px rgba(255,216,58,.35)}
 
-/* ================= avanzamento del corso ================= */
-.prog{margin:18px 18px 6px;padding:15px 18px;border:1px solid var(--card-line);border-radius:16px;
+/* ================= avanzamento del cammino ================= */
+.prog{margin:14px 18px 6px;padding:15px 18px;border:1px solid var(--card-line);border-radius:16px;
   background:linear-gradient(180deg, rgba(30,24,42,.8), rgba(18,14,26,.86));
   box-shadow:0 4px 14px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.05)}
 .prog-top{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
@@ -78,7 +110,7 @@ body{
 .prog-note b{color:var(--gold-pale);font-weight:600}
 .prog.done .prog-fill{background:linear-gradient(90deg, #4fae78, var(--seen));box-shadow:0 0 14px var(--seen-glow)}
 
-/* ================= curriculum (lezioni) ================= */
+/* ================= i video del cammino ================= */
 .curr{list-style:none;padding:16px 18px 0;display:flex;flex-direction:column;gap:12px}
 .lesson{border:1px solid var(--card-line);border-radius:16px;overflow:hidden;
   background:linear-gradient(180deg, rgba(26,21,36,.78), rgba(16,13,23,.85));
@@ -104,7 +136,6 @@ body{
   transform:rotate(45deg);transition:transform .3s;margin-left:2px;opacity:.7}
 .lesson.open .lchev{transform:rotate(-135deg)}
 
-/* corpo della lezione: si apre a fisarmonica */
 .lbody{max-height:0;overflow:hidden;transition:max-height .45s cubic-bezier(.4,0,.2,1)}
 .lesson.open .lbody{max-height:1400px}
 .ldesc{font-size:15px;color:var(--txt-soft);line-height:1.55;padding:2px 18px 14px}
@@ -119,8 +150,7 @@ body{
 .lcomplete{font-family:'Cinzel',serif;font-size:11px;letter-spacing:.08em;cursor:pointer;
   padding:9px 18px;border-radius:22px;color:var(--glic-hi);
   border:1px solid rgba(185,163,227,.5);background:linear-gradient(180deg, rgba(60,46,92,.6), rgba(34,26,52,.7));
-  box-shadow:0 3px 10px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.1);
-  transition:all .22s}
+  box-shadow:0 3px 10px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.1);transition:all .22s}
 .lcomplete:hover{border-color:rgba(205,178,242,.8);color:#fff;box-shadow:0 4px 14px rgba(120,80,200,.4)}
 .lcomplete.is-done{color:#0e2a1b;border-color:rgba(127,214,160,.8);
   background:linear-gradient(180deg, #9fe6bd, var(--seen));text-shadow:none;
@@ -134,51 +164,90 @@ body{
 .foot .sep .d{width:5px;height:5px;border:1px solid var(--glic);transform:rotate(45deg)}
 .foot b{color:var(--gold-pale);font-weight:600}
 
+/* ================= pannello GUIDA (apre toccando la luce) ================= */
+#veil{position:fixed;inset:0;z-index:60;background:rgba(4,3,8,.72);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);opacity:0;pointer-events:none;transition:opacity .45s ease}
+#veil.on{opacity:1;pointer-events:auto}
+#gpan{position:fixed;z-index:61;left:50%;top:50%;transform:translate(-50%,-50%) scale(.96);width:min(720px,94vw);height:min(86vh,820px);
+  display:flex;flex-direction:column;border:1px solid rgba(185,163,227,.35);border-radius:18px;
+  background:linear-gradient(180deg, rgba(13,10,18,.97), rgba(10,8,14,.97)), url('/src/pagina.jpg') center/cover;
+  box-shadow:0 0 60px rgba(150,110,215,.25), 0 30px 80px rgba(0,0,0,.7);opacity:0;pointer-events:none;
+  transition:opacity .45s ease, transform .45s ease}
+#gpan.on{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1)}
+.gp-hd{display:flex;align-items:center;gap:12px;padding:18px 20px 14px;border-bottom:1px solid rgba(185,163,227,.2)}
+.gp-orb{width:34px;height:34px;border-radius:50%;flex-shrink:0;
+  background:radial-gradient(circle at 38% 34%, #fff 0%, #fff 30%, var(--lm-mid) 60%, transparent 80%);
+  box-shadow:0 0 10px 3px var(--lm-g1), 0 0 26px 10px var(--lm-g2);animation:lflick 3.1s ease-in-out infinite}
+.gp-hd h2{font-family:'Cinzel',serif;font-size:17px;font-weight:600;color:#f0eaf6;flex:1;text-shadow:0 0 18px rgba(185,163,227,.4)}
+.gp-x{background:none;border:1px solid rgba(185,163,227,.4);color:var(--txt-soft);width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:15px;line-height:1}
+.gp-x:hover{color:#fff;border-color:var(--glic-hi)}
+.gp-bd{flex:1;overflow-y:auto;padding:18px 20px 26px;-webkit-overflow-scrolling:touch}
+.gp-bd p{font-size:16px;line-height:1.62;color:var(--txt-soft);margin-bottom:12px}
+.gp-bd p b{color:var(--gold-pale);font-weight:600}
+.gp-sec{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--txt-dim);margin:20px 0 12px;padding-left:2px}
+.gp-giorn{margin-top:18px;padding:14px 16px;border:1px solid rgba(201,168,76,.3);border-radius:14px;background:rgba(40,33,22,.45)}
+.gp-giorn p{margin:0;font-size:15px;color:var(--txt-soft)}
+.gp-giorn b{color:var(--gold-pale)}
+
 @media(max-width:520px){
   .lhead{padding:13px 13px;gap:11px}
   .lnum{width:34px;height:34px;font-size:12px}
   .ltitle{font-size:14.5px}
   .ldesc{font-size:14px;padding:2px 14px 12px}
   .curr{padding:14px 13px 0;gap:10px}
-  .prog{margin:16px 13px 6px}
+  .prog,.intro{margin-left:13px;margin-right:13px}
   .lfoot{padding:13px 14px 15px}
 }
 </style>
 </head>
 <body>
 
+<!-- la luce guida: sempre presente, si posa accanto alla sezione toccata; toccala per la sua voce -->
+<div id="lume" title="Tocca la luce per saperne di più"></div>
+
 <div class="page">
 
   <header class="hd">
     <div class="orn"><div class="l"></div><div class="d"></div><div class="l"></div></div>
-    <div class="cap">Capitolo Secondo</div>
+    <div class="cap">Capitolo Secondo · Il primo passo del Cammino</div>
     <h1>Il Mondo Interiore</h1>
-    <p class="lead">Otto lezioni con Elisa per conoscere le parti che ti compongono. Apri ogni lezione, guarda il video e <b>segnala come completata</b>. Quando le avrai completate tutte, si apriranno gli esercizi.</p>
+    <p class="lead">Otto video in cui Elisa ti accompagna a conoscere le parti che ti compongono. È <span class="em">il primo passo — e il più importante</span> del Cammino Interiore: <b>qui inizi davvero a conoscere te stessa/o</b>.</p>
     <div class="back-row">
       <a href="javascript:history.back()" id="back-btn" class="back-home">← Torna indietro</a>
       <a href="https://oltreilvelo.elisasoulmedium.com" target="_top" class="back-home">Il percorso</a>
     </div>
   </header>
 
-  <!-- avanzamento del corso -->
-  <div class="prog" id="prog">
-    <div class="prog-top">
-      <span class="prog-lab">Avanzamento del corso</span>
-      <span class="prog-num"><span id="seenN">0</span> di 8 lezioni</span>
-    </div>
-    <div class="prog-bar"><div class="prog-fill" id="progFill"></div></div>
-    <div class="prog-note" id="progNote">Gli esercizi si sbloccano quando avrai completato tutte le lezioni.</div>
+  <div class="intro">
+    Guarda ogni video con calma e segnalo come visto. E mentre cammini qui, <b>non smettere il Giornaliero</b>: la pratica di ogni giorno è ciò che radica e integra tutto il cammino — l'osservatore si allena lì, giorno dopo giorno.
+    <span class="lampada">✦ Tocca la piccola luce per la voce della Guida ✦</span>
   </div>
 
-  <!-- curriculum: generato da JS (lezioni a fisarmonica, video caricato all'apertura) -->
+  <!-- avanzamento del cammino -->
+  <div class="prog" id="prog">
+    <div class="prog-top">
+      <span class="prog-lab">Il tuo cammino</span>
+      <span class="prog-num"><span id="seenN">0</span> di 8 video</span>
+    </div>
+    <div class="prog-bar"><div class="prog-fill" id="progFill"></div></div>
+    <div class="prog-note" id="progNote">Gli esercizi si sbloccano quando avrai visto tutti gli otto video.</div>
+  </div>
+
+  <!-- i video del cammino: generati da JS (si aprono uno alla volta, il video carica all'apertura) -->
   <ol class="curr" id="curr"></ol>
 
   <div class="foot">
     <div class="sep"><span class="l"></span><span class="d"></span><span class="l"></span></div>
-    <b>Conoscere è il primo passo.</b><br>Quando avrai incontrato tutte le parti, il sentiero proseguirà con gli esercizi per integrarle, una a una.
+    <b>Conoscere è il primo passo.</b><br>Quando avrai incontrato tutte le parti, il sentiero proseguirà con gli esercizi per integrarle, una a una. Intanto, <b>continua ogni giorno il Giornaliero</b>.
   </div>
 
 </div>
+
+<!-- pannello GUIDA -->
+<div id="veil"></div>
+<aside id="gpan" role="dialog" aria-label="La voce della Guida">
+  <div class="gp-hd"><div class="gp-orb"></div><h2 id="gpTitle">La Guida del Cammino</h2><button class="gp-x" id="gpX" aria-label="Chiudi">✕</button></div>
+  <div class="gp-bd" id="gpBody"></div>
+</aside>
 
 <!-- SDK del player Vimeo: per il tracciamento del progresso. Le statistiche native di Vimeo si registrano comunque da sole. -->
 <script src="https://player.vimeo.com/api/player.js"></script>
@@ -193,7 +262,7 @@ body{
   });
 })();
 
-/* ====== il corso: curriculum + tracciamento + completamento manuale ====== */
+/* ====== il cammino: video + tracciamento + completamento manuale + luce guida ====== */
 (function(){
   /* ordine: Ombra dopo Adulto, prima di Padre e Madre */
   var LESSONS=[
@@ -215,11 +284,35 @@ body{
      d:'La presenza che guarda tutte le parti dall\'esterno, senza giudicare. È il prerequisito di ogni esercizio — e lo alleni già ogni giorno con il Giornaliero.'}
   ];
   var TOT=LESSONS.length;
-  var SEEN_AT=0.85;     /* visto = guardato almeno l'85% (oltre a poterlo segnare a mano) */
+  var SEEN_AT=0.85;
+
+  /* ====== la voce della Guida: informazioni su ogni video (dalle parole di Elisa) ====== */
+  var GIORN='<div class="gp-giorn"><p><b>Mentre cammini, non smettere il Giornaliero.</b> La pratica di ogni giorno è ciò che radica e integra tutto: l\'osservatore interiore si allena lì, e rende vivo tutto quello che incontri qui.</p></div>';
+  var INFO={
+    mondo:{t:'Il Mondo Interiore', h:'<p>Sei al <b>primo passo del Cammino Interiore</b>, il più importante: qui inizi a conoscerti davvero. Elisa racconta che di solito conosciamo solo una piccola parte di noi — a volte appena il 20%.</p>'+
+      '<p>Dentro di noi vivono più parti: il <b>Bambino</b>, l\'<b>Adulto</b>, l\'<b>Ombra</b>, il <b>Padre e la Madre</b>, il <b>Maschile e il Femminile</b> con l\'<b>Adolescente</b>. Quando comunicano siamo in equilibrio; quando entrano in conflitto arrivano confusione e sofferenza.</p>'+
+      '<p>Questi video si guardano con calma, e gli esercizi che verranno si fanno <b>una volta sola</b>, senza fretta — non sono una routine quotidiana.</p>'},
+    bambino:{t:'Il Bambino Interiore', h:'<p>È la parte <b>emotiva, spontanea e vulnerabile</b>. Custodisce i bisogni di amore, riconoscimento e protezione, e le ferite dell\'infanzia che continuano a vivere in noi.</p>'+
+      '<p>Quando ci sentiamo improvvisamente non amati, esclusi o non ascoltati, spesso è lui che ci parla: non vuole rovinarci la vita, chiede solo di essere ascoltato. È la parte più vicina all\'anima — la purezza prima delle maschere.</p>'},
+    adulto:{t:'Adulto Interiore', h:'<p>È la parte <b>presente e stabile</b>. Se il bambino sente, l\'adulto <b>contiene</b>: ascolta, rassicura, guida.</p>'+
+      '<p>Quando è fragile, le emozioni del bambino invadono tutto e ci sentiamo persi. Quando è presente, possiamo provare dolore o paura senza esserne travolti, rabbia senza agire la rabbia. È il ponte tra il bambino ferito e la persona adulta che oggi siamo.</p>'},
+    ombra:{t:'L\'Ombra Interiore', h:'<p>È la <b>parte rifiutata</b> — Elisa la chiama Ombra. Non contiene solo rabbia, paura, gelosia: dentro ci sono anche <b>forza, creatività, sessualità, verità</b> che abbiamo imparato a reprimere.</p>'+
+      '<p>Più la nascondiamo, più cresce, e prima o poi esce nei momenti fragili. Non va combattuta come un nemico: va <b>guardata, compresa e integrata</b>. Solo ciò che viene visto può essere trasformato.</p>'},
+    padremadre:{t:'Il Padre e la Madre', h:'<p>Sono le energie della <b>cura</b> e della <b>protezione</b>. La madre interiore accoglie, ascolta, consola; il padre interiore protegge, dà direzione, mette confini. Abbiamo bisogno di entrambe.</p>'+
+      '<p>Il lavoro qui è diventare <b>noi stessi quella presenza</b> che a volte ci è mancata: una presenza che accoglie senza giustificare tutto, protegge senza controllare, guida senza imporre.</p>'},
+    mf:{t:'Maschile e Femminile', h:'<p>Due energie che convivono in <b>ognuno</b>, oltre il genere. Il <b>femminile</b> è ascolto, intuizione, accoglienza, sentire. Il <b>maschile</b> è azione, direzione, struttura, scelta.</p>'+
+      '<p>L\'equilibrio nasce quando collaborano: quando l\'intuizione incontra la direzione, quando la sensibilità incontra la struttura. Se ne conosciamo una sola, l\'altra resta muta.</p>'},
+    adolescente:{t:'Adolescente Interiore', h:'<p>È la <b>ricerca dell\'identità</b>: il bisogno di libertà, di essere visti e riconosciuti. È il passaggio tra il bambino e l\'adulto, la parte ribelle — o fragile — che chiede ascolto.</p>'+
+      '<p>Dietro la provocazione c\'è una richiesta d\'attenzione; dietro la chiusura, paura; dietro il bisogno di approvazione, il desiderio di essere accettati. È la parte che vuole esprimere se stessa nel mondo.</p>'},
+    osservatore:{t:'Creare l\'Osservatore', h:'<p>È la parte <b>più importante</b> da sviluppare: la presenza che guarda tutte le altre <b>dall\'esterno, senza giudicare</b> — come una telecamera gentile dentro casa.</p>'+
+      '<p>È il prerequisito di ogni esercizio: prima di cambiare qualcosa, dobbiamo accorgerci che esiste. Non si forza, non cerca risposte perfette. E lo <b>alleni già ogni giorno con il Giornaliero</b>: è lì che questa presenza prende forza.</p>'}
+  };
+  var INTRO={t:'La Guida del Cammino', h:'<p>Benvenuta/o nel <b>Mondo Interiore</b>, il primo e più importante passo del Cammino: qui inizi a conoscerti davvero.</p>'+
+    '<p>Otto video con Elisa ti presentano le parti che ti compongono. <b>Tocca un video</b> nella lista: io mi poserò accanto e, toccandomi, potrò raccontarti di quella parte.</p>'};
 
   var who='';
   try{ who=(localStorage.getItem('ovl-user')||'').trim().toLowerCase(); }catch(e){}
-  var KEY='ovl-cap2:'+who;            /* { idLezione: percentualeMassima (1 = completata) } */
+  var KEY='ovl-cap2:'+who;
   var DONE='ovl-cap2-done:'+who;
 
   var prog={};
@@ -229,10 +322,9 @@ body{
   function isSeen(id){ return (prog[id]||0) >= SEEN_AT; }
   function mmss(s){ if(!s||isNaN(s))return ''; s=Math.round(s); var m=Math.floor(s/60); var r=s%60; return m+':'+(r<10?'0':'')+r; }
 
-  /* costruisco il curriculum */
   var curr=document.getElementById('curr');
-  var players={};   /* id -> Vimeo.Player (creato all'apertura) */
-  var nodes={};     /* id -> {li, status, btn, dur} */
+  var players={};
+  var nodes={};
 
   LESSONS.forEach(function(L, i){
     var li=document.createElement('li');
@@ -240,7 +332,7 @@ body{
     li.innerHTML=
       '<button class="lhead" aria-expanded="false">'+
         '<span class="lnum">'+L.n+'</span>'+
-        '<span class="lmeta"><span class="ltag">Lezione '+(i+1)+' di '+TOT+'</span><span class="ltitle">'+L.t+'</span></span>'+
+        '<span class="lmeta"><span class="ltag">Video '+(i+1)+' di '+TOT+'</span><span class="ltitle">'+L.t+'</span></span>'+
         '<span class="lstatus"></span>'+
         '<span class="lchev"></span>'+
       '</button>'+
@@ -249,42 +341,71 @@ body{
         '<div class="lframe"><div class="ph">Tocca per caricare il video…</div></div>'+
         '<div class="lfoot">'+
           '<span class="ldur">Voce di Elisa</span>'+
-          '<button class="lcomplete" type="button">Segna come completata</button>'+
+          '<button class="lcomplete" type="button">Segna come visto</button>'+
         '</div>'+
       '</div>';
     curr.appendChild(li);
 
     var head=li.querySelector('.lhead');
-    var status=li.querySelector('.lstatus');
-    var btn=li.querySelector('.lcomplete');
-    var dur=li.querySelector('.ldur');
-    nodes[L.id]={li:li, status:status, btn:btn, dur:dur};
+    nodes[L.id]={li:li, status:li.querySelector('.lstatus'), btn:li.querySelector('.lcomplete'), dur:li.querySelector('.ldur'), head:head};
 
     head.addEventListener('click', function(){ toggle(L, li, head); });
-    btn.addEventListener('click', function(){
-      var done = isSeen(L.id);
-      prog[L.id] = done ? 0 : 1;   /* toggle: completa / annulla */
+    nodes[L.id].btn.addEventListener('click', function(e){
+      e.stopPropagation();
+      prog[L.id] = isSeen(L.id) ? 0 : 1;   /* completa / annulla */
       save(); refresh();
     });
   });
 
+  /* ====== LA LUCE GUIDA ====== */
+  var lume=document.getElementById('lume');
+  var curId=null;   /* lezione su cui è posata la luce */
+  function isNarrow(){ return innerWidth < 760; }
+  function moveLume(x,y){ lume.style.transform='translate3d('+(x|0)+'px,'+(y|0)+'px,0)'; }
+  function lumeHome(){
+    var hd=document.querySelector('.hd');
+    var x = isNarrow() ? (scrollX + 34) : Math.max(34, innerWidth/2 - 400);
+    moveLume(x, (hd?hd.offsetTop:20) + 64);
+    lume.classList.remove('boost');
+  }
+  function lightUp(head){
+    if(!head){ lumeHome(); return; }
+    var r=head.getBoundingClientRect();
+    var x, y;
+    if(isNarrow()){
+      /* mobile: appena SOPRA la sezione toccata — visibile, senza coprire il contenuto */
+      x = r.left + scrollX + 26; if(x < scrollX+24) x=scrollX+24;
+      y = r.top + scrollY - 24;  if(y < scrollY+22) y=scrollY+22;
+      lume.classList.remove('boost');
+    } else {
+      /* desktop: nel margine ACCANTO alla sezione (a sinistra, o a destra se manca spazio) */
+      y = r.top + scrollY + Math.min(r.height/2, 30);
+      x = r.left + scrollX - 32; if(x < scrollX+28) x = r.right + scrollX + 32;
+      lume.classList.add('boost');
+    }
+    moveLume(x, y);
+  }
+  addEventListener('resize', function(){ if(curId){ lightUp(nodes[curId].head); } else lumeHome(); });
+  addEventListener('scroll', function(){ /* la luce è ancorata al documento: resta accanto alla sezione */ }, {passive:true});
+
   function toggle(L, li, head){
     var opening = !li.classList.contains('open');
-    /* fisarmonica: una lezione aperta alla volta (più leggera, stile corso) */
     LESSONS.forEach(function(O){
       var n=nodes[O.id];
       if(n.li!==li && n.li.classList.contains('open')){
         n.li.classList.remove('open');
-        n.li.querySelector('.lhead').setAttribute('aria-expanded','false');
+        n.head.setAttribute('aria-expanded','false');
         if(players[O.id] && players[O.id].pause) try{ players[O.id].pause(); }catch(e){}
       }
     });
     li.classList.toggle('open', opening);
     head.setAttribute('aria-expanded', opening?'true':'false');
-    if(opening){ ensurePlayer(L, li); setTimeout(function(){ head.scrollIntoView({behavior:'smooth', block:'start'}); }, 120); }
+    /* la luce si posa su questa sezione (resta lì anche chiudendo) */
+    curId=L.id;
+    if(opening){ ensurePlayer(L, li); }
+    setTimeout(function(){ if(opening) head.scrollIntoView({behavior:'smooth', block:'start'}); lightUp(head); }, opening?140:10);
   }
 
-  /* crea l'iframe + il player solo alla prima apertura della lezione */
   function ensurePlayer(L, li){
     if(players[L.id]) return;
     var frame=li.querySelector('.lframe');
@@ -293,10 +414,8 @@ body{
     ifr.setAttribute('allow','autoplay; fullscreen; picture-in-picture');
     ifr.setAttribute('allowfullscreen','');
     frame.innerHTML=''; frame.appendChild(ifr);
-
     if(!(window.Vimeo && Vimeo.Player)){ players[L.id]=true; return; }
-    var p;
-    try{ p=new Vimeo.Player(ifr); }catch(e){ players[L.id]=true; return; }
+    var p; try{ p=new Vimeo.Player(ifr); }catch(e){ players[L.id]=true; return; }
     players[L.id]=p;
     var dur=nodes[L.id].dur;
     p.getDuration().then(function(s){ if(s) dur.textContent='Voce di Elisa · '+mmss(s); }).catch(function(){});
@@ -316,24 +435,40 @@ body{
     LESSONS.forEach(function(L){
       var nd=nodes[L.id]; var done=isSeen(L.id);
       nd.li.classList.toggle('seen', done);
-      if(done){ n++; nd.status.textContent='✓ Completata'; nd.btn.classList.add('is-done'); nd.btn.textContent='Completata'; }
-      else if((prog[L.id]||0)>0){ nd.status.textContent='In corso'; nd.btn.classList.remove('is-done'); nd.btn.textContent='Segna come completata'; }
-      else { nd.status.textContent='Da vedere'; nd.btn.classList.remove('is-done'); nd.btn.textContent='Segna come completata'; }
+      if(done){ n++; nd.status.textContent='✓ Visto'; nd.btn.classList.add('is-done'); nd.btn.textContent='Visto'; }
+      else if((prog[L.id]||0)>0){ nd.status.textContent='In corso'; nd.btn.classList.remove('is-done'); nd.btn.textContent='Segna come visto'; }
+      else { nd.status.textContent='Da vedere'; nd.btn.classList.remove('is-done'); nd.btn.textContent='Segna come visto'; }
     });
     document.getElementById('seenN').textContent=n;
     document.getElementById('progFill').style.width=(n/TOT*100)+'%';
-    var note=document.getElementById('progNote');
-    var box=document.getElementById('prog');
+    var note=document.getElementById('progNote'); var box=document.getElementById('prog');
     if(n>=TOT){
       box.classList.add('done');
-      note.innerHTML='Hai completato tutte le lezioni del Mondo Interiore. <b>Gli esercizi sono pronti per te.</b>';
+      note.innerHTML='Hai visto tutti gli otto video del Mondo Interiore. <b>Gli esercizi sono pronti per te.</b>';
       try{ localStorage.setItem(DONE,'1'); }catch(e){}
     } else {
       box.classList.remove('done');
-      note.innerHTML='Gli esercizi si sbloccano quando avrai completato tutte le lezioni. <b>Te ne mancano '+(TOT-n)+'.</b>';
+      note.innerHTML='Gli esercizi si sbloccano quando avrai visto tutti i video. <b>Te ne mancano '+(TOT-n)+'.</b>';
     }
   }
+
+  /* ====== pannello GUIDA (apre toccando la luce) ====== */
+  var veil=document.getElementById('veil'), gpan=document.getElementById('gpan');
+  function openGuide(){
+    var info = curId ? INFO[curId] : INTRO;
+    document.getElementById('gpTitle').textContent = info.t;
+    document.getElementById('gpBody').innerHTML = info.h + GIORN;
+    document.getElementById('gpBody').scrollTop=0;
+    veil.classList.add('on'); gpan.classList.add('on');
+  }
+  function closeGuide(){ veil.classList.remove('on'); gpan.classList.remove('on'); }
+  lume.addEventListener('click', function(e){ e.stopPropagation(); openGuide(); });
+  veil.addEventListener('click', closeGuide);
+  document.getElementById('gpX').addEventListener('click', closeGuide);
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeGuide(); });
+
   refresh();
+  lumeHome();
 })();
 </script>
 
