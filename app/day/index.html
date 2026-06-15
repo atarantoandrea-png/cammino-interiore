@@ -69,7 +69,7 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
 }
 
 /* ================= colonna ================= */
-.page{max-width:760px;margin:0 auto;padding:0 0 30px;position:relative}
+.page{max-width:760px;margin:0 auto;padding:calc(env(safe-area-inset-top,0px) + 8px) 0 30px;position:relative}
 @media(min-width:920px){.page{padding-top:14px}}
 
 /* ================= header ================= */
@@ -81,8 +81,8 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
 .hd p{font-size:15px;color:var(--txt-soft);margin-top:6px}
 
 /* ================= MENU 3D ARROTONDATO ================= */
-.tabs{position:sticky;top:0;z-index:30;display:flex;gap:7px;justify-content:center;align-items:stretch;
-  padding:12px 12px 13px}
+.tabs{position:sticky;top:calc(env(safe-area-inset-top,0px));z-index:30;display:flex;gap:7px;justify-content:center;align-items:stretch;
+  padding:12px 12px 13px 58px}
 .tab{flex:1;max-width:172px;border:1px solid rgba(185,163,227,.2);border-radius:16px;cursor:pointer;
   padding:12px 5px;display:flex;align-items:center;justify-content:center;text-align:center;
   background:linear-gradient(180deg, rgba(46,37,62,.85), rgba(20,16,28,.92));
@@ -330,6 +330,21 @@ input:focus,textarea:focus{border-color:rgba(205,178,242,.85);box-shadow:0 0 14p
   transition:color .2s,border-color .2s,box-shadow .2s}
 .back-home:hover{color:#fff1a8;border-color:rgba(255,216,58,.9);box-shadow:0 0 18px rgba(255,216,58,.35)}
 
+/* freccetta indietro FISSA: sempre visibile, piccola, elegante, semi-trasparente */
+.back-fab{position:fixed;z-index:50;
+  top:calc(12px + env(safe-area-inset-top,0px));
+  left:calc(12px + env(safe-area-inset-left,0px));
+  width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:var(--glic-hi);
+  background:rgba(16,12,24,.42);border:1px solid rgba(205,178,242,.32);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  box-shadow:0 4px 14px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.08);
+  transition:background .2s,border-color .2s,transform .2s,box-shadow .2s}
+.back-fab:hover{background:rgba(40,30,60,.62);border-color:rgba(220,205,250,.7);transform:translateY(-1px);
+  box-shadow:0 6px 18px rgba(120,80,200,.35), inset 0 1px 0 rgba(255,255,255,.12)}
+.back-fab svg{width:18px;height:18px;display:block;filter:drop-shadow(0 0 4px rgba(185,163,227,.4))}
+@media(max-width:520px){.back-fab{width:38px;height:38px}}
+
 /* ================= toast ================= */
 #saved{position:fixed;bottom:18px;left:50%;transform:translateX(-50%) translateY(60px);background:rgba(22,17,28,.96);color:var(--glic-hi);border:1px solid rgba(185,163,227,.5);border-radius:30px;padding:9px 20px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:.1em;z-index:70;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;box-shadow:0 0 18px rgba(150,110,215,.3)}
 #saved.show{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -403,6 +418,11 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
 </head>
 <body>
 
+<!-- freccetta indietro fissa: torna a tutto il Cammino Interiore -->
+<button id="back-fab" class="back-fab" type="button" aria-label="Torna al Cammino Interiore" title="Torna al Cammino Interiore">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+</button>
+
 <div id="lume"></div>
 
 <div class="page">
@@ -411,10 +431,6 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
     <div class="orn"><div class="l"></div><div class="d"></div><div class="l"></div></div>
     <h1>Il Giornaliero</h1>
     <p id="oggiMsg">Il tuo spazio di pratica</p>
-    <div class="back-row">
-      <a href="javascript:history.back()" id="back-btn" class="back-home">← Torna indietro</a>
-      <a href="https://oltreilvelo.elisasoulmedium.com" target="_top" class="back-home">Il percorso</a>
-    </div>
   </header>
 
   <nav class="tabs">
@@ -1114,10 +1130,13 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
     var inShell=false;
     try{ inShell = window.parent && window.parent!==window; }catch(e){ inShell=false; }
     var mini=document.getElementById('mu-mini');
-    var back=document.getElementById('back-btn');
-    if(back) back.addEventListener('click',function(e){
-      if(inShell){ e.preventDefault(); window.parent.postMessage({t:'day:back'},location.origin); }
-    });
+    function goBack(e){
+      if(e)e.preventDefault();
+      if(inShell){ window.parent.postMessage({t:'day:back'},location.origin); }
+      else { history.back(); }
+    }
+    var back=document.getElementById('back-btn'); if(back) back.addEventListener('click',goBack);
+    var fab=document.getElementById('back-fab'); if(fab) fab.addEventListener('click',goBack);
     if(!inShell){ if(mini)mini.style.display='none'; return; }
 
     function send(cmd,v){ window.parent.postMessage({t:'mu:cmd',cmd:cmd,v:v},location.origin); }
