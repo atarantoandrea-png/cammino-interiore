@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<script>
+/* accesso controllato da /app/ — qui si verifica solo la sessione, senza form */
+(function(){
+  var email, token;
+  try{ email=(localStorage.getItem('ovl-user')||'').trim().toLowerCase(); token=localStorage.getItem('ovl-session')||''; }
+  catch(e){ location.replace('/app/'); return; }
+  if(!email||!token){ location.replace('/app/'); return; }
+  fetch('/api/auth/verify',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,token:token})})
+    .then(function(r){return r.json();})
+    .then(function(d){ if(!d.ok) location.replace('/app/'); })
+    .catch(function(){}); /* offline: entra */
+})();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Il Mondo Interiore · Capitolo Secondo · Elisa Soul Medium</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:rgba(0,0,0,0)}
+:root{
+  --glic:#b9a3e3; --glic-hi:#dccdf6; --glic-deep:#8a6fc0;
+  --gold:#c9a84c; --gold-pale:#e8d9ae;
+  --txt:#e6e0ec; --txt-soft:#b7aec4; --txt-dim:#8d8499;
+  --card:rgba(22,18,29,.72); --card-line:rgba(185,163,227,.16);
+  --seen:#7fd6a0; --seen-glow:rgba(127,214,160,.5);
+}
+html{scroll-behavior:smooth}
+body{
+  background:
+    linear-gradient(180deg, rgba(8,7,11,.95) 0%, rgba(10,9,13,.92) 8%, rgba(11,10,14,.91) 100%),
+    url('/src/pagina.jpg') center top/100% auto repeat;
+  background-attachment:fixed;
+  font-family:'Cormorant Garamond',Georgia,serif;color:var(--txt);min-height:100vh;
+}
+
+/* ================= colonna ================= */
+.page{max-width:760px;margin:0 auto;padding:0 0 44px;position:relative}
+@media(min-width:920px){.page{padding-top:14px}}
+
+/* ================= header ================= */
+.hd{padding:26px 22px 14px;text-align:center}
+.hd .orn{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:12px}
+.hd .orn .l{width:80px;height:1px;background:linear-gradient(90deg,transparent,rgba(185,163,227,.6),transparent)}
+.hd .orn .d{width:6px;height:6px;border:1px solid var(--glic);transform:rotate(45deg)}
+.hd .cap{font-family:'Cinzel',serif;font-size:11px;font-weight:600;letter-spacing:.32em;
+  color:var(--gold);text-shadow:0 0 14px rgba(201,168,76,.4);margin-bottom:8px}
+.hd h1{font-family:'Cinzel',serif;font-weight:600;font-size:clamp(23px,5.4vw,33px);letter-spacing:.07em;
+  color:#f0eaf6;text-shadow:0 0 30px rgba(185,163,227,.35)}
+.hd .lead{font-size:16px;color:var(--txt-soft);margin:12px auto 0;max-width:540px;line-height:1.5}
+.hd .lead b{color:var(--gold-pale);font-weight:600}
+
+.back-row{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:18px}
+.back-home{padding:7px 18px;
+  font-family:'Cinzel',serif;font-size:11px;letter-spacing:.12em;color:#ffd83a;
+  border:1px solid rgba(255,216,58,.55);border-radius:20px;text-decoration:none;cursor:pointer;background:none;
+  text-shadow:0 0 10px rgba(255,216,58,.5);box-shadow:0 0 12px rgba(255,216,58,.18);
+  transition:color .2s,border-color .2s,box-shadow .2s}
+.back-home:hover{color:#fff1a8;border-color:rgba(255,216,58,.9);box-shadow:0 0 18px rgba(255,216,58,.35)}
+
+/* ================= barra di avanzamento del capitolo ================= */
+.prog{margin:18px 18px 4px;padding:14px 18px;border:1px solid var(--card-line);border-radius:16px;
+  background:linear-gradient(180deg, rgba(30,24,42,.8), rgba(18,14,26,.86));
+  box-shadow:0 4px 14px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.05)}
+.prog-top{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.prog-lab{font-family:'Cinzel',serif;font-size:12px;letter-spacing:.08em;color:var(--txt-soft)}
+.prog-num{font-family:'Cinzel',serif;font-size:13px;color:var(--glic-hi)}
+.prog-bar{height:7px;border-radius:6px;margin-top:10px;overflow:hidden;
+  background:rgba(10,8,14,.7);box-shadow:inset 0 1px 3px rgba(0,0,0,.6)}
+.prog-fill{height:100%;width:0;border-radius:6px;transition:width .7s cubic-bezier(.45,.05,.25,1);
+  background:linear-gradient(90deg, var(--glic-deep), var(--glic-hi));
+  box-shadow:0 0 12px rgba(185,163,227,.7)}
+.prog-note{font-size:14px;color:var(--txt-dim);margin-top:10px;line-height:1.45}
+.prog-note b{color:var(--gold-pale);font-weight:600}
+.prog.done .prog-fill{background:linear-gradient(90deg, #4fae78, var(--seen));box-shadow:0 0 14px var(--seen-glow)}
+
+/* ================= lista video ================= */
+.vlist{list-style:none;padding:18px 18px 0;display:flex;flex-direction:column;gap:20px}
+.vcard{border:1px solid var(--card-line);border-radius:18px;overflow:hidden;
+  background:linear-gradient(180deg, rgba(26,21,36,.78), rgba(16,13,23,.85));
+  box-shadow:0 8px 26px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.05);
+  transition:box-shadow .3s, border-color .3s, transform .3s}
+.vcard:hover{border-color:rgba(205,178,242,.5);box-shadow:0 12px 34px rgba(120,80,200,.3), inset 0 1px 0 rgba(255,255,255,.07)}
+.vcard.seen{border-color:rgba(127,214,160,.45);box-shadow:0 8px 26px rgba(0,0,0,.45), 0 0 0 1px rgba(127,214,160,.25), inset 0 1px 0 rgba(255,255,255,.05)}
+
+.vhead{display:flex;align-items:flex-start;gap:14px;padding:17px 18px 14px}
+.vnum{flex:none;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-family:'Cinzel',serif;font-size:14px;font-weight:600;color:#2a2036;
+  background:radial-gradient(circle at 38% 32%, var(--glic-hi), var(--glic) 62%, var(--glic-deep));
+  box-shadow:0 3px 10px rgba(120,80,200,.5), inset 0 1px 2px rgba(255,255,255,.6);
+  transition:background .3s, box-shadow .3s}
+.vcard.seen .vnum{background:radial-gradient(circle at 38% 32%, #d6f3e2, var(--seen) 62%, #4fae78);
+  box-shadow:0 3px 10px var(--seen-glow), inset 0 1px 2px rgba(255,255,255,.6)}
+.vmeta{flex:1;min-width:0}
+.vmeta h3{font-family:'Cinzel',serif;font-weight:600;font-size:17px;letter-spacing:.02em;color:#f0eaf6;line-height:1.3}
+.vmeta p{font-size:15px;color:var(--txt-soft);margin-top:6px;line-height:1.5}
+.vseen{flex:none;display:none;align-items:center;gap:5px;align-self:center;
+  font-family:'Cinzel',serif;font-size:10.5px;letter-spacing:.08em;color:var(--seen);
+  border:1px solid rgba(127,214,160,.5);border-radius:14px;padding:4px 10px;white-space:nowrap;
+  text-shadow:0 0 8px var(--seen-glow)}
+.vseen::before{content:'✓';font-size:12px}
+.vcard.seen .vseen{display:inline-flex}
+
+/* contenitore video responsive 16:9 */
+.vframe{position:relative;padding-top:56.25%;height:0;overflow:hidden;background:#000;
+  border-top:1px solid rgba(185,163,227,.12)}
+.vframe iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
+
+/* ================= piè di pagina ================= */
+.foot{margin:30px 18px 0;text-align:center;font-size:14px;color:var(--txt-dim);line-height:1.55}
+.foot .sep{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:14px}
+.foot .sep .l{width:60px;height:1px;background:linear-gradient(90deg,transparent,rgba(185,163,227,.5),transparent)}
+.foot .sep .d{width:5px;height:5px;border:1px solid var(--glic);transform:rotate(45deg)}
+.foot b{color:var(--gold-pale);font-weight:600}
+
+@media(max-width:520px){
+  .vhead{padding:14px 14px 12px;gap:11px}
+  .vnum{width:34px;height:34px;font-size:12px}
+  .vmeta h3{font-size:15.5px}
+  .vmeta p{font-size:14px}
+  .vlist{padding:14px 13px 0;gap:16px}
+  .prog{margin:16px 13px 4px}
+}
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <header class="hd">
+    <div class="orn"><div class="l"></div><div class="d"></div><div class="l"></div></div>
+    <div class="cap">Capitolo Secondo</div>
+    <h1>Il Mondo Interiore</h1>
+    <p class="lead">Otto incontri con le parti che ti compongono. Guardali con calma, nell'ordine che senti — <b>non c'è fretta</b>. Quando li avrai visti tutti, si apriranno gli esercizi per incontrarle una a una.</p>
+    <div class="back-row">
+      <a href="javascript:history.back()" id="back-btn" class="back-home">← Torna indietro</a>
+      <a href="https://oltreilvelo.elisasoulmedium.com" target="_top" class="back-home">Il percorso</a>
+    </div>
+  </header>
+
+  <!-- avanzamento del capitolo -->
+  <div class="prog" id="prog">
+    <div class="prog-top">
+      <span class="prog-lab">Il tuo cammino nel capitolo</span>
+      <span class="prog-num"><span id="seenN">0</span> di 8</span>
+    </div>
+    <div class="prog-bar"><div class="prog-fill" id="progFill"></div></div>
+    <div class="prog-note" id="progNote">Gli esercizi si sbloccano quando avrai conosciuto tutte le parti.</div>
+  </div>
+
+  <!-- ====== gli 8 video (ordine: Ombra dopo Adulto, prima di Padre e Madre) ====== -->
+  <ol class="vlist">
+
+    <li class="vcard" data-id="mondo" data-vid="1200559554">
+      <div class="vhead">
+        <span class="vnum">I</span>
+        <div class="vmeta">
+          <h3>Il Mondo Interiore</h3>
+          <p>Il punto di partenza: perché conoscere le parti che ci compongono cambia tutto. Qui Elisa introduce il lavoro — e spiega perché questi esercizi si fanno una volta sola, non ogni giorno.</p>
+        </div>
+        <span class="vseen">Visto</span>
+      </div>
+      <div class="vframe"><iframe src="https://player.vimeo.com/video/1200559554?title=0&byline=0&portrait=0&badge=0" allow="fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+    </li>
+
+    <li class="vcard" data-id="bambino" data-vid="1200559555">
+      <div class="vhead">
+        <span class="vnum">II</span>
+        <div class="vmeta">
+          <h3>Il Bambino Interiore</h3>
+          <p>La parte emotiva, spontanea e vulnerabile di noi. Custodisce i bisogni e le ferite dell'infanzia che, da adulti, continuano a parlarci.</p>
+        </div>
+        <span class="vseen">Visto</span>
+      </div>
+      <div class="vframe"><iframe src="https://player.vimeo.com/video/1200559555?title=0&byline=0&portrait=0&badge=0" allow="fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+    </li>
+
+    <li class="vcard" data-id="adulto" data-vid="1200563875">
+      <div class="vhead">
+        <span class="vnum">III</span>
+        <div class="vmeta">
+          <h3>Adulto Interiore</h3>
+          <p>La parte presente e stabile. Se il bambino sente, l'adulto contiene: ascolta, rassicura e tiene insieme le emozioni senza esserne travolto.</p>
+        </div>
+        <span class="vseen">Visto</span>
+      </div>
+      <div class="vframe"><iframe src="https://player.vimeo.com/video/1200563875?title=0&byline=0&portrait=0&badge=0" allow="fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+    </li>
+
+    <li class="vcard" data-id="ombra" data-vid="1200561278">
+      <div class="vhead">
+        <span class="vnum">IV</span>
+        <div class="vmeta">
+          <h3>L'Ombra Interiore</h3>
+          <p>La parte rifiutata. Non solo rabbia e paura, ma anche forza, creatività e verità che abbiamo imparato a reprimere. Non si combatte: si conosce.</p>
+        </div>
+        <span class="vseen">Visto</span>
+      </div>
+      <div class="vframe"><iframe src="https://player.vimeo.com/video/1200561278?title=0&byline=0&portrait=0&badge=0" allow="fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+    </li>
+
+    <li class="vcard" data-id="padremadre" data-vid="1200563735">
+      <div class="vhead">
+        <span class="vnum">V</span>
+        <div class="vmeta">
+          <h3>Il Padre e la Madre</h3>
+          <p>Le energie della cura e della protezione. Imparare a diventare, per noi stessi, quella presenza che a volte ci è mancata.</p>
+        </div>
+        <span class="vseen">Visto</span>
+      </div>
+      <div class="vframe"><iframe src="https://player.vimeo.com/video/1200563735?title=0&byline=0&portrait=0&badge=0" allow="fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+    </li>
+
+    <li class="vcard" data-id="mf" data-vid="1200561010">
+      <div class="vhead">
+        <span class="vnum">VI</span>
+        <div class="vmeta">
+          <h3>Maschile e Femminile</h3>
+          <p>Due energie che convivono in ognuno: l'ascolto e l'intuizione, l'azione e la direzione. L'equilibrio nasce quando collaborano.</p>
+        </div>
+        <span class="vseen">Visto</span>
+      </div>
+      <div class="vframe"><iframe src="https://player.vimeo.com/video/1200561010?title=0&byline=0&portrait=0&badge=0" allow="fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+    </li>
+
+    <li class="vcard" data-id="adolescente" data-vid="1200559557">
+      <div class="vhead">
+        <span class="vnum">VII</span>
+        <div class="vmeta">
+          <h3>Adolescente Interiore</h3>
+          <p>La ricerca dell'identità: il bisogno di libertà, di essere visti e riconosciuti. La parte ribelle che chiede ascolto, non giudizio.</p>
+        </div>
+        <span class="vseen">Visto</span>
+      </div>
+      <div class="vframe"><iframe src="https://player.vimeo.com/video/1200559557?title=0&byline=0&portrait=0&badge=0" allow="fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+    </li>
+
+    <li class="vcard" data-id="osservatore" data-vid="1200559556">
+      <div class="vhead">
+        <span class="vnum">VIII</span>
+        <div class="vmeta">
+          <h3>Creare l'Osservatore</h3>
+          <p>La presenza che guarda tutte le parti dall'esterno, senza giudicare. È il prerequisito di ogni esercizio — e lo alleni già ogni giorno con il Giornaliero.</p>
+        </div>
+        <span class="vseen">Visto</span>
+      </div>
+      <div class="vframe"><iframe src="https://player.vimeo.com/video/1200559556?title=0&byline=0&portrait=0&badge=0" allow="fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+    </li>
+
+  </ol>
+
+  <div class="foot">
+    <div class="sep"><span class="l"></span><span class="d"></span><span class="l"></span></div>
+    <b>Conoscere è il primo passo.</b><br>Quando avrai incontrato tutte le parti, il sentiero proseguirà con gli esercizi per integrarle, una a una.
+  </div>
+
+</div>
+
+<!-- SDK del player Vimeo: serve solo per tracciare il progresso nell'app.
+     Le statistiche native di Vimeo (visualizzazioni, tempo guardato) si registrano comunque da sole. -->
+<script src="https://player.vimeo.com/api/player.js"></script>
+<script>
+/* ====== integrazione con la shell /app/ (il capitolo apre in iframe) ====== */
+(function(){
+  var inShell=false;
+  try{ inShell = window.parent && window.parent!==window; }catch(e){ inShell=false; }
+  var back=document.getElementById('back-btn');
+  if(back) back.addEventListener('click', function(e){
+    if(inShell){ e.preventDefault(); window.parent.postMessage({t:'day:back'}, location.origin); }
+  });
+})();
+
+/* ====== tracciamento del progresso per-utente (segna "visto" e sblocca gli esercizi) ====== */
+(function(){
+  var SEEN_AT=0.85;          /* visto = guardato almeno l'85% */
+  var who='';
+  try{ who=(localStorage.getItem('ovl-user')||'').trim().toLowerCase(); }catch(e){}
+  var KEY='ovl-cap2:'+who;   /* mappa { idVideo: percentualeMassima } */
+  var DONE='ovl-cap2-done:'+who;
+
+  var prog={};
+  try{ prog=JSON.parse(localStorage.getItem(KEY)||'{}')||{}; }catch(e){ prog={}; }
+  function save(){ try{ localStorage.setItem(KEY, JSON.stringify(prog)); }catch(e){} }
+
+  var cards=[].slice.call(document.querySelectorAll('.vcard'));
+  var TOT=cards.length;
+
+  function isSeen(id){ return (prog[id]||0) >= SEEN_AT; }
+  function refresh(){
+    var n=0;
+    cards.forEach(function(li){
+      var id=li.getAttribute('data-id');
+      if(isSeen(id)){ li.classList.add('seen'); n++; }
+    });
+    document.getElementById('seenN').textContent=n;
+    document.getElementById('progFill').style.width=(n/TOT*100)+'%';
+    var note=document.getElementById('progNote');
+    var box=document.getElementById('prog');
+    if(n>=TOT){
+      box.classList.add('done');
+      note.innerHTML='Hai conosciuto tutte le parti del tuo mondo interiore. <b>Gli esercizi sono pronti per te.</b>';
+      try{ localStorage.setItem(DONE,'1'); }catch(e){}
+    } else {
+      box.classList.remove('done');
+      note.innerHTML='Gli esercizi si sbloccano quando avrai conosciuto tutte le parti. <b>Te ne mancano '+(TOT-n)+'.</b>';
+    }
+  }
+  refresh();
+
+  /* aggancio il player Vimeo a ogni video, se l'SDK è disponibile */
+  if(window.Vimeo && Vimeo.Player){
+    cards.forEach(function(li){
+      var id=li.getAttribute('data-id');
+      var iframe=li.querySelector('iframe');
+      if(!iframe) return;
+      var player;
+      try{ player=new Vimeo.Player(iframe); }catch(e){ return; }
+      var lastSaved=prog[id]||0;
+      player.on('timeupdate', function(d){
+        if(d.percent>(prog[id]||0)){
+          prog[id]=d.percent;
+          /* salvo a scatti dell'~5% per non scrivere a ogni frame */
+          if(d.percent-lastSaved>=0.05){ lastSaved=d.percent; save(); }
+          if(d.percent>=SEEN_AT && !li.classList.contains('seen')){ save(); refresh(); }
+        }
+      });
+      player.on('ended', function(){ prog[id]=1; save(); refresh(); });
+    });
+  }
+})();
+</script>
+
+</body>
+</html>

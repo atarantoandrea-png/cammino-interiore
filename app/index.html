@@ -823,12 +823,15 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
      ogni nuovo esercizio = una riga qui (la tappa nasce da sola).
      requires.days = giorni di pratica consigliati prima di aprirlo. */
   var EXERCISES=[
-    {id:'day', title:'Il Giornaliero', badge:'Pratica quotidiana', sym:'📜', route:'/app/day/',
+    {id:'day', title:'Il Giornaliero', badge:'Pratica quotidiana', sym:'📜', route:'/app/day/', shell:true,
      desc:'Le tue schede di pratica giorno per giorno: lo Spazio Emotivo, l\'Osservatorio Interiore e il Diario della Settimana. Tutto resta salvato nel tuo account.',
      requires:null},
-    {id:'ex2', title:'Prossimo esercizio', badge:'Più avanti nel cammino', sym:'🌙', route:null,
-     desc:'Un nuovo strumento del Cammino sta prendendo forma. Lo troverai qui, quando il Giornaliero ti avrà accompagnato abbastanza a lungo.',
-     requires:{days:20}, soon:true}
+    {id:'capitolo2', title:'Il Mondo Interiore', badge:'Capitolo Secondo', sym:'🌌', route:'/app/capitolo2/', shell:true,
+     desc:'Otto video con Elisa per conoscere le parti che ti compongono: il Bambino, l\'Adulto, l\'Ombra e le altre. Guardali con calma — poi si apriranno gli esercizi.',
+     requires:{days:10}},
+    {id:'ex2', title:'Gli esercizi del Mondo Interiore', badge:'Più avanti nel cammino', sym:'🌙', route:null,
+     desc:'Dopo aver conosciuto le tue parti, qui le incontrerai una a una — con la voce di Elisa, la meditazione e il tuo diario. Stanno prendendo forma.',
+     requires:{days:10}, soon:true}
   ];
 
   /* ---- la guida sa DOVE è posata la luce: contesti del sentiero ---- */
@@ -837,8 +840,10 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
       h:'<p>Benvenuta/o nella tua area di pratica. Qui sotto trovi tutto quello che serve per cominciare: leggi con calma <b>«Cos\'è quest\'area»</b> e <b>«Come funziona il sentiero»</b>, poi apri il Giornaliero e fai la tua prima pratica. Al resto pensa l\'app: tiene traccia di tutto e ti accompagna passo dopo passo.</p>'},
     day:{t:'Il Giornaliero',
       h:'<p>È la pratica di ogni giorno: lo <b>Spazio Emotivo</b>, l\'<b>Osservatorio Interiore</b> e il <b>Diario della Settimana</b>. Sulla card vedi i tuoi giorni di pratica e il tuo fiore. Apri l\'esercizio e lasciati guidare: dentro, la luce sarà con te sezione per sezione.</p>'},
+    capitolo2:{t:'Il Mondo Interiore',
+      h:'<p>Il secondo capitolo: otto video in cui Elisa ti presenta le parti che ti compongono. Si apre dopo <b>10 giorni</b> di Giornaliero — il tempo di prendere l\'abitudine di osservarti. Guardali liberamente, nell\'ordine che senti.</p>'},
     ex2:{t:'Le tappe più avanti',
-      h:'<p>Più in basso nel sentiero ci sono gli esercizi che verranno. Si aprono con la costanza: per il prossimo ti consigliamo almeno <b>20 giorni</b> di Giornaliero. Non c\'è fretta — il sentiero non scappa.</p>'}
+      h:'<p>Dopo aver conosciuto le tue parti nel Mondo Interiore, arriveranno gli esercizi per incontrarle una a una. Non c\'è fretta — il sentiero non scappa.</p>'}
   };
 
   /* ================= toast ================= */
@@ -934,7 +939,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
         el.href=ex.route;
         el.addEventListener('click',function(e){
           if(!unlockOk(ex)){ e.preventDefault(); openLock(ex, el); return; }
-          if(ex.id==='day' && window.openDay){ e.preventDefault(); window.openDay(); }
+          if(ex.shell && window.openFrame){ e.preventDefault(); window.openFrame(ex.route); }
         });
       } else {
         el=document.createElement('button');
@@ -1343,7 +1348,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
         (ex.requires?' — ti consigliamo almeno '+ex.requires.days+' giorni di pratica prima di proseguire.':'.');
     }
     document.getElementById('lkB').textContent=msg;
-    document.getElementById('lkGo').style.display=ex.route?'':'none';
+    document.getElementById('lkGo').style.display=(ex.route||ex.shell)?'':'none';
     veil.classList.add('on'); lkpop.classList.add('on');
     document.getElementById('lkBack').focus();
   }
@@ -1351,7 +1356,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
   document.getElementById('lkGo').addEventListener('click',function(){
     if(!lockTarget||!lockTarget.route)return;
     chiudiTutto();
-    if(lockTarget.id==='day' && window.openDay)window.openDay();
+    if(lockTarget.shell && window.openFrame) window.openFrame(lockTarget.route);
     else location.href=lockTarget.route;
   });
 
@@ -1442,11 +1447,12 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
       cur:mmss(au.currentTime), dur:mmss(au.duration||0)
     }, location.origin);
   }
-  window.openDay=function(){
-    if(dayFrame.getAttribute('data-loaded')!=='1'){ dayFrame.src='/app/day/'; dayFrame.setAttribute('data-loaded','1'); }
+  window.openFrame=function(route){
+    if(dayFrame.getAttribute('data-route')!==route){ dayFrame.src=route; dayFrame.setAttribute('data-route',route); }
     dayFrame.style.display='block';
     document.documentElement.style.overflow='hidden';
   };
+  window.openDay=function(){ window.openFrame('/app/day/'); };
   function closeDay(){ dayFrame.style.display='none'; document.documentElement.style.overflow=''; }
   window.closeDay=closeDay;
   window.addEventListener('message', function(e){
