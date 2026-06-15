@@ -36,9 +36,15 @@ body{
     url('/src/pagina.jpg') center top/100% auto repeat;
   background-attachment:fixed;
   font-family:'Cormorant Garamond',Georgia,serif;color:var(--txt);min-height:100vh;
-  /* colore della luce guida: glicine, in tono con la pagina */
-  --lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:rgba(186,150,240,.56);--lm-g3:rgba(150,110,215,.3);
 }
+/* colore della luce guida = livello (fiore) della persona; applyTier mette la classe ltN sul body */
+body{--lm-c1:#fff0e4;--lm-mid:#e8924a;--lm-g1:rgba(240,178,108,.68);--lm-g2:rgba(215,138,68,.44);--lm-g3:rgba(185,98,42,.22)}
+body.lt1{--lm-c1:#eef4f8;--lm-mid:#a8c8e0;--lm-g1:rgba(190,218,240,.88);--lm-g2:rgba(148,188,218,.54);--lm-g3:rgba(108,158,196,.27)}
+body.lt2{--lm-c1:#fffbe0;--lm-mid:#f0c840;--lm-g1:rgba(248,216,96,.88);--lm-g2:rgba(232,182,50,.54);--lm-g3:rgba(208,148,28,.27)}
+body.lt3{--lm-c1:#ffffff;--lm-mid:#b9ddf6;--lm-g1:rgba(190,225,252,.9);--lm-g2:rgba(126,190,242,.52);--lm-g3:rgba(88,160,228,.26)}
+body.lt4{--lm-c1:#ffffff;--lm-mid:#a7b6ef;--lm-g1:rgba(180,194,252,.9);--lm-g2:rgba(128,148,238,.52);--lm-g3:rgba(98,118,222,.26)}
+body.lt5{--lm-c1:#ffffff;--lm-mid:#ad7ff0;--lm-g1:rgba(206,170,255,.9);--lm-g2:rgba(164,112,246,.5);--lm-g3:rgba(128,76,226,.26)}
+body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:rgba(186,150,240,.56);--lm-g3:rgba(150,110,215,.3)}
 
 /* ================= LA LUCE GUIDA ================= */
 #lume{position:absolute;left:0;top:0;z-index:40;width:56px;height:56px;margin:-28px 0 0 -28px;
@@ -54,7 +60,7 @@ body{
 /* invito gentile a toccarla */
 #lume::before{content:'';position:absolute;inset:-6px;border-radius:50%;border:1px solid rgba(220,205,255,.0);
   animation:lpulse 2.6s ease-in-out infinite}
-@keyframes lpulse{0%,100%{box-shadow:0 0 0 0 rgba(200,170,255,.22)}50%{box-shadow:0 0 0 7px rgba(200,170,255,0)}}
+@keyframes lpulse{0%,100%{box-shadow:0 0 0 0 var(--lm-g2)}50%{box-shadow:0 0 0 7px transparent}}
 @media(max-width:760px){
   #lume{width:42px;height:42px;margin:-21px 0 0 -21px}
   #lume::after{inset:13px;box-shadow:0 0 8px 3px var(--lm-g1),0 0 24px 9px var(--lm-g2),0 0 54px 22px var(--lm-g3),inset 0 0 4px rgba(220,215,245,.5)}
@@ -251,6 +257,8 @@ body{
 
 <!-- SDK del player Vimeo: per il tracciamento del progresso. Le statistiche native di Vimeo si registrano comunque da sole. -->
 <script src="https://player.vimeo.com/api/player.js"></script>
+<!-- livelli/fiori condivisi con il resto dell'app: serve a colorare la luce -->
+<script src="/app/lume.js?v=2"></script>
 <script>
 /* ====== integrazione con la shell /app/ (il capitolo apre in iframe) ====== */
 (function(){
@@ -312,6 +320,8 @@ body{
 
   var who='';
   try{ who=(localStorage.getItem('ovl-user')||'').trim().toLowerCase(); }catch(e){}
+  /* la luce prende il COLORE del livello (fiore) raggiunto dalla persona */
+  try{ if(window.OVL_LUME){ var _S=OVL_LUME.loadLocal(who); OVL_LUME.applyTier(OVL_LUME.allActiveDays(_S.store).length); } }catch(e){}
   var KEY='ovl-cap2:'+who;
   var DONE='ovl-cap2-done:'+who;
 
@@ -362,31 +372,29 @@ body{
   var curId=null;   /* lezione su cui è posata la luce */
   function isNarrow(){ return innerWidth < 760; }
   function moveLume(x,y){ lume.style.transform='translate3d('+(x|0)+'px,'+(y|0)+'px,0)'; }
+  /* coordinate nel documento (indipendenti dallo scroll: niente race con lo scroll animato) */
+  function docPos(el){ var x=0,y=0; while(el){ x+=el.offsetLeft; y+=el.offsetTop; el=el.offsetParent; } return {x:x,y:y}; }
   function lumeHome(){
     var hd=document.querySelector('.hd');
-    var x = isNarrow() ? (scrollX + 34) : Math.max(34, innerWidth/2 - 400);
+    var x = isNarrow() ? 34 : Math.max(34, innerWidth/2 - 400);
     moveLume(x, (hd?hd.offsetTop:20) + 64);
     lume.classList.remove('boost');
   }
-  function lightUp(head){
-    if(!head){ lumeHome(); return; }
-    var r=head.getBoundingClientRect();
-    var x, y;
+  function lightUp(li){
+    if(!li){ lumeHome(); return; }
+    var p=docPos(li);   /* angolo in alto a sinistra del riquadro, in coordinate documento */
     if(isNarrow()){
-      /* mobile: appena SOPRA la sezione toccata — visibile, senza coprire il contenuto */
-      x = r.left + scrollX + 26; if(x < scrollX+24) x=scrollX+24;
-      y = r.top + scrollY - 24;  if(y < scrollY+22) y=scrollY+22;
-      lume.classList.remove('boost');
+      /* mobile: SEMPRE sopra il riquadro, fuori dal box — non entra mai nelle card aperte */
+      var y=p.y-22; if(y<6)y=6;
+      moveLume(p.x+24, y); lume.classList.remove('boost');
     } else {
-      /* desktop: nel margine ACCANTO alla sezione (a sinistra, o a destra se manca spazio) */
-      y = r.top + scrollY + Math.min(r.height/2, 30);
-      x = r.left + scrollX - 32; if(x < scrollX+28) x = r.right + scrollX + 32;
-      lume.classList.add('boost');
+      /* desktop: nel margine ACCANTO al riquadro, a sinistra; se non c'è spazio, sopra */
+      var lx=p.x-34;
+      if(lx<28){ var y2=p.y-24; if(y2<6)y2=6; moveLume(p.x+24, y2); lume.classList.remove('boost'); }
+      else { moveLume(lx, p.y+30); lume.classList.add('boost'); }
     }
-    moveLume(x, y);
   }
-  addEventListener('resize', function(){ if(curId){ lightUp(nodes[curId].head); } else lumeHome(); });
-  addEventListener('scroll', function(){ /* la luce è ancorata al documento: resta accanto alla sezione */ }, {passive:true});
+  addEventListener('resize', function(){ if(curId){ lightUp(nodes[curId].li); } else lumeHome(); });
 
   function toggle(L, li, head){
     var opening = !li.classList.contains('open');
@@ -402,8 +410,8 @@ body{
     head.setAttribute('aria-expanded', opening?'true':'false');
     /* la luce si posa su questa sezione (resta lì anche chiudendo) */
     curId=L.id;
-    if(opening){ ensurePlayer(L, li); }
-    setTimeout(function(){ if(opening) head.scrollIntoView({behavior:'smooth', block:'start'}); lightUp(head); }, opening?140:10);
+    if(opening){ ensurePlayer(L, li); setTimeout(function(){ head.scrollIntoView({behavior:'smooth', block:'start'}); }, 60); }
+    lightUp(li);
   }
 
   function ensurePlayer(L, li){
