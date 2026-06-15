@@ -370,6 +370,7 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
   /* ====== LA LUCE GUIDA ====== */
   var lume=document.getElementById('lume');
   var curId=null;   /* lezione su cui è posata la luce */
+  var lightT=null;  /* timer per riposizionare la luce a layout fermo */
   function isNarrow(){ return innerWidth < 760; }
   function moveLume(x,y){ lume.style.transform='translate3d('+(x|0)+'px,'+(y|0)+'px,0)'; }
   /* coordinate nel documento (indipendenti dallo scroll: niente race con lo scroll animato) */
@@ -398,9 +399,11 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
 
   function toggle(L, li, head){
     var opening = !li.classList.contains('open');
+    var otherOpen=false;   /* un altro riquadro si sta chiudendo? allora il layout si muove */
     LESSONS.forEach(function(O){
       var n=nodes[O.id];
       if(n.li!==li && n.li.classList.contains('open')){
+        otherOpen=true;
         n.li.classList.remove('open');
         n.head.setAttribute('aria-expanded','false');
         if(players[O.id] && players[O.id].pause) try{ players[O.id].pause(); }catch(e){}
@@ -411,7 +414,11 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
     /* la luce si posa su questa sezione (resta lì anche chiudendo) */
     curId=L.id;
     if(opening){ ensurePlayer(L, li); setTimeout(function(){ head.scrollIntoView({behavior:'smooth', block:'start'}); }, 60); }
-    lightUp(li);
+    /* posiziono la luce a LAYOUT FERMO: se un altro riquadro si chiude (fisarmonica .45s)
+       aspetto che finisca, così la luce non finisce mai sul video. Primo apri: subito. */
+    clearTimeout(lightT);
+    if(!otherOpen) lightUp(li);
+    lightT=setTimeout(function(){ lightUp(li); }, 520);
   }
 
   function ensurePlayer(L, li){
