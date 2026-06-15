@@ -24,6 +24,7 @@
   --txt:#e6e0ec; --txt-soft:#b7aec4; --txt-dim:#8d8499;
   --card:rgba(22,18,29,.72);
   --card-line:rgba(185,163,227,.16);
+  --seen:#7fd6a0; --seen-glow:rgba(127,214,160,.5);
 }
 html{scroll-behavior:smooth}
 body{
@@ -243,10 +244,16 @@ header.hd{padding:54px 0 8px;text-align:center;position:relative;z-index:2}
 }
 .excard.start.first-time{border-color:rgba(201,168,76,.55);animation:startglow 2.8s ease-in-out infinite}
 
-/* tappe più avanti nel cammino: vive ma in attesa */
-.excard.next .excover{filter:saturate(.4) brightness(.82)}
-.excard.next .exgo{color:var(--txt-dim)}
-.excard.next:hover .exgo{color:var(--txt-soft)}
+/* tappe bloccate: OSCURATE (scure, spente) */
+.excard.locked{opacity:.62;filter:saturate(.5)}
+.excard.locked .excover{filter:grayscale(.6) brightness(.45)}
+.excard.locked .exbody{opacity:.8}
+.excard.locked .exgo{color:var(--txt-dim)}
+.excard.locked:hover{opacity:.8}
+/* tappe sbloccate: ILLUMINATE + lucchetto aperto */
+.excard.unlocked{box-shadow:0 0 0 1px rgba(127,214,160,.35), 0 0 26px rgba(127,214,160,.2), 0 12px 32px rgba(0,0,0,.45)}
+.excard.unlocked .excover{filter:none}
+.excard.unlocked .exgo{color:var(--seen)}
 /* lucchetto sulle tappe ancora chiuse: elegante, dorato, invita a toccarlo */
 .exlock{position:absolute;top:12px;right:12px;z-index:3;width:38px;height:38px;border-radius:50%;
   display:flex;align-items:center;justify-content:center;color:var(--gold-pale);
@@ -257,6 +264,10 @@ header.hd{padding:54px 0 8px;text-align:center;position:relative;z-index:2}
 .exlock svg{width:18px;height:18px;display:block;filter:drop-shadow(0 0 6px rgba(201,168,76,.4))}
 .excard.next:hover .exlock{transform:translateY(-1px) scale(1.06);border-color:rgba(232,217,174,.85);
   box-shadow:0 4px 14px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.14), 0 0 22px rgba(201,168,76,.42)}
+/* lucchetto APERTO (verde) sulle tappe sbloccate */
+.exlock.open{color:var(--seen);border-color:rgba(127,214,160,.55);
+  box-shadow:0 3px 10px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.12), 0 0 18px var(--seen-glow)}
+.exlock.open svg{filter:drop-shadow(0 0 6px var(--seen-glow))}
 
 footer{
   text-align:center;padding:22px 14px 26px;position:relative;z-index:2;
@@ -841,25 +852,25 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
      requires:{days:10}},
     {id:'bambino', title:'Il Bambino Interiore', badge:'Esercizi · 1ª parte', sym:'🌱', route:'/app/bambino/', shell:true,
      desc:'La prima parte da incontrare: la più emotiva e vulnerabile di te. Due passi — il foglio delle tre domande e la meditazione.',
-     requires:{days:10}, needCap2:true},
+     requires:{days:10}, partVideo:true},
     {id:'adulto', title:'L\'Adulto Interiore', badge:'Esercizi · 2ª parte', sym:'🌳', route:null,
      desc:'La parte presente e stabile, che contiene ed equilibra. Gli esercizi stanno prendendo forma.',
-     requires:{days:10}, soon:true},
+     requires:{days:10}, soon:true, partVideo:true},
     {id:'ombra', title:'L\'Ombra Interiore', badge:'Esercizi · 3ª parte', sym:'🌑', route:null,
      desc:'La parte rifiutata, da conoscere e integrare senza paura. Gli esercizi stanno prendendo forma.',
-     requires:{days:10}, soon:true},
+     requires:{days:10}, soon:true, partVideo:true},
     {id:'padremadre', title:'Il Padre e la Madre', badge:'Esercizi · 4ª parte', sym:'🤲', route:null,
      desc:'Le energie della cura e della protezione. Gli esercizi stanno prendendo forma.',
-     requires:{days:10}, soon:true},
+     requires:{days:10}, soon:true, partVideo:true},
     {id:'mf', title:'Maschile e Femminile', badge:'Esercizi · 5ª parte', sym:'☯', route:null,
      desc:'Le due energie che convivono in te. Gli esercizi stanno prendendo forma.',
-     requires:{days:10}, soon:true},
+     requires:{days:10}, soon:true, partVideo:true},
     {id:'adolescente', title:'L\'Adolescente Interiore', badge:'Esercizi · 6ª parte', sym:'🔥', route:null,
      desc:'La ricerca dell\'identità e della libertà. Gli esercizi stanno prendendo forma.',
-     requires:{days:10}, soon:true},
+     requires:{days:10}, soon:true, partVideo:true},
     {id:'osservatore', title:'Creare l\'Osservatore', badge:'Esercizi · 7ª parte', sym:'👁', route:null,
      desc:'La presenza che osserva tutte le parti. Lo alleni già con il Giornaliero; presto avrà i suoi esercizi.',
-     requires:{days:10}, soon:true}
+     requires:{days:10}, soon:true, partVideo:true}
   ];
 
   /* ---- la guida sa DOVE è posata la luce: contesti del sentiero ---- */
@@ -947,9 +958,13 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
 
   /* ================= il sentiero ================= */
   function guidaVista(){ try{ return !!localStorage.getItem('ovl-guida-vista'); }catch(e){ return false; } }
-  function cap2Done(){ try{ return localStorage.getItem('ovl-cap2-done:'+EMAIL)==='1'; }catch(e){ return false; } }
+  /* video del Mondo Interiore visti (mappa salvata da /app/capitolo2/) */
+  function cap2Map(){ try{ return JSON.parse(localStorage.getItem('ovl-cap2:'+EMAIL)||'{}')||{}; }catch(e){ return {}; } }
+  function videoSeen(id){ return (cap2Map()[id]||0) >= 0.85; }
+  function gated(ex){ return !!(ex.partVideo || ex.requires || ex.soon); }
   function unlockOk(ex){
-    if(ex.needCap2 && !cap2Done()) return false;   /* le parti si aprono dopo il Mondo Interiore */
+    /* una parte si sblocca quando hai visto il video "Il Mondo Interiore" + il video di quella parte */
+    if(ex.partVideo){ return videoSeen('mondo') && videoSeen(ex.id); }
     return !ex.requires || days>=ex.requires.days;
   }
 
@@ -961,6 +976,35 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
       '<rect x="4.5" y="10.5" width="15" height="10.5" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/>'+
       '<circle cx="12" cy="15.2" r="1.3" fill="currentColor" stroke="none"/><path d="M12 16.3v1.7"/></svg></div>';
   }
+  function lockOpenBadge(){
+    return '<div class="exlock open" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">'+
+      '<rect x="4.5" y="10.5" width="15" height="10.5" rx="2.5"/><path d="M8 10.5V7a4 4 0 0 1 7.4-2"/>'+
+      '<circle cx="12" cy="15.2" r="1.3" fill="currentColor" stroke="none"/><path d="M12 16.3v1.7"/></svg></div>';
+  }
+  /* stato bloccato/sbloccato di una card (ricalcolabile quando tornano dai video) */
+  function applyLockState(el, ex){
+    if(!gated(ex)) return;
+    var ok=unlockOk(ex);
+    el.classList.toggle('next', !ok);
+    el.classList.toggle('locked', !ok);
+    el.classList.toggle('unlocked', ok);
+    var cover=el.querySelector('.excover');
+    if(cover){ var old=cover.querySelector('.exlock'); if(old)old.parentNode.removeChild(old);
+      cover.insertAdjacentHTML('beforeend', ok?lockOpenBadge():lockBadge()); }
+    var go=el.querySelector('.exgo');
+    if(go){
+      if(ex.partVideo){ go.textContent = ok ? (ex.route?'Apri gli esercizi →':'Esercizi in arrivo')
+                                            : ('Guarda «Il Mondo Interiore» e «'+ex.title+'»'); }
+      else if(ex.requires){ go.textContent = ok ? 'Apri →' : ('Consigliato dopo '+ex.requires.days+' giorni di Giornaliero'); }
+    }
+  }
+  function updateLocks(){
+    var ol=document.getElementById('sentiero'); if(!ol)return;
+    EXERCISES.forEach(function(ex){
+      var li=ol.querySelector('.stage[data-stage="'+ex.id+'"]'); if(!li)return;
+      var el=li.querySelector('.excard'); if(el)applyLockState(el, ex);
+    });
+  }
   function renderSentiero(){
     var ol=document.getElementById('sentiero');
     EXERCISES.forEach(function(ex){
@@ -971,8 +1015,6 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
 
       var li=document.createElement('li');
       li.className='stage'; li.dataset.stage=ex.id;
-      var locked=!!ex.requires;
-      var chiusa=ex.soon || !unlockOk(ex);   /* davvero non accessibile → mostra il lucchetto */
       var el;
       if(ex.route){
         el=document.createElement('a');
@@ -986,19 +1028,18 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
         el.type='button';
         el.addEventListener('click',function(){ openLock(ex, el); });
       }
-      el.className='excard'+(locked?' next':'');
+      el.className='excard';
       if(ex.id==='day')el.id='card-day';
       el.innerHTML=
-        '<div class="excover"><div class="ring"></div><span class="sym">'+ex.sym+'</span>'+(chiusa?lockBadge():'')+'</div>'+
+        '<div class="excover"><div class="ring"></div><span class="sym">'+ex.sym+'</span></div>'+
         '<div class="exbody">'+
           '<div class="exbadge">'+(ex.soon?'In preparazione':ex.badge)+'</div>'+
           '<h3>'+ex.title+'</h3>'+
           '<p class="exdesc">'+ex.desc+'</p>'+
           (ex.id==='day'?'<div class="mini" id="mini-day"></div>':'')+
-          '<span class="exgo">'+(locked
-            ?('Consigliato dopo '+ex.requires.days+' giorni di Giornaliero')
-            :'Apri l\'esercizio →')+'</span>'+
+          '<span class="exgo">Apri l\'esercizio →</span>'+
         '</div>';
+      applyLockState(el, ex);   /* oscurato+lucchetto chiuso se bloccato, illuminato+lucchetto aperto se sbloccato */
       li.appendChild(el);
       ol.appendChild(li);
     });
@@ -1054,6 +1095,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
   }
   function refreshAll(){
     calcProgress();
+    updateLocks();   /* sblocco parti in base ai video visti nel Mondo Interiore */
     renderMini();
     markRecommended();
     cachePositions();
@@ -1386,9 +1428,16 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     if(ex.id==='capitolo2'){
       msg='Il «Mondo Interiore» si apre dopo '+ex.requires.days+' giorni di Giornaliero: così arrivi con l\'osservatore già allenato e le lezioni ti parlano di più. '+fatti+
         ' Se senti di volerlo, puoi entrare comunque.';
-    } else if(ex.needCap2){
-      msg='Questa parte si apre quando avrai completato le otto lezioni del «Mondo Interiore» — è lì che conosci chi andrai a incontrare. '+
-        (cap2Done()?'':'Ti manca ancora qualche lezione. ')+'Se senti di volerlo, puoi entrare comunque.';
+    } else if(ex.partVideo){
+      if(unlockOk(ex)){
+        msg='Hai visto i video di questa parte. Gli esercizi del «'+ex.title+'» stanno prendendo forma: li troverai qui appena pronti.';
+      } else {
+        var miss=[];
+        if(!videoSeen('mondo'))miss.push('«Il Mondo Interiore»');
+        if(!videoSeen(ex.id))miss.push('«'+ex.title+'»');
+        msg='Questa parte si sblocca quando avrai visto, nel Mondo Interiore, '+(miss.length>1?'i video ':'il video ')+miss.join(' e ')+'.'+
+          (ex.route?' Se senti di volerlo, puoi entrare comunque.':'');
+      }
     } else if(ex.route){
       msg='Questa tappa si apre dopo '+ex.requires.days+' giorni di Giornaliero. '+fatti+' Se senti di volerlo, puoi entrare comunque.';
     } else {
@@ -1500,7 +1549,9 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     document.documentElement.style.overflow='hidden';
   };
   window.openDay=function(){ window.openFrame('/app/day/'); };
-  function closeDay(){ dayFrame.style.display='none'; document.documentElement.style.overflow=''; }
+  function closeDay(){ dayFrame.style.display='none'; document.documentElement.style.overflow='';
+    /* tornando dai video, ricalcola gli sblocchi delle parti */
+    if(rendered && document.getElementById('dash').classList.contains('on')){ try{ refreshAll(); }catch(e){} } }
   window.closeDay=closeDay;
   window.addEventListener('message', function(e){
     if(e.origin!==location.origin) return;
