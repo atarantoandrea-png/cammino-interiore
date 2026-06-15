@@ -163,6 +163,10 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
 .lex:hover{box-shadow:0 5px 16px rgba(150,110,215,.6);transform:translateY(-1px);border-color:rgba(220,205,250,.95)}
 .lex.soon{color:var(--txt-soft);border-color:rgba(185,163,227,.4);background:rgba(40,32,54,.7);box-shadow:none;text-shadow:none}
 .lex.soon:hover{transform:none;border-color:rgba(205,178,242,.6);box-shadow:none}
+/* pubblicato ma ancora bloccato: viola SCURO (si illumina quando sblocchi i video) */
+.lex.locked{background:linear-gradient(180deg, #3a2c58, #261d3d);border-color:rgba(140,110,190,.5);
+  color:#c9bce6;text-shadow:none;box-shadow:0 2px 6px rgba(0,0,0,.45)}
+.lex.locked:hover{transform:none;border-color:rgba(170,140,220,.7);box-shadow:0 2px 9px rgba(0,0,0,.5)}
 @media(max-width:520px){.lex{font-size:10px;padding:8px 12px}}
 /* toast */
 #saved{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(60px);background:rgba(22,17,28,.96);color:var(--glic-hi);border:1px solid rgba(185,163,227,.5);border-radius:30px;padding:9px 20px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:.08em;z-index:70;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;max-width:90vw;text-align:center}
@@ -374,6 +378,15 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
   var inShell=false; try{ inShell=window.parent && window.parent!==window; }catch(e){}
   function openExercise(route){ if(inShell){ window.parent.postMessage({t:'open', route:route}, location.origin); } else { location.href=route; } }
   function toast(m){ var t=document.getElementById('saved'); if(!t)return; t.textContent=m; t.classList.add('show'); clearTimeout(toast._t); toast._t=setTimeout(function(){ t.classList.remove('show'); }, 2400); }
+  /* esercizi della parte sbloccati? (Bambino: visti i video Mondo + Bambino) */
+  function lexUnlocked(id){ if(id==='bambino') return isSeen('mondo') && isSeen('bambino'); return false; }
+  /* avvisa la dashboard quando cambia lo stato "visto" dei video (sblocco immediato) */
+  var lastSig='';
+  function notifyParent(){
+    var sig=LESSONS.map(function(L){return isSeen(L.id)?'1':'0';}).join('');
+    if(sig===lastSig)return; lastSig=sig;
+    if(inShell){ try{ window.parent.postMessage({t:'cap2-changed'}, location.origin); }catch(e){} }
+  }
 
   LESSONS.forEach(function(L, i){
     var li=document.createElement('li');
@@ -399,13 +412,14 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
     curr.appendChild(li);
 
     var head=li.querySelector('.lhead');
-    nodes[L.id]={li:li, status:li.querySelector('.lstatus'), btn:li.querySelector('.lcomplete'), dur:li.querySelector('.ldur'), head:head};
+    nodes[L.id]={li:li, status:li.querySelector('.lstatus'), btn:li.querySelector('.lcomplete'), dur:li.querySelector('.ldur'), head:head, lex:li.querySelector('.lex')};
 
     head.addEventListener('click', function(e){ if(e.target.closest('.lex'))return; toggle(L, li, head); });
     head.addEventListener('keydown', function(e){ if((e.key==='Enter'||e.key===' ')&&!e.target.closest('.lex')){ e.preventDefault(); toggle(L, li, head); } });
-    var lex=li.querySelector('.lex');
+    var lex=nodes[L.id].lex;
     if(lex) lex.addEventListener('click', function(e){ e.stopPropagation();
       if(L.ex==='soon'){ toast('Gli esercizi del «'+L.t+'» arriveranno presto'); }
+      else if(!lexUnlocked(L.id)){ toast('Guarda «Il Mondo Interiore» e «'+L.t+'» per sbloccare gli esercizi'); }
       else { openExercise(L.ex); }
     });
     nodes[L.id].btn.addEventListener('click', function(e){
@@ -501,18 +515,21 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
       if(done){ n++; nd.status.textContent='✓ Visto'; nd.btn.classList.add('is-done'); nd.btn.textContent='Visto'; }
       else if((prog[L.id]||0)>0){ nd.status.textContent='In corso'; nd.btn.classList.remove('is-done'); nd.btn.textContent='Segna come visto'; }
       else { nd.status.textContent='Da vedere'; nd.btn.classList.remove('is-done'); nd.btn.textContent='Segna come visto'; }
+      /* pulsante Esercizi: illuminato se sbloccato, viola scuro se ancora bloccato */
+      if(nd.lex && L.ex && L.ex!=='soon'){ nd.lex.classList.toggle('locked', !lexUnlocked(L.id)); }
     });
     document.getElementById('seenN').textContent=n;
     document.getElementById('progFill').style.width=(n/TOT*100)+'%';
     var note=document.getElementById('progNote'); var box=document.getElementById('prog');
     if(n>=TOT){
       box.classList.add('done');
-      note.innerHTML='Hai visto tutti gli otto video del Mondo Interiore. <b>Gli esercizi sono pronti per te.</b>';
+      note.innerHTML='Hai visto tutti gli otto video del Mondo Interiore. <b>Ora puoi sbloccare gli esercizi di ogni parte.</b>';
       try{ localStorage.setItem(DONE,'1'); }catch(e){}
     } else {
       box.classList.remove('done');
-      note.innerHTML='Gli esercizi si sbloccano quando avrai visto tutti i video. <b>Te ne mancano '+(TOT-n)+'.</b>';
+      note.innerHTML='Gli esercizi di ogni parte si sbloccano guardando <b>«Il Mondo Interiore»</b> e il video di quella parte (in ordine).';
     }
+    notifyParent();   /* sblocco immediato anche nella dashboard */
   }
 
   /* ====== pannello GUIDA (apre toccando la luce) ====== */

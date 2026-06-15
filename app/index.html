@@ -256,14 +256,14 @@ header.hd{padding:54px 0 8px;text-align:center;position:relative;z-index:2}
 .excard.unlocked .exgo{color:var(--seen)}
 /* lucchetto sulle tappe ancora chiuse: elegante, dorato, invita a toccarlo */
 .exlock{position:absolute;top:12px;right:12px;z-index:3;width:38px;height:38px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;color:var(--gold-pale);
-  background:radial-gradient(circle at 38% 32%, rgba(58,46,84,.97), rgba(26,20,38,.97));
-  border:1px solid rgba(201,168,76,.5);
-  box-shadow:0 3px 10px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.12), 0 0 16px rgba(201,168,76,.2);
-  transition:transform .25s, box-shadow .25s, border-color .25s}
-.exlock svg{width:18px;height:18px;display:block;filter:drop-shadow(0 0 6px rgba(201,168,76,.4))}
-.excard.next:hover .exlock{transform:translateY(-1px) scale(1.06);border-color:rgba(232,217,174,.85);
-  box-shadow:0 4px 14px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.14), 0 0 22px rgba(201,168,76,.42)}
+  display:flex;align-items:center;justify-content:center;color:#ff8a96;
+  background:radial-gradient(circle at 38% 32%, rgba(58,30,38,.97), rgba(30,18,22,.97));
+  border:1px solid rgba(224,85,102,.6);
+  box-shadow:0 3px 10px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.12), 0 0 16px rgba(224,85,102,.3);
+  transition:transform .25s, box-shadow .25s, border-color .25s, color .25s}
+.exlock svg{width:18px;height:18px;display:block;filter:drop-shadow(0 0 6px rgba(224,85,102,.5))}
+.excard.next:hover .exlock{transform:translateY(-1px) scale(1.06);border-color:rgba(255,140,150,.9);
+  box-shadow:0 4px 14px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.14), 0 0 22px rgba(224,85,102,.5)}
 /* lucchetto APERTO (verde) sulle tappe sbloccate */
 .exlock.open{color:var(--seen);border-color:rgba(127,214,160,.55);
   box-shadow:0 3px 10px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.12), 0 0 18px var(--seen-glow)}
@@ -961,10 +961,25 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
   /* video del Mondo Interiore visti (mappa salvata da /app/capitolo2/) */
   function cap2Map(){ try{ return JSON.parse(localStorage.getItem('ovl-cap2:'+EMAIL)||'{}')||{}; }catch(e){ return {}; } }
   function videoSeen(id){ return (cap2Map()[id]||0) >= 0.85; }
+  var PART_ORDER=['bambino','adulto','ombra','padremadre','mf','adolescente','osservatore'];
+  function partTitle(id){ for(var i=0;i<EXERCISES.length;i++){ if(EXERCISES[i].id===id)return EXERCISES[i].title; } return id; }
+  /* una parte è "completata" quando hai finito tutti i suoi esercizi */
+  function partDone(id){
+    if(id==='bambino'){ try{ var p=JSON.parse(localStorage.getItem('ovl-bambino-prog:'+EMAIL)||'{}'); return !!(p&&p.foglio); }catch(e){ return false; } }
+    return false;   /* le altre parti non hanno ancora esercizi: non completabili finché non esistono */
+  }
+  function prevPartsDone(id){
+    var i=PART_ORDER.indexOf(id); if(i<=0)return true;
+    for(var k=0;k<i;k++){ if(!partDone(PART_ORDER[k]))return false; }
+    return true;
+  }
   function gated(ex){ return !!(ex.partVideo || ex.requires || ex.soon); }
   function unlockOk(ex){
-    /* una parte si sblocca quando hai visto il video "Il Mondo Interiore" + il video di quella parte */
-    if(ex.partVideo){ return videoSeen('mondo') && videoSeen(ex.id); }
+    if(ex.partVideo){
+      /* Bambino: video "Mondo Interiore" + video "Bambino". Le altre: video della parte + TUTTI gli esercizi precedenti. */
+      if(ex.id==='bambino') return videoSeen('mondo') && videoSeen('bambino');
+      return videoSeen(ex.id) && prevPartsDone(ex.id);
+    }
     return !ex.requires || days>=ex.requires.days;
   }
 
@@ -994,7 +1009,8 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     var go=el.querySelector('.exgo');
     if(go){
       if(ex.partVideo){ go.textContent = ok ? (ex.route?'Apri gli esercizi →':'Esercizi in arrivo')
-                                            : ('Guarda «Il Mondo Interiore» e «'+ex.title+'»'); }
+                                            : (ex.id==='bambino' ? 'Guarda «Il Mondo Interiore» e «Il Bambino Interiore»'
+                                                                 : 'Completa prima le parti precedenti'); }
       else if(ex.requires){ go.textContent = ok ? 'Apri →' : ('Consigliato dopo '+ex.requires.days+' giorni di Giornaliero'); }
     }
   }
@@ -1429,13 +1445,22 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
       msg='Il «Mondo Interiore» si apre dopo '+ex.requires.days+' giorni di Giornaliero: così arrivi con l\'osservatore già allenato e le lezioni ti parlano di più. '+fatti+
         ' Se senti di volerlo, puoi entrare comunque.';
     } else if(ex.partVideo){
+      var soonNote = ex.route ? '' : ' Gli esercizi di questa parte stanno arrivando: appena pronti, si sbloccheranno proprio così.';
       if(unlockOk(ex)){
-        msg='Hai visto i video di questa parte. Gli esercizi del «'+ex.title+'» stanno prendendo forma: li troverai qui appena pronti.';
+        msg = ex.route ? 'Tutto pronto: gli esercizi del «'+ex.title+'» sono sbloccati.'
+                       : 'Hai sbloccato questa parte.'+soonNote;
       } else {
-        var miss=[];
-        if(!videoSeen('mondo'))miss.push('«Il Mondo Interiore»');
-        if(!videoSeen(ex.id))miss.push('«'+ex.title+'»');
-        msg='Questa parte si sblocca quando avrai visto, nel Mondo Interiore, '+(miss.length>1?'i video ':'il video ')+miss.join(' e ')+'.'+
+        var req=[];
+        if(ex.id==='bambino'){
+          if(!videoSeen('mondo'))req.push('guarda il video «Il Mondo Interiore»');
+          if(!videoSeen('bambino'))req.push('guarda il video «Il Bambino Interiore»');
+        } else {
+          if(!videoSeen(ex.id))req.push('guarda il video «'+ex.title+'» nel Mondo Interiore');
+          var pi=PART_ORDER.indexOf(ex.id), mancano=[];
+          for(var pk=0;pk<pi;pk++){ if(!partDone(PART_ORDER[pk])) mancano.push('«'+partTitle(PART_ORDER[pk])+'»'); }
+          if(mancano.length)req.push('completa prima tutti gli esercizi di: '+mancano.join(', '));
+        }
+        msg='Per accedere a questa parte devi prima: '+req.join('; ')+'.'+soonNote+
           (ex.route?' Se senti di volerlo, puoi entrare comunque.':'');
       }
     } else if(ex.route){
@@ -1558,6 +1583,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     var m=e.data||{}; if(!m.t) return;
     if(m.t==='day:back'){ closeDay(); return; }
     if(m.t==='open'){ if(window.openFrame && typeof m.route==='string' && m.route.charAt(0)==='/'){ window.openFrame(m.route); } return; }
+    if(m.t==='cap2-changed'){ try{ if(rendered){ updateLocks(); markRecommended(); } }catch(e){} return; }
     if(m.t!=='mu:cmd') return;
     if(m.cmd==='toggle') window.muToggle();
     else if(m.cmd==='next') window.muNext();
