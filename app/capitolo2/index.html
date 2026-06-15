@@ -153,6 +153,17 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
 .ltitle{display:block;font-family:'Cinzel',serif;font-weight:600;font-size:15.5px;letter-spacing:.02em;color:#f0eaf6;line-height:1.25}
 .lstatus{flex:none;font-family:'Cinzel',serif;font-size:10px;letter-spacing:.06em;color:var(--txt-dim);white-space:nowrap}
 .lesson.seen .lstatus{color:var(--seen);text-shadow:0 0 8px var(--seen-glow)}
+/* pulsante "Esercizi" accanto allo stato: rimanda alla parte */
+.lex{flex:none;font-family:'Cinzel',serif;font-size:10px;letter-spacing:.05em;cursor:pointer;white-space:nowrap;
+  padding:7px 12px;border-radius:16px;color:#2a2208;border:1px solid rgba(201,168,76,.7);
+  background:linear-gradient(180deg, #ecdcaf, var(--gold));box-shadow:0 2px 8px rgba(0,0,0,.35);transition:all .2s}
+.lex:hover{box-shadow:0 3px 12px rgba(201,168,76,.45);transform:translateY(-1px)}
+.lex.soon{color:var(--txt-soft);border-color:rgba(185,163,227,.4);background:rgba(40,32,54,.6);box-shadow:none}
+.lex.soon:hover{transform:none;border-color:rgba(205,178,242,.6)}
+@media(max-width:520px){.lex{font-size:9px;padding:6px 9px}}
+/* toast */
+#saved{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(60px);background:rgba(22,17,28,.96);color:var(--glic-hi);border:1px solid rgba(185,163,227,.5);border-radius:30px;padding:9px 20px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:.08em;z-index:70;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;max-width:90vw;text-align:center}
+#saved.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .lchev{flex:none;width:11px;height:11px;border-right:2px solid var(--glic);border-bottom:2px solid var(--glic);
   transform:rotate(45deg);transition:transform .3s;margin-left:2px;opacity:.7}
 .lesson.open .lchev{transform:rotate(-135deg)}
@@ -271,6 +282,8 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
   <div class="gp-bd" id="gpBody"></div>
 </aside>
 
+<div id="saved"></div>
+
 <!-- SDK del player Vimeo: per il tracciamento del progresso. Le statistiche native di Vimeo si registrano comunque da sole. -->
 <script src="https://player.vimeo.com/api/player.js"></script>
 <!-- livelli/fiori condivisi con il resto dell'app: serve a colorare la luce -->
@@ -295,19 +308,19 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
   var LESSONS=[
     {id:'mondo',      n:'I',    vid:'1200559554', t:'Il Mondo Interiore',
      d:'Il punto di partenza: perché conoscere le parti che ci compongono cambia tutto. Qui Elisa introduce il lavoro — e spiega perché questi esercizi si fanno una volta sola, non ogni giorno.'},
-    {id:'bambino',    n:'II',   vid:'1200559555', t:'Il Bambino Interiore',
+    {id:'bambino',    n:'II',   vid:'1200559555', t:'Il Bambino Interiore', ex:'/app/bambino/',
      d:'La parte emotiva, spontanea e vulnerabile di noi. Custodisce i bisogni e le ferite dell\'infanzia che, da adulti, continuano a parlarci.'},
-    {id:'adulto',     n:'III',  vid:'1200563875', t:'Adulto Interiore',
+    {id:'adulto',     n:'III',  vid:'1200563875', t:'Adulto Interiore', ex:'soon',
      d:'La parte presente e stabile. Se il bambino sente, l\'adulto contiene: ascolta, rassicura e tiene insieme le emozioni senza esserne travolto.'},
-    {id:'ombra',      n:'IV',   vid:'1200561278', t:'L\'Ombra Interiore',
+    {id:'ombra',      n:'IV',   vid:'1200561278', t:'L\'Ombra Interiore', ex:'soon',
      d:'La parte rifiutata. Non solo rabbia e paura, ma anche forza, creatività e verità che abbiamo imparato a reprimere. Non si combatte: si conosce.'},
-    {id:'padremadre', n:'V',    vid:'1200563735', t:'Il Padre e la Madre',
+    {id:'padremadre', n:'V',    vid:'1200563735', t:'Il Padre e la Madre', ex:'soon',
      d:'Le energie della cura e della protezione. Imparare a diventare, per noi stessi, quella presenza che a volte ci è mancata.'},
-    {id:'mf',         n:'VI',   vid:'1200561010', t:'Maschile e Femminile',
+    {id:'mf',         n:'VI',   vid:'1200561010', t:'Maschile e Femminile', ex:'soon',
      d:'Due energie che convivono in ognuno: l\'ascolto e l\'intuizione, l\'azione e la direzione. L\'equilibrio nasce quando collaborano.'},
-    {id:'adolescente',n:'VII',  vid:'1200559557', t:'Adolescente Interiore',
+    {id:'adolescente',n:'VII',  vid:'1200559557', t:'Adolescente Interiore', ex:'soon',
      d:'La ricerca dell\'identità: il bisogno di libertà, di essere visti e riconosciuti. La parte ribelle che chiede ascolto, non giudizio.'},
-    {id:'osservatore',n:'VIII', vid:'1200559556', t:'Creare l\'Osservatore',
+    {id:'osservatore',n:'VIII', vid:'1200559556', t:'Creare l\'Osservatore', ex:'soon',
      d:'La presenza che guarda tutte le parti dall\'esterno, senza giudicare. È il prerequisito di ogni esercizio — e lo alleni già ogni giorno con il Giornaliero.'}
   ];
   var TOT=LESSONS.length;
@@ -355,16 +368,21 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
   var players={};
   var nodes={};
 
+  var inShell=false; try{ inShell=window.parent && window.parent!==window; }catch(e){}
+  function openExercise(route){ if(inShell){ window.parent.postMessage({t:'open', route:route}, location.origin); } else { location.href=route; } }
+  function toast(m){ var t=document.getElementById('saved'); if(!t)return; t.textContent=m; t.classList.add('show'); clearTimeout(toast._t); toast._t=setTimeout(function(){ t.classList.remove('show'); }, 2400); }
+
   LESSONS.forEach(function(L, i){
     var li=document.createElement('li');
     li.className='lesson'; li.setAttribute('data-id', L.id);
     li.innerHTML=
-      '<button class="lhead" aria-expanded="false">'+
+      '<div class="lhead" role="button" tabindex="0" aria-expanded="false">'+
         '<span class="lnum">'+L.n+'</span>'+
         '<span class="lmeta"><span class="ltag">Video '+(i+1)+' di '+TOT+'</span><span class="ltitle">'+L.t+'</span></span>'+
         '<span class="lstatus"></span>'+
+        (L.ex ? '<button class="lex'+(L.ex==='soon'?' soon':'')+'" type="button">'+(L.ex==='soon'?'Esercizi · presto':'Esercizi →')+'</button>' : '')+
         '<span class="lchev"></span>'+
-      '</button>'+
+      '</div>'+
       '<div class="lbody">'+
         '<p class="ldesc">'+L.d+'</p>'+
         '<div class="lframe"><div class="ph">Tocca per caricare il video…</div></div>'+
@@ -378,7 +396,13 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
     var head=li.querySelector('.lhead');
     nodes[L.id]={li:li, status:li.querySelector('.lstatus'), btn:li.querySelector('.lcomplete'), dur:li.querySelector('.ldur'), head:head};
 
-    head.addEventListener('click', function(){ toggle(L, li, head); });
+    head.addEventListener('click', function(e){ if(e.target.closest('.lex'))return; toggle(L, li, head); });
+    head.addEventListener('keydown', function(e){ if((e.key==='Enter'||e.key===' ')&&!e.target.closest('.lex')){ e.preventDefault(); toggle(L, li, head); } });
+    var lex=li.querySelector('.lex');
+    if(lex) lex.addEventListener('click', function(e){ e.stopPropagation();
+      if(L.ex==='soon'){ toast('Gli esercizi del «'+L.t+'» arriveranno presto'); }
+      else { openExercise(L.ex); }
+    });
     nodes[L.id].btn.addEventListener('click', function(e){
       e.stopPropagation();
       prog[L.id] = isSeen(L.id) ? 0 : 1;   /* completa / annulla */

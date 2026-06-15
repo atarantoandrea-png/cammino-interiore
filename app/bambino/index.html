@@ -131,12 +131,13 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
 .fq-n{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.2em;color:var(--gold);margin-bottom:6px}
 .fq-q{font-size:17px;color:#f0eaf6;line-height:1.4;margin-bottom:10px;font-weight:600}
 .fld label{display:block;font-family:'Cinzel',serif;font-size:10px;letter-spacing:.1em;color:var(--txt-dim);margin:12px 0 5px}
-textarea,input.fperche{width:100%;font-family:'Cormorant Garamond',serif;color:var(--txt);
-  background:var(--field);border:1px solid var(--field-line);border-radius:10px;padding:11px 13px;font-size:16px;line-height:1.5}
-textarea{min-height:70px;resize:vertical}
-textarea:focus,input.fperche:focus{outline:none;border-color:var(--glic-hi);box-shadow:0 0 0 1px rgba(220,205,250,.4), 0 0 16px rgba(150,110,215,.2)}
+textarea,.fperche{width:100%;font-family:'Cormorant Garamond',serif;color:var(--txt);
+  background:var(--field);border:1px solid var(--field-line);border-radius:10px;padding:11px 13px;font-size:16px;line-height:1.5;
+  resize:none;overflow:hidden}  /* niente scroll interno: le caselle crescono col testo */
+textarea{min-height:70px}
+textarea:focus,.fperche:focus{outline:none;border-color:var(--glic-hi);box-shadow:0 0 0 1px rgba(220,205,250,.4), 0 0 16px rgba(150,110,215,.2)}
 .fperche-wrap{margin-top:6px;display:flex;flex-direction:column;gap:7px}
-.fperche{font-size:15px}
+.fperche{font-size:15px;min-height:44px}
 .fwhy{font-style:italic;color:var(--txt-dim);font-size:13.5px;margin:14px 0 2px}
 
 .factions{display:flex;flex-wrap:wrap;gap:10px;margin:24px 18px 0;align-items:center;justify-content:center}
@@ -207,14 +208,17 @@ textarea:focus,input.fperche:focus{outline:none;border-color:var(--glic-hi);box-
   .exic{width:48px;height:48px;font-size:23px}
 }
 
-/* ===== foglio stampabile (da scrivere a mano), visibile solo in stampa ===== */
-#printsheet{display:none}
+/* ===== fogli stampabili (visibili solo in stampa) ===== */
+#printsheet,#printfilled{display:none}
 @media print{
   @page{margin:14mm 12mm}
-  body{background:#fff;color:#111}
+  html,body{background:#fff !important;background-image:none !important;color:#111}
   .page,.back-fab,#lume,#gpan,#veil,#saved{display:none!important}
+  /* di default stampa il foglio da scrivere a mano; con body.print-filled quello con le risposte */
   #printsheet{display:block;font-family:'Cormorant Garamond',Georgia,serif;color:#111}
-  #printsheet h1{font-family:'Cinzel',serif;font-size:22pt;text-align:center;margin:0 0 2mm}
+  body.print-filled #printsheet{display:none}
+  body.print-filled #printfilled{display:block;font-family:'Cormorant Garamond',Georgia,serif;color:#111}
+  #printsheet h1,#printfilled h1{font-family:'Cinzel',serif;font-size:22pt;text-align:center;margin:0 0 2mm}
   .ps-sub{font-family:'Cinzel',serif;font-size:12pt;font-weight:600;text-align:center;color:#555;margin:0 0 10mm}
   .ps-cover p{font-size:12pt;line-height:1.6;margin:0 0 6mm}
   .ps-cover{page-break-after:always}
@@ -222,10 +226,11 @@ textarea:focus,input.fperche:focus{outline:none;border-color:var(--glic-hi);box-
   .ps-q h2{font-family:'Cinzel',serif;font-size:16pt;margin:0 0 3mm;border-bottom:1px solid #999;padding-bottom:2mm}
   .ps-help{font-size:11.5pt;font-style:italic;color:#333;margin:0 0 5mm}
   .ps-why{page-break-inside:avoid;margin-top:5mm}
-  .ps-wl{font-size:11pt;color:#444;margin:0 0 2mm}
-  .wlines{width:100%;background-image:repeating-linear-gradient(to bottom, transparent 0, transparent calc(7mm - 1px), #bcbcbc calc(7mm - 1px), #bcbcbc 7mm);page-break-inside:avoid}
-  .wlines.ans{height:70mm}
-  .wlines.why{height:42mm}
+  .ps-wl,.pf-wl{font-size:11pt;color:#444;margin:0 0 2mm}
+  .wlines{page-break-inside:avoid}
+  .wl{height:7mm;border-bottom:1px solid #c4c4c4}   /* riga grigia = bordo (stampa sempre, sfondo bianco) */
+  .pf-ans{font-size:12.5pt;line-height:1.6;white-space:pre-wrap;border-bottom:1px solid #ddd;padding:1mm 0 3mm;margin:0 0 3mm;min-height:6mm}
+  .pf-wl{margin-top:4mm}
 }
 </style>
 </head>
@@ -278,24 +283,26 @@ textarea:focus,input.fperche:focus{outline:none;border-color:var(--glic-hi);box-
   <section id="foglio" class="view">
     <button class="vback" type="button" onclick="goHub()">Torna agli esercizi del Bambino</button>
     <div class="fvideo">
-      <p class="fvintro">Guarda prima il video: <b>Elisa ti spiega l'esercizio</b>. Poi compila il foglio qui sotto, con calma.</p>
+      <p class="fvintro"><b>Prima di rispondere, riguarda il video «Il Bambino Interiore»</b> — quello in cui Elisa ti spiega cos'è il bambino interiore. Le emozioni della prima domanda sono proprio su <b>questo</b> video.</p>
+      <div class="lframe" id="fvframe-teoria"><div class="ph">Carico il video…</div></div>
+      <p class="fvintro fvsmall">E qui Elisa ti spiega <b>come fare l'esercizio</b>:</p>
       <div class="lframe" id="fvframe"><div class="ph">Carico il video…</div></div>
     </div>
 
     <div class="fbox">
-      <p class="fintro">Questo non è un esercizio di testa, è un esercizio del <b>sentire</b>. Si parte dal video e dal tuo <b>bambino interiore</b>: rispondi <b>di getto</b>, senza pensarci troppo e senza giudicarti — sii sincera/o con te stessa/o.</p>
+      <p class="fintro">Questo non è un esercizio di testa, è un esercizio del <b>sentire</b>. Si parte dal video <b>«Il Bambino Interiore»</b> qui sopra — quello in cui Elisa ti spiega cos'è il tuo bambino interiore: rispondi <b>di getto</b>, senza pensarci troppo e senza giudicarti — sii sincera/o con te stessa/o.</p>
       <p class="fintro"><b>I tre «perché».</b> Dopo ogni risposta, chiediti «perché» tre volte. Serve perché la <b>prima risposta è sempre razionale</b>; poi inizi a scavare e a sentirti dentro. La seconda è più pensata, la terza più intuitiva, la quarta arriva da <b>ciò che senti davvero dentro — dalla tua anima</b>. Il cammino interiore è proprio questo: imparare a sentirsi.</p>
 
       <div class="fzone" data-zone="emozione">
         <div class="fq-n">Domanda 1 · L'emozione</div>
-        <div class="fq-q">Dopo il video, pensando al tuo bambino interiore, che emozioni senti?</div>
-        <p class="fq-help">Non cercare la risposta "giusta". Lascia che arrivi <b>di getto</b>: può essere positiva o negativa — tenerezza, tristezza, rabbia, gioia, vuoto, nostalgia… <b>Non giudicarla</b> e non giudicarti. Scrivi quello che senti, sinceramente.</p>
+        <div class="fq-q">Dopo aver rivisto il video «Il Bambino Interiore», pensando al tuo bambino interiore, che emozioni hai sentito?</div>
+        <p class="fq-help">Riferisciti proprio a quel video — quando Elisa ti ha spiegato cos'è il bambino interiore. Non cercare la risposta "giusta": lascia che arrivi <b>di getto</b>, può essere positiva o negativa — tenerezza, tristezza, rabbia, gioia, vuoto, nostalgia… <b>Non giudicarla</b> e non giudicarti. Scrivi quello che senti, sinceramente.</p>
         <div class="fld"><label>Le emozioni che sento</label><textarea data-k="q1" placeholder="Sento…"></textarea></div>
         <div class="fwhy">E ora, per tre volte: perché sento questo?</div>
         <div class="fperche-wrap">
-          <input class="fperche" data-k="q1a" placeholder="Perché… (la prima, di pancia)">
-          <input class="fperche" data-k="q1b" placeholder="Perché… (più a fondo, più intuitiva)">
-          <input class="fperche" data-k="q1c" placeholder="Perché… (ciò che senti davvero, dall'anima)">
+          <textarea class="fperche" data-k="q1a" rows="1" placeholder="Perché… (la prima, di pancia)"></textarea>
+          <textarea class="fperche" data-k="q1b" rows="1" placeholder="Perché… (più a fondo, più intuitiva)"></textarea>
+          <textarea class="fperche" data-k="q1c" rows="1" placeholder="Perché… (ciò che senti davvero, dall'anima)"></textarea>
         </div>
       </div>
 
@@ -306,9 +313,9 @@ textarea:focus,input.fperche:focus{outline:none;border-color:var(--glic-hi);box-
         <div class="fld"><label>La mia risposta</label><textarea data-k="q2" placeholder="Un ricordo, una sensazione, un momento dell'infanzia…"></textarea></div>
         <div class="fwhy">E ora, per tre volte: perché?</div>
         <div class="fperche-wrap">
-          <input class="fperche" data-k="q2a" placeholder="Perché… (la prima, di pancia)">
-          <input class="fperche" data-k="q2b" placeholder="Perché… (più a fondo, più intuitiva)">
-          <input class="fperche" data-k="q2c" placeholder="Perché… (ciò che senti davvero, dall'anima)">
+          <textarea class="fperche" data-k="q2a" rows="1" placeholder="Perché… (la prima, di pancia)"></textarea>
+          <textarea class="fperche" data-k="q2b" rows="1" placeholder="Perché… (più a fondo, più intuitiva)"></textarea>
+          <textarea class="fperche" data-k="q2c" rows="1" placeholder="Perché… (ciò che senti davvero, dall'anima)"></textarea>
         </div>
       </div>
 
@@ -319,9 +326,9 @@ textarea:focus,input.fperche:focus{outline:none;border-color:var(--glic-hi);box-
         <div class="fld"><label>La mia risposta</label><textarea data-k="q3" placeholder="Avrei avuto bisogno di…"></textarea></div>
         <div class="fwhy">E ora, per tre volte: perché?</div>
         <div class="fperche-wrap">
-          <input class="fperche" data-k="q3a" placeholder="Perché… (la prima, di pancia)">
-          <input class="fperche" data-k="q3b" placeholder="Perché… (più a fondo, più intuitiva)">
-          <input class="fperche" data-k="q3c" placeholder="Perché… (ciò che senti davvero, dall'anima)">
+          <textarea class="fperche" data-k="q3a" rows="1" placeholder="Perché… (la prima, di pancia)"></textarea>
+          <textarea class="fperche" data-k="q3b" rows="1" placeholder="Perché… (più a fondo, più intuitiva)"></textarea>
+          <textarea class="fperche" data-k="q3c" rows="1" placeholder="Perché… (ciò che senti davvero, dall'anima)"></textarea>
         </div>
       </div>
 
@@ -330,7 +337,8 @@ textarea:focus,input.fperche:focus{outline:none;border-color:var(--glic-hi);box-
 
     <div class="factions">
       <button class="fbtn" type="button" id="btnSave">Salva</button>
-      <button class="fbtn" type="button" id="btnPrint">Stampa il foglio (da scrivere a mano)</button>
+      <button class="fbtn" type="button" id="btnPrint">Stampa vuoto (da scrivere a mano)</button>
+      <button class="fbtn" type="button" id="btnPrintFilled">Stampa con le mie risposte</button>
       <button class="fbtn gold" type="button" id="btnDone">Segna come completato</button>
       <div class="fhint">Puoi scrivere qui — resta salvato nel tuo account, e potrai rileggerlo tra qualche mese — oppure <b>stampare il foglio e scriverlo a mano</b>, come consiglia Elisa.</div>
     </div>
@@ -385,6 +393,9 @@ textarea:focus,input.fperche:focus{outline:none;border-color:var(--glic-hi);box-
   </div>
 </div>
 
+<!-- foglio stampabile CON le risposte (riempito da JS al momento della stampa) -->
+<div id="printfilled" aria-hidden="true"></div>
+
 <!-- pannello GUIDA -->
 <div id="veil"></div>
 <aside id="gpan" role="dialog" aria-label="La voce della Guida">
@@ -415,7 +426,7 @@ textarea:focus,input.fperche:focus{outline:none;border-color:var(--glic-hi);box-
     medit.classList.toggle('on', v==='medit');
     window.scrollTo({top:0,behavior:'smooth'});
     if(v==='foglio'){
-      ensureVideo();
+      ensureVideo(); setTimeout(growAll, 30);
       var z0=foglio.querySelector('.fzone');
       if(z0){ setTimeout(function(){ lightUp(z0); }, 420); } else lumeHome();
     } else { lumeHome(); }
@@ -451,13 +462,43 @@ textarea:focus,input.fperche:focus{outline:none;border-color:var(--glic-hi);box-
     try{ localStorage.setItem(FKEY, JSON.stringify(data)); }catch(e){}
     if(!silent) toast('Salvato nel tuo account');
   }
+  /* le caselle crescono col testo: niente scroll interno, la parte iniziale non si perde */
+  function autogrow(el){ if(!el||el.tagName!=='TEXTAREA')return; el.style.height='auto'; el.style.height=(el.scrollHeight+2)+'px'; }
+  function growAll(){ fields.forEach(autogrow); }
   var autoT=null;
   fields.forEach(function(el){
     var ev=el.type==='radio'?'change':'input';
-    el.addEventListener(ev, function(){ clearTimeout(autoT); autoT=setTimeout(function(){ saveForm(true); }, 600); });
+    el.addEventListener(ev, function(){ autogrow(el); clearTimeout(autoT); autoT=setTimeout(function(){ saveForm(true); }, 600); });
   });
   document.getElementById('btnSave').addEventListener('click', function(){ saveForm(false); });
-  document.getElementById('btnPrint').addEventListener('click', function(){ saveForm(true); window.print(); });
+
+  /* ===== stampa: foglio vuoto (righe a mano) oppure con le risposte ===== */
+  function fillLines(){
+    var ws=document.querySelectorAll('#printsheet .wlines');
+    for(var i=0;i<ws.length;i++){ var w=ws[i], n=(w.className.indexOf('ans')>=0)?10:6; w.innerHTML='';
+      for(var j=0;j<n;j++){ var d=document.createElement('div'); d.className='wl'; w.appendChild(d); } }
+  }
+  fillLines();
+  var QFILL=[
+    {n:'1 · L\'emozione', q:'Dopo aver rivisto il video «Il Bambino Interiore», pensando al tuo bambino interiore, che emozioni hai sentito?', a:'q1', w:['q1a','q1b','q1c']},
+    {n:'2 · Il ricordo', q:'Queste emozioni mi ricordano qualcosa che sentivo già da piccola/o?', a:'q2', w:['q2a','q2b','q2c']},
+    {n:'3 · Il bisogno', q:'Di cosa avrei avuto bisogno — e di cosa ho bisogno ora?', a:'q3', w:['q3a','q3b','q3c']}
+  ];
+  function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function buildFilled(){
+    var dd=collect();
+    var wl=['Perché? — la prima, di pancia','Perché? — più a fondo, più intuitiva','Perché? — ciò che senti davvero, dall\'anima'];
+    var html='<div class="ps-cover"><h1>Il Bambino Interiore</h1><h2 class="ps-sub">Le tre domande · le mie risposte</h2></div>';
+    QFILL.forEach(function(Q){
+      html+='<div class="ps-q"><h2>'+Q.n+'</h2><p class="ps-help">'+esc(Q.q)+'</p><div class="pf-ans">'+(esc(dd[Q.a])||'—')+'</div>';
+      Q.w.forEach(function(k,i){ html+='<div class="pf-wl">'+wl[i]+'</div><div class="pf-ans">'+(esc(dd[k])||'—')+'</div>'; });
+      html+='</div>';
+    });
+    document.getElementById('printfilled').innerHTML=html;
+  }
+  document.getElementById('btnPrint').addEventListener('click', function(){ saveForm(true); document.body.classList.remove('print-filled'); window.print(); });
+  document.getElementById('btnPrintFilled').addEventListener('click', function(){ saveForm(true); buildFilled(); document.body.classList.add('print-filled'); window.print(); });
+  window.addEventListener('afterprint', function(){ document.body.classList.remove('print-filled'); });
 
   /* progresso esercizio */
   var prog={}; try{ prog=JSON.parse(localStorage.getItem(PKEY)||'{}')||{}; }catch(e){ prog={}; }
@@ -476,16 +517,17 @@ textarea:focus,input.fperche:focus{outline:none;border-color:var(--glic-hi);box-
 
   function toast(m){ var t=document.getElementById('saved'); t.textContent=m; t.classList.add('show'); clearTimeout(toast._t); toast._t=setTimeout(function(){ t.classList.remove('show'); }, 1800); }
 
-  /* ===== video di Elisa nel foglio (caricato alla prima apertura) ===== */
-  function ensureVideo(){
-    var f=document.getElementById('fvframe'); if(!f || f.getAttribute('data-loaded')==='1') return;
+  /* ===== video di Elisa nel foglio (caricati alla prima apertura) ===== */
+  function loadVimeo(id, frameId){
+    var f=document.getElementById(frameId); if(!f || f.getAttribute('data-loaded')==='1') return;
     f.setAttribute('data-loaded','1');
     var ifr=document.createElement('iframe');
-    ifr.src='https://player.vimeo.com/video/1201477236?title=0&byline=0&portrait=0&badge=0';
+    ifr.src='https://player.vimeo.com/video/'+id+'?title=0&byline=0&portrait=0&badge=0';
     ifr.setAttribute('allow','autoplay; fullscreen; picture-in-picture');
     ifr.setAttribute('allowfullscreen','');
     f.innerHTML=''; f.appendChild(ifr);
   }
+  function ensureVideo(){ loadVimeo('1200559555','fvframe-teoria'); loadVimeo('1201477236','fvframe'); }
 
   /* anteprima: la card "Esercizio 1" mostra la copertina del video (da Vimeo) */
   (function(){

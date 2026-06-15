@@ -1506,6 +1506,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     if(e.origin!==location.origin) return;
     var m=e.data||{}; if(!m.t) return;
     if(m.t==='day:back'){ closeDay(); return; }
+    if(m.t==='open'){ if(window.openFrame && typeof m.route==='string' && m.route.charAt(0)==='/'){ window.openFrame(m.route); } return; }
     if(m.t!=='mu:cmd') return;
     if(m.cmd==='toggle') window.muToggle();
     else if(m.cmd==='next') window.muNext();
