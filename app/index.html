@@ -1499,6 +1499,8 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     } else { show('login'); }
   } else { show('login'); }
   window.showView = show;
+  /* esposto per l'altra IIFE (player/iframe): ricalcola sblocchi al ritorno dai video / su cap2-changed */
+  window.OVL_refresh = function(){ try{ if(rendered && document.getElementById('dash').classList.contains('on')) refreshAll(); }catch(e){} };
 })();
 </script>
 <script>
@@ -1575,15 +1577,14 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
   };
   window.openDay=function(){ window.openFrame('/app/day/'); };
   function closeDay(){ dayFrame.style.display='none'; document.documentElement.style.overflow='';
-    /* tornando dai video, ricalcola gli sblocchi delle parti */
-    if(rendered && document.getElementById('dash').classList.contains('on')){ try{ refreshAll(); }catch(e){} } }
+    if(window.OVL_refresh) window.OVL_refresh();   /* tornando dai video, ricalcola gli sblocchi (altra IIFE) */ }
   window.closeDay=closeDay;
   window.addEventListener('message', function(e){
     if(e.origin!==location.origin) return;
     var m=e.data||{}; if(!m.t) return;
     if(m.t==='day:back'){ closeDay(); return; }
     if(m.t==='open'){ if(window.openFrame && typeof m.route==='string' && m.route.charAt(0)==='/'){ window.openFrame(m.route); } return; }
-    if(m.t==='cap2-changed'){ try{ if(rendered){ updateLocks(); markRecommended(); } }catch(e){} return; }
+    if(m.t==='cap2-changed'){ if(window.OVL_refresh) window.OVL_refresh(); return; }
     if(m.t!=='mu:cmd') return;
     if(m.cmd==='toggle') window.muToggle();
     else if(m.cmd==='next') window.muNext();
