@@ -247,6 +247,16 @@ header.hd{padding:54px 0 8px;text-align:center;position:relative;z-index:2}
 .excard.next .excover{filter:saturate(.4) brightness(.82)}
 .excard.next .exgo{color:var(--txt-dim)}
 .excard.next:hover .exgo{color:var(--txt-soft)}
+/* lucchetto sulle tappe ancora chiuse: elegante, dorato, invita a toccarlo */
+.exlock{position:absolute;top:12px;right:12px;z-index:3;width:38px;height:38px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;color:var(--gold-pale);
+  background:radial-gradient(circle at 38% 32%, rgba(58,46,84,.97), rgba(26,20,38,.97));
+  border:1px solid rgba(201,168,76,.5);
+  box-shadow:0 3px 10px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.12), 0 0 16px rgba(201,168,76,.2);
+  transition:transform .25s, box-shadow .25s, border-color .25s}
+.exlock svg{width:18px;height:18px;display:block;filter:drop-shadow(0 0 6px rgba(201,168,76,.4))}
+.excard.next:hover .exlock{transform:translateY(-1px) scale(1.06);border-color:rgba(232,217,174,.85);
+  box-shadow:0 4px 14px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.14), 0 0 22px rgba(201,168,76,.42)}
 
 footer{
   text-align:center;padding:22px 14px 26px;position:relative;z-index:2;
@@ -922,6 +932,11 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
   function fpSvg(){
     return '<svg class="fp" viewBox="0 0 24 40" width="22" height="36" fill="currentColor" aria-hidden="true"><use href="#fp-shoe"/></svg>';
   }
+  function lockBadge(){
+    return '<div class="exlock" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">'+
+      '<rect x="4.5" y="10.5" width="15" height="10.5" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/>'+
+      '<circle cx="12" cy="15.2" r="1.3" fill="currentColor" stroke="none"/><path d="M12 16.3v1.7"/></svg></div>';
+  }
   function renderSentiero(){
     var ol=document.getElementById('sentiero');
     EXERCISES.forEach(function(ex){
@@ -933,6 +948,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
       var li=document.createElement('li');
       li.className='stage'; li.dataset.stage=ex.id;
       var locked=!!ex.requires;
+      var chiusa=ex.soon || !unlockOk(ex);   /* davvero non accessibile → mostra il lucchetto */
       var el;
       if(ex.route){
         el=document.createElement('a');
@@ -949,7 +965,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
       el.className='excard'+(locked?' next':'');
       if(ex.id==='day')el.id='card-day';
       el.innerHTML=
-        '<div class="excover"><div class="ring"></div><span class="sym">'+ex.sym+'</span></div>'+
+        '<div class="excover"><div class="ring"></div><span class="sym">'+ex.sym+'</span>'+(chiusa?lockBadge():'')+'</div>'+
         '<div class="exbody">'+
           '<div class="exbadge">'+(ex.soon?'In preparazione':ex.badge)+'</div>'+
           '<h3>'+ex.title+'</h3>'+
@@ -1028,6 +1044,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
   function boot(){
     try{ EMAIL=(localStorage.getItem(KEY)||'').trim().toLowerCase(); }catch(e){ EMAIL=''; }
     S=OVL_LUME.loadLocal(EMAIL);
+    calcProgress();   /* days noti PRIMA del render: il lucchetto nasce con lo stato giusto */
     if(!rendered){ renderSentiero(); rendered=true; }
     refreshAll();
     doPull();
@@ -1337,15 +1354,18 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
   var lockTarget=null;
   function openLock(ex,fromEl){
     lockTarget=ex; lastFocus=fromEl;
-    document.getElementById('lkT').textContent='Sicuro di voler continuare?';
+    var puoiEntrare=!!(ex.route||ex.shell);   /* c'è una destinazione → si può entrare comunque */
+    document.getElementById('lkT').textContent = puoiEntrare ? 'Sicuro di voler continuare?' : 'Questa parte è ancora chiusa';
+    var fatti=(days===0?'Non hai ancora iniziato il Giornaliero.':
+               days===1?'Finora hai fatto 1 giorno di pratica.':'Finora hai fatto '+days+' giorni di pratica.');
     var msg;
-    if(ex.route){
-      msg='Ti consigliamo almeno '+ex.requires.days+' giorni di Giornaliero prima di proseguire. '+
-        (days===0?'Il Giornaliero ti aspetta per iniziare.':
-         days===1?'Finora ne hai fatto uno.':'Finora ne hai fatti '+days+'.');
+    if(ex.id==='capitolo2'){
+      msg='Il «Mondo Interiore» si apre dopo '+ex.requires.days+' giorni di Giornaliero: così arrivi con l\'osservatore già allenato e le lezioni ti parlano di più. '+fatti+
+        ' Se senti di volerlo, puoi entrare comunque.';
+    } else if(ex.route){
+      msg='Questa tappa si apre dopo '+ex.requires.days+' giorni di Giornaliero. '+fatti+' Se senti di volerlo, puoi entrare comunque.';
     } else {
-      msg='Questa tappa sta prendendo forma: la troverai qui appena pronta. Intanto il Giornaliero ti accompagna'+
-        (ex.requires?' — ti consigliamo almeno '+ex.requires.days+' giorni di pratica prima di proseguire.':'.');
+      msg='Gli esercizi del Mondo Interiore si apriranno quando avrai completato le otto lezioni del Capitolo Secondo «Il Mondo Interiore». Stanno prendendo forma: li troverai qui appena pronti.';
     }
     document.getElementById('lkB').textContent=msg;
     document.getElementById('lkGo').style.display=(ex.route||ex.shell)?'':'none';
