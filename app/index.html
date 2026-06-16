@@ -1594,6 +1594,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     else if(m.cmd==='prev') window.muPrev();
     else if(m.cmd==='seek'){ if(au.duration&&muIdx>=0) au.currentTime=Math.max(0,Math.min(1,m.v))*au.duration; }
     else if(m.cmd==='state'){ postState(); }
+    else if(m.cmd==='playcat'){ for(var pci=0;pci<TRACKS.length;pci++){ if(TRACKS[pci].cat===m.v){ muPlay(pci); break; } } }
   });
 
   au.addEventListener('play',  function(){ setPlayBtn(true); });
