@@ -40,12 +40,12 @@ body{
 
 /* ================= LA LUCE GUIDA =================
    la luce fiorisce col Cammino: margherita → bucaneve → stella alpina → ortensia → fiordaliso → viola del pensiero → glicine */
-body{--lm-c1:#fff0e4;--lm-mid:#e8924a;
-  --lm-g1:rgba(240,178,108,.68);--lm-g2:rgba(215,138,68,.44);--lm-g3:rgba(185,98,42,.22)}
+body{--lm-c1:#fff4ea;--lm-mid:#dca06b;   /* Margherita: rame chiaro metallico, splendente */
+  --lm-g1:rgba(235,186,138,.7);--lm-g2:rgba(205,148,96,.46);--lm-g3:rgba(176,112,64,.24)}
 body.lt1{--lm-c1:#eef4f8;--lm-mid:#a8c8e0;
   --lm-g1:rgba(190,218,240,.88);--lm-g2:rgba(148,188,218,.54);--lm-g3:rgba(108,158,196,.27)}
-body.lt2{--lm-c1:#fffbe0;--lm-mid:#f0c840;
-  --lm-g1:rgba(248,216,96,.88);--lm-g2:rgba(232,182,50,.54);--lm-g3:rgba(208,148,28,.27)}
+body.lt2{--lm-c1:#ffffff;--lm-mid:#c6cbd2;   /* Stella Alpina: grigio lucente metallico */
+  --lm-g1:rgba(214,220,228,.85);--lm-g2:rgba(172,182,194,.5);--lm-g3:rgba(132,144,158,.27)}
 body.lt3{--lm-c1:#ffffff;--lm-mid:#b9ddf6;
   --lm-g1:rgba(190,225,252,.9);--lm-g2:rgba(126,190,242,.52);--lm-g3:rgba(88,160,228,.26)}
 body.lt4{--lm-c1:#ffffff;--lm-mid:#a7b6ef;
@@ -369,6 +369,7 @@ footer a{color:var(--glic-hi);text-decoration:none}
 .sv-name{font-family:'Cinzel',serif;font-size:17px;font-weight:600;color:var(--txt);flex:1}
 .sv-row.cur .sv-name{color:#f0eaf6}
 .sv-d{font-size:18.5px;color:var(--txt-dim)}
+.sv-row.soon .sv-d{font-style:italic}   /* tappe in arrivo */
 
 .gp-sec{font-family:'Cinzel',serif;font-size:13.5px;letter-spacing:.3em;text-transform:uppercase;color:var(--txt-dim);margin:20px 0 12px;padding-left:2px}
 
@@ -851,7 +852,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
 
 <div id="saved">✓ Salvato</div>
 
-<script src="/app/lume.js?v=2"></script>
+<script src="/app/lume.js?v=3"></script>
 <script src="/app/ovl-cloud.js?v=2"></script>
 <script src="/app/elisa-chat.js?v=16"></script>
 <script>
@@ -1157,11 +1158,19 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
   }
 
   /* ================= dati e progresso (pull-only) ================= */
+  /* il Mondo Interiore è "concluso" quando si sblocca l'ultima parte (Creare l'Osservatore):
+     da lì in poi la luce diventa Stella Alpina. Salvo un flag così anche le altre pagine lo sanno. */
+  function mondoDone(){
+    for(var i=0;i<EXERCISES.length;i++){ if(EXERCISES[i].id==='osservatore') return unlockOk(EXERCISES[i]); }
+    return false;
+  }
   function calcProgress(){
     var arr=OVL_LUME.allActiveDays(S.store);
     days=arr.length;
     strk=OVL_LUME.streakFromDays(arr);
-    tier=OVL_LUME.applyTier(days);
+    var md=mondoDone();
+    try{ if(md) localStorage.setItem('ovl-mondo:'+EMAIL,'1'); else localStorage.removeItem('ovl-mondo:'+EMAIL); }catch(e){}
+    tier=OVL_LUME.applyTier(days, md);
   }
   function refreshAll(){
     calcProgress();
@@ -1283,20 +1292,30 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     var t=OVL_LUME.TIERS[tier];
     document.getElementById('lvlT').textContent=days+(days===1?' giorno':' giorni')+' di pratica';
     document.getElementById('lvlD').textContent='La tua luce è '+t.art+t.nome.toLowerCase()+
-      ': fiorisce con la costanza, non con la fretta.';
+      ': cresce con la costanza, non con la fretta.';
     var nx=OVL_LUME.TIERS[tier+1];
-    var fill=nx ? Math.max(0,Math.min(1,(days-t.d)/Math.max(1,nx.d-t.d))) : 1;
+    var fill, nextTxt;
+    if(nx && typeof nx.d==='number'){
+      fill=Math.max(0,Math.min(1,(days-(t.d||0))/Math.max(1,nx.d-(t.d||0))));
+      nextTxt='Prossima luce ('+nx.nome.toLowerCase()+') a '+nx.d+' giorni di pratica';
+    } else if(nx && nx.ev==='mondo'){
+      fill=1; nextTxt='Prossima luce ('+nx.nome.toLowerCase()+') quando concludi il Mondo Interiore';
+    } else if(nx && nx.soon){
+      fill=1; nextTxt='Le prossime luci sono in arrivo, con le tappe che verranno';
+    } else { fill=1; nextTxt=''; }
     document.getElementById('lvlFill').style.width=(fill*100).toFixed(0)+'%';
-    document.getElementById('lvlNext').textContent = nx
-      ? ('Prossimo fiore ('+nx.nome.toLowerCase()+') a '+nx.d+' giorni')
-      : 'Sei arrivata al glicine, il fiore del Cammino.';
+    document.getElementById('lvlNext').textContent=nextTxt;
     var sc=document.getElementById('scala'); sc.innerHTML='';
     OVL_LUME.TIERS.forEach(function(tt,k){
+      var when = tt.soon ? 'in arrivo'
+               : tt.ev==='mondo' ? 'quando concludi il Mondo Interiore'
+               : tt.d===0 ? 'l\'inizio del cammino'
+               : 'da '+tt.d+' giorni di pratica';
       var d=document.createElement('div');
-      d.className='sv-row'+(k<=tier?' on':'')+(k===tier?' cur':'');
+      d.className='sv-row'+(k<=tier?' on':'')+(k===tier?' cur':'')+(tt.soon?' soon':'');
       d.innerHTML='<span class="sv-dot" style="background:'+tt.col+';color:'+tt.col+'"></span>'+
         '<span class="sv-name">'+tt.nome+'</span>'+
-        '<span class="sv-d">'+(tt.d===0?'l\'inizio del cammino':'da '+tt.d+' giorni di pratica')+'</span>';
+        '<span class="sv-d">'+when+'</span>';
       sc.appendChild(d);
     });
   }

@@ -10,20 +10,30 @@
 window.OVL_LUME=(function(){
 
   /* ---- il Sentiero della Luce: la luce fiorisce coi giorni di pratica ---- */
+  /* d = giorni di pratica per raggiungerla; ev = sblocco a evento; soon = in arrivo (non ancora raggiungibile) */
   var TIERS=[
-    {d:0,  cls:'',    nome:'Margherita',    art:'una ', col:'#e8924a'},
-    {d:3,  cls:'lt1', nome:'Bucaneve',      art:'un ',  col:'#a8c8e0'},
-    {d:10, cls:'lt2', nome:'Stella Alpina', art:'una ', col:'#f0c840'},
-    {d:25, cls:'lt3', nome:'Ortensia',      art:'un\'', col:'#b9ddf6'},
-    {d:50, cls:'lt4', nome:'Fiordaliso',    art:'un ',  col:'#a7b6ef'},
-    {d:90, cls:'lt5', nome:'Viola',         art:'una ', col:'#ad7ff0'},
-    {d:150,cls:'lt6', nome:'Glicine',       art:'un ',  col:'#cdb2f2'}
+    {d:0,        cls:'',    nome:'Margherita',    art:'una ', col:'#dca06b'},   /* rame chiaro metallico, splendente */
+    {d:10,       cls:'lt1', nome:'Bucaneve',      art:'un ',  col:'#a8c8e0'},   /* 10 giorni di pratica */
+    {ev:'mondo', cls:'lt2', nome:'Stella Alpina', art:'una ', col:'#c6cbd2'},   /* grigio lucente metallico — quando si conclude il Mondo Interiore */
+    {soon:true,  cls:'lt3', nome:'Ortensia',      art:'un\'', col:'#b9ddf6'},   /* in arrivo */
+    {soon:true,  cls:'lt4', nome:'Fiordaliso',    art:'un ',  col:'#a7b6ef'},
+    {soon:true,  cls:'lt5', nome:'Viola',         art:'una ', col:'#ad7ff0'},
+    {soon:true,  cls:'lt6', nome:'Glicine',       art:'un ',  col:'#cdb2f2'}
   ];
-  function tierIndex(days){
-    var i=0; TIERS.forEach(function(t,k){ if(days>=t.d)i=k; }); return i;
+  /* tier raggiunto: la più alta tappa con la condizione soddisfatta (giorni o evento);
+     le tappe "soon" non sono ancora raggiungibili */
+  function tierIndex(days, mondoDone){
+    var i=0;
+    for(var k=0;k<TIERS.length;k++){
+      var t=TIERS[k];
+      if(t.soon) continue;
+      var ok = t.ev ? (t.ev==='mondo' && !!mondoDone) : (days>=t.d);
+      if(ok) i=k;
+    }
+    return i;
   }
-  function applyTier(days){
-    var i=tierIndex(days);
+  function applyTier(days, mondoDone){
+    var i=tierIndex(days, mondoDone);
     if(document.body.className!==TIERS[i].cls)document.body.className=TIERS[i].cls;
     return i;
   }

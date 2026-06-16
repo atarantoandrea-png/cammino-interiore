@@ -38,9 +38,9 @@ body{
   font-family:'Cormorant Garamond',Georgia,serif;color:var(--txt);min-height:100vh;
 }
 /* colore della luce guida = livello (fiore) della persona; applyTier mette la classe ltN sul body */
-body{--lm-c1:#fff0e4;--lm-mid:#e8924a;--lm-g1:rgba(240,178,108,.68);--lm-g2:rgba(215,138,68,.44);--lm-g3:rgba(185,98,42,.22)}
+body{--lm-c1:#fff4ea;--lm-mid:#dca06b;--lm-g1:rgba(235,186,138,.7);--lm-g2:rgba(205,148,96,.46);--lm-g3:rgba(176,112,64,.24)}
 body.lt1{--lm-c1:#eef4f8;--lm-mid:#a8c8e0;--lm-g1:rgba(190,218,240,.88);--lm-g2:rgba(148,188,218,.54);--lm-g3:rgba(108,158,196,.27)}
-body.lt2{--lm-c1:#fffbe0;--lm-mid:#f0c840;--lm-g1:rgba(248,216,96,.88);--lm-g2:rgba(232,182,50,.54);--lm-g3:rgba(208,148,28,.27)}
+body.lt2{--lm-c1:#ffffff;--lm-mid:#c6cbd2;--lm-g1:rgba(214,220,228,.85);--lm-g2:rgba(172,182,194,.5);--lm-g3:rgba(132,144,158,.27)}
 body.lt3{--lm-c1:#ffffff;--lm-mid:#b9ddf6;--lm-g1:rgba(190,225,252,.9);--lm-g2:rgba(126,190,242,.52);--lm-g3:rgba(88,160,228,.26)}
 body.lt4{--lm-c1:#ffffff;--lm-mid:#a7b6ef;--lm-g1:rgba(180,194,252,.9);--lm-g2:rgba(128,148,238,.52);--lm-g3:rgba(98,118,222,.26)}
 body.lt5{--lm-c1:#ffffff;--lm-mid:#ad7ff0;--lm-g1:rgba(206,170,255,.9);--lm-g2:rgba(164,112,246,.5);--lm-g3:rgba(128,76,226,.26)}
@@ -279,7 +279,7 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
 
 <!-- SDK del player Vimeo: per il tracciamento del progresso. Le statistiche native di Vimeo si registrano comunque da sole. -->
 <script src="https://player.vimeo.com/api/player.js"></script>
-<script src="/app/lume.js?v=2"></script>
+<script src="/app/lume.js?v=3"></script>
 <script src="/app/ovl-cloud.js?v=2"></script>
 <script>
 /* ====== configurazione delle due lezioni ====== */
@@ -333,7 +333,7 @@ var LEZ={
   var who=''; try{ who=(localStorage.getItem('ovl-user')||'').trim().toLowerCase(); }catch(e){}
   var TOKEN=''; try{ TOKEN=localStorage.getItem('ovl-session')||''; }catch(e){}
   /* colore della luce = livello (fiore) della persona */
-  try{ if(window.OVL_LUME){ var _S=OVL_LUME.loadLocal(who); OVL_LUME.applyTier(OVL_LUME.allActiveDays(_S.store).length); } }catch(e){}
+  try{ if(window.OVL_LUME){ var _S=OVL_LUME.loadLocal(who); var _md=false; try{_md=localStorage.getItem('ovl-mondo:'+who)==='1';}catch(_e){} OVL_LUME.applyTier(OVL_LUME.allActiveDays(_S.store).length, _md); } }catch(e){}
 
   document.title = LZ.title + ' · Il Cammino Interiore · Elisa Soul Medium';
   document.getElementById('cap').textContent = LZ.cap;
