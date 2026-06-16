@@ -321,7 +321,7 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
 <!-- livelli/fiori condivisi con il resto dell'app: serve a colorare la luce -->
 <script src="/app/lume.js?v=2"></script>
 <!-- salvataggio nella nuvola (legato alla mail): i video visti tornano su ogni device -->
-<script src="/app/ovl-cloud.js?v=1"></script>
+<script src="/app/ovl-cloud.js?v=2"></script>
 <script>
 /* ====== integrazione con la shell /app/ (il capitolo apre in iframe) ====== */
 (function(){
@@ -396,7 +396,7 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
   /* nuvola: i video visti sono legati alla mail → tornano su qualunque device,
      anche dopo una re-iscrizione. Il merge è per-chiave sul timestamp più recente. */
   var TOKEN=''; try{ TOKEN=localStorage.getItem('ovl-session')||''; }catch(e){}
-  var cloud = window.OVL_CLOUD ? OVL_CLOUD.bucket({ email:who, token:TOKEN, localKey:KEY, ns:'cap2' }) : null;
+  var cloud = window.OVL_CLOUD ? OVL_CLOUD.bucket({ email:who, token:TOKEN, localKey:KEY, ns:'cap2', seed:true }) : null;
   function save(){ try{ localStorage.setItem(KEY, JSON.stringify(prog)); }catch(e){} if(cloud) cloud.push(); }
 
   function isSeen(id){ return (prog[id]||0) >= SEEN_AT; }

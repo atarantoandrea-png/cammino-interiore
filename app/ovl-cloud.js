@@ -26,6 +26,7 @@ window.OVL_CLOUD=(function(){
     var token=opt.token||'';
     var LK=opt.localKey;          /* es. 'ovl-cap2:mario@x.it' */
     var ns=opt.ns;                /* es. 'cap2' */
+    var doSeed=!!opt.seed;        /* alla prima sincronizzazione, carica anche i dati già presenti in locale */
     var MK=LK+':cmeta';           /* timestamp per-chiave, in locale */
     var meta=readLS(MK);
     var shadow=readLS(LK);        /* ultimo stato conosciuto: per capire COSA è cambiato */
@@ -53,6 +54,17 @@ window.OVL_CLOUD=(function(){
           .catch(function(){});
       }catch(e){}
     }
+    /* dati creati PRIMA della sincronizzazione (solo in locale, senza timestamp):
+       li carico con un timestamp minimo (1) così riempiono i vuoti nella nuvola
+       ma NON sovrascrivono mai dati più recenti già presenti lì. */
+    function seedLocalOnly(remoteData){
+      var cur=readLS(LK), touched=false;
+      for(var k in cur){
+        var inRemote = remoteData && (k in remoteData);
+        if(!inRemote && !(+meta[k]>0)){ meta[k]=1; touched=true; }
+      }
+      if(touched){ writeLS(MK, meta); shadow=cur; clearTimeout(timer); timer=setTimeout(send, 600); }
+    }
 
     return {
       /* da chiamare DOPO ogni salvataggio locale: marca i cambiamenti e invia (debounce) */
@@ -74,6 +86,7 @@ window.OVL_CLOUD=(function(){
               if(tR>tL){ cur[k]=rem.data[k]; meta[k]=tR; changed=true; }
             }
             if(changed){ writeLS(LK, cur); writeLS(MK, meta); shadow=cur; }
+            if(doSeed) seedLocalOnly(rem.data);
             if(cb)cb(changed);
           })
           .catch(function(){ if(cb)cb(false); });

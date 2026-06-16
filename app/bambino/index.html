@@ -582,7 +582,7 @@ textarea:focus,.fperche:focus{outline:none;border-color:var(--glic-hi);box-shado
 <script src="https://player.vimeo.com/api/player.js"></script>
 <script src="/app/lume.js?v=2"></script>
 <!-- salvataggio nella nuvola (legato alla mail): foglio, progressi e riflessione tornano su ogni device -->
-<script src="/app/ovl-cloud.js?v=1"></script>
+<script src="/app/ovl-cloud.js?v=2"></script>
 <script>
 (function(){
   var who='';
@@ -630,7 +630,7 @@ textarea:focus,.fperche:focus{outline:none;border-color:var(--glic-hi);box-shado
   /* nuvola: foglio scritto, progressi e riflessione sono legati alla mail → tornano su
      qualunque device, anche dopo una re-iscrizione (merge per-chiave sul timestamp). */
   var TOKEN=''; try{ TOKEN=localStorage.getItem('ovl-session')||''; }catch(e){}
-  function mkBucket(lk,ns){ return window.OVL_CLOUD ? OVL_CLOUD.bucket({ email:who, token:TOKEN, localKey:lk, ns:ns }) : null; }
+  function mkBucket(lk,ns){ return window.OVL_CLOUD ? OVL_CLOUD.bucket({ email:who, token:TOKEN, localKey:lk, ns:ns, seed:true }) : null; }
   var cloudF=mkBucket(FKEY,'bfoglio'), cloudP=mkBucket(PKEY,'bprog'), cloudM=null;
   function fillFields(){ fields.forEach(function(el){
     var k=el.getAttribute('data-k'); if(data[k]==null) return;
