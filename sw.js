@@ -4,16 +4,15 @@ importScripts('https://pwa.elisasoulmedium.com/cammino-interiore/sw-core.js');
 // ─── Aggiornamento automatico: strategia "network-first" ────────────────────
 // Quando sei ONLINE l'app carica SEMPRE l'ultima versione dalla rete.
 // Quando sei OFFLINE usa l'ultima versione salvata in cache.
-const CACHE = 'cammino-v5';
+const CACHE = 'cammino-v6';
 
-// Pagine riservate (video/esercizi): mai in cache, solo rete — così il contenuto
-// non resta accessibile offline dopo il logout e l'accesso è sempre verificato dal server.
+// Contenuti riservati (tutto ciò che sta in una sotto-cartella di /app: pagine,
+// audio, musica…): mai in cache, solo rete — niente accesso offline senza sessione
+// e verifica sempre fatta dal server.
 function isReserved(u) {
   if (u.pathname.indexOf('/app/') !== 0) return false;
   if (u.pathname.indexOf('/app/install') === 0) return false;
-  const rest = u.pathname.slice('/app/'.length);
-  if (rest.indexOf('/') < 0) return false;
-  return u.pathname.charAt(u.pathname.length - 1) === '/' || /\.html?$/.test(u.pathname);
+  return u.pathname.slice('/app/'.length).indexOf('/') >= 0;
 }
 
 self.addEventListener('fetch', function(event) {

@@ -321,23 +321,24 @@ app.post('/api/auth/logout', (req, res) => {
   res.json({ok: true});
 });
 
-/* ── GATING: le pagine riservate (video/esercizi) richiedono una sessione valida ──
-   Protegge gli HTML dentro /app/<cartella>/ (capitolo2, bambino, day, future parti).
-   Restano pubblici: la shell /app/, gli asset condivisi (/app/lume.js, css, immagini)
-   e la pagina di installazione PWA /app/install/. */
-function isReservedHtml(p) {
+/* ── GATING: TUTTO ciò che sta in una sotto-cartella di /app è riservato ──
+   Video, esercizi, audio, musica e qualunque contenuto futuro: servito SOLO con
+   sessione valida. Così ogni nuova area creata sotto /app è protetta in automatico.
+   Restano pubblici: la shell /app/ e i suoi asset di root (servono al login) e
+   la pagina di installazione PWA /app/install/. */
+function isReserved(p) {
   if (p.indexOf('/app/') !== 0) return false;
   if (p.indexOf('/app/install') === 0) return false;   /* installazione PWA: pubblica */
-  const rest = p.slice('/app/'.length);
-  if (rest.indexOf('/') < 0) return false;             /* /app/<file> = shell/asset: pubblico */
-  return p.charAt(p.length - 1) === '/' || /\.html?$/.test(p);
+  return p.slice('/app/'.length).indexOf('/') >= 0;    /* /app/<cartella>/... = riservato */
 }
 app.use((req, res, next) => {
   if (req.method !== 'GET' && req.method !== 'HEAD') return next();
-  if (!isReservedHtml(req.path)) return next();
+  if (!isReserved(req.path)) return next();
   if (sessionFromReq(req)) return next();
   res.set('Cache-Control', 'no-store');
-  res.redirect(302, '/app/');                           /* niente sessione → al login */
+  const isDoc = req.path.charAt(req.path.length - 1) === '/' || /\.html?$/.test(req.path);
+  if (isDoc) return res.redirect(302, '/app/');         /* pagina → al login */
+  return res.status(403).end();                          /* media/asset riservato → negato */
 });
 
 /* le pagine del sito: html mai in cache (i deploy si vedono subito),
