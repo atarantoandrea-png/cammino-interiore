@@ -178,7 +178,7 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
 .lbody{max-height:0;overflow:hidden;transition:max-height .45s cubic-bezier(.4,0,.2,1)}
 .lesson.open .lbody{max-height:1400px}
 .ldesc{font-size:19px;color:var(--txt-soft);line-height:1.55;padding:2px 18px 14px}
-.lframe{position:relative;padding-top:56.25%;height:0;overflow:hidden;background:#000;
+.lframe{position:relative;padding-top:56.25%;height:0;overflow:hidden;background:#000;margin:10px 0;
   border-top:1px solid rgba(185,163,227,.12);border-bottom:1px solid rgba(185,163,227,.12)}
 .lframe iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
 .lframe .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
@@ -267,7 +267,7 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
     <div class="orn"><div class="l"></div><div class="d"></div><div class="l"></div></div>
     <div class="cap">Capitolo Secondo · Il primo passo del Cammino</div>
     <h1>Il Mondo Interiore</h1>
-    <p class="lead">Otto video in cui Elisa ti accompagna a conoscere le parti che ti compongono. È <span class="em">il primo passo — e il più importante</span> del Cammino Interiore: <b>qui inizi davvero a conoscere te stessa/o</b>.</p>
+    <p class="lead">Otto video in cui ti accompagno a conoscere le parti che ti compongono. È <span class="em">il primo passo — e il più importante</span> del Cammino Interiore: <b>qui inizi davvero a conoscere te stessa/o</b>.</p>
   </header>
 
   <div class="intro">
@@ -341,7 +341,7 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
   /* ordine: Ombra dopo Adulto, prima di Padre e Madre */
   var LESSONS=[
     {id:'mondo',      n:'I',    vid:'1200559554', t:'Il Mondo Interiore',
-     d:'Il punto di partenza: perché conoscere le parti che ci compongono cambia tutto. Qui Elisa introduce il lavoro — e spiega perché questi esercizi si fanno una volta sola, non ogni giorno.'},
+     d:'Il punto di partenza: perché conoscere le parti che ci compongono cambia tutto. Qui introduco il lavoro — e ti spiego perché questi esercizi si fanno una volta sola, non ogni giorno.'},
     {id:'bambino',    n:'II',   vid:'1200559555', t:'Il Bambino Interiore', ex:'/app/bambino/',
      d:'La parte emotiva, spontanea e vulnerabile di noi. Custodisce i bisogni e le ferite dell\'infanzia che, da adulti, continuano a parlarci.'},
     {id:'adulto',     n:'III',  vid:'1200563875', t:'Adulto Interiore', ex:'soon',
@@ -363,14 +363,14 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
   /* ====== la voce della Guida: informazioni su ogni video (dalle parole di Elisa) ====== */
   var GIORN='<div class="gp-giorn"><p><b>Mentre cammini, non smettere il Giornaliero.</b> La pratica di ogni giorno è ciò che radica e integra tutto: l\'osservatore interiore si allena lì, e rende vivo tutto quello che incontri qui.</p></div>';
   var INFO={
-    mondo:{t:'Il Mondo Interiore', h:'<p>Sei al <b>primo passo del Cammino Interiore</b>, il più importante: qui inizi a conoscerti davvero. Elisa racconta che di solito conosciamo solo una piccola parte di noi — a volte appena il 20%.</p>'+
+    mondo:{t:'Il Mondo Interiore', h:'<p>Sei al <b>primo passo del Cammino Interiore</b>, il più importante: qui inizi a conoscerti davvero. Ti racconto che di solito conosciamo solo una piccola parte di noi — a volte appena il 20%.</p>'+
       '<p>Dentro di noi vivono più parti: il <b>Bambino</b>, l\'<b>Adulto</b>, l\'<b>Ombra</b>, il <b>Padre e la Madre</b>, il <b>Maschile e il Femminile</b> con l\'<b>Adolescente</b>. Quando comunicano siamo in equilibrio; quando entrano in conflitto arrivano confusione e sofferenza.</p>'+
       '<p>Questi video si guardano con calma, e gli esercizi che verranno si fanno <b>una volta sola</b>, senza fretta — non sono una routine quotidiana.</p>'},
     bambino:{t:'Il Bambino Interiore', h:'<p>È la parte <b>emotiva, spontanea e vulnerabile</b>. Custodisce i bisogni di amore, riconoscimento e protezione, e le ferite dell\'infanzia che continuano a vivere in noi.</p>'+
       '<p>Quando ci sentiamo improvvisamente non amati, esclusi o non ascoltati, spesso è lui che ci parla: non vuole rovinarci la vita, chiede solo di essere ascoltato. È la parte più vicina all\'anima — la purezza prima delle maschere.</p>'},
     adulto:{t:'Adulto Interiore', h:'<p>È la parte <b>presente e stabile</b>. Se il bambino sente, l\'adulto <b>contiene</b>: ascolta, rassicura, guida.</p>'+
       '<p>Quando è fragile, le emozioni del bambino invadono tutto e ci sentiamo persi. Quando è presente, possiamo provare dolore o paura senza esserne travolti, rabbia senza agire la rabbia. È il ponte tra il bambino ferito e la persona adulta che oggi siamo.</p>'},
-    ombra:{t:'L\'Ombra Interiore', h:'<p>È la <b>parte rifiutata</b> — Elisa la chiama Ombra. Non contiene solo rabbia, paura, gelosia: dentro ci sono anche <b>forza, creatività, sessualità, verità</b> che abbiamo imparato a reprimere.</p>'+
+    ombra:{t:'L\'Ombra Interiore', h:'<p>È la <b>parte rifiutata</b> — la chiamo Ombra. Non contiene solo rabbia, paura, gelosia: dentro ci sono anche <b>forza, creatività, sessualità, verità</b> che abbiamo imparato a reprimere.</p>'+
       '<p>Più la nascondiamo, più cresce, e prima o poi esce nei momenti fragili. Non va combattuta come un nemico: va <b>guardata, compresa e integrata</b>. Solo ciò che viene visto può essere trasformato.</p>'},
     padremadre:{t:'Il Padre e la Madre', h:'<p>Sono le energie della <b>cura</b> e della <b>protezione</b>. La madre interiore accoglie, ascolta, consola; il padre interiore protegge, dà direzione, mette confini. Abbiamo bisogno di entrambe.</p>'+
       '<p>Il lavoro qui è diventare <b>noi stessi quella presenza</b> che a volte ci è mancata: una presenza che accoglie senza giustificare tutto, protegge senza controllare, guida senza imporre.</p>'},
@@ -382,7 +382,7 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
       '<p>È il prerequisito di ogni esercizio: prima di cambiare qualcosa, dobbiamo accorgerci che esiste. Non si forza, non cerca risposte perfette. E lo <b>alleni già ogni giorno con il Giornaliero</b>: è lì che questa presenza prende forza.</p>'}
   };
   var INTRO={t:'La Guida del Cammino', h:'<p>Benvenuta/o nel <b>Mondo Interiore</b>, il primo e più importante passo del Cammino: qui inizi a conoscerti davvero.</p>'+
-    '<p>Otto video con Elisa ti presentano le parti che ti compongono. <b>Tocca un video</b> nella lista: io mi poserò accanto e, toccandomi, potrò raccontarti di quella parte.</p>'};
+    '<p>Otto video in cui ti presento le parti che ti compongono. <b>Tocca un video</b> nella lista: mi poserò accanto e, toccandomi, potrò raccontarti di quella parte.</p>'};
 
   var who='';
   try{ who=(localStorage.getItem('ovl-user')||'').trim().toLowerCase(); }catch(e){}
@@ -433,7 +433,7 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
         '<p class="ldesc">'+L.d+'</p>'+
         '<div class="lframe"><div class="ph">Tocca per caricare il video…</div></div>'+
         '<div class="lfoot">'+
-          '<span class="ldur">Voce di Elisa</span>'+
+          '<span class="ldur">La mia voce</span>'+
           '<span class="lfoot-act">'+
             (L.ex ? '<button class="lex'+(L.ex==='soon'?' soon':'')+'" type="button">'+(L.ex==='soon'?'Esercizi · presto':'Esercizi →')+'</button>' : '')+
             '<button class="lcomplete" type="button">Segna come visto</button>'+
@@ -526,7 +526,7 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
     var p; try{ p=new Vimeo.Player(ifr); }catch(e){ players[L.id]=true; return; }
     players[L.id]=p;
     var dur=nodes[L.id].dur;
-    p.getDuration().then(function(s){ if(s) dur.textContent='Voce di Elisa · '+mmss(s); }).catch(function(){});
+    p.getDuration().then(function(s){ if(s) dur.textContent='La mia voce · '+mmss(s); }).catch(function(){});
     var lastSaved=prog[L.id]||0;
     p.on('timeupdate', function(d){
       if(d.percent>(prog[L.id]||0)){

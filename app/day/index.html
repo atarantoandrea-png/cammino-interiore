@@ -454,13 +454,13 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
         <div class="pc-tag">Pratica · ogni giorno</div>
         <h3>Osservatorio</h3>
         <div class="pc-d">Osserva un giudizio e trasformalo. Un allenamento quotidiano per parlarti con gentilezza.</div>
-        <div class="pc-row"><span class="pc-meta">~8 min · <span class="au">voce di Elisa</span></span><span class="pc-go">Entra →</span></div>
+        <div class="pc-row"><span class="pc-meta">~8 min · <span class="au">la mia voce</span></span><span class="pc-go">Entra →</span></div>
       </button>
       <button class="pcard" onclick="goTab(2)">
         <div class="pc-tag">Pratica · 3 volte a settimana</div>
         <h3>Spazio Emotivo</h3>
-        <div class="pc-d">Sciogli un blocco emotivo: la voce di Elisa ti accompagna tra le domande, il respiro e la luce che lascia andare.</div>
-        <div class="pc-row"><span class="pc-meta">~10 min · <span class="au">voce di Elisa</span></span><span class="pc-go">Entra →</span></div>
+        <div class="pc-d">Sciogli un blocco emotivo: la mia voce ti accompagna tra le domande, il respiro e la luce che lascia andare.</div>
+        <div class="pc-row"><span class="pc-meta">~10 min · <span class="au">la mia voce</span></span><span class="pc-go">Entra →</span></div>
       </button>
     </div>
     <div class="home-note"><b>Non serve la perfezione.</b> Anche pochi minuti contano: ciò che importa è la direzione, non la velocità. Tocca la <b>piccola luce</b> in alto in qualunque momento per la guida del Cammino.</div>
@@ -483,7 +483,7 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
           <img class="pthumb" id="s2-cov" alt="Osservatorio Interiore" style="display:none">
         </div>
         <div class="pbar" id="s2-bar"><div class="pfill" id="s2-fill"></div><div class="pknob" id="s2-knob" style="left:0"></div></div>
-        <div class="pwait" id="s2-wait" style="display:none">La voce di Elisa sarà disponibile a breve 🎧</div>
+        <div class="pwait" id="s2-wait" style="display:none">La mia voce sarà disponibile a breve 🎧</div>
         <div class="pchaps" id="s2-chaps"></div>
         <div class="pspeed" id="s2-speed"></div>
         <audio id="s2-audio" preload="metadata"></audio>
@@ -542,7 +542,7 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
           <img class="pthumb" id="s1-cov" alt="Spazio Emotivo" style="display:none">
         </div>
         <div class="pbar" id="s1-bar"><div class="pfill" id="s1-fill"></div><div class="pknob" id="s1-knob" style="left:0"></div></div>
-        <div class="pwait" id="s1-wait" style="display:none">La voce di Elisa sarà disponibile a breve 🎧</div>
+        <div class="pwait" id="s1-wait" style="display:none">La mia voce sarà disponibile a breve 🎧</div>
         <div class="pchaps" id="s1-chaps"></div>
         <div class="pspeed" id="s1-speed"></div>
         <audio id="s1-audio" preload="metadata"></audio>
@@ -882,7 +882,7 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
   /* ============ versione scritta ============ */
   var VS={
     s1:{ title:'Spazio Emotivo — versione scritta',
-      intro:'Una pratica da <b>20 minuti, 3 volte a settimana</b>. Mettiti in un posto tranquillo con una musica rilassante — il pianoforte è perfetto. Puoi seguire la voce di Elisa o leggere questi passi con calma.',
+      intro:'Una pratica da <b>20 minuti, 3 volte a settimana</b>. Mettiti in un posto tranquillo con una musica rilassante — il pianoforte è perfetto. Puoi seguire la mia voce o leggere questi passi con calma.',
       steps:[
         {h:'Il pensiero che è arrivato', b:'Scrivi (o porta alla mente) la frase o la sensazione <b>così com\'è, senza censurarti</b>. Spesso è un giudizio che ti sei dato questa settimana, o che ti porti dietro da sempre.'},
         {h:'Le quattro domande', b:'Rispondi con la prima cosa che senti: <b>è reale, viene da me o è automatico? Nasce dal presente o dal passato? Mi aiuta o mi toglie la possibilità di fare ciò che sento? Se al mio posto ci fosse qualcuno che amo, agirei così?</b> Di solito no: lo abbracceresti. Quelle parole spettano anche a te.'},
@@ -906,7 +906,7 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
     var d=VS[s]; document.getElementById('vsTitle').textContent=d.title;
     var html='<div class="vs-intro">'+d.intro+'</div>';
     d.steps.forEach(function(st,i){ html+='<div class="vstep"><h4><span class="vn">'+(i+1)+'</span>'+st.h+'</h4><p>'+st.b+'</p></div>'; });
-    html+='<div class="vs-foot">Questi passi sono tratti dalle lezioni di Elisa. Tienili con te: la pratica è soprattutto sentire, non riempire caselle.</div>';
+    html+='<div class="vs-foot">Questi passi sono tratti dalle mie lezioni. Tienili con te: la pratica è soprattutto sentire, non riempire caselle.</div>';
     document.getElementById('vsBody').innerHTML=html; document.getElementById('vsBody').scrollTop=0;
     vsveil.classList.add('on'); vspan.classList.add('on');
   };

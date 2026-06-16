@@ -149,7 +149,9 @@ textarea:focus,.fperche:focus{outline:none;border-color:var(--glic-hi);box-shado
 .fhint{grid-column:1 / -1;text-align:center;font-size:15px;color:var(--txt-dim);font-style:italic;margin-top:2px}
 
 /* video di Elisa in cima al foglio */
-.fvideo{margin:0 18px 16px}
+.fvideo{margin:0 18px 22px}
+.fvideo .lframe{margin:8px 0 28px}        /* più respiro: i due video ben distaccati dal testo e tra loro */
+.fvideo .fvintro.fvsmall{margin-top:6px}
 .fvintro{font-size:19px;color:var(--txt-soft);line-height:1.55;margin-bottom:10px;text-align:center}
 .fvintro b{color:var(--gold-pale);font-weight:600}
 .lframe{position:relative;padding-top:56.25%;height:0;overflow:hidden;background:#000;border-radius:14px;border:1px solid rgba(185,163,227,.2)}
@@ -233,7 +235,7 @@ textarea:focus,.fperche:focus{outline:none;border-color:var(--glic-hi);box-shado
 .medactions .fbtn{flex:0 1 340px;min-width:240px}
 .medwrap .say{color:var(--glic-hi);font-style:italic}
 /* video della canalizzazione */
-.medvideo{margin-bottom:18px}
+.medvideo{margin:10px 0 28px}        /* video della meditazione distaccato da testo e musica */
 .medvintro{font-size:17px;color:var(--txt-soft);line-height:1.55;margin-bottom:10px;text-align:center}
 .medvintro b{color:var(--gold-pale);font-weight:600}
 /* pulsante musica (comanda la musica della shell: suona col video, gestibile dalla luce) */
@@ -398,9 +400,9 @@ textarea:focus,.fperche:focus{outline:none;border-color:var(--glic-hi);box-shado
   <!-- ===== ESERCIZIO 1 · IL FOGLIO ===== -->
   <section id="foglio" class="view">
     <div class="fvideo">
-      <p class="fvintro"><b>Prima di rispondere, riguarda il video «Il Bambino Interiore»</b> — quello in cui Elisa ti spiega cos'è il bambino interiore. Le emozioni della prima domanda sono proprio su <b>questo</b> video.</p>
+      <p class="fvintro"><b>Prima di rispondere, riguarda il video «Il Bambino Interiore»</b> — quello in cui ti spiego cos'è il bambino interiore. Le emozioni della prima domanda sono proprio su <b>questo</b> video.</p>
       <div class="lframe" id="fvframe-teoria"><div class="ph">Carico il video…</div></div>
-      <p class="fvintro fvsmall">E qui Elisa ti spiega <b>come fare l'esercizio</b>:</p>
+      <p class="fvintro fvsmall">E qui ti spiego <b>come fare l'esercizio</b>:</p>
       <div class="lframe" id="fvframe"><div class="ph">Carico il video…</div></div>
     </div>
 
@@ -454,14 +456,14 @@ textarea:focus,.fperche:focus{outline:none;border-color:var(--glic-hi);box-shado
       <button class="fbtn gold" type="button" id="btnDone">Segna come completato</button>
       <button class="fbtn" type="button" id="btnPrint">Stampa vuoto (da scrivere a mano)</button>
       <button class="fbtn" type="button" id="btnPrintFilled">Stampa con le mie risposte</button>
-      <div class="fhint">Puoi scrivere qui — resta salvato nel tuo account, e potrai rileggerlo tra qualche mese — oppure <b>stampare il foglio e scriverlo a mano</b>, come consiglia Elisa.</div>
+      <div class="fhint">Puoi scrivere qui — resta salvato nel tuo account, e potrai rileggerlo tra qualche mese — oppure <b>stampare il foglio e scriverlo a mano</b>, come ti consiglio.</div>
     </div>
   </section>
 
   <!-- ===== ESERCIZIO 2 · MEDITAZIONE GUIDATA ===== -->
   <section id="medit" class="view">
     <div class="medwrap">
-      <p class="medintro">Hai fatto il foglio sulle <b>emozioni</b>. Ora arriva il passo più importante: <b>incontrare</b> il tuo bambino interiore e dargli un <b>volto</b>. Lo fai con la <b>canalizzazione guidata da Elisa</b> nel video qui sotto — non c'è nulla da scrivere, solo da <b>sentire</b>.</p>
+      <p class="medintro">Hai fatto il foglio sulle <b>emozioni</b>. Ora arriva il passo più importante: <b>incontrare</b> il tuo bambino interiore e dargli un <b>volto</b>. Lo fai con la <b>mia canalizzazione guidata</b> nel video qui sotto — non c'è nulla da scrivere, solo da <b>sentire</b>.</p>
 
       <div class="medcard">
         <div class="medlbl">Prima di iniziare</div>
@@ -469,19 +471,19 @@ textarea:focus,.fperche:focus{outline:none;border-color:var(--glic-hi);box-shado
           <li><span class="pi"></span><span>Trova un luogo tranquillo. Se puoi, stai a <b>piedi nudi a contatto con la terra</b> — un prato, la spiaggia, la natura; va bene anche in casa.</span></li>
           <li><span class="pi"></span><span>Accendi una <b>candela</b>: aiuta a creare uno spazio di calma e di amore.</span></li>
           <li><span class="pi"></span><span>Mettiti comoda/o, con le <b>cuffie</b> se puoi, e fai qualche <b>respiro profondo</b>. Non devi controllare nulla.</span></li>
-          <li><span class="pi"></span><span>Avvia il <b>video di Elisa</b> e lasciati guidare. Quando lei lo dice, avvia anche la <b>musica</b> (te lo ricordo qui sotto).</span></li>
+          <li><span class="pi"></span><span>Avvia il <b>mio video</b> e lasciati guidare. Quando te lo dico, avvia anche la <b>musica</b> (te lo ricordo qui sotto).</span></li>
         </ul>
       </div>
 
       <div class="medvideo">
-        <p class="medvintro"><b>La canalizzazione di Elisa</b> — lasciati guidare per incontrare e dare un volto al tuo bambino interiore.</p>
+        <p class="medvintro"><b>La mia canalizzazione</b> — lasciati guidare per incontrare e dare un volto al tuo bambino interiore.</p>
         <div class="lframe" id="medvframe"><div class="ph">Carico il video…</div></div>
       </div>
 
       <div class="medmus">
-        <div class="mtitle">Musica consigliata da Elisa</div>
+        <div class="mtitle">Musica che ti consiglio</div>
         <div class="medbig"><span class="mb-ic"><svg viewBox="0 0 24 24" fill="#e8d9ae" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span><span>Consigliato: avvia la musica al <b>minuto 1:25</b> del video</span></div>
-        <div class="mnote">Elisa fa la meditazione con delle <b>frequenze musicali</b>: lasciala suonare <b>insieme</b> alla sua voce. Tieni il <b>volume</b> basso, così non copre Elisa.</div>
+        <div class="mnote">Faccio la meditazione con delle <b>frequenze musicali</b>: lasciale suonare <b>insieme</b> alla mia voce. Tieni il <b>volume</b> basso, così non copre la mia voce.</div>
         <div class="medpanel">
           <div class="medp-title" id="medpTitle">Heteryc</div>
           <div class="medp-seek" id="medpSeek"><div class="medp-fill" id="medpFill"></div><div class="medp-knob" id="medpKnob"></div></div>
@@ -501,7 +503,7 @@ textarea:focus,.fperche:focus{outline:none;border-color:var(--glic-hi);box-shado
 
       <div class="medcard medrefl">
         <div class="medlbl">Dopo l'incontro · facoltativo</div>
-        <p class="medrefl-note">Elisa non lo chiede: è solo un piccolo spazio per te, se ti va di fissare ciò che hai sentito.</p>
+        <p class="medrefl-note">Non te lo chiedo io: è solo un piccolo spazio per te, se ti va di fissare ciò che hai sentito.</p>
         <div class="medrefl-q">Che <b>volto</b> ha il tuo bambino interiore? Com'era?</div>
         <textarea class="medrefl-ta" data-mk="volto" placeholder="Scrivi liberamente, se ti va…"></textarea>
         <div class="medrefl-q">Di cosa aveva bisogno? Cosa hai provato incontrandolo?</div>
@@ -845,7 +847,7 @@ textarea:focus,.fperche:focus{outline:none;border-color:var(--glic-hi);box-shado
     emozione:{t:'L\'emozione che senti', h:'<p>Questo non è un esercizio di testa: è un esercizio del <b>sentire</b>. Inizia a <b>guardare</b> il tuo bambino interiore e a <b>descriverlo</b> — com\'è, cosa sente, di cosa ha bisogno — riferendoti a tutto ciò che hai conosciuto di lui. E mentre lo guardi, lascia arrivare le emozioni <b>di getto</b>, senza cercarle, senza giudicarle, senza giudicarti.</p><p>Poi i tre «perché»: la prima risposta è sempre razionale, poi scendi. La seconda è più pensata, la terza più intuitiva, la quarta arriva da <b>ciò che senti davvero dentro, dalla tua anima</b>. È così che impari a leggerti dentro: il cammino interiore è imparare a sentirsi.</p>'},
     ricordo:{t:'Il ricordo', h:'<p>Questa domanda <b>collega il presente al tuo passato emotivo</b>. Spesso l\'emozione di oggi l\'hai già sentita da piccola/o: riconoscere da dove viene la rende meno potente e più comprensibile.</p><p>Anche qui: rispondi, poi tre «perché» per scendere in profondità.</p>'},
     bisogno:{t:'Il bisogno', h:'<p>Chiediti di cosa avresti avuto bisogno — in quel momento e tutte le volte che ti sei sentita/o così. Questa risposta è la <b>voce diretta del bambino interiore</b>.</p><p>Riconoscere quel bisogno interrompe le reazioni automatiche e ti prepara all\'incontro: nella meditazione gli darai un volto.</p>'},
-    medit:{t:'La meditazione', h:'<p>Nel secondo esercizio entrerai nell\'area di meditazione: Elisa ti guiderà, con la voce e una musica di sottofondo, a <b>incontrare e dare un volto</b> al tuo bambino interiore. La stiamo preparando.</p>'}
+    medit:{t:'La meditazione', h:'<p>Nel secondo esercizio entrerai nell\'area di meditazione: ti guiderò, con la voce e una musica di sottofondo, a <b>incontrare e dare un volto</b> al tuo bambino interiore. La stiamo preparando.</p>'}
   };
   var GIORN='<div class="gp-giorn"><p><b>Mentre fai questo lavoro, non smettere il Giornaliero.</b> La pratica di ogni giorno radica e integra tutto il cammino.</p></div>';
   var veil=document.getElementById('veil'), gpan=document.getElementById('gpan');

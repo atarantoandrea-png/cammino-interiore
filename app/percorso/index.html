@@ -107,7 +107,7 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
 
 /* ================= il video ================= */
 .vid{position:relative;padding-top:56.25%;height:0;overflow:hidden;background:#000;
-  border:1px solid var(--card-line);border-radius:16px;margin:16px 18px 0;
+  border:1px solid var(--card-line);border-radius:16px;margin:24px 18px 10px;
   box-shadow:0 8px 26px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.04)}
 .vid iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
 .vid .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
@@ -232,7 +232,7 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
   <!-- il video di Elisa (embed Vimeo nativo: le statistiche di visualizzazione si registrano) -->
   <div class="vid" id="vid"><div class="ph">Carico il video…</div></div>
   <div class="vmeta">
-    <span class="vdur" id="vdur">Voce di Elisa</span>
+    <span class="vdur" id="vdur">La mia voce</span>
     <span class="vstatus" id="vstatus">Da vedere</span>
   </div>
   <div style="text-align:center;margin:14px 18px 0">
@@ -289,14 +289,14 @@ var LEZ={
     cap:'Il Cammino Interiore · Il benvenuto',
     h1:'Introduzione',
     title:'Introduzione',
-    lead:'Elisa ci accoglie e racconta che cos’è questo cammino: non un percorso di soli esercizi, ma un viaggio dentro le nostre emozioni, per conoscere chi siamo davvero.',
+    lead:'Ti do il mio benvenuto e ti racconto che cos’è questo cammino: non un percorso di soli esercizi, ma un viaggio dentro le nostre emozioni, per conoscere chi siamo davvero.',
     txt:'',
     points:[
       '<b>Non è una gara.</b> Ognuno ha il proprio tempo: andiamo avanti solo quando ci sentiamo pronti, e rivediamo le lezioni quando ne sentiamo il bisogno.',
       '<b>La parte più forte</b> del cammino è abbracciare ciò che di noi non ci piace: è lì che inizia il vero risveglio.',
       'Si parte dalle basi, passo dopo passo. Nessuna fretta: il sentiero non scappa.'
     ],
-    guide:'<p>Questo è il <b>benvenuto</b> di Elisa al Cammino Interiore. Guardalo quando vuoi: non sblocca nulla, è qui per accoglierti. Quando te la senti, prosegui con il <b>Capitolo Primo · La Frequenza Nascosta</b>.</p>',
+    guide:'<p>Questo è il mio <b>benvenuto</b> al Cammino Interiore. Guardalo quando vuoi: non sblocca nulla, è qui per accoglierti. Quando te la senti, prosegui con il <b>Capitolo Primo · La Frequenza Nascosta</b>.</p>',
     foot:'Quando te la senti, prosegui con <b>il Capitolo Primo</b>.'
   },
   frequenza:{
@@ -304,7 +304,7 @@ var LEZ={
     cap:'Capitolo Primo',
     h1:'La Frequenza Nascosta',
     title:'La Frequenza Nascosta',
-    lead:'La base di tutto il Cammino — e la <b>spiegazione del Giornaliero</b>. Qui Elisa ci mostra come funzioniamo dentro: siamo energia, e tutto parte da come ci sentiamo.',
+    lead:'La base di tutto il Cammino — e la <b>spiegazione del Giornaliero</b>. Qui ti mostro come funzioniamo dentro: siamo energia, e tutto parte da come ci sentiamo.',
     txt:
       '<p>Noi siamo <span class="em">energia</span>: a livello spirituale e a livello emotivo. Il corpo è il modo in cui questa energia si rende visibile. Accanto al cervello razionale ne abbiamo uno emotivo — quello del sentire — che agisce ancora prima che ce ne accorgiamo.</p>'+
       '<p>Prima di ogni azione c’è un <b>pensiero</b>, e ogni pensiero nasce da un’emozione: «come mi sento davvero?». Ma sul sentire arriva subito il <b>giudizio</b>, formato da ciò che ci hanno insegnato — famiglia, scuola, società. Quando il razionale schiaccia l’emozione, quell’energia non esce: resta bloccata in noi. È il <b>blocco emotivo</b>.</p>',
@@ -385,7 +385,7 @@ var LEZ={
     box.innerHTML=''; box.appendChild(ifr);
     if(!(window.Vimeo && Vimeo.Player)) return;
     var p; try{ p=new Vimeo.Player(ifr); }catch(e){ return; }
-    p.getDuration().then(function(s){ if(s) durEl.textContent='Voce di Elisa · '+mmss(s); }).catch(function(){});
+    p.getDuration().then(function(s){ if(s) durEl.textContent='La mia voce · '+mmss(s); }).catch(function(){});
     var lastSaved=prog[which]||0, wasSeen=isSeen();
     p.on('timeupdate', function(d){
       if(d.percent>(prog[which]||0)){

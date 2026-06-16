@@ -664,9 +664,9 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
               <span class="sym">🎵</span>
             </div>
             <div class="exbody">
-              <div class="exbadge">Playlist di Elisa</div>
+              <div class="exbadge">La mia playlist</div>
               <h3>Musica per Meditare</h3>
-              <p class="exdesc">Le musiche scelte da Elisa per accompagnare le tue meditazioni. Ascoltale quando vuoi: la riproduzione continua anche se navighi nel sentiero.</p>
+              <p class="exdesc">Le musiche che ho scelto per accompagnare le tue meditazioni. Ascoltale quando vuoi: la riproduzione continua anche se navighi nel sentiero.</p>
               <span class="exgo">Apri il player →</span>
             </div>
           </button>
@@ -856,8 +856,8 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
      ogni nuovo esercizio = una riga qui (la tappa nasce da sola).
      requires.days = giorni di pratica consigliati prima di aprirlo. */
   var EXERCISES=[
-    {id:'intro', title:'Introduzione', badge:'Il benvenuto di Elisa', sym:'✦', route:'/app/percorso/?l=intro', shell:true,
-     desc:'Il benvenuto di Elisa al Cammino: che cos\'è questo viaggio e come viverlo. Guardalo quando vuoi — è qui per accoglierti.',
+    {id:'intro', title:'Introduzione', badge:'Il mio benvenuto', sym:'✦', route:'/app/percorso/?l=intro', shell:true,
+     desc:'Il mio benvenuto al Cammino: che cos\'è questo viaggio e come viverlo. Guardalo quando vuoi — è qui per accoglierti.',
      requires:null},
     {id:'frequenza', title:'La Frequenza Nascosta', badge:'Capitolo Primo', sym:'◈', route:'/app/percorso/?l=frequenza', shell:true,
      desc:'La base di tutto: siamo energia, e tutto parte da come ci sentiamo. È la spiegazione del Giornaliero — vederla apre la pratica di ogni giorno.',
@@ -866,7 +866,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
      desc:'Le tue schede di pratica giorno per giorno: lo Spazio Emotivo, l\'Osservatorio Interiore e il Diario della Settimana. Tutto resta salvato nel tuo account.',
      requires:null, requiresVideo:'frequenza'},
     {id:'capitolo2', title:'Il Mondo Interiore', badge:'Capitolo Secondo', sym:'🌌', route:'/app/capitolo2/', shell:true,
-     desc:'Otto video con Elisa per conoscere le parti che ti compongono: il Bambino, l\'Adulto, l\'Ombra e le altre. Guardali con calma — poi si apriranno gli esercizi.',
+     desc:'Otto video per conoscere le parti che ti compongono: il Bambino, l\'Adulto, l\'Ombra e le altre. Guardali con calma — poi si apriranno gli esercizi.',
      requires:{days:10}},
     {id:'bambino', title:'Il Bambino Interiore', badge:'Esercizi · 1ª parte', sym:'🌱', route:'/app/bambino/', shell:true,
      desc:'La prima parte da incontrare: la più emotiva e vulnerabile di te. Due passi — il foglio delle tre domande e la meditazione.',
@@ -896,13 +896,13 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     start:{t:'Inizia da qui',
       h:'<p>Benvenuta/o nella tua area di pratica. Qui sotto trovi tutto quello che serve per cominciare: leggi con calma <b>«Cos\'è quest\'area»</b> e <b>«Come funziona il sentiero»</b>, poi apri il Giornaliero e fai la tua prima pratica. Al resto pensa l\'app: tiene traccia di tutto e ti accompagna passo dopo passo.</p>'},
     intro:{t:'Introduzione',
-      h:'<p>Il <b>benvenuto</b> di Elisa al Cammino: che cos\'è questo viaggio e come viverlo. È un video di accoglienza — guardalo quando vuoi, non è obbligatorio per proseguire. Quando te la senti, passa al <b>Capitolo Primo</b>.</p>'},
+      h:'<p>Il mio <b>benvenuto</b> al Cammino: che cos\'è questo viaggio e come viverlo. È un video di accoglienza — guardalo quando vuoi, non è obbligatorio per proseguire. Quando te la senti, passa al <b>Capitolo Primo</b>.</p>'},
     frequenza:{t:'La Frequenza Nascosta',
       h:'<p>Il <b>Capitolo Primo</b> e la base di tutto: siamo energia, e tutto parte da come ci sentiamo. È la <b>spiegazione del Giornaliero</b>: vedere questo video apre la pratica di ogni giorno.</p>'},
     day:{t:'Il Giornaliero',
       h:'<p>È la pratica di ogni giorno: lo <b>Spazio Emotivo</b>, l\'<b>Osservatorio Interiore</b> e il <b>Diario della Settimana</b>. Si apre dopo aver visto <b>«La Frequenza Nascosta»</b> — la sua spiegazione. Sulla card vedi i tuoi giorni di pratica e il tuo fiore. Apri l\'esercizio e lasciati guidare: dentro, la luce sarà con te sezione per sezione.</p>'},
     capitolo2:{t:'Il Mondo Interiore',
-      h:'<p>Il secondo capitolo: otto video in cui Elisa ti presenta le parti che ti compongono. Si apre dopo <b>10 giorni</b> di Giornaliero — il tempo di prendere l\'abitudine di osservarti. Guardali liberamente, nell\'ordine che senti.</p>'},
+      h:'<p>Il secondo capitolo: otto video in cui ti presento le parti che ti compongono. Si apre dopo <b>10 giorni</b> di Giornaliero — il tempo di prendere l\'abitudine di osservarti. Guardali liberamente, nell\'ordine che senti.</p>'},
     bambino:{t:'Il Bambino Interiore',
       h:'<p>La prima parte da incontrare. Si apre quando avrai <b>completato le otto lezioni</b> del Mondo Interiore. Dentro trovi due esercizi: il <b>foglio delle tre domande</b>, per ascoltare la tua emozione e da dove nasce, e la <b>meditazione</b>, per dare un volto al tuo bambino interiore.</p>'},
     ex2:{t:'Le tappe più avanti',
@@ -945,7 +945,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     fetch('/api/auth/check?email='+encodeURIComponent(v))
       .then(function(r){return r.json();})
       .then(function(d){
-        if(!d.ok){ err.style.color='#c0392b'; err.textContent='Email non autorizzata. Contatta Elisa per accedere.'; return; }
+        if(!d.ok){ err.style.color='#c0392b'; err.textContent='Email non autorizzata. Contattami per accedere.'; return; }
         var tk=''; try{tk=localStorage.getItem('ovl-session')||'';}catch(e){}
         return fetch('/api/auth/session',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:v,token:tk})})
           .then(function(r){return r.json();}).then(function(s){
@@ -955,7 +955,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
             } else if(s.reason==='active'){
               err.style.color='#c0392b';
               err.innerHTML='Account gi\xe0 connesso da un altro dispositivo.<br><button onclick="entrForce(\''+v+'\');return false" style="margin-top:12px;width:100%;padding:13px;background:linear-gradient(135deg,#8a3030,#c0392b);border:none;border-radius:10px;color:#fff;font-family:Cinzel,serif;font-size:17px;letter-spacing:.1em;cursor:pointer;">Forza accesso</button>';
-            } else if(s.reason==='unauthorized'){ err.style.color='#c0392b'; err.textContent='Email non autorizzata. Contatta Elisa per accedere.'; }
+            } else if(s.reason==='unauthorized'){ err.style.color='#c0392b'; err.textContent='Email non autorizzata. Contattami per accedere.'; }
             else { err.style.color='#c0392b'; err.textContent='Errore. Riprova.'; }
           });
       })
@@ -966,7 +966,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     fetch('/api/auth/session',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:v,force:true})})
       .then(function(r){return r.json();}).then(function(s){
         if(s.ok){ try{localStorage.setItem(KEY,v);localStorage.setItem('ovl-session',s.token);}catch(e){} err.textContent=''; show('dash'); }
-        else if(s.reason==='unauthorized'){ err.style.color='#c0392b'; err.textContent='Email non autorizzata. Contatta Elisa per accedere.'; }
+        else if(s.reason==='unauthorized'){ err.style.color='#c0392b'; err.textContent='Email non autorizzata. Contattami per accedere.'; }
         else{ err.style.color='#c0392b'; err.textContent='Errore. Riprova.'; }
       }).catch(function(){ err.style.color='#c0392b'; err.textContent='Errore di rete.'; });
   };
@@ -1804,7 +1804,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
   <div class="sheet">
     <div class="bell">🔔</div>
     <h4>Resta in contatto</h4>
-    <p>Attiva le notifiche per ricevere i messaggi e gli inviti di Elisa lungo il tuo cammino.</p>
+    <p>Attiva le notifiche per ricevere i miei messaggi e i miei inviti lungo il tuo cammino.</p>
     <div class="row">
       <button class="no" id="ci-notif-no">Più tardi</button>
       <button class="yes" id="ci-notif-yes">Attiva</button>
