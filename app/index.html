@@ -1751,9 +1751,9 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
   /* La barra: 'timeupdate' scatta solo ~4 volte/sec → movimento a scatti. Dipingo invece a
      ~60fps con requestAnimationFrame leggendo au.currentTime (che è continuo), e così anche
      gli iframe (bambino, giornaliero) ricevono uno stato fluido via postState(). */
-  var barRaf=null, lastSec=-1, lastPost=0;
+  var barRaf=null, lastSec=-1, lastPost=0, dragSeek=false;
   function paintLocal(){            /* le barre della shell (playlist): 60fps pieni */
-    if(!au.duration) return;
+    if(!au.duration || dragSeek) return;   /* durante il trascinamento comanda il dito, non l'audio */
     var pct=((au.currentTime/au.duration)*100).toFixed(2)+'%';
     setW('mu-fill', pct); setL('mu-knob', pct);
     setW('mm-fill', pct);
@@ -1771,21 +1771,27 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
   /* fallback: a scheda in background rAF è sospeso ma l'audio continua → uso timeupdate */
   au.addEventListener('timeupdate', function(){ if(barRaf===null) paintBar(); });
 
-  /* barre con scrubbing a trascinamento (i pointer events coprono mouse + tocco) */
-  function attachSeek(el){
+  /* Scrubbing a trascinamento: la barra segue IL DITO all'istante (fluida), mentre l'audio
+     si sposta in modo limitato durante il trascinamento e una volta sola, preciso, al rilascio.
+     Così evito di rifare seek/buffer a ogni pixel (era quello a far scattare la barra). */
+  function attachSeek(el, fillId, knobId){
     if(!el) return;
-    function apply(e){
-      if(!au.duration||muIdx<0) return;
-      var r=el.getBoundingClientRect();
-      au.currentTime=Math.max(0,Math.min(1,(e.clientX-r.left)/r.width))*au.duration;
-      paintBar();   /* feedback immediato anche in pausa */
-    }
+    function fracOf(e){ var r=el.getBoundingClientRect(); return Math.max(0,Math.min(1,(e.clientX-r.left)/r.width)); }
+    function paintFrac(f){ var pct=(f*100).toFixed(2)+'%'; setW(fillId,pct); if(knobId)setL(knobId,pct); setW('mu-fill',pct); setL('mu-knob',pct); setW('mm-fill',pct); }
     el.addEventListener('pointerdown', function(e){
       if(!au.duration||muIdx<0) return;
       e.preventDefault();
-      apply(e);
-      function move(ev){ apply(ev); }
+      dragSeek=true;
+      var f=fracOf(e), seekT=null;
+      paintFrac(f);
+      function move(ev){
+        f=fracOf(ev); paintFrac(f);                          /* visivo: segue il dito a 1:1 */
+        if(seekT===null){ seekT=setTimeout(function(){ seekT=null; au.currentTime=f*au.duration; }, 80); }  /* audio: scrub limitato */
+      }
       function up(){
+        if(seekT!==null){ clearTimeout(seekT); seekT=null; }
+        au.currentTime=f*au.duration;                        /* seek finale, preciso */
+        dragSeek=false; paintBar();
         document.removeEventListener('pointermove',move);
         document.removeEventListener('pointerup',up);
         document.removeEventListener('pointercancel',up);
@@ -1795,8 +1801,8 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
       document.addEventListener('pointercancel',up);
     });
   }
-  attachSeek(document.getElementById('mu-bar'));
-  attachSeek(document.getElementById('mm-bar'));
+  attachSeek(document.getElementById('mu-bar'),'mu-fill','mu-knob');
+  attachSeek(document.getElementById('mm-bar'),'mm-fill',null);
 
   /* volume regolabile e ricordato. NB: iOS Safari ignora au.volume, quindi uso un
      GainNode Web Audio (l'unico modo per regolare il volume via codice su iPhone),

@@ -440,10 +440,14 @@ var LEZ={
     if(bP) bP.addEventListener('click', function(){ muSend('prev'); });
     if(bT) bT.addEventListener('click', function(){ muSend('toggle'); });
     if(bN) bN.addEventListener('click', function(){ muSend('next'); });
+    var dragS=false;
     if(bar){
       var frac=function(e){ var r=bar.getBoundingClientRect(); return Math.max(0,Math.min(1,(e.clientX-r.left)/r.width)); };
-      bar.addEventListener('pointerdown', function(e){ e.preventDefault(); muSend('seek',frac(e));
-        var mv=function(ev){ muSend('seek',frac(ev)); }, up=function(){ document.removeEventListener('pointermove',mv); document.removeEventListener('pointerup',up); document.removeEventListener('pointercancel',up); };
+      var paintF=function(f){ var fl=document.getElementById('mm-fill'); if(fl) fl.style.width=(f*100).toFixed(2)+'%'; };
+      bar.addEventListener('pointerdown', function(e){ e.preventDefault();
+        var f=frac(e), st=null; dragS=true; paintF(f);   /* la barra segue il dito */
+        var mv=function(ev){ f=frac(ev); paintF(f); if(st===null){ st=setTimeout(function(){ st=null; muSend('seek',f); }, 80); } };
+        var up=function(){ if(st!==null){ clearTimeout(st); st=null; } muSend('seek',f); dragS=false; document.removeEventListener('pointermove',mv); document.removeEventListener('pointerup',up); document.removeEventListener('pointercancel',up); };
         document.addEventListener('pointermove',mv); document.addEventListener('pointerup',up); document.addEventListener('pointercancel',up);
       });
     }
@@ -455,7 +459,7 @@ var LEZ={
       mini.style.display = m.active ? 'block' : 'none';
       var tt=document.getElementById('mm-title'); if(tt) tt.textContent=m.title||'—';
       if(bT) bT.innerHTML = m.playing ? SVG_PAUSE : SVG_PLAY;
-      var fl=document.getElementById('mm-fill'); if(fl) fl.style.width=((m.frac||0)*100).toFixed(2)+'%';
+      if(!dragS){ var fl=document.getElementById('mm-fill'); if(fl) fl.style.width=((m.frac||0)*100).toFixed(2)+'%'; }
     });
     muSend('state');
   })();
