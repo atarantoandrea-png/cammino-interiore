@@ -4,7 +4,10 @@ importScripts('https://pwa.elisasoulmedium.com/cammino-interiore/sw-core.js');
 // ─── Aggiornamento automatico: strategia "network-first" ────────────────────
 // Quando sei ONLINE l'app carica SEMPRE l'ultima versione dalla rete.
 // Quando sei OFFLINE usa l'ultima versione salvata in cache.
-const CACHE = 'cammino-v6';
+const CACHE = 'cammino-v7';
+
+// la nuova versione si attiva SUBITO, senza aspettare la chiusura di tutte le schede
+self.addEventListener('install', function(){ self.skipWaiting(); });
 
 // Contenuti riservati (tutto ciò che sta in una sotto-cartella di /app: pagine,
 // audio, musica…): mai in cache, solo rete — niente accesso offline senza sessione
@@ -41,7 +44,8 @@ self.addEventListener('fetch', function(event) {
   );
 });
 
-// Pulisci le cache vecchie quando cambia la versione
+// Pulisci le cache vecchie quando cambia la versione + prendi il controllo
+// delle pagine già aperte, così l'aggiornamento si vede senza riaprire l'app
 self.addEventListener('activate', function(event) {
   event.waitUntil(
     caches.keys().then(function(keys) {
@@ -49,6 +53,6 @@ self.addEventListener('activate', function(event) {
         keys.filter(function(k) { return k !== CACHE; })
             .map(function(k) { return caches.delete(k); })
       );
-    })
+    }).then(function(){ return self.clients.claim(); })
   );
 });

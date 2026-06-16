@@ -350,7 +350,8 @@ app.use((req, res, next) => {
 app.use(express.static(__dirname, {
   maxAge: '30d',
   setHeaders(res, p){
-    if (p.endsWith('.html')) res.setHeader('Cache-Control','no-cache');
+    /* html e service worker sempre rivalidati: i deploy si vedono subito */
+    if (p.endsWith('.html') || p.endsWith('sw.js')) res.setHeader('Cache-Control','no-cache');
   }
 }));
 

@@ -648,7 +648,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     <div class="who">
       <span class="wmail">Benvenuta/o, <b id="wmail"></b></span>
       <div class="who-act">
-        <button class="resume-btn" id="resumeBtn" type="button" onclick="ricominciaDove()" style="display:none">Ricomincia dove hai lasciato</button>
+        <button class="resume-btn" id="resumeBtn" type="button" onclick="ricominciaDove()">Ricomincia dove hai lasciato</button>
         <button onclick="esci()">Esci</button>
       </div>
     </div>
@@ -1196,14 +1196,15 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
   /* "Ricomincia dove hai lasciato": il pulsante appare se c'è un'ultima sezione aperta */
   function lastSection(){ try{ return localStorage.getItem('ovl-last:'+EMAIL)||''; }catch(e){ return ''; } }
   function updateResumeBtn(){
-    var b=document.getElementById('resumeBtn'); if(!b)return;
-    var id=lastSection();
-    var has = id && document.querySelector('#sentiero .stage[data-stage="'+id+'"]');
-    b.style.display = has ? '' : 'none';
+    var b=document.getElementById('resumeBtn'); if(b) b.style.display='';   /* sempre visibile */
   }
-  /* scorre fino alla card dell'ultima sezione aperta — senza entrarci */
+  /* scorre fino alla card dell'ultima sezione aperta (o, se non c'è, alla tappa consigliata) — senza entrarci */
   window.ricominciaDove=function(){
-    var id=lastSection(); if(!id)return;
+    var id=lastSection();
+    if(!id || !document.querySelector('#sentiero .stage[data-stage="'+id+'"]')){
+      try{ id=recommendedStage(); }catch(e){ id=''; }
+    }
+    if(!id) id='start';
     var li=document.querySelector('#sentiero .stage[data-stage="'+id+'"]'); if(!li)return;
     li.scrollIntoView({behavior:'smooth', block:'center'});
     var card=li.querySelector('.excard');
