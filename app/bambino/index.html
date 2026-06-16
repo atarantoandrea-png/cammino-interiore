@@ -408,10 +408,10 @@ textarea:focus,.fperche:focus{outline:none;border-color:var(--glic-hi);box-shado
 
 <!--MONTHLY
     <div class="flock">
-      <div class="flock-ic">🔒</div>
-      <div class="flock-h">Gli esercizi sono dell'abbonamento annuale</div>
-      <p class="flock-p">Questo foglio fa parte del Mondo Interiore. Per compilarlo — e per la meditazione guidata — serve l'abbonamento <b>annuale</b> della community di Oltre il Velo.</p>
-      <button class="flock-btn" type="button" onclick="showUpsell()">Scopri come passare all'annuale</button>
+      <div class="flock-ic">💛</div>
+      <div class="flock-h">Questo esercizio ti aspetta nel Cammino annuale</div>
+      <p class="flock-p">Il foglio del Bambino Interiore e la meditazione guidata fanno parte del <b>Cammino annuale</b> della community. Quando senti che è il tuo momento, li percorriamo insieme.</p>
+      <button class="flock-btn" type="button" onclick="showUpsell()">Scopri come proseguire 💛</button>
     </div>
 MONTHLY-->
 <!--FULL-->
@@ -593,15 +593,16 @@ MONTHLY-->
 
 <!-- copertina bloccata (Mensili) + popup "passa all'annuale" -->
 <style>
-.llock{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
-  background:radial-gradient(120% 120% at 50% 30%,rgba(60,48,90,.5),rgba(12,10,18,.92));border-radius:12px}
-.llock-ic{font-size:22px;opacity:.85}
-.llock-play{width:58px;height:58px;border-radius:50%;cursor:pointer;border:1px solid rgba(220,205,250,.45);
-  background:radial-gradient(circle at 38% 32%,rgba(220,205,250,.3),rgba(120,90,180,.32));color:#f0eaf6;
-  display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,.45),0 0 18px rgba(185,163,227,.25)}
+.llock{position:absolute;inset:0;border-radius:12px;overflow:hidden;background-color:#15101e;background-size:cover;background-position:center;background-repeat:no-repeat}
+.llock::before{content:'';position:absolute;inset:0;background:radial-gradient(120% 120% at 50% 34%,rgba(20,16,30,.5),rgba(8,6,12,.84))}
+.llock-inner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;z-index:1}
+.llock-ic{font-size:22px;opacity:.92;filter:drop-shadow(0 1px 5px rgba(0,0,0,.7))}
+.llock-play{width:58px;height:58px;border-radius:50%;cursor:pointer;border:1px solid rgba(220,205,250,.5);
+  background:radial-gradient(circle at 38% 32%,rgba(220,205,250,.34),rgba(120,90,180,.36));color:#f0eaf6;
+  display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,.5),0 0 18px rgba(185,163,227,.3)}
 .llock-play svg{width:24px;height:24px;margin-left:3px}
 .llock-play:hover{border-color:#dccdf6;transform:scale(1.05)}
-.llock-t{font-family:'Cinzel',serif;font-size:13px;letter-spacing:.06em;color:var(--glic-hi,#dccdf6);text-align:center;padding:0 18px}
+.llock-t{font-family:'Cormorant Garamond',Georgia,serif;font-size:17px;color:#f3eefb;text-align:center;padding:0 22px;text-shadow:0 1px 6px rgba(0,0,0,.8)}
 .flock{margin:0 18px 22px;border:1px solid rgba(201,168,76,.34);border-radius:18px;padding:26px 20px;text-align:center;
   background:linear-gradient(180deg,rgba(30,24,42,.7),rgba(16,12,22,.8))}
 .flock-ic{font-size:26px;margin-bottom:8px}
@@ -624,11 +625,11 @@ MONTHLY-->
 </style>
 <div id="upsell" class="ups-veil" role="dialog" aria-modal="true" aria-label="Passa all'annuale">
   <div class="ups-card">
-    <div class="ups-ic">🔒</div>
-    <h3 class="ups-h">Questa parte è dell'abbonamento annuale</h3>
-    <p class="ups-p">Per proseguire nel Cammino — i video del Mondo Interiore e gli esercizi — serve l'abbonamento <b>annuale</b> della community di Oltre il Velo.</p>
-    <p class="ups-p">Scrivi a <b>oltreilvelo.elisa@gmail.com</b> per scoprire come passare all'annuale.</p>
-    <button class="ups-btn" id="upsX" type="button">Ho capito</button>
+    <div class="ups-ic">💛</div>
+    <h3 class="ups-h">Questo fa parte del Cammino annuale</h3>
+    <p class="ups-p">I video del Mondo Interiore e gli esercizi ti aspettano qui, nel <b>Cammino annuale</b> della community. Quando senti che è il tuo momento, possiamo proseguirlo insieme.</p>
+    <p class="ups-p">Scrivimi a <b>oltreilvelo.elisa@gmail.com</b> e ti accompagno io nel passaggio all'annuale.</p>
+    <button class="ups-btn" id="upsX" type="button">Va bene 💛</button>
   </div>
 </div>
 
@@ -790,7 +791,7 @@ MONTHLY-->
   function loadMedVideo(){
     if(medVideoLoaded) return; medVideoLoaded=true;
     var f=document.getElementById('medvframe'); if(!f) return;
-    if(!VID.medit){ lockFrame(f); return; }   /* Mensile: meditazione bloccata */
+    if(!VID.medit){ lockFrame(f, '/api/cover?s=bambino&k=medit'); return; }   /* Mensile: meditazione bloccata */
     var ifr=document.createElement('iframe');
     ifr.src='https://player.vimeo.com/video/'+VID.medit+'?title=0&byline=0&portrait=0&badge=0';   /* niente dnt: statistiche native di Vimeo attive */
     ifr.setAttribute('allow','autoplay; fullscreen; picture-in-picture');
@@ -865,14 +866,17 @@ MONTHLY-->
   function toast(m){ var t=document.getElementById('saved'); t.textContent=m; t.classList.add('show'); clearTimeout(toast._t); toast._t=setTimeout(function(){ t.classList.remove('show'); }, 1800); }
 
   /* ===== video di Elisa nel foglio (caricati alla prima apertura) ===== */
-  function lockFrame(f){   /* copertina bloccata (Mensili): il play invita all'annuale */
+  function lockFrame(f, coverUrl){   /* copertina (scurita) + invito dolce all'annuale */
     f.setAttribute('data-loaded','1');
-    f.innerHTML='<div class="llock"><div class="llock-ic">🔒</div><button class="llock-play" type="button" aria-label="Guarda il video"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button><div class="llock-t">Anteprima · con l\'annuale guardi il video</div></div>';
+    f.innerHTML='<div class="llock"'+(coverUrl?(' style="background-image:url(\''+coverUrl+'\')"'):'')+'>'+
+      '<div class="llock-inner"><div class="llock-ic">🔒</div>'+
+      '<button class="llock-play" type="button" aria-label="Guarda il video"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>'+
+      '<div class="llock-t">Con il Cammino annuale possiamo guardarlo insieme 💛</div></div></div>';
     var pb=f.querySelector('.llock-play'); if(pb) pb.addEventListener('click', showUpsell);
   }
-  function loadVimeo(id, frameId){
+  function loadVimeo(id, frameId, key){
     var f=document.getElementById(frameId); if(!f || f.getAttribute('data-loaded')==='1') return;
-    if(!id){ lockFrame(f); return; }   /* Mensile: nessun ID → copertina bloccata */
+    if(!id){ lockFrame(f, key?('/api/cover?s=bambino&k='+encodeURIComponent(key)):''); return; }   /* Mensile: nessun ID → copertina bloccata */
     f.setAttribute('data-loaded','1');
     var ifr=document.createElement('iframe');
     ifr.src='https://player.vimeo.com/video/'+id+'?title=0&byline=0&portrait=0&badge=0';
@@ -880,7 +884,7 @@ MONTHLY-->
     ifr.setAttribute('allowfullscreen','');
     f.innerHTML=''; f.appendChild(ifr);
   }
-  function ensureVideo(){ loadVimeo(VID.teoria,'fvframe-teoria'); loadVimeo(VID.foglio,'fvframe'); }
+  function ensureVideo(){ loadVimeo(VID.teoria,'fvframe-teoria','teoria'); loadVimeo(VID.foglio,'fvframe','foglio'); }
 
   /* anteprima: le card mostrano la copertina del video (da Vimeo). Per i Mensili niente ID → icona di default */
   (function(){

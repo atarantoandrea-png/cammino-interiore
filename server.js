@@ -346,6 +346,32 @@ app.post('/api/auth/logout', (req, res) => {
   res.json({ok: true});
 });
 
+/* ── COPERTINE per l'anteprima dei Mensili ──
+   Il server conosce gli ID video, il client "mensile" no. Questo endpoint recupera la
+   miniatura da Vimeo (con il Referer del dominio, perché i video sono privati) e
+   reindirizza all'immagine: così l'anteprima si vede SENZA esporre l'ID del video. */
+const COVER_IDS = {
+  capitolo2: {mondo:'1200559554',bambino:'1200559555',adulto:'1200563875',ombra:'1200561278',padremadre:'1200563735',mf:'1200561010',adolescente:'1200559557',osservatore:'1200559556'},
+  bambino:   {teoria:'1200559555',foglio:'1201477236',medit:'1201478348'}
+};
+const coverCache = {};
+app.get('/api/cover', (req, res) => {
+  if (!sessionFromReq(req)) return res.status(403).end();
+  const id = (COVER_IDS[String(req.query.s || '')] || {})[String(req.query.k || '')];
+  if (!id) return res.status(404).end();
+  const c = coverCache[id];
+  if (c && Date.now() - c.at < 6 * 3600 * 1000) { res.set('Cache-Control', 'private, max-age=21600'); return res.redirect(302, c.url); }
+  const opts = { hostname: 'vimeo.com', path: '/api/oembed.json?width=800&url=' + encodeURIComponent('https://vimeo.com/' + id),
+    headers: { 'Referer': 'https://oltreilvelo.elisasoulmedium.com', 'User-Agent': 'OltreIlVelo/1.0' } };
+  https.get(opts, r => {
+    let d = ''; r.on('data', x => d += x);
+    r.on('end', () => {
+      try { const j = JSON.parse(d); if (j && j.thumbnail_url) { coverCache[id] = {url: j.thumbnail_url, at: Date.now()}; res.set('Cache-Control', 'private, max-age=21600'); return res.redirect(302, j.thumbnail_url); } } catch(e) {}
+      res.status(404).end();
+    });
+  }).on('error', () => res.status(404).end());
+});
+
 /* ── GATING: TUTTO ciò che sta in una sotto-cartella di /app è riservato ──
    Video, esercizi, audio, musica e qualunque contenuto futuro: servito SOLO con
    sessione valida. Così ogni nuova area creata sotto /app è protetta in automatico.
