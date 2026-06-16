@@ -1512,7 +1512,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
   } else { show('login'); }
   window.showView = show;
   /* esposto per l'altra IIFE (player/iframe): ricalcola sblocchi al ritorno dai video / su cap2-changed */
-  window.OVL_refresh = function(){ try{ if(rendered && document.getElementById('dash').classList.contains('on')) refreshAll(); }catch(e){} };
+  window.OVL_refresh = function(){ try{ if(rendered && document.getElementById('dash').classList.contains('on')) boot(); }catch(e){} };   /* boot ricarica lo store da localStorage: i giorni del Giornaliero contano subito */
 })();
 </script>
 <script>
@@ -1578,7 +1578,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     var f=au.duration?(au.currentTime/au.duration):0;
     dayFrame.contentWindow.postMessage({
       t:'mu:state', active:muIdx>=0, playing:!au.paused,
-      title:tr?tr.t:'', cat:tr?tr.cat:'', frac:f, vol:muVol,
+      title:tr?tr.t:'', cat:tr?tr.cat:'', f:tr?tr.f:'', frac:f, vol:muVol,
       cur:mmss(au.currentTime), dur:mmss(au.duration||0)
     }, location.origin);
   }
@@ -1604,6 +1604,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     else if(m.cmd==='seek'){ if(au.duration&&muIdx>=0) au.currentTime=Math.max(0,Math.min(1,m.v))*au.duration; }
     else if(m.cmd==='state'){ postState(); }
     else if(m.cmd==='playcat'){ for(var pci=0;pci<TRACKS.length;pci++){ if(TRACKS[pci].cat===m.v){ muPlay(pci); break; } } }
+    else if(m.cmd==='playf'){ for(var pfi=0;pfi<TRACKS.length;pfi++){ if(TRACKS[pfi].f===m.v){ muPlay(pfi); break; } } }
     else if(m.cmd==='vol'){ if(window.muSetVol) window.muSetVol(+m.v); }
   });
 

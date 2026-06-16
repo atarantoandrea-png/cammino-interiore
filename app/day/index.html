@@ -1132,6 +1132,7 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
     var mini=document.getElementById('mu-mini');
     function goBack(e){
       if(e)e.preventDefault();
+      try{ persist(); }catch(e2){}   /* salva SUBITO: così la dashboard rilegge i giorni aggiornati e sblocca le tappe */
       if(inShell){ window.parent.postMessage({t:'day:back'},location.origin); }
       else { history.back(); }
     }
