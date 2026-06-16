@@ -150,6 +150,15 @@ header.hd{padding:54px 0 8px;text-align:center;position:relative;z-index:2}
   font-family:'Cinzel',serif;font-size:13.5px;letter-spacing:.1em;text-transform:uppercase;
 }
 .who button:hover{border-color:var(--glic);color:var(--glic-hi)}
+.who-act{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+/* "Ricomincia dove hai lasciato": stesso giallo-oro di "Apri l'esercizio" */
+.who .resume-btn{color:var(--gold-pale);border:1px solid rgba(201,168,76,.6);
+  background:linear-gradient(180deg, rgba(201,168,76,.16), rgba(201,168,76,.06));
+  text-shadow:0 0 8px rgba(201,168,76,.35);box-shadow:0 0 12px rgba(201,168,76,.18), inset 0 1px 0 rgba(255,255,255,.06)}
+.who .resume-btn:hover{color:#f5e9c8;border-color:var(--gold);box-shadow:0 0 17px rgba(201,168,76,.35)}
+/* evidenzia per un attimo la card a cui si è scorsi */
+@keyframes hereGlow{0%,100%{box-shadow:0 0 0 0 rgba(201,168,76,0)}30%,60%{box-shadow:0 0 0 3px rgba(201,168,76,.5), 0 0 22px rgba(201,168,76,.45)}}
+.excard.justhere{animation:hereGlow 2.4s ease}
 
 .dlbl{font-family:'Cinzel',serif;font-size:13.5px;letter-spacing:.3em;text-transform:uppercase;color:var(--txt-dim);margin:0 0 14px;padding-left:2px;text-align:center}
 
@@ -638,7 +647,10 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
   <section id="dash">
     <div class="who">
       <span class="wmail">Benvenuta/o, <b id="wmail"></b></span>
-      <button onclick="esci()">Esci</button>
+      <div class="who-act">
+        <button class="resume-btn" id="resumeBtn" type="button" onclick="ricominciaDove()" style="display:none">Ricomincia dove hai lasciato</button>
+        <button onclick="esci()">Esci</button>
+      </div>
     </div>
 
     <div class="dlbl">Il tuo sentiero</div>
@@ -1177,9 +1189,27 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     updateLocks();   /* sblocco parti in base ai video visti nel Mondo Interiore */
     renderMini();
     markRecommended();
+    updateResumeBtn();
     cachePositions();
     placeLume();
   }
+  /* "Ricomincia dove hai lasciato": il pulsante appare se c'è un'ultima sezione aperta */
+  function lastSection(){ try{ return localStorage.getItem('ovl-last:'+EMAIL)||''; }catch(e){ return ''; } }
+  function updateResumeBtn(){
+    var b=document.getElementById('resumeBtn'); if(!b)return;
+    var id=lastSection();
+    var has = id && document.querySelector('#sentiero .stage[data-stage="'+id+'"]');
+    b.style.display = has ? '' : 'none';
+  }
+  /* scorre fino alla card dell'ultima sezione aperta — senza entrarci */
+  window.ricominciaDove=function(){
+    var id=lastSection(); if(!id)return;
+    var li=document.querySelector('#sentiero .stage[data-stage="'+id+'"]'); if(!li)return;
+    li.scrollIntoView({behavior:'smooth', block:'center'});
+    var card=li.querySelector('.excard');
+    if(card){ card.classList.remove('justhere'); void card.offsetWidth; card.classList.add('justhere');
+      setTimeout(function(){ card.classList.remove('justhere'); }, 2600); }
+  };
   function doPull(){
     if(!EMAIL)return;
     OVL_LUME.pullStore(EMAIL, S.store, S.meta, function(changed){
@@ -1667,10 +1697,18 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
       cur:mmss(au.currentTime), dur:mmss(au.duration||0)
     }, location.origin);
   }
+  /* ricorda l'ultima sezione aperta (per "Ricomincia dove hai lasciato") */
+  function routeToId(route){
+    for(var i=0;i<EXERCISES.length;i++){ if(EXERCISES[i].route===route) return EXERCISES[i].id; }
+    var base=String(route).split('?')[0];
+    for(var j=0;j<EXERCISES.length;j++){ var r=EXERCISES[j].route; if(r && r.split('?')[0]===base) return EXERCISES[j].id; }
+    return '';
+  }
   window.openFrame=function(route){
     if(dayFrame.getAttribute('data-route')!==route){ dayFrame.src=route; dayFrame.setAttribute('data-route',route); }
     dayFrame.style.display='block';
     document.documentElement.style.overflow='hidden';
+    try{ var id=routeToId(route); if(id && EMAIL) localStorage.setItem('ovl-last:'+EMAIL, id); }catch(e){}
   };
   window.openDay=function(){ window.openFrame('/app/day/'); };
   function closeDay(){ dayFrame.style.display='none'; document.documentElement.style.overflow='';
