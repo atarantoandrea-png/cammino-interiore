@@ -350,10 +350,33 @@ input:focus,textarea:focus{border-color:rgba(205,178,242,.85);box-shadow:0 0 14p
 #saved.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
 /* ================= MODALI ================= */
-#veil,#vsveil{position:fixed;inset:0;z-index:60;background:rgba(4,3,8,.72);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);opacity:0;pointer-events:none;transition:opacity .45s ease}
-#veil.on,#vsveil.on{opacity:1;pointer-events:auto}
-#gpan,#vspan{position:fixed;z-index:61;left:50%;top:50%;transform:translate(-50%,-50%) scale(.96);width:min(720px,94vw);height:min(88vh,860px);display:flex;flex-direction:column;border:1px solid rgba(185,163,227,.35);border-radius:18px;background:linear-gradient(180deg, rgba(13,10,18,.97), rgba(10,8,14,.97)), url('/src/pagina.jpg') center/cover;box-shadow:0 0 60px rgba(150,110,215,.25), 0 30px 80px rgba(0,0,0,.7);opacity:0;pointer-events:none;transition:opacity .45s ease, transform .45s ease}
-#gpan.on,#vspan.on{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1)}
+#veil,#vsveil,#diaveil{position:fixed;inset:0;z-index:60;background:rgba(4,3,8,.72);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);opacity:0;pointer-events:none;transition:opacity .45s ease}
+#veil.on,#vsveil.on,#diaveil.on{opacity:1;pointer-events:auto}
+#gpan,#vspan,#diapan{position:fixed;z-index:61;left:50%;top:50%;transform:translate(-50%,-50%) scale(.96);width:min(720px,94vw);height:min(88vh,860px);display:flex;flex-direction:column;border:1px solid rgba(185,163,227,.35);border-radius:18px;background:linear-gradient(180deg, rgba(13,10,18,.97), rgba(10,8,14,.97)), url('/src/pagina.jpg') center/cover;box-shadow:0 0 60px rgba(150,110,215,.25), 0 30px 80px rgba(0,0,0,.7);opacity:0;pointer-events:none;transition:opacity .45s ease, transform .45s ease}
+#gpan.on,#vspan.on,#diapan.on{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1)}
+/* Il mio Diario (vista-libro) + Sguardo indietro */
+#diapan .gp-orb{background:radial-gradient(circle at 38% 34%, #f3e6c4 0%, #c9a84c 55%, transparent 80%);box-shadow:0 0 10px 3px rgba(201,168,76,.5),0 0 24px 9px rgba(201,168,76,.25)}
+.dia-empty{text-align:center;color:var(--txt-dim);font-size:19px;line-height:1.6;padding:34px 12px}
+.dia-month{font-family:'Cinzel',serif;font-size:13.5px;letter-spacing:.26em;text-transform:uppercase;color:#c9a84c;text-align:center;margin:24px 0 14px;position:relative}
+.dia-month::before,.dia-month::after{content:'';position:absolute;top:50%;width:20%;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.5),transparent)}
+.dia-month::before{left:5%}.dia-month::after{right:5%}
+.dia-entry{border:1px solid var(--card-line,rgba(185,163,227,.16));border-radius:14px;background:rgba(20,16,28,.5);padding:14px 16px 12px;margin-bottom:14px;box-shadow:0 3px 12px rgba(0,0,0,.3)}
+.dia-date{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;border-bottom:1px solid rgba(185,163,227,.14);padding-bottom:8px;margin-bottom:10px}
+.dia-d{font-family:'Cinzel',serif;font-size:17px;color:#f0eaf6;letter-spacing:.03em}
+.dia-mood{font-size:20px}
+.dia-kw{font-style:italic;color:var(--glic-hi,#dccdf6);font-size:18px}
+.dia-sec{font-family:'Cinzel',serif;font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--txt-dim);margin:11px 0 6px}
+.dia-qa{margin:0 0 9px}
+.dia-q{font-size:15px;font-style:italic;color:var(--txt-soft);margin-bottom:1px}
+.dia-a{font-size:19px;color:var(--txt);line-height:1.5;white-space:pre-wrap}
+.lookback{border:1px solid rgba(201,168,76,.3);border-radius:14px;background:linear-gradient(180deg,rgba(40,33,22,.5),rgba(22,17,28,.65));padding:14px 16px;margin:4px 0 14px}
+.lookback .lb-t{font-family:'Cinzel',serif;font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:#c9a84c;margin-bottom:7px}
+.lookback .lb-a{font-size:19px;color:var(--txt);line-height:1.5;margin-bottom:6px;white-space:pre-wrap}
+.lookback .lb-q{font-style:italic;color:var(--glic-hi,#dccdf6);font-size:16px;margin-bottom:11px}
+.lookback .lb-go{font-family:'Cinzel',serif;font-size:14px;letter-spacing:.06em;color:#ffd83a;border:1px solid rgba(255,216,58,.5);border-radius:18px;background:none;padding:7px 16px;cursor:pointer}
+.lookback .lb-go:hover{border-color:rgba(255,216,58,.9)}
+.diabtn{width:100%;font-family:'Cinzel',serif;font-size:16px;letter-spacing:.05em;cursor:pointer;padding:13px 18px;border-radius:14px;color:#e8d9ae;border:1px solid rgba(201,168,76,.4);background:linear-gradient(180deg,rgba(40,33,22,.55),rgba(22,17,28,.7));box-shadow:0 3px 10px rgba(0,0,0,.35);margin:2px 0 16px;display:flex;align-items:center;justify-content:center;gap:8px}
+.diabtn:hover{border-color:rgba(201,168,76,.7);color:#fff}
 .gp-hd{display:flex;align-items:center;gap:12px;padding:18px 20px 14px;border-bottom:1px solid rgba(185,163,227,.2)}
 .gp-orb{width:34px;height:34px;border-radius:50%;flex-shrink:0;background:radial-gradient(circle at 38% 34%, #fff 0%, #fff 30%, var(--lm-mid) 60%, transparent 80%);box-shadow:0 0 10px 3px var(--lm-g1), 0 0 26px 10px var(--lm-g2);animation:lflick 3.1s ease-in-out infinite}
 #vspan .gp-orb{background:radial-gradient(circle at 38% 34%, var(--aqua-hi) 0%, var(--aqua) 55%, transparent 80%);box-shadow:0 0 10px 3px var(--aqua-glow), 0 0 24px 9px rgba(47,224,198,.3)}
@@ -583,6 +606,8 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
     <button class="back-btn" onclick="goTab(0)">Torna alla Home</button>
     <div class="shdr"><div><div class="stag">Diario · Settimana per settimana</div><div class="sh1">Il mio Diario</div></div></div>
     <div class="cal-istr"><b>Ogni giorno:</b> scegli come ti senti e, se vuoi, una parola che racconta la giornata.<br>Le pratiche fatte si segnano da sole. Puoi navigare tra le settimane: ognuna ricorda ciò che hai scritto.</div>
+    <div class="lookback" id="lookback" style="display:none"></div>
+    <button class="diabtn" onclick="apriDiario()"><span class="gi">📖</span> Apri il mio diario</button>
     <div class="wnav">
       <button class="wnav-btn" onclick="weekGo(-1)">← Prec.</button>
       <div class="wnav-lbl"><span id="wrange"></span><span class="wnav-badge" id="wbadge"></span></div>
@@ -652,6 +677,13 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
 <aside id="vspan" role="dialog" aria-label="Versione scritta della pratica">
   <div class="gp-hd"><div class="gp-orb"></div><h2 id="vsTitle">Versione scritta</h2><button class="gp-x" onclick="chiudiVS()">✕</button></div>
   <div class="gp-bd" id="vsBody"></div>
+</aside>
+
+<!-- ============ IL MIO DIARIO (vista-libro) ============ -->
+<div id="diaveil" onclick="chiudiDiario()"></div>
+<aside id="diapan" role="dialog" aria-label="Il mio Diario">
+  <div class="gp-hd"><div class="gp-orb"></div><h2>Il mio Diario</h2><button class="gp-x" onclick="chiudiDiario()">✕</button></div>
+  <div class="gp-bd" id="diaBody"></div>
 </aside>
 
 <div id="saved">✓ Salvato</div>
@@ -913,6 +945,56 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
   };
   window.chiudiVS=function(){ vsveil.classList.remove('on'); vspan.classList.remove('on'); };
 
+  /* ===== Il mio Diario (vista-libro) + Sguardo indietro ===== */
+  var DGIORNI=['Domenica','Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'];
+  var DMESI=['gennaio','febbraio','marzo','aprile','maggio','giugno','luglio','agosto','settembre','ottobre','novembre','dicembre'];
+  var DIA_LBL={
+    s2:{ name:'Osservatorio', f:[['j','Il giudizio che mi davo'],['q1','Il tono verso me stesso/a'],['q2','Mi appartiene davvero?'],['q3','Da dove veniva'],['q4','Parlerei così a chi amo?'],['neg','Il giudizio'],['pos','Visto dall\'esterno'],['song','La canzone'],['after','Come mi sentivo dopo']] },
+    s1:{ name:'Spazio Emotivo', f:[['think','Il pensiero arrivato'],['q1','È reale o automatico?'],['q2','Presente o passato?'],['q3','Mi aiuta o mi limita?'],['q4','Lo farei a chi amo?'],['body','Dove sentivo il blocco'],['emo','L\'emozione'],['after','Come mi sentivo dopo']] }
+  };
+  function diaEsc(s){ return String(s).replace(/[&<>]/g,function(c){return c==='&'?'&amp;':(c==='<'?'&lt;':'&gt;');}); }
+  function diaDates(){ var set={}; for(var k in store){ var v=store[k]; if(v===''||v===false||v==null)continue;
+    var m=k.match(/^s[12]:(\d{4}-\d{2}-\d{2}):/)||k.match(/^cal-(\d{4}-\d{2}-\d{2})-(s1|s2|mood|kw)/); if(m)set[m[1]]=true; }
+    return Object.keys(set).sort().reverse(); }
+  function diaFmt(iso){ var p=iso.split('-'); var d=new Date(+p[0],+p[1]-1,+p[2]); return DGIORNI[d.getDay()]+' '+(+p[2])+' '+DMESI[+p[1]-1]; }
+  function diaEntry(iso){
+    var inner='', any=false;
+    var mood=store['cal-'+iso+'-mood'], kw=store['cal-'+iso+'-kw'];
+    var head='<div class="dia-date"><span class="dia-d">'+diaFmt(iso)+'</span>'+
+      ((mood!=null&&mood!=='')?'<span class="dia-mood">'+MOODS[+mood]+'</span>':'')+
+      (kw?'<span class="dia-kw">«'+diaEsc(kw)+'»</span>':'')+'</div>';
+    ['s2','s1'].forEach(function(s){ var L=DIA_LBL[s], rows='';
+      L.f.forEach(function(pair){ var val=store[s+':'+iso+':'+pair[0]]; if(val&&String(val).trim()){ any=true;
+        rows+='<div class="dia-qa"><div class="dia-q">'+pair[1]+'</div><div class="dia-a">'+diaEsc(val)+'</div></div>'; } });
+      if(rows) inner+='<div class="dia-sec">'+L.name+'</div>'+rows;
+    });
+    if(!any && (mood==null||mood==='') && !kw) return '';
+    return '<div class="dia-entry">'+head+inner+'</div>';
+  }
+  window.apriDiario=function(){
+    var dates=diaDates(), body=document.getElementById('diaBody'), html='', lastM='';
+    dates.forEach(function(iso){ var e=diaEntry(iso); if(!e)return;
+      var mk=iso.slice(0,7); if(mk!==lastM){ lastM=mk; var p=iso.split('-'); html+='<div class="dia-month">'+DMESI[+p[1]-1]+' '+p[0]+'</div>'; }
+      html+=e; });
+    body.innerHTML = html || '<div class="dia-empty">Il tuo diario è ancora vuoto.<br>Ogni pratica e ogni parola che scrivi resteranno qui, da rileggere nel tempo.</div>';
+    body.scrollTop=0;
+    document.getElementById('diaveil').classList.add('on'); document.getElementById('diapan').classList.add('on');
+  };
+  window.chiudiDiario=function(){ document.getElementById('diaveil').classList.remove('on'); document.getElementById('diapan').classList.remove('on'); };
+  function renderLookback(){
+    var el=document.getElementById('lookback'); if(!el)return;
+    var dates=diaDates(), t=todayIso(), older=isoAdd(t,-21), tooOld=isoAdd(t,-60), found=null;
+    for(var i=0;i<dates.length;i++){ var iso=dates[i]; if(iso>older)continue; if(iso<tooOld)break;
+      var line=store['s2:'+iso+':pos']||store['s2:'+iso+':after']||store['s1:'+iso+':after']||store['cal-'+iso+'-kw'];
+      if(line&&String(line).trim()){ found={iso:iso,line:String(line)}; break; } }
+    if(!found){ el.style.display='none'; return; }
+    el.style.display='';
+    el.innerHTML='<div class="lb-t">Uno sguardo indietro · '+diaFmt(found.iso)+'</div>'+
+      '<div class="lb-a">«'+diaEsc(found.line)+'»</div>'+
+      '<div class="lb-q">Quanto è cambiato il tuo sguardo da allora?</div>'+
+      '<button class="lb-go" onclick="apriDiario()">Rileggi il diario →</button>';
+  }
+
   /* ============ segna pratica (salvataggio immediato) ============ */
   window.segnaPratica=function(s){
     var iso=sheetDay[s], key='cal-'+iso+'-'+s, now=!store[key];
@@ -983,6 +1065,7 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
     }
     var note=document.getElementById('wnote'); note.dataset.k='cal-'+iso(mon)+'-note'; note.value=store[note.dataset.k]||'';
     bindAll(box);
+    renderLookback();   /* la card "sguardo indietro" si aggiorna col diario */
   }
 
   /* ============ PROGRESSI ============ */
