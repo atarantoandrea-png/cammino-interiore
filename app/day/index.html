@@ -318,6 +318,11 @@ input:focus,textarea:focus{border-color:rgba(205,178,242,.85);box-shadow:0 0 14p
 @media(min-width:740px){.refl-arr{display:flex}.refl-track{margin:0 18px}}
 
 .pspeed{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;padding:10px 0 4px}
+/* video della pratica (Osservatorio / Spazio Emotivo) al posto dell'audio */
+.dvideo{margin:14px 0 8px}
+.dvframe{position:relative;padding-top:56.25%;height:0;overflow:hidden;background:#000;border-radius:16px;border:1px solid var(--card-line);box-shadow:0 8px 26px rgba(0,0,0,.5)}
+.dvframe iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
+.dvph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif;font-size:14px;letter-spacing:.12em;color:var(--txt-dim)}
 .spbtn{padding:5px 11px;border:1px solid rgba(47,224,198,.25);border-radius:20px;background:transparent;
   font-family:'Cinzel',serif;font-size:14.5px;color:var(--txt-dim);cursor:pointer;transition:all .18s}
 .spbtn:hover{border-color:rgba(47,224,198,.6);color:var(--aqua-hi)}
@@ -499,20 +504,7 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
     </div>
     <p class="intro">Quando arriva un giudizio su di te, fermati. Fai un respiro e premi play: lo osserviamo insieme.</p>
 
-    <div class="player" id="s2-player">
-      <div class="pbody">
-        <div class="pmain">
-          <div class="pring" id="s2-ring"><button class="pplay" id="s2-play" aria-label="Riproduci">▶</button></div>
-          <div class="pmeta"><div class="pchap" id="s2-chap">Premi play per iniziare</div><div class="ptime" id="s2-time">0:00 / --:--</div></div>
-          <img class="pthumb" id="s2-cov" alt="Osservatorio Interiore" style="display:none">
-        </div>
-        <div class="pbar" id="s2-bar"><div class="pfill" id="s2-fill"></div><div class="pknob" id="s2-knob" style="left:0"></div></div>
-        <div class="pwait" id="s2-wait" style="display:none">La mia voce sarà disponibile a breve 🎧</div>
-        <div class="pchaps" id="s2-chaps"></div>
-        <div class="pspeed" id="s2-speed"></div>
-        <audio id="s2-audio" preload="metadata"></audio>
-      </div>
-    </div>
+    <div class="dvideo"><div class="dvframe" id="s2-vframe"><div class="dvph">Carico il video…</div></div></div>
 
     <div class="daynav">
       <button class="dn-btn" onclick="dayGo('s2',-1)">←</button>
@@ -558,20 +550,7 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
     </div>
     <p class="intro">Metti una musica rilassante, portati in uno spazio tranquillo e, quando vuoi, premi play: ti guido io.</p>
 
-    <div class="player" id="s1-player">
-      <div class="pbody">
-        <div class="pmain">
-          <div class="pring" id="s1-ring"><button class="pplay" id="s1-play" aria-label="Riproduci">▶</button></div>
-          <div class="pmeta"><div class="pchap" id="s1-chap">Premi play per iniziare</div><div class="ptime" id="s1-time">0:00 / --:--</div></div>
-          <img class="pthumb" id="s1-cov" alt="Spazio Emotivo" style="display:none">
-        </div>
-        <div class="pbar" id="s1-bar"><div class="pfill" id="s1-fill"></div><div class="pknob" id="s1-knob" style="left:0"></div></div>
-        <div class="pwait" id="s1-wait" style="display:none">La mia voce sarà disponibile a breve 🎧</div>
-        <div class="pchaps" id="s1-chaps"></div>
-        <div class="pspeed" id="s1-speed"></div>
-        <audio id="s1-audio" preload="metadata"></audio>
-      </div>
-    </div>
+    <div class="dvideo"><div class="dvframe" id="s1-vframe"><div class="dvph">Carico il video…</div></div></div>
 
     <div class="daynav">
       <button class="dn-btn" onclick="dayGo('s1',-1)">←</button>
@@ -836,80 +815,25 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
     lume.classList.remove('boost'); lumeHome();
     window.scrollTo({top:0,behavior:'smooth'});
     if(idx===0)renderHome();
+    if(idx===1)loadVideo('s2');   /* Osservatorio */
+    if(idx===2)loadVideo('s1');   /* Spazio Emotivo */
     if(idx===3){ renderWeek(); renderReport(); renderAllRefl(); }
   };
 
-  /* ============ LETTORE AUDIO ============ */
-  var CHAPS={
-    s1:[ {t:0,l:'Prepara: musica e respiro'},{t:85,l:'Le quattro domande'},{t:240,l:'La frase con cui ti giudichi'},{t:330,l:'Il respiro e il blocco nel corpo'},{t:480,l:'Il mantra'},{t:550,l:'La luce che lascia andare'} ],
-    s2:[ {t:0,l:'Fermati e accorgiti del giudizio'},{t:110,l:'Scrivi la frase e il tono'},{t:260,l:'Risali alla fonte'},{t:310,l:'Parleresti così a chi ami?'},{t:360,l:'Trasforma il giudizio'},{t:400,l:'Il mantra e la canzone'} ]
-  };
-  var SRC={ s1:'audio/sblocco.mp3', s2:'audio/osservatorio.mp3' };
-  var COVER={ s1:'/src/mod3.jpg?v=2', s2:'/src/mod4.jpg?v=2' };
+  /* ============ VIDEO DELLE PRATICHE (Osservatorio / Spazio Emotivo) ============ */
+  var VIDEO={ s1:'1184907857', s2:'1184907860' };   /* Vimeo: Spazio Emotivo / Osservatorio (embed nativo) */
   function mmss(s){ s=Math.max(0,Math.floor(s||0)); var m=Math.floor(s/60); var r=s%60; return m+':'+String(r).padStart(2,'0'); }
-  function initPlayer(s){
-    var au=document.getElementById(s+'-audio'), play=document.getElementById(s+'-play'), ring=document.getElementById(s+'-ring'),
-        fill=document.getElementById(s+'-fill'), knob=document.getElementById(s+'-knob'), bar=document.getElementById(s+'-bar'),
-        chapLab=document.getElementById(s+'-chap'), timeLab=document.getElementById(s+'-time'), wait=document.getElementById(s+'-wait'),
-        chapsBox=document.getElementById(s+'-chaps'), cov=document.getElementById(s+'-cov');
-    var speedBox=document.getElementById(s+'-speed');
-    var SPEEDS=[1,1.2,1.5,1.7,2,2.5,3];
-    SPEEDS.forEach(function(sp){
-      var b=document.createElement('button'); b.className='spbtn'+(sp===1?' on':'');
-      b.textContent=sp+'×';
-      b.onclick=function(){
-        au.playbackRate=sp;
-        speedBox.querySelectorAll('.spbtn').forEach(function(x){x.classList.remove('on');});
-        b.classList.add('on');
-      };
-      speedBox.appendChild(b);
-    });
-    var chaps=CHAPS[s], ready=false, broken=false, curChap=-1;
-    cov.onload=function(){ cov.style.display='block'; };
-    cov.onerror=function(){ cov.style.display='none'; };
-    cov.src=COVER[s];
-    chapsBox.innerHTML='';
-    chaps.forEach(function(c,i){
-      var row=document.createElement('div'); row.className='pcrow';
-      row.innerHTML='<span class="pci">'+(i+1)+'</span><span class="pcl">'+c.l+'</span><span class="pct">'+mmss(c.t)+'</span>';
-      row.onclick=function(){ if(!ready)return; au.currentTime=c.t+0.2; au.play(); };
-      chapsBox.appendChild(row);
-    });
-    function highlight(i){ if(i===curChap)return; curChap=i; chapsBox.querySelectorAll('.pcrow').forEach(function(r,ri){ r.classList.toggle('cur',ri===i); }); if(chaps[i])chapLab.textContent=(i+1)+' · '+chaps[i].l; }
-    function curIndex(t){ var idx=0; for(var i=0;i<chaps.length;i++){ if(t>=chaps[i].t)idx=i; } return idx; }
-    au.src=SRC[s];
-    au.addEventListener('loadedmetadata',function(){
-      ready=true; timeLab.textContent='0:00 / '+mmss(au.duration);
-      chaps.forEach(function(c){ if(c.t<=0)return; var tk=document.createElement('div'); tk.className='ptick'; tk.style.left=(c.t/au.duration*100)+'%'; bar.appendChild(tk); });
-      highlight(0);
-    });
-    au.addEventListener('error',function(){ ready=false; broken=true; play.setAttribute('disabled',''); wait.style.display='block'; chapLab.textContent='Anteprima della pratica'; });
-    au.addEventListener('timeupdate',function(){
-      if(!au.duration)return;
-      var f=au.currentTime/au.duration;
-      fill.style.width=(f*100)+'%'; knob.style.left=(f*100)+'%'; ring.style.setProperty('--p',(f*100).toFixed(1));
-      timeLab.textContent=mmss(au.currentTime)+' / '+mmss(au.duration); highlight(curIndex(au.currentTime));
-    });
-    au.addEventListener('play',function(){ play.textContent='❚❚'; });
-    au.addEventListener('pause',function(){ play.textContent='▶'; });
-    au.addEventListener('ended',function(){ play.textContent='▶'; });
-    play.addEventListener('click',function(ev){
-      ev.stopPropagation();
-      if(!broken){ if(au.paused){ var pr=au.play(); if(pr&&pr['catch'])pr['catch'](function(){}); } else au.pause(); }
-      /* la luce si affianca al play, DI LATO (non sopra), e lo illumina di più */
-      var r=play.getBoundingClientRect();
-      if(litEl){litEl.classList.remove('lit');litEl=null;}
-      if(isNarrow()){
-        /* mobile: appena sopra il pulsante, visibile, senza coprire il lettore */
-        var nx=r.left+window.scrollX+28; if(nx<window.scrollX+26)nx=window.scrollX+26;
-        var ny=r.top+window.scrollY-26; if(ny<window.scrollY+26)ny=window.scrollY+26;
-        lumeAt(nx, ny, false);
-      } else {
-        var x=r.left+window.scrollX-30; if(x<30)x=r.right+window.scrollX+30;
-        lumeAt(x, r.top+window.scrollY + r.height/2, true);
-      }
-    });
-    bar.addEventListener('click',function(e){ if(!ready||!au.duration)return; var r=bar.getBoundingClientRect(); var f=(e.clientX-r.left)/r.width; au.currentTime=Math.max(0,Math.min(1,f))*au.duration; });
+  /* carica il video della pratica (una sola volta). Embed Vimeo nativo: le statistiche
+     di visualizzazione si registrano da sole, senza SDK. */
+  var vidLoaded={};
+  function loadVideo(s){
+    if(vidLoaded[s])return; var box=document.getElementById(s+'-vframe'); if(!box)return;
+    vidLoaded[s]=true;
+    var ifr=document.createElement('iframe');
+    ifr.src='https://player.vimeo.com/video/'+VIDEO[s]+'?title=0&byline=0&portrait=0&badge=0';
+    ifr.setAttribute('allow','autoplay; fullscreen; picture-in-picture');
+    ifr.setAttribute('allowfullscreen','');
+    box.innerHTML=''; box.appendChild(ifr);
   }
 
   /* ============ versione scritta ============ */
@@ -1291,7 +1215,7 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
   }
   bindAll(document);
   loadSheet('s1'); loadSheet('s2');
-  initPlayer('s1'); initPlayer('s2');
+  /* i video si caricano quando apri la scheda (loadVideo da goTab) */
   renderWeek(); lumeHome(); applyTier(); updateOggi(); renderHome();
   reflMigrate(); renderAllRefl();
   addEventListener('resize',function(){ if(document.getElementById('p3').classList.contains('on'))renderReport(); });
