@@ -156,18 +156,43 @@ function fetchTabRows(token, tab, cb) {
   }).on('error', () => cb([]));
 }
 
-/* cache lista email autorizzate: unione di tutte le schede in SHEETS_TABS */
+/* titoli reali delle schede del foglio (per risolvere i nomi configurati senza badare a maiuscole/spazi) */
+function fetchSheetTitles(token, cb) {
+  const opts = {
+    hostname: 'sheets.googleapis.com',
+    path: '/v4/spreadsheets/' + SHEETS_ID + '?fields=' + encodeURIComponent('sheets.properties.title'),
+    headers: {'Authorization': 'Bearer ' + token}
+  };
+  https.get(opts, res => {
+    let d = ''; res.on('data', c => d += c);
+    res.on('end', () => {
+      try { const j = JSON.parse(d); cb((j.sheets || []).map(s => s.properties && s.properties.title).filter(Boolean)); }
+      catch(e) { cb([]); }
+    });
+  }).on('error', () => cb([]));
+}
+
+/* cache lista email autorizzate: unione di tutte le schede in SHEETS_TABS.
+   I nomi configurati vengono risolti ai titoli REALI del foglio in modo
+   case-insensitive (maiuscole/spazi diversi non rompono più l'allowlist). */
 let emailCache = null, emailCacheAt = 0;
 function getAllowedEmails(cb) {
   if (emailCache && Date.now() - emailCacheAt < EMAIL_CACHE_TTL) return cb(null, emailCache);
   getGToken((err, token) => {
     if (err) return cb(err);
-    let pending = SHEETS_TABS.length, all = [];
-    if (!pending) { emailCache = new Set(); emailCacheAt = Date.now(); return cb(null, emailCache); }
-    SHEETS_TABS.forEach(tab => fetchTabRows(token, tab, emails => {
-      all = all.concat(emails);
-      if (--pending === 0) { emailCache = new Set(all); emailCacheAt = Date.now(); cb(null, emailCache); }
-    }));
+    fetchSheetTitles(token, titles => {
+      const norm = s => String(s).trim().toLowerCase();
+      const tabs = [...new Set(SHEETS_TABS.map(want => {
+        const hit = titles.find(t => norm(t) === norm(want));
+        return hit || want;   /* fallback al nome letterale se i titoli non sono disponibili */
+      }))];
+      let pending = tabs.length, all = [];
+      if (!pending) { emailCache = new Set(); emailCacheAt = Date.now(); return cb(null, emailCache); }
+      tabs.forEach(tab => fetchTabRows(token, tab, emails => {
+        all = all.concat(emails);
+        if (--pending === 0) { emailCache = new Set(all); emailCacheAt = Date.now(); cb(null, emailCache); }
+      }));
+    });
   });
 }
 
