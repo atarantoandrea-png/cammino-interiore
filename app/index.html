@@ -785,7 +785,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     <details class="gd">
       <summary><span class="gi">👣</span>Come funziona il sentiero<span class="arr">▶</span></summary>
       <div class="gd-c">
-        <p>La pagina che hai davanti è un <b>sentiero</b>, da percorrere dall'alto verso il basso. Si comincia da <b>«Inizia da qui»</b>, poi c'è <b>il Giornaliero</b> — la pratica di ogni giorno — e più in basso le tappe che verranno.</p>
+        <p>La pagina che hai davanti è un <b>sentiero</b>, da percorrere dall'alto verso il basso. Si comincia da <b>«Inizia da qui»</b>, poi l'<b>Introduzione</b> e il <b>Capitolo Primo · La Frequenza Nascosta</b> — la spiegazione del Giornaliero — e quindi <b>il Giornaliero</b>, la pratica di ogni giorno. Più in basso, le tappe che verranno.</p>
         <p>Le <b>impronte</b> tra una tappa e l'altra sono i tuoi passi: il cammino si crea camminando. La tappa con il <b>bordo luminoso</b> è quella consigliata per oggi.</p>
         <p>Gli esercizi più avanti <b>si aprono con la costanza</b>: ti consiglieremo sempre quanti giorni di pratica fare prima di proseguire. Ma la scelta resta tua, sempre.</p>
       </div>
@@ -856,9 +856,15 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
      ogni nuovo esercizio = una riga qui (la tappa nasce da sola).
      requires.days = giorni di pratica consigliati prima di aprirlo. */
   var EXERCISES=[
+    {id:'intro', title:'Introduzione', badge:'Il benvenuto di Elisa', sym:'✦', route:'/app/percorso/?l=intro', shell:true,
+     desc:'Il benvenuto di Elisa al Cammino: che cos\'è questo viaggio e come viverlo. Guardalo quando vuoi — è qui per accoglierti.',
+     requires:null},
+    {id:'frequenza', title:'La Frequenza Nascosta', badge:'Capitolo Primo', sym:'◈', route:'/app/percorso/?l=frequenza', shell:true,
+     desc:'La base di tutto: siamo energia, e tutto parte da come ci sentiamo. È la spiegazione del Giornaliero — vederla apre la pratica di ogni giorno.',
+     requires:null},
     {id:'day', title:'Il Giornaliero', badge:'Pratica quotidiana', sym:'📜', route:'/app/day/', shell:true,
      desc:'Le tue schede di pratica giorno per giorno: lo Spazio Emotivo, l\'Osservatorio Interiore e il Diario della Settimana. Tutto resta salvato nel tuo account.',
-     requires:null},
+     requires:null, requiresVideo:'frequenza'},
     {id:'capitolo2', title:'Il Mondo Interiore', badge:'Capitolo Secondo', sym:'🌌', route:'/app/capitolo2/', shell:true,
      desc:'Otto video con Elisa per conoscere le parti che ti compongono: il Bambino, l\'Adulto, l\'Ombra e le altre. Guardali con calma — poi si apriranno gli esercizi.',
      requires:{days:10}},
@@ -889,8 +895,12 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
   var DCTX={
     start:{t:'Inizia da qui',
       h:'<p>Benvenuta/o nella tua area di pratica. Qui sotto trovi tutto quello che serve per cominciare: leggi con calma <b>«Cos\'è quest\'area»</b> e <b>«Come funziona il sentiero»</b>, poi apri il Giornaliero e fai la tua prima pratica. Al resto pensa l\'app: tiene traccia di tutto e ti accompagna passo dopo passo.</p>'},
+    intro:{t:'Introduzione',
+      h:'<p>Il <b>benvenuto</b> di Elisa al Cammino: che cos\'è questo viaggio e come viverlo. È un video di accoglienza — guardalo quando vuoi, non è obbligatorio per proseguire. Quando te la senti, passa al <b>Capitolo Primo</b>.</p>'},
+    frequenza:{t:'La Frequenza Nascosta',
+      h:'<p>Il <b>Capitolo Primo</b> e la base di tutto: siamo energia, e tutto parte da come ci sentiamo. È la <b>spiegazione del Giornaliero</b>: vedere questo video apre la pratica di ogni giorno.</p>'},
     day:{t:'Il Giornaliero',
-      h:'<p>È la pratica di ogni giorno: lo <b>Spazio Emotivo</b>, l\'<b>Osservatorio Interiore</b> e il <b>Diario della Settimana</b>. Sulla card vedi i tuoi giorni di pratica e il tuo fiore. Apri l\'esercizio e lasciati guidare: dentro, la luce sarà con te sezione per sezione.</p>'},
+      h:'<p>È la pratica di ogni giorno: lo <b>Spazio Emotivo</b>, l\'<b>Osservatorio Interiore</b> e il <b>Diario della Settimana</b>. Si apre dopo aver visto <b>«La Frequenza Nascosta»</b> — la sua spiegazione. Sulla card vedi i tuoi giorni di pratica e il tuo fiore. Apri l\'esercizio e lasciati guidare: dentro, la luce sarà con te sezione per sezione.</p>'},
     capitolo2:{t:'Il Mondo Interiore',
       h:'<p>Il secondo capitolo: otto video in cui Elisa ti presenta le parti che ti compongono. Si apre dopo <b>10 giorni</b> di Giornaliero — il tempo di prendere l\'abitudine di osservarti. Guardali liberamente, nell\'ordine che senti.</p>'},
     bambino:{t:'Il Bambino Interiore',
@@ -975,6 +985,9 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
   /* video del Mondo Interiore visti (mappa salvata da /app/capitolo2/) */
   function cap2Map(){ try{ return JSON.parse(localStorage.getItem('ovl-cap2:'+EMAIL)||'{}')||{}; }catch(e){ return {}; } }
   function videoSeen(id){ return (cap2Map()[id]||0) >= 0.85; }
+  /* video del percorso iniziale (Introduzione, La Frequenza Nascosta) — salvati da /app/percorso/ */
+  function percMap(){ try{ return JSON.parse(localStorage.getItem('ovl-percorso:'+EMAIL)||'{}')||{}; }catch(e){ return {}; } }
+  function percSeen(id){ return (percMap()[id]||0) >= 0.85; }
   var PART_ORDER=['bambino','adulto','ombra','padremadre','mf','adolescente','osservatore'];
   function partTitle(id){ for(var i=0;i<EXERCISES.length;i++){ if(EXERCISES[i].id===id)return EXERCISES[i].title; } return id; }
   /* una parte è "completata" quando hai finito tutti i suoi esercizi */
@@ -987,8 +1000,11 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     for(var k=0;k<i;k++){ if(!partDone(PART_ORDER[k]))return false; }
     return true;
   }
-  function gated(ex){ return !!(ex.partVideo || ex.requires || ex.soon); }
+  function gated(ex){ return !!(ex.partVideo || ex.requires || ex.soon || ex.requiresVideo); }
   function unlockOk(ex){
+    /* il Giornaliero: si apre dopo «La Frequenza Nascosta» — oppure se pratichi già
+       (chi ha giorni di pratica non resta mai chiuso fuori) */
+    if(ex.requiresVideo) return percSeen(ex.requiresVideo) || days>0;
     if(ex.partVideo){
       /* Bambino: video "Mondo Interiore" + video "Bambino". Le altre: video della parte + TUTTI gli esercizi precedenti. */
       if(ex.id==='bambino') return videoSeen('mondo') && videoSeen('bambino');
@@ -1024,6 +1040,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
       if(ex.partVideo){ go.textContent = ok ? (ex.route?'Apri gli esercizi →':'Esercizi in arrivo')
                                             : (ex.id==='bambino' ? 'Guarda «Il Mondo Interiore» e «Il Bambino Interiore»'
                                                                  : 'Completa prima le parti precedenti'); }
+      else if(ex.requiresVideo){ go.textContent = ok ? 'Apri l\'esercizio →' : 'Guarda prima «La Frequenza Nascosta»'; }
       else if(ex.requires){ go.textContent = ok ? 'Apri →' : ('Consigliato dopo '+ex.requires.days+' giorni di Giornaliero'); }
     }
   }
@@ -1100,6 +1117,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
 
   function recommendedStage(){
     if(days===0 && !guidaVista())return 'start';
+    if(days===0 && !percSeen('frequenza'))return 'frequenza';   /* prima la spiegazione, che apre il Giornaliero */
     for(var i=0;i<EXERCISES.length;i++){
       var ex=EXERCISES[i];
       if(ex.route && ex.requires && unlockOk(ex))return ex.id;
@@ -1148,6 +1166,8 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
       .pull(function(ch){ if(ch) refreshAll(); });
     OVL_CLOUD.bucket({ email:EMAIL, token:tk, localKey:'ovl-bambino-prog:'+EMAIL, ns:'bprog' })
       .pull(function(ch){ if(ch) refreshAll(); });
+    OVL_CLOUD.bucket({ email:EMAIL, token:tk, localKey:'ovl-percorso:'+EMAIL, ns:'perc' })
+      .pull(function(ch){ if(ch) refreshAll(); });   /* video Introduzione/Frequenza Nascosta → sblocco Giornaliero corretto su device nuovo */
   }
   function boot(){
     try{ EMAIL=(localStorage.getItem(KEY)||'').trim().toLowerCase(); }catch(e){ EMAIL=''; }
@@ -1489,6 +1509,10 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
         msg='Per accedere a questa parte devi prima: '+req.join('; ')+'.'+soonNote+
           (ex.route?' Se senti di volerlo, puoi entrare comunque.':'');
       }
+    } else if(ex.requiresVideo){
+      msg = unlockOk(ex)
+        ? 'Tutto pronto: il Giornaliero è aperto.'
+        : 'Il Giornaliero è la pratica di ogni giorno. Prima, guarda «La Frequenza Nascosta»: è la sua spiegazione. Poi questa pratica si apre da sola. Se senti di volerlo, puoi entrare comunque.';
     } else if(ex.route){
       msg='Questa tappa si apre dopo '+ex.requires.days+' giorni di Giornaliero. '+fatti+' Se senti di volerlo, puoi entrare comunque.';
     } else {
