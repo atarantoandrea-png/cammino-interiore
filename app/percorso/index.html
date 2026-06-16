@@ -145,6 +145,14 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
   font-size:18.5px;color:var(--txt-soft);line-height:1.55;text-align:center}
 .unlock b{color:var(--gold-pale);font-weight:600}
 .unlock.done{border-color:rgba(127,214,160,.45);background:linear-gradient(180deg, rgba(22,42,30,.5), rgba(16,26,21,.7))}
+/* pulsante "vai alla sessione successiva" (Giornaliero): CTA dorata, illuminata */
+.nextbtn{font-family:'Cinzel',serif;font-size:15.5px;letter-spacing:.05em;cursor:pointer;
+  padding:13px 26px;border-radius:26px;color:#2a2036;border:1px solid rgba(232,217,174,.85);
+  background:linear-gradient(180deg, var(--gold-pale), var(--gold));
+  box-shadow:0 5px 18px rgba(201,168,76,.42), inset 0 1px 0 rgba(255,255,255,.45);
+  text-shadow:0 1px 1px rgba(255,255,255,.3);transition:transform .2s, box-shadow .2s}
+.nextbtn:hover{transform:translateY(-1px);box-shadow:0 7px 22px rgba(201,168,76,.58)}
+@media(max-width:520px){.nextbtn{font-size:14.5px;padding:12px 20px}}
 
 /* ================= piè di pagina ================= */
 .foot{margin:30px 18px 0;text-align:center;font-size:18px;color:var(--txt-dim);line-height:1.55}
@@ -237,6 +245,9 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
 
   <!-- nota di sblocco (solo «La Frequenza Nascosta») -->
   <div class="unlock" id="unlock" style="display:none"></div>
+  <div style="text-align:center;margin:18px 18px 0">
+    <button class="nextbtn" id="nextBtn" type="button" style="display:none">Ok, vai alla sessione successiva →</button>
+  </div>
 
   <div class="foot">
     <div class="sep"><span class="l"></span><span class="d"></span><span class="l"></span></div>
@@ -279,9 +290,7 @@ var LEZ={
     h1:'Introduzione',
     title:'Introduzione',
     lead:'Elisa ci accoglie e racconta che cos’è questo cammino: non un percorso di soli esercizi, ma un viaggio dentro le nostre emozioni, per conoscere chi siamo davvero.',
-    txt:
-      '<p>Questo è un cammino che Elisa ha percorso prima su se stessa. Qui non impariamo una tecnica: impariamo a <b>sentirci</b>. Il percorso unisce una parte teorica e una pratica, a blocchi, perché ogni cosa abbia il tempo di essere vissuta nella vita di ogni giorno.</p>'+
-      '<p>La parte più importante di noi è quella che spesso non ascoltiamo: la nostra <span class="em">anima</span>, il nostro sentire. È da lì che parte tutto.</p>',
+    txt:'',
     points:[
       '<b>Non è una gara.</b> Ognuno ha il proprio tempo: andiamo avanti solo quando ci sentiamo pronti, e rivediamo le lezioni quando ne sentiamo il bisogno.',
       '<b>La parte più forte</b> del cammino è abbracciare ciò che di noi non ci piace: è lì che inizia il vero risveglio.',
@@ -330,7 +339,7 @@ var LEZ={
   document.getElementById('cap').textContent = LZ.cap;
   document.getElementById('h1').textContent = LZ.h1;
   document.getElementById('lead').innerHTML = LZ.lead;
-  document.getElementById('txt').innerHTML = LZ.txt;
+  var txtEl=document.getElementById('txt'); if(LZ.txt){ txtEl.innerHTML=LZ.txt; } else { txtEl.style.display='none'; }
   var ul=document.getElementById('points'); ul.innerHTML='';
   LZ.points.forEach(function(p){ var li=document.createElement('li'); li.innerHTML=p; ul.appendChild(li); });
   document.getElementById('foot').innerHTML = LZ.foot;
@@ -348,7 +357,7 @@ var LEZ={
   function notifyParent(){ if(inShell){ try{ window.parent.postMessage({t:'cap2-changed'}, location.origin); }catch(e){} } }
 
   var statusEl=document.getElementById('vstatus'), btnSeen=document.getElementById('btnSeen'),
-      unlockEl=document.getElementById('unlock');
+      unlockEl=document.getElementById('unlock'), nextBtn=document.getElementById('nextBtn');
   function refresh(){
     var seen=isSeen();
     statusEl.textContent = seen ? '✓ Visto' : ((prog[which]||0)>0 ? 'In corso' : 'Da vedere');
@@ -358,11 +367,13 @@ var LEZ={
     if(which==='frequenza'){
       unlockEl.style.display='';
       unlockEl.classList.toggle('done', seen);
-      unlockEl.innerHTML = seen
-        ? 'Hai visto la spiegazione: <b>il Giornaliero è aperto</b>. Lo trovi nel sentiero, subito sotto.'
-        : 'Questa è la spiegazione del <b>Giornaliero</b>. Quando avrai visto il video, la pratica di ogni giorno si aprirà da sola.';
+      unlockEl.innerHTML = 'Questo video è <b>tutta la spiegazione</b>, prima di affrontare la sessione dedicata agli <b>esercizi giornalieri</b>: la trovi nella prossima sezione.';
+      nextBtn.style.display = seen ? '' : 'none';   /* la sessione successiva si apre dopo aver visto la spiegazione */
     }
   }
+  /* il pulsante porta alla sessione successiva: il Giornaliero (apre nella shell) */
+  function goToDay(){ if(inShell){ window.parent.postMessage({t:'open', route:'/app/day/'}, location.origin); } else { location.href='/app/day/'; } }
+  nextBtn.addEventListener('click', goToDay);
 
   /* carico il video + tracciamento */
   var box=document.getElementById('vid'), durEl=document.getElementById('vdur');

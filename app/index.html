@@ -1001,16 +1001,29 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     return true;
   }
   function gated(ex){ return !!(ex.partVideo || ex.requires || ex.soon || ex.requiresVideo); }
-  function unlockOk(ex){
-    /* il Giornaliero: si apre dopo «La Frequenza Nascosta» — oppure se pratichi già
-       (chi ha giorni di pratica non resta mai chiuso fuori) */
-    if(ex.requiresVideo) return percSeen(ex.requiresVideo) || days>0;
+  /* requisito PROPRIO della tappa (senza la catena del percorso) */
+  function ownUnlock(ex){
+    if(ex.requiresVideo) return percSeen(ex.requiresVideo);   /* il Giornaliero: dopo «La Frequenza Nascosta» */
     if(ex.partVideo){
       /* Bambino: video "Mondo Interiore" + video "Bambino". Le altre: video della parte + TUTTI gli esercizi precedenti. */
       if(ex.id==='bambino') return videoSeen('mondo') && videoSeen('bambino');
       return videoSeen(ex.id) && prevPartsDone(ex.id);
     }
     return !ex.requires || days>=ex.requires.days;
+  }
+  /* sbloccata = requisito proprio soddisfatto E la tappa-cancello precedente è sbloccata.
+     Il percorso è una CATENA: una pratica bloccata blocca tutte le successive, anche se
+     queste avrebbero i requisiti propri (servono sbloccate tutte le tappe precedenti). */
+  function unlockOk(ex){
+    if(!ownUnlock(ex)) return false;
+    var i=EXERCISES.indexOf(ex);
+    for(var k=i-1;k>=0;k--){
+      var prev=EXERCISES[k];
+      if(prev.id==='intro') continue;   /* l'Introduzione non è vincolante */
+      if(!gated(prev)) continue;        /* tappa sempre aperta: superata, guardo più indietro */
+      return unlockOk(prev);            /* basta la prima tappa-cancello precedente: la sua catena è già verificata */
+    }
+    return true;
   }
 
   function fpSvg(){
@@ -1037,7 +1050,8 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     el.insertAdjacentHTML('beforeend', ok?lockOpenBadge():lockBadge());  /* lucchetto figlio della card, NON di .excover: così i filtri di oscuramento non lo toccano */
     var go=el.querySelector('.exgo');
     if(go){
-      if(ex.partVideo){ go.textContent = ok ? (ex.route?'Apri gli esercizi →':'Esercizi in arrivo')
+      if(!ok && ownUnlock(ex)){ go.textContent = 'Sblocca prima le tappe precedenti'; }   /* bloccata dalla catena del percorso */
+      else if(ex.partVideo){ go.textContent = ok ? (ex.route?'Apri gli esercizi →':'Esercizi in arrivo')
                                             : (ex.id==='bambino' ? 'Guarda «Il Mondo Interiore» e «Il Bambino Interiore»'
                                                                  : 'Completa prima le parti precedenti'); }
       else if(ex.requiresVideo){ go.textContent = ok ? 'Apri l\'esercizio →' : 'Guarda prima «La Frequenza Nascosta»'; }
@@ -1117,7 +1131,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
 
   function recommendedStage(){
     if(days===0 && !guidaVista())return 'start';
-    if(days===0 && !percSeen('frequenza'))return 'frequenza';   /* prima la spiegazione, che apre il Giornaliero */
+    if(!percSeen('frequenza'))return 'frequenza';   /* la spiegazione apre il Giornaliero: è sempre il prossimo passo finché non è vista */
     for(var i=0;i<EXERCISES.length;i++){
       var ex=EXERCISES[i];
       if(ex.route && ex.requires && unlockOk(ex))return ex.id;
@@ -1487,7 +1501,10 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     var fatti=(days===0?'Non hai ancora iniziato il Giornaliero.':
                days===1?'Finora hai fatto 1 giorno di pratica.':'Finora hai fatto '+days+' giorni di pratica.');
     var msg;
-    if(ex.id==='capitolo2'){
+    if(!unlockOk(ex) && ownUnlock(ex)){
+      /* avrebbe i requisiti propri, ma una tappa precedente del percorso è ancora bloccata */
+      msg='Questa tappa fa parte di un percorso: prima vanno sbloccate, in ordine, le tappe precedenti. Comincia da «La Frequenza Nascosta» e prosegui passo dopo passo. Se senti di volerlo, puoi entrare comunque.';
+    } else if(ex.id==='capitolo2'){
       msg='Il «Mondo Interiore» si apre dopo '+ex.requires.days+' giorni di Giornaliero: così arrivi con l\'osservatore già allenato e le lezioni ti parlano di più. '+fatti+
         ' Se senti di volerlo, puoi entrare comunque.';
     } else if(ex.partVideo){
