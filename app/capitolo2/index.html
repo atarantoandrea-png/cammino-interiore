@@ -320,6 +320,8 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
 <script src="https://player.vimeo.com/api/player.js"></script>
 <!-- livelli/fiori condivisi con il resto dell'app: serve a colorare la luce -->
 <script src="/app/lume.js?v=2"></script>
+<!-- salvataggio nella nuvola (legato alla mail): i video visti tornano su ogni device -->
+<script src="/app/ovl-cloud.js?v=1"></script>
 <script>
 /* ====== integrazione con la shell /app/ (il capitolo apre in iframe) ====== */
 (function(){
@@ -391,7 +393,11 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
 
   var prog={};
   try{ prog=JSON.parse(localStorage.getItem(KEY)||'{}')||{}; }catch(e){ prog={}; }
-  function save(){ try{ localStorage.setItem(KEY, JSON.stringify(prog)); }catch(e){} }
+  /* nuvola: i video visti sono legati alla mail → tornano su qualunque device,
+     anche dopo una re-iscrizione. Il merge è per-chiave sul timestamp più recente. */
+  var TOKEN=''; try{ TOKEN=localStorage.getItem('ovl-session')||''; }catch(e){}
+  var cloud = window.OVL_CLOUD ? OVL_CLOUD.bucket({ email:who, token:TOKEN, localKey:KEY, ns:'cap2' }) : null;
+  function save(){ try{ localStorage.setItem(KEY, JSON.stringify(prog)); }catch(e){} if(cloud) cloud.push(); }
 
   function isSeen(id){ return (prog[id]||0) >= SEEN_AT; }
   function mmss(s){ if(!s||isNaN(s))return ''; s=Math.round(s); var m=Math.floor(s/60); var r=s%60; return m+':'+(r<10?'0':'')+r; }
@@ -605,6 +611,9 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
 
   refresh();
   lumeHome();
+  /* scarico dalla nuvola ciò che è stato visto su altri device e ridisegno */
+  if(cloud) cloud.pull(function(changed){ if(changed){ refresh(); notifyParent(); } });
+  addEventListener('pagehide', function(){ if(cloud) cloud.beacon(); });
 })();
 </script>
 

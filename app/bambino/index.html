@@ -581,6 +581,8 @@ textarea:focus,.fperche:focus{outline:none;border-color:var(--glic-hi);box-shado
 
 <script src="https://player.vimeo.com/api/player.js"></script>
 <script src="/app/lume.js?v=2"></script>
+<!-- salvataggio nella nuvola (legato alla mail): foglio, progressi e riflessione tornano su ogni device -->
+<script src="/app/ovl-cloud.js?v=1"></script>
 <script>
 (function(){
   var who='';
@@ -625,9 +627,19 @@ textarea:focus,.fperche:focus{outline:none;border-color:var(--glic-hi);box-shado
   var fields=[].slice.call(document.querySelectorAll('#foglio [data-k]'));
   var data={};
   try{ data=JSON.parse(localStorage.getItem(FKEY)||'{}')||{}; }catch(e){ data={}; }
-  fields.forEach(function(el){
+  /* nuvola: foglio scritto, progressi e riflessione sono legati alla mail → tornano su
+     qualunque device, anche dopo una re-iscrizione (merge per-chiave sul timestamp). */
+  var TOKEN=''; try{ TOKEN=localStorage.getItem('ovl-session')||''; }catch(e){}
+  function mkBucket(lk,ns){ return window.OVL_CLOUD ? OVL_CLOUD.bucket({ email:who, token:TOKEN, localKey:lk, ns:ns }) : null; }
+  var cloudF=mkBucket(FKEY,'bfoglio'), cloudP=mkBucket(PKEY,'bprog'), cloudM=null;
+  function fillFields(){ fields.forEach(function(el){
     var k=el.getAttribute('data-k'); if(data[k]==null) return;
     if(el.type==='radio'){ el.checked=(el.value===data[k]); } else { el.value=data[k]; }
+  }); }
+  fillFields();
+  if(cloudF) cloudF.pull(function(ch){ if(!ch) return;
+    try{ data=JSON.parse(localStorage.getItem(FKEY)||'{}')||{}; }catch(e){}
+    fillFields(); try{ growAll(); }catch(e){}
   });
   function collect(){ var o={}; fields.forEach(function(el){
     var k=el.getAttribute('data-k');
@@ -636,6 +648,7 @@ textarea:focus,.fperche:focus{outline:none;border-color:var(--glic-hi);box-shado
   function saveForm(silent){
     data=collect();
     try{ localStorage.setItem(FKEY, JSON.stringify(data)); }catch(e){}
+    if(cloudF) cloudF.push();
     if(!silent) toast('Salvato nel tuo account');
   }
   /* le caselle crescono col testo: niente scroll interno, la parte iniziale non si perde */
@@ -678,7 +691,11 @@ textarea:focus,.fperche:focus{outline:none;border-color:var(--glic-hi);box-shado
 
   /* progresso esercizio */
   var prog={}; try{ prog=JSON.parse(localStorage.getItem(PKEY)||'{}')||{}; }catch(e){ prog={}; }
-  function saveProg(){ try{ localStorage.setItem(PKEY, JSON.stringify(prog)); }catch(e){} }
+  function saveProg(){ try{ localStorage.setItem(PKEY, JSON.stringify(prog)); }catch(e){} if(cloudP) cloudP.push(); }
+  if(cloudP) cloudP.pull(function(ch){ if(!ch) return;
+    try{ prog=JSON.parse(localStorage.getItem(PKEY)||'{}')||{}; }catch(e){}
+    refreshProg();
+  });
   function refreshProg(){
     var bF=document.getElementById('btnDone'), it=document.getElementById('ex-foglio'), st=document.getElementById('st-foglio');
     if(prog.foglio){ bF.classList.add('done'); bF.textContent='Completato'; it.classList.add('seen'); st.textContent='✓ Fatto'; }
@@ -749,10 +766,13 @@ textarea:focus,.fperche:focus{outline:none;border-color:var(--glic-hi);box-shado
     /* riflessione facoltativa: salvata sul dispositivo */
     var RKEY='ovl-bambino-medit:'+who, rdata={};
     try{ rdata=JSON.parse(localStorage.getItem(RKEY)||'{}')||{}; }catch(e){ rdata={}; }
+    cloudM=mkBucket(RKEY,'bmedit');   /* anch'essa nella nuvola, legata alla mail */
     var rta=[].slice.call(document.querySelectorAll('.medrefl-ta'));
-    rta.forEach(function(t){ var k=t.getAttribute('data-mk'); if(rdata[k]!=null) t.value=rdata[k]; autogrow(t); });
+    function fillRefl(){ rta.forEach(function(t){ var k=t.getAttribute('data-mk'); if(rdata[k]!=null) t.value=rdata[k]; autogrow(t); }); }
+    fillRefl();
+    if(cloudM) cloudM.pull(function(ch){ if(!ch) return; try{ rdata=JSON.parse(localStorage.getItem(RKEY)||'{}')||{}; }catch(e){} fillRefl(); });
     var rt=null;
-    rta.forEach(function(t){ t.addEventListener('input', function(){ autogrow(t); clearTimeout(rt); rt=setTimeout(function(){ var o={}; rta.forEach(function(x){ o[x.getAttribute('data-mk')]=x.value; }); try{ localStorage.setItem(RKEY, JSON.stringify(o)); }catch(e){} }, 600); }); });
+    rta.forEach(function(t){ t.addEventListener('input', function(){ autogrow(t); clearTimeout(rt); rt=setTimeout(function(){ var o={}; rta.forEach(function(x){ o[x.getAttribute('data-mk')]=x.value; }); try{ localStorage.setItem(RKEY, JSON.stringify(o)); }catch(e){} if(cloudM) cloudM.push(); }, 600); }); });
 
     var bm=document.getElementById('btnMedit');
     if(bm) bm.addEventListener('click', function(){
@@ -762,6 +782,8 @@ textarea:focus,.fperche:focus{outline:none;border-color:var(--glic-hi);box-shado
   })();
 
   refreshProg();
+  /* all'uscita dalla pagina: invio affidabile di tutto ciò che è cambiato */
+  addEventListener('pagehide', function(){ try{ if(cloudF)cloudF.beacon(); if(cloudP)cloudP.beacon(); if(cloudM)cloudM.beacon(); }catch(e){} });
 
   function toast(m){ var t=document.getElementById('saved'); t.textContent=m; t.classList.add('show'); clearTimeout(toast._t); toast._t=setTimeout(function(){ t.classList.remove('show'); }, 1800); }
 

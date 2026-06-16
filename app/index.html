@@ -843,6 +843,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
 <div id="saved">✓ Salvato</div>
 
 <script src="/app/lume.js?v=2"></script>
+<script src="/app/ovl-cloud.js?v=1"></script>
 <script src="/app/elisa-chat.js?v=16"></script>
 <script>
 (function(){
@@ -1134,6 +1135,19 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     OVL_LUME.pullStore(EMAIL, S.store, S.meta, function(changed){
       if(changed)refreshAll();
     });
+    pullExtra();
+  }
+  /* tira giù dalla nuvola anche i dati degli esercizi (video visti del Mondo
+     Interiore, completamento del Bambino) così su un device nuovo o dopo una
+     re-iscrizione gli sblocchi del sentiero sono già corretti, senza dover
+     aprire prima quelle pagine. Vedi [[progressi-backup-email]]. */
+  function pullExtra(){
+    if(!window.OVL_CLOUD || !EMAIL) return;
+    var tk=''; try{ tk=localStorage.getItem('ovl-session')||''; }catch(e){}
+    OVL_CLOUD.bucket({ email:EMAIL, token:tk, localKey:'ovl-cap2:'+EMAIL, ns:'cap2' })
+      .pull(function(ch){ if(ch) refreshAll(); });
+    OVL_CLOUD.bucket({ email:EMAIL, token:tk, localKey:'ovl-bambino-prog:'+EMAIL, ns:'bprog' })
+      .pull(function(ch){ if(ch) refreshAll(); });
   }
   function boot(){
     try{ EMAIL=(localStorage.getItem(KEY)||'').trim().toLowerCase(); }catch(e){ EMAIL=''; }

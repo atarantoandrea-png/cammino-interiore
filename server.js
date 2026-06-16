@@ -15,9 +15,13 @@ fs.mkdirSync(DATA, { recursive: true });
 app.use(express.json({ limit: '2mb' }));
 
 const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-function fileFor(email){
+function fileFor(email, ns){
   const h = crypto.createHash('sha1').update(email).digest('hex');
-  return path.join(DATA, h + '.json');
+  /* ns opzionale: un archivio separato per ogni tipo di dato (cap2, foglio del
+     Bambino, riflessioni…), così non si mescolano col Giornaliero. Ripulito a
+     [a-z0-9], max 24 char → resta sempre dentro DATA, niente path traversal. */
+  const tag = ns ? '.' + String(ns).toLowerCase().replace(/[^a-z0-9]/g,'').slice(0,24) : '';
+  return path.join(DATA, h + tag + '.json');
 }
 function readStore(f){
   try{
@@ -32,7 +36,7 @@ app.get('/api/store', (req,res)=>{
   const email = String(req.query.email||'').trim().toLowerCase();
   if (!emailRe.test(email)) return res.status(400).json({ error:'email' });
   if (!storeAuthOk(req, email)) return res.status(401).json({ error:'auth' });
-  res.json(readStore(fileFor(email)));
+  res.json(readStore(fileFor(email, req.query.ns)));
 });
 
 /* unione chiave per chiave: vince il timestamp più recente,
@@ -46,7 +50,7 @@ const saveStore = (req,res)=>{
   if (typeof data!=='object' || !data || typeof meta!=='object' || !meta)
     return res.status(400).json({ error:'body' });
   try{
-    const f = fileFor(email);
+    const f = fileFor(email, b.ns);
     const cur = readStore(f);
     const out = { data:{}, meta:{} };
     const keys = new Set(Object.keys(data).concat(Object.keys(cur.data)));
