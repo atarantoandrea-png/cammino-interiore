@@ -873,6 +873,12 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
   var EMAIL='', S={store:{},meta:{}};
   var days=0, tier=0, strk=0;
   var rendered=false, lastFocus=null;
+  /* livello di accesso: 'full' (annuale/speciali) o 'monthly' (Mensili = solo fino al
+     Giornaliero; il resto è anteprima/trailer). Salvato per email, aggiornato a ogni login. */
+  var plan='full';
+  function savePlan(email, t){ try{ if(email) localStorage.setItem('ovl-plan:'+String(email).trim().toLowerCase(), t||'full'); }catch(e){} }
+  function loadPlan(){ try{ var e=(localStorage.getItem(KEY)||'').trim().toLowerCase(); plan=localStorage.getItem('ovl-plan:'+e)||'full'; }catch(e){ plan='full'; } window.OVL_PLAN=plan; return plan; }
+  function isTrailerSection(ex){ return ex && (ex.id==='capitolo2' || ex.id==='bambino'); }   /* sezioni "anteprima" per i mensili */
 
   /* ============ IL REGISTRO DEGLI ESERCIZI ============
      ogni nuovo esercizio = una riga qui (la tappa nasce da sola).
@@ -973,6 +979,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
           .then(function(r){return r.json();}).then(function(s){
             if(s.ok){
               try{localStorage.setItem(KEY,v);localStorage.setItem('ovl-session',s.token);}catch(e){}
+              savePlan(v, s.tier); plan=s.tier||'full'; window.OVL_PLAN=plan;
               err.textContent=''; show('dash');
             } else if(s.reason==='active'){
               err.style.color='#c0392b';
@@ -987,7 +994,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     var err=document.getElementById('lerr'); err.textContent='Forza accesso…';
     fetch('/api/auth/session',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:v,force:true})})
       .then(function(r){return r.json();}).then(function(s){
-        if(s.ok){ try{localStorage.setItem(KEY,v);localStorage.setItem('ovl-session',s.token);}catch(e){} err.textContent=''; show('dash'); }
+        if(s.ok){ try{localStorage.setItem(KEY,v);localStorage.setItem('ovl-session',s.token);}catch(e){} savePlan(v, s.tier); plan=s.tier||'full'; window.OVL_PLAN=plan; err.textContent=''; show('dash'); }
         else if(s.reason==='unauthorized'){ err.style.color='#c0392b'; err.textContent='Email non autorizzata. Contattami per accedere.'; }
         else{ err.style.color='#c0392b'; err.textContent='Errore. Riprova.'; }
       }).catch(function(){ err.style.color='#c0392b'; err.textContent='Errore di rete.'; });
@@ -1037,6 +1044,9 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
      Il percorso è una CATENA: una pratica bloccata blocca tutte le successive, anche se
      queste avrebbero i requisiti propri (servono sbloccate tutte le tappe precedenti). */
   function unlockOk(ex){
+    /* Mensili: Mondo Interiore e Bambino sono apribili SUBITO come anteprima (il blocco
+       vero dei contenuti è dentro la pagina, lato server). Salta requisiti e catena. */
+    if(plan==='monthly' && isTrailerSection(ex)) return true;
     if(!ownUnlock(ex)) return false;
     var i=EXERCISES.indexOf(ex);
     for(var k=i-1;k>=0;k--){
@@ -1620,13 +1630,14 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
   });
 
   /* già dentro? verifica sessione poi vai alla dashboard */
+  loadPlan();   /* livello salvato (subito disponibile per il gating, anche offline) */
   var u=null; try{ u=localStorage.getItem(KEY); }catch(e){}
   if(u){
     var tk=''; try{tk=localStorage.getItem('ovl-session')||'';}catch(e){}
     if(tk){
       fetch('/api/auth/verify',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:u,token:tk})})
         .then(function(r){return r.json();})
-        .then(function(d){ show(d.ok?'dash':'login'); })
+        .then(function(d){ if(d.ok && d.tier){ savePlan(u, d.tier); plan=d.tier; window.OVL_PLAN=plan; if(rendered) renderSentiero(); } show(d.ok?'dash':'login'); })
         .catch(function(){ show('dash'); }); /* offline: entra */
     } else { show('login'); }
   } else { show('login'); }

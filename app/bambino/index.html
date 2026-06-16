@@ -406,6 +406,15 @@ textarea:focus,.fperche:focus{outline:none;border-color:var(--glic-hi);box-shado
       <div class="lframe" id="fvframe"><div class="ph">Carico il video…</div></div>
     </div>
 
+<!--MONTHLY
+    <div class="flock">
+      <div class="flock-ic">🔒</div>
+      <div class="flock-h">Gli esercizi sono dell'abbonamento annuale</div>
+      <p class="flock-p">Questo foglio fa parte del Mondo Interiore. Per compilarlo — e per la meditazione guidata — serve l'abbonamento <b>annuale</b> della community di Oltre il Velo.</p>
+      <button class="flock-btn" type="button" onclick="showUpsell()">Scopri come passare all'annuale</button>
+    </div>
+MONTHLY-->
+<!--FULL-->
     <div class="fbox">
       <p class="fintro">Non è un esercizio di testa, ma del <b>sentire</b>: rispondi <b>di getto</b>, senza giudicarti. Dopo ogni risposta chiediti <b>«perché» tre volte</b> — la prima è razionale, è dal terzo «perché» che affiora ciò che senti <b>davvero, dall'anima</b>.</p>
 
@@ -458,6 +467,7 @@ textarea:focus,.fperche:focus{outline:none;border-color:var(--glic-hi);box-shado
       <button class="fbtn" type="button" id="btnPrintFilled">Stampa con le mie risposte</button>
       <div class="fhint">Puoi scrivere qui — resta salvato nel tuo account, e potrai rileggerlo tra qualche mese — oppure <b>stampare il foglio e scriverlo a mano</b>, come ti consiglio.</div>
     </div>
+<!--/FULL-->
   </section>
 
   <!-- ===== ESERCIZIO 2 · MEDITAZIONE GUIDATA ===== -->
@@ -581,6 +591,47 @@ textarea:focus,.fperche:focus{outline:none;border-color:var(--glic-hi);box-shado
 
 <div id="saved"></div>
 
+<!-- copertina bloccata (Mensili) + popup "passa all'annuale" -->
+<style>
+.llock{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
+  background:radial-gradient(120% 120% at 50% 30%,rgba(60,48,90,.5),rgba(12,10,18,.92));border-radius:12px}
+.llock-ic{font-size:22px;opacity:.85}
+.llock-play{width:58px;height:58px;border-radius:50%;cursor:pointer;border:1px solid rgba(220,205,250,.45);
+  background:radial-gradient(circle at 38% 32%,rgba(220,205,250,.3),rgba(120,90,180,.32));color:#f0eaf6;
+  display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,.45),0 0 18px rgba(185,163,227,.25)}
+.llock-play svg{width:24px;height:24px;margin-left:3px}
+.llock-play:hover{border-color:#dccdf6;transform:scale(1.05)}
+.llock-t{font-family:'Cinzel',serif;font-size:13px;letter-spacing:.06em;color:var(--glic-hi,#dccdf6);text-align:center;padding:0 18px}
+.flock{margin:0 18px 22px;border:1px solid rgba(201,168,76,.34);border-radius:18px;padding:26px 20px;text-align:center;
+  background:linear-gradient(180deg,rgba(30,24,42,.7),rgba(16,12,22,.8))}
+.flock-ic{font-size:26px;margin-bottom:8px}
+.flock-h{font-family:'Cinzel',serif;font-weight:600;font-size:18px;color:#f0eaf6;margin-bottom:10px}
+.flock-p{font-family:'Cormorant Garamond',Georgia,serif;font-size:18px;line-height:1.5;color:#d7cfe4;margin:0 0 16px}
+.flock-p b{color:#e8d9ae}
+.flock-btn{font-family:'Cinzel',serif;font-size:14px;letter-spacing:.05em;cursor:pointer;color:#0e0b14;border:none;border-radius:22px;
+  padding:11px 22px;background:linear-gradient(180deg,#e8d9ae,#c9a84c)}
+.flock-btn:hover{filter:brightness(1.06)}
+.ups-veil{position:fixed;inset:0;z-index:120;display:none;align-items:center;justify-content:center;padding:22px;background:rgba(8,6,12,.72)}
+.ups-veil.on{display:flex}
+.ups-card{max-width:380px;width:100%;border:1px solid rgba(201,168,76,.4);border-radius:20px;padding:26px 22px 22px;text-align:center;
+  background:linear-gradient(180deg,rgba(28,22,40,.98),rgba(14,11,20,.98));box-shadow:0 18px 60px rgba(0,0,0,.6)}
+.ups-ic{font-size:30px;margin-bottom:8px}
+.ups-h{font-family:'Cinzel',serif;font-weight:600;font-size:20px;color:#f0eaf6;line-height:1.3;margin:0 0 12px}
+.ups-p{font-family:'Cormorant Garamond',Georgia,serif;font-size:18px;line-height:1.55;color:#d7cfe4;margin:0 0 12px}
+.ups-p b{color:#e8d9ae}
+.ups-btn{margin-top:6px;font-family:'Cinzel',serif;font-size:15px;letter-spacing:.06em;cursor:pointer;color:#0e0b14;border:none;border-radius:24px;padding:12px 28px;background:linear-gradient(180deg,#e8d9ae,#c9a84c)}
+.ups-btn:hover{filter:brightness(1.06)}
+</style>
+<div id="upsell" class="ups-veil" role="dialog" aria-modal="true" aria-label="Passa all'annuale">
+  <div class="ups-card">
+    <div class="ups-ic">🔒</div>
+    <h3 class="ups-h">Questa parte è dell'abbonamento annuale</h3>
+    <p class="ups-p">Per proseguire nel Cammino — i video del Mondo Interiore e gli esercizi — serve l'abbonamento <b>annuale</b> della community di Oltre il Velo.</p>
+    <p class="ups-p">Scrivi a <b>oltreilvelo.elisa@gmail.com</b> per scoprire come passare all'annuale.</p>
+    <button class="ups-btn" id="upsX" type="button">Ho capito</button>
+  </div>
+</div>
+
 <script src="https://player.vimeo.com/api/player.js"></script>
 <script src="/app/lume.js?v=4"></script>
 <!-- salvataggio nella nuvola (legato alla mail): foglio, progressi e riflessione tornano su ogni device -->
@@ -593,6 +644,26 @@ textarea:focus,.fperche:focus{outline:none;border-color:var(--glic-hi);box-shado
   try{ if(window.OVL_LUME){ var _S=OVL_LUME.loadLocal(who); var _md=false; try{_md=localStorage.getItem('ovl-mondo:'+who)==='1';}catch(_e){} OVL_LUME.applyTier(OVL_LUME.allActiveDays(_S.store).length, _md); } }catch(e){}
 
   var inShell=false; try{ inShell=window.parent && window.parent!==window; }catch(e){}
+
+  /* Gli ID dei video stanno SOLO qui: per i Mensili il server rimuove questo blocco e
+     attiva la versione vuota sotto (anteprima/trailer). I marcatori <!-- --> dentro lo
+     script sono anche commenti JS: inerti per gli utenti pieni. */
+<!--FULL-->
+  var VID={teoria:'1200559555', foglio:'1201477236', medit:'1201478348'};
+<!--/FULL-->
+<!--MONTHLY var VID={}; window.TRAILER=true; MONTHLY-->
+  var TRAILER=!!window.TRAILER;
+
+  /* popup "passa all'annuale" (Mensili) */
+  function showUpsell(){ var u=document.getElementById('upsell'); if(u) u.classList.add('on'); }
+  function closeUpsell(){ var u=document.getElementById('upsell'); if(u) u.classList.remove('on'); }
+  window.showUpsell=showUpsell;
+  (function(){ var u=document.getElementById('upsell'), x=document.getElementById('upsX');
+    if(x) x.addEventListener('click', closeUpsell);
+    if(u) u.addEventListener('click', function(e){ if(e.target===u) closeUpsell(); });
+    document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeUpsell(); });
+    if(TRAILER){ var bm=document.getElementById('btnMedit'); if(bm) bm.style.display='none'; }
+  })();
 
   /* ===== viste ===== */
   var hub=document.getElementById('hub'), foglio=document.getElementById('foglio'), medit=document.getElementById('medit');
@@ -661,7 +732,7 @@ textarea:focus,.fperche:focus{outline:none;border-color:var(--glic-hi);box-shado
     var ev=el.type==='radio'?'change':'input';
     el.addEventListener(ev, function(){ autogrow(el); clearTimeout(autoT); autoT=setTimeout(function(){ saveForm(true); }, 600); });
   });
-  document.getElementById('btnSave').addEventListener('click', function(){ saveForm(false); });
+  (function(){ var b=document.getElementById('btnSave'); if(b) b.addEventListener('click', function(){ saveForm(false); }); })();
 
   /* ===== stampa: foglio vuoto (righe a mano) oppure con le risposte ===== */
   function fillLines(){
@@ -687,8 +758,8 @@ textarea:focus,.fperche:focus{outline:none;border-color:var(--glic-hi);box-shado
     });
     document.getElementById('printfilled').innerHTML=html;
   }
-  document.getElementById('btnPrint').addEventListener('click', function(){ saveForm(true); document.body.classList.remove('print-filled'); window.print(); });
-  document.getElementById('btnPrintFilled').addEventListener('click', function(){ saveForm(true); buildFilled(); document.body.classList.add('print-filled'); window.print(); });
+  (function(){ var b=document.getElementById('btnPrint'); if(b) b.addEventListener('click', function(){ saveForm(true); document.body.classList.remove('print-filled'); window.print(); }); })();
+  (function(){ var b=document.getElementById('btnPrintFilled'); if(b) b.addEventListener('click', function(){ saveForm(true); buildFilled(); document.body.classList.add('print-filled'); window.print(); }); })();
   window.addEventListener('afterprint', function(){ document.body.classList.remove('print-filled'); });
 
   /* progresso esercizio */
@@ -700,27 +771,28 @@ textarea:focus,.fperche:focus{outline:none;border-color:var(--glic-hi);box-shado
   });
   function refreshProg(){
     var bF=document.getElementById('btnDone'), it=document.getElementById('ex-foglio'), st=document.getElementById('st-foglio');
-    if(prog.foglio){ bF.classList.add('done'); bF.textContent='Completato'; it.classList.add('seen'); st.textContent='✓ Fatto'; }
-    else { bF.classList.remove('done'); bF.textContent='Segna come completato'; it.classList.remove('seen'); st.textContent='Da fare'; }
+    if(prog.foglio){ if(bF){ bF.classList.add('done'); bF.textContent='Completato'; } if(it)it.classList.add('seen'); if(st)st.textContent='✓ Fatto'; }
+    else { if(bF){ bF.classList.remove('done'); bF.textContent='Segna come completato'; } if(it)it.classList.remove('seen'); if(st)st.textContent='Da fare'; }
     var bM=document.getElementById('btnMedit'), im=document.getElementById('ex-medit'), sm=document.getElementById('st-medit');
     if(bM){
       if(prog.medit){ bM.classList.add('done'); bM.textContent='Completato'; if(im)im.classList.add('seen'); if(sm)sm.textContent='✓ Fatto'; }
       else { bM.classList.remove('done'); bM.textContent='Segna come completato'; if(im)im.classList.remove('seen'); if(sm)sm.textContent='Da fare'; }
     }
   }
-  document.getElementById('btnDone').addEventListener('click', function(){
+  (function(){ var b=document.getElementById('btnDone'); if(b) b.addEventListener('click', function(){
     saveForm(true);
     prog.foglio = !prog.foglio; saveProg(); refreshProg();
     toast(prog.foglio?'Esercizio completato':'Segno rimosso');
-  });
+  }); })();
 
   /* ===== Esercizio 2 · meditazione: video di Elisa (canalizzazione) + musica consigliata + riflessione ===== */
   var medPlayer=null, medVideoLoaded=false;
   function loadMedVideo(){
     if(medVideoLoaded) return; medVideoLoaded=true;
     var f=document.getElementById('medvframe'); if(!f) return;
+    if(!VID.medit){ lockFrame(f); return; }   /* Mensile: meditazione bloccata */
     var ifr=document.createElement('iframe');
-    ifr.src='https://player.vimeo.com/video/1201478348?title=0&byline=0&portrait=0&badge=0';   /* niente dnt: statistiche native di Vimeo attive */
+    ifr.src='https://player.vimeo.com/video/'+VID.medit+'?title=0&byline=0&portrait=0&badge=0';   /* niente dnt: statistiche native di Vimeo attive */
     ifr.setAttribute('allow','autoplay; fullscreen; picture-in-picture');
     ifr.setAttribute('allowfullscreen','');
     f.innerHTML=''; f.appendChild(ifr);
@@ -793,8 +865,14 @@ textarea:focus,.fperche:focus{outline:none;border-color:var(--glic-hi);box-shado
   function toast(m){ var t=document.getElementById('saved'); t.textContent=m; t.classList.add('show'); clearTimeout(toast._t); toast._t=setTimeout(function(){ t.classList.remove('show'); }, 1800); }
 
   /* ===== video di Elisa nel foglio (caricati alla prima apertura) ===== */
+  function lockFrame(f){   /* copertina bloccata (Mensili): il play invita all'annuale */
+    f.setAttribute('data-loaded','1');
+    f.innerHTML='<div class="llock"><div class="llock-ic">🔒</div><button class="llock-play" type="button" aria-label="Guarda il video"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button><div class="llock-t">Anteprima · con l\'annuale guardi il video</div></div>';
+    var pb=f.querySelector('.llock-play'); if(pb) pb.addEventListener('click', showUpsell);
+  }
   function loadVimeo(id, frameId){
     var f=document.getElementById(frameId); if(!f || f.getAttribute('data-loaded')==='1') return;
+    if(!id){ lockFrame(f); return; }   /* Mensile: nessun ID → copertina bloccata */
     f.setAttribute('data-loaded','1');
     var ifr=document.createElement('iframe');
     ifr.src='https://player.vimeo.com/video/'+id+'?title=0&byline=0&portrait=0&badge=0';
@@ -802,18 +880,18 @@ textarea:focus,.fperche:focus{outline:none;border-color:var(--glic-hi);box-shado
     ifr.setAttribute('allowfullscreen','');
     f.innerHTML=''; f.appendChild(ifr);
   }
-  function ensureVideo(){ loadVimeo('1200559555','fvframe-teoria'); loadVimeo('1201477236','fvframe'); }
+  function ensureVideo(){ loadVimeo(VID.teoria,'fvframe-teoria'); loadVimeo(VID.foglio,'fvframe'); }
 
-  /* anteprima: le card mostrano la copertina del video (da Vimeo), come per le tre domande */
+  /* anteprima: le card mostrano la copertina del video (da Vimeo). Per i Mensili niente ID → icona di default */
   (function(){
-    function cover(sel, vid){ var ic=document.querySelector(sel); if(!ic) return;
+    function cover(sel, vid){ if(!vid) return; var ic=document.querySelector(sel); if(!ic) return;
       fetch('https://vimeo.com/api/oembed.json?url=https://vimeo.com/'+vid)
         .then(function(r){ return r.json(); })
         .then(function(d){ if(d&&d.thumbnail_url){ ic.textContent=''; ic.style.backgroundImage='url('+d.thumbnail_url+')'; ic.style.backgroundSize='cover'; ic.style.backgroundPosition='center'; } })
         .catch(function(){});
     }
-    cover('#ex-foglio .exic', '1201477236');   /* le tre domande */
-    cover('#ex-medit .exic',  '1201478348');   /* incontra il bambino (meditazione) */
+    cover('#ex-foglio .exic', VID.foglio);   /* le tre domande */
+    cover('#ex-medit .exic',  VID.medit);    /* incontra il bambino (meditazione) */
   })();
 
   /* ===== luce guida: per-domanda, come nel Giornaliero ===== */

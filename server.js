@@ -76,10 +76,15 @@ app.post('/api/store', saveStore);   /* per sendBeacon all'uscita dalla pagina *
 const SHEETS_ID  = process.env.SHEETS_ID  || '';
 const SHEETS_TAB = process.env.SHEETS_TAB || 'annuali';
 const SHEETS_TAB2 = process.env.SHEETS_TAB2 || 'Cammino Interiore Speciali';
-/* schede del CRM da controllare per le email autorizzate (annuale + speciali);
-   override con SHEETS_TABS="Tab A,Tab B" se servisse */
-const SHEETS_TABS = (process.env.SHEETS_TABS ? process.env.SHEETS_TABS.split(',') : [SHEETS_TAB, SHEETS_TAB2])
+const SHEETS_TAB3 = process.env.SHEETS_TAB3 || 'Mensili';
+/* schede ad accesso PIENO (annuale + speciali) e schede MENSILI (accesso "trailer":
+   solo prima parte + anteprima del resto). Override: SHEETS_TABS="A,B" per i pieni,
+   SHEETS_TABS_MONTHLY="C" per i mensili. L'allowlist resta l'unione di tutte. */
+const FULL_TABS = (process.env.SHEETS_TABS ? process.env.SHEETS_TABS.split(',') : [SHEETS_TAB, SHEETS_TAB2])
   .map(s => s.trim()).filter(Boolean);
+const MONTHLY_TABS = (process.env.SHEETS_TABS_MONTHLY ? process.env.SHEETS_TABS_MONTHLY.split(',') : [SHEETS_TAB3])
+  .map(s => s.trim()).filter(Boolean);
+const SHEETS_TABS = [...FULL_TABS, ...MONTHLY_TABS];
 const SESSION_TTL = 30 * 24 * 60 * 60 * 1000; /* 30 giorni */
 const EMAIL_CACHE_TTL = 5 * 60 * 1000;  /* 5 min */
 
@@ -176,28 +181,40 @@ function fetchSheetTitles(token, cb) {
   }).on('error', () => cb([]));
 }
 
-/* cache lista email autorizzate: unione di tutte le schede in SHEETS_TABS.
-   I nomi configurati vengono risolti ai titoli REALI del foglio in modo
-   case-insensitive (maiuscole/spazi diversi non rompono più l'allowlist). */
-let emailCache = null, emailCacheAt = 0;
-function getAllowedEmails(cb) {
-  if (emailCache && Date.now() - emailCacheAt < EMAIL_CACHE_TTL) return cb(null, emailCache);
+/* cache: mappa email -> livello ('full' | 'monthly').
+   'full' = annuali + Cammino Interiore Speciali (vince sempre, anche se la mail è
+   pure tra i mensili). 'monthly' = solo nel foglio Mensili. L'allowlist è l'insieme
+   delle chiavi. I nomi dei fogli sono risolti ai titoli reali in modo case-insensitive. */
+let tierCache = null, tierCacheAt = 0;
+function getTierMap(cb) {
+  if (tierCache && Date.now() - tierCacheAt < EMAIL_CACHE_TTL) return cb(null, tierCache);
   getGToken((err, token) => {
     if (err) return cb(err);
     fetchSheetTitles(token, titles => {
       const norm = s => String(s).trim().toLowerCase();
-      const tabs = [...new Set(SHEETS_TABS.map(want => {
-        const hit = titles.find(t => norm(t) === norm(want));
-        return hit || want;   /* fallback al nome letterale se i titoli non sono disponibili */
-      }))];
-      let pending = tabs.length, all = [];
-      if (!pending) { emailCache = new Set(); emailCacheAt = Date.now(); return cb(null, emailCache); }
-      tabs.forEach(tab => fetchTabRows(token, tab, emails => {
-        all = all.concat(emails);
-        if (--pending === 0) { emailCache = new Set(all); emailCacheAt = Date.now(); cb(null, emailCache); }
+      const resolve = want => { const hit = titles.find(t => norm(t) === norm(want)); return hit || want; };
+      const fullTabs = [...new Set(FULL_TABS.map(resolve))];
+      const monthlyTabs = [...new Set(MONTHLY_TABS.map(resolve))].filter(t => fullTabs.indexOf(t) < 0);
+      const jobs = fullTabs.map(t => ({tab: t, tier: 'full'}))
+                   .concat(monthlyTabs.map(t => ({tab: t, tier: 'monthly'})));
+      let pending = jobs.length; const map = new Map();
+      if (!pending) { tierCache = map; tierCacheAt = Date.now(); return cb(null, map); }
+      jobs.forEach(job => fetchTabRows(token, job.tab, emails => {
+        emails.forEach(e => { if (job.tier === 'full' || !map.has(e)) map.set(e, job.tier); });
+        if (--pending === 0) { tierCache = map; tierCacheAt = Date.now(); cb(null, map); }
       }));
     });
   });
+}
+/* allowlist (compat): l'insieme delle email autorizzate, di qualunque livello */
+function getAllowedEmails(cb) {
+  getTierMap((err, map) => err ? cb(err) : cb(null, new Set(map.keys())));
+}
+/* livello dell'utente della richiesta (dal cookie di sessione): 'full' | 'monthly' | null */
+function tierForReq(req, cb) {
+  const s = sessionFromReq(req);
+  if (!s) return cb(null, null);
+  getTierMap((err, map) => cb(err, err ? null : (map.get(s.email) || 'full')));
 }
 
 /* file di sessione per email */
@@ -259,9 +276,9 @@ app.get('/api/auth/check', (req, res) => {
   const email = String(req.query.email || '').trim().toLowerCase();
   if (!emailRe.test(email)) return res.status(400).json({ok: false, reason: 'email'});
   if (!SHEETS_ID) return res.status(500).json({ok: false, reason: 'config'});
-  getAllowedEmails((err, emails) => {
+  getTierMap((err, map) => {
     if (err) { console.error('sheets:', err); return res.status(500).json({ok: false, reason: 'sheets'}); }
-    res.json({ok: emails.has(email)});
+    res.json({ok: map.has(email), tier: map.get(email) || null});
   });
 });
 
@@ -274,9 +291,10 @@ app.post('/api/auth/session', (req, res) => {
   const force = !!b.force;
   if (!emailRe.test(email)) return res.status(400).json({ok: false, reason: 'email'});
   if (!SHEETS_ID) return res.status(500).json({ok: false, reason: 'config'});
-  getAllowedEmails((err, emails) => {
+  getTierMap((err, map) => {
     if (err) { console.error('sheets:', err); return res.status(500).json({ok: false, reason: 'sheets'}); }
-    if (!emails.has(email)) return res.status(403).json({ok: false, reason: 'unauthorized'});
+    if (!map.has(email)) return res.status(403).json({ok: false, reason: 'unauthorized'});
+    const tier = map.get(email) || 'full';
     const f = sessFile(email);
     const sess = readSess(f);
     if (sess && sess.token && (Date.now() - sess.at) < SESSION_TTL) {
@@ -284,7 +302,7 @@ app.post('/api/auth/session', (req, res) => {
         /* stesso dispositivo: rinnova timestamp */
         fs.writeFileSync(f, JSON.stringify({token: sess.token, at: Date.now()}));
         setSessionCookie(res, email, sess.token);
-        return res.json({ok: true, token: sess.token});
+        return res.json({ok: true, token: sess.token, tier});
       }
       if (!force) return res.json({ok: false, reason: 'active'});
       /* force=true: scaccia l'altra sessione, ma resta comunque vincolato all'allowlist */
@@ -292,7 +310,7 @@ app.post('/api/auth/session', (req, res) => {
     const token = crypto.randomBytes(32).toString('hex');
     fs.writeFileSync(f, JSON.stringify({token, at: Date.now()}));
     setSessionCookie(res, email, token);
-    res.json({ok: true, token});
+    res.json({ok: true, token, tier});
   });
 });
 
@@ -306,7 +324,10 @@ app.post('/api/auth/verify', (req, res) => {
   if (sess && sess.token === token && (Date.now() - sess.at) < SESSION_TTL) {
     fs.writeFileSync(sessFile(email), JSON.stringify({token, at: Date.now()}));
     setSessionCookie(res, email, token);   /* installa/aggiorna il cookie: upgrade trasparente */
-    res.json({ok: true});
+    /* restituisco anche il livello aggiornato (best-effort: se i fogli non rispondono, ometto) */
+    getTierMap((err, map) => {
+      res.json(err ? {ok: true} : {ok: true, tier: map.get(email) || 'full'});
+    });
   } else {
     res.json({ok: false, reason: sess ? 'expired' : 'not_found'});
   }
@@ -343,6 +364,35 @@ app.use((req, res, next) => {
   const isDoc = req.path.charAt(req.path.length - 1) === '/' || /\.html?$/.test(req.path);
   if (isDoc) return res.redirect(302, '/app/');         /* pagina → al login */
   return res.status(403).end();                          /* media/asset riservato → negato */
+});
+
+/* ── ACCESSO MENSILE ("trailer"): per le sezioni oltre il Giornaliero (Mondo Interiore,
+   Bambino) il server serve una versione DEPURATA dell'HTML: rimuove i blocchi
+   <!--FULL-->…<!--/FULL--> (ID video, testi degli esercizi) e ATTIVA i blocchi
+   <!--MONTHLY …MONTHLY--> (copertine bloccate + invito a passare all'annuale).
+   Così i contenuti pieni non vengono proprio inviati a chi è "mensile". */
+const monthlyHtmlCache = {};
+function monthlyHtml(file) {
+  let st; try { st = fs.statSync(file); } catch(e) { return null; }
+  const key = file + ':' + st.mtimeMs;
+  if (monthlyHtmlCache[key]) return monthlyHtmlCache[key];
+  let html; try { html = fs.readFileSync(file, 'utf8'); } catch(e) { return null; }
+  html = html.replace(/<!--FULL-->[\s\S]*?<!--\/FULL-->/g, '')
+             .replace(/<!--MONTHLY\b/g, '').replace(/MONTHLY-->/g, '');
+  monthlyHtmlCache[key] = html;
+  return html;
+}
+app.use((req, res, next) => {
+  if (req.method !== 'GET' && req.method !== 'HEAD') return next();
+  const m = req.path.match(/^\/app\/(capitolo2|bambino)\/(?:index\.html)?$/);
+  if (!m) return next();
+  tierForReq(req, (err, tier) => {
+    if (err || tier !== 'monthly') return next();   /* pieni (o fogli giù) → versione completa */
+    const html = monthlyHtml(path.join(__dirname, 'app', m[1], 'index.html'));
+    if (html == null) return next();
+    res.set('Cache-Control', 'no-store');
+    res.type('html').send(html);
+  });
 });
 
 /* le pagine del sito: html mai in cache (i deploy si vedono subito),

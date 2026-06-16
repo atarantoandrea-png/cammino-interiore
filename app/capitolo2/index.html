@@ -316,6 +316,41 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
 
 <div id="saved"></div>
 
+<!-- copertina bloccata (Mensili) + popup "passa all'annuale" -->
+<style>
+.llock{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
+  background:radial-gradient(120% 120% at 50% 30%,rgba(60,48,90,.5),rgba(12,10,18,.92));border-radius:12px}
+.llock-ic{font-size:22px;opacity:.85}
+.llock-play{width:58px;height:58px;border-radius:50%;cursor:pointer;border:1px solid rgba(220,205,250,.45);
+  background:radial-gradient(circle at 38% 32%,rgba(220,205,250,.3),rgba(120,90,180,.32));color:#f0eaf6;
+  display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,.45),0 0 18px rgba(185,163,227,.25)}
+.llock-play svg{width:24px;height:24px;margin-left:3px}
+.llock-play:hover{border-color:#dccdf6;transform:scale(1.05)}
+.llock-t{font-family:'Cinzel',serif;font-size:13px;letter-spacing:.06em;color:var(--glic-hi,#dccdf6);text-align:center;padding:0 18px}
+.ups-veil{position:fixed;inset:0;z-index:120;display:none;align-items:center;justify-content:center;padding:22px;
+  background:rgba(8,6,12,.72);backdrop-filter:blur(3px)}
+.ups-veil.on{display:flex}
+.ups-card{max-width:380px;width:100%;border:1px solid rgba(201,168,76,.4);border-radius:20px;padding:26px 22px 22px;text-align:center;
+  background:linear-gradient(180deg,rgba(28,22,40,.98),rgba(14,11,20,.98)),url('/src/pagina.jpg') center/cover;
+  box-shadow:0 18px 60px rgba(0,0,0,.6),0 0 30px rgba(185,163,227,.12)}
+.ups-ic{font-size:30px;margin-bottom:8px}
+.ups-h{font-family:'Cinzel',serif;font-weight:600;font-size:20px;color:#f0eaf6;line-height:1.3;margin:0 0 12px}
+.ups-p{font-family:'Cormorant Garamond',Georgia,serif;font-size:18px;line-height:1.55;color:#d7cfe4;margin:0 0 12px}
+.ups-p b{color:#e8d9ae}
+.ups-btn{margin-top:6px;font-family:'Cinzel',serif;font-size:15px;letter-spacing:.06em;cursor:pointer;color:#0e0b14;
+  border:none;border-radius:24px;padding:12px 28px;background:linear-gradient(180deg,#e8d9ae,#c9a84c)}
+.ups-btn:hover{filter:brightness(1.06)}
+</style>
+<div id="upsell" class="ups-veil" role="dialog" aria-modal="true" aria-label="Passa all'annuale">
+  <div class="ups-card">
+    <div class="ups-ic">🔒</div>
+    <h3 class="ups-h">Questa parte è dell'abbonamento annuale</h3>
+    <p class="ups-p">Per proseguire nel Cammino — i video del Mondo Interiore e gli esercizi — serve l'abbonamento <b>annuale</b> della community di Oltre il Velo.</p>
+    <p class="ups-p">Scrivi a <b>oltreilvelo.elisa@gmail.com</b> per scoprire come passare all'annuale.</p>
+    <button class="ups-btn" id="upsX" type="button">Ho capito</button>
+  </div>
+</div>
+
 <!-- SDK del player Vimeo: per il tracciamento del progresso. Le statistiche native di Vimeo si registrano comunque da sole. -->
 <script src="https://player.vimeo.com/api/player.js"></script>
 <!-- livelli/fiori condivisi con il resto dell'app: serve a colorare la luce -->
@@ -340,23 +375,31 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
 (function(){
   /* ordine: Ombra dopo Adulto, prima di Padre e Madre */
   var LESSONS=[
-    {id:'mondo',      n:'I',    vid:'1200559554', t:'Il Mondo Interiore',
+    {id:'mondo',      n:'I',    t:'Il Mondo Interiore',
      d:'Il punto di partenza: perché conoscere le parti che ci compongono cambia tutto. Qui introduco il lavoro — e ti spiego perché questi esercizi si fanno una volta sola, non ogni giorno.'},
-    {id:'bambino',    n:'II',   vid:'1200559555', t:'Il Bambino Interiore', ex:'/app/bambino/',
+    {id:'bambino',    n:'II',   t:'Il Bambino Interiore', ex:'/app/bambino/',
      d:'La parte emotiva, spontanea e vulnerabile di noi. Custodisce i bisogni e le ferite dell\'infanzia che, da adulti, continuano a parlarci.'},
-    {id:'adulto',     n:'III',  vid:'1200563875', t:'Adulto Interiore', ex:'soon',
+    {id:'adulto',     n:'III',  t:'Adulto Interiore', ex:'soon',
      d:'La parte presente e stabile. Se il bambino sente, l\'adulto contiene: ascolta, rassicura e tiene insieme le emozioni senza esserne travolto.'},
-    {id:'ombra',      n:'IV',   vid:'1200561278', t:'L\'Ombra Interiore', ex:'soon',
+    {id:'ombra',      n:'IV',   t:'L\'Ombra Interiore', ex:'soon',
      d:'La parte rifiutata. Non solo rabbia e paura, ma anche forza, creatività e verità che abbiamo imparato a reprimere. Non si combatte: si conosce.'},
-    {id:'padremadre', n:'V',    vid:'1200563735', t:'Il Padre e la Madre', ex:'soon',
+    {id:'padremadre', n:'V',    t:'Il Padre e la Madre', ex:'soon',
      d:'Le energie della cura e della protezione. Imparare a diventare, per noi stessi, quella presenza che a volte ci è mancata.'},
-    {id:'mf',         n:'VI',   vid:'1200561010', t:'Maschile e Femminile', ex:'soon',
+    {id:'mf',         n:'VI',   t:'Maschile e Femminile', ex:'soon',
      d:'Due energie che convivono in ognuno: l\'ascolto e l\'intuizione, l\'azione e la direzione. L\'equilibrio nasce quando collaborano.'},
-    {id:'adolescente',n:'VII',  vid:'1200559557', t:'Adolescente Interiore', ex:'soon',
+    {id:'adolescente',n:'VII',  t:'Adolescente Interiore', ex:'soon',
      d:'La ricerca dell\'identità: il bisogno di libertà, di essere visti e riconosciuti. La parte ribelle che chiede ascolto, non giudizio.'},
-    {id:'osservatore',n:'VIII', vid:'1200559556', t:'Creare l\'Osservatore', ex:'soon',
+    {id:'osservatore',n:'VIII', t:'Creare l\'Osservatore', ex:'soon',
      d:'La presenza che guarda tutte le parti dall\'esterno, senza giudicare. È il prerequisito di ogni esercizio — e lo alleni già ogni giorno con il Giornaliero.'}
   ];
+  /* Gli ID dei video stanno SOLO qui: per i Mensili il server rimuove questo blocco
+     (restano titoli e descrizioni come anteprima) e attiva la versione vuota sotto.
+     I marcatori <!-- --> sono, dentro lo script, anche commenti JS: inerti per i pieni. */
+<!--FULL-->
+  var VIDS={mondo:'1200559554',bambino:'1200559555',adulto:'1200563875',ombra:'1200561278',padremadre:'1200563735',mf:'1200561010',adolescente:'1200559557',osservatore:'1200559556'};
+<!--/FULL-->
+<!--MONTHLY var VIDS={}; window.TRAILER=true; MONTHLY-->
+  var TRAILER=!!window.TRAILER;   /* mensile: anteprima/trailer */
   var TOT=LESSONS.length;
   var SEEN_AT=0.85;
 
@@ -409,6 +452,16 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
   var inShell=false; try{ inShell=window.parent && window.parent!==window; }catch(e){}
   function openExercise(route){ if(inShell){ window.parent.postMessage({t:'open', route:route}, location.origin); } else { location.href=route; } }
   function toast(m){ var t=document.getElementById('saved'); if(!t)return; t.textContent=m; t.classList.add('show'); clearTimeout(toast._t); toast._t=setTimeout(function(){ t.classList.remove('show'); }, 2400); }
+  /* popup "passa all'annuale" (Mensili) */
+  function showUpsell(){ var u=document.getElementById('upsell'); if(u) u.classList.add('on'); }
+  function closeUpsell(){ var u=document.getElementById('upsell'); if(u) u.classList.remove('on'); }
+  (function(){ var u=document.getElementById('upsell'), x=document.getElementById('upsX');
+    if(x) x.addEventListener('click', closeUpsell);
+    if(u) u.addEventListener('click', function(e){ if(e.target===u) closeUpsell(); });
+    document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeUpsell(); });
+    if(TRAILER){ var pn=document.getElementById('progNote');
+      if(pn) pn.innerHTML='Stai vedendo l\'<b>anteprima</b> del Mondo Interiore. Con l\'abbonamento annuale guardi gli otto video e sblocchi gli esercizi.'; }
+  })();
   /* esercizi della parte sbloccati? (Bambino: visti i video Mondo + Bambino) */
   function lexUnlocked(id){ if(id==='bambino') return isSeen('mondo') && isSeen('bambino'); return false; }
   /* avvisa la dashboard quando cambia lo stato "visto" dei video (sblocco immediato) */
@@ -436,7 +489,7 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
           '<span class="ldur">La mia voce</span>'+
           '<span class="lfoot-act">'+
             (L.ex ? '<button class="lex'+(L.ex==='soon'?' soon':'')+'" type="button">'+(L.ex==='soon'?'Esercizi · presto':'Esercizi →')+'</button>' : '')+
-            '<button class="lcomplete" type="button">Segna come visto</button>'+
+            (TRAILER ? '' : '<button class="lcomplete" type="button">Segna come visto</button>')+
           '</span>'+
         '</div>'+
       '</div>';
@@ -449,11 +502,12 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
     head.addEventListener('keydown', function(e){ if((e.key==='Enter'||e.key===' ')&&!e.target.closest('.lex')){ e.preventDefault(); toggle(L, li, head); } });
     var lex=nodes[L.id].lex;
     if(lex) lex.addEventListener('click', function(e){ e.stopPropagation();
-      if(L.ex==='soon'){ toast('Gli esercizi del «'+L.t+'» arriveranno presto'); }
+      if(TRAILER){ showUpsell(); }   /* mensile: gli esercizi sono dell'annuale */
+      else if(L.ex==='soon'){ toast('Gli esercizi del «'+L.t+'» arriveranno presto'); }
       else if(!lexUnlocked(L.id)){ toast('Guarda «Il Mondo Interiore» e «'+L.t+'» per sbloccare gli esercizi'); }
       else { openExercise(L.ex); }
     });
-    nodes[L.id].btn.addEventListener('click', function(e){
+    if(nodes[L.id].btn) nodes[L.id].btn.addEventListener('click', function(e){
       e.stopPropagation();
       prog[L.id] = isSeen(L.id) ? 0 : 1;   /* completa / annulla */
       save(); refresh();
@@ -517,8 +571,16 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
   function ensurePlayer(L, li){
     if(players[L.id]) return;
     var frame=li.querySelector('.lframe');
+    var vid=VIDS[L.id]||'';
+    if(!vid){   /* Mensile: nessun video reale → copertina bloccata, il play invita all'annuale */
+      frame.innerHTML='<div class="llock"><div class="llock-ic">🔒</div><button class="llock-play" type="button" aria-label="Guarda il video">'+
+        '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>'+
+        '<div class="llock-t">Anteprima · con l\'annuale guardi il video</div></div>';
+      var pb=frame.querySelector('.llock-play'); if(pb) pb.addEventListener('click', showUpsell);
+      players[L.id]=true; return;
+    }
     var ifr=document.createElement('iframe');
-    ifr.src='https://player.vimeo.com/video/'+L.vid+'?title=0&byline=0&portrait=0&badge=0';
+    ifr.src='https://player.vimeo.com/video/'+vid+'?title=0&byline=0&portrait=0&badge=0';
     ifr.setAttribute('allow','autoplay; fullscreen; picture-in-picture');
     ifr.setAttribute('allowfullscreen','');
     frame.innerHTML=''; frame.appendChild(ifr);
@@ -543,9 +605,9 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
     LESSONS.forEach(function(L){
       var nd=nodes[L.id]; var done=isSeen(L.id);
       nd.li.classList.toggle('seen', done);
-      if(done){ n++; nd.status.textContent='✓ Visto'; nd.btn.classList.add('is-done'); nd.btn.textContent='Visto'; }
-      else if((prog[L.id]||0)>0){ nd.status.textContent='In corso'; nd.btn.classList.remove('is-done'); nd.btn.textContent='Segna come visto'; }
-      else { nd.status.textContent='Da vedere'; nd.btn.classList.remove('is-done'); nd.btn.textContent='Segna come visto'; }
+      if(done){ n++; nd.status.textContent='✓ Visto'; if(nd.btn){ nd.btn.classList.add('is-done'); nd.btn.textContent='Visto'; } }
+      else if((prog[L.id]||0)>0){ nd.status.textContent='In corso'; if(nd.btn){ nd.btn.classList.remove('is-done'); nd.btn.textContent='Segna come visto'; } }
+      else { nd.status.textContent=TRAILER?'Anteprima':'Da vedere'; if(nd.btn){ nd.btn.classList.remove('is-done'); nd.btn.textContent='Segna come visto'; } }
       /* pulsante Esercizi: illuminato se sbloccato, viola scuro se ancora bloccato */
       if(nd.lex && L.ex && L.ex!=='soon'){ nd.lex.classList.toggle('locked', !lexUnlocked(L.id)); }
     });
