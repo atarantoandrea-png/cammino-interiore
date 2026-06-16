@@ -555,6 +555,11 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
 .mu-fill{height:100%;border-radius:8px;background:linear-gradient(180deg,var(--glic-hi) 0%,var(--glic) 55%,#9070c8 100%);width:0%;box-shadow:0 0 10px rgba(185,163,227,.55),0 1px 0 rgba(255,255,255,.2) inset}
 .mu-knob{position:absolute;top:50%;width:16px;height:16px;border-radius:50%;transform:translate(-8px,-50%);background:radial-gradient(circle at 36% 30%,#ffffff 0%,#ecdff8 42%,#c4aae8 80%);box-shadow:0 3px 10px rgba(0,0,0,.55),0 0 12px rgba(185,163,227,.5),inset 0 1px 0 rgba(255,255,255,.7);left:0}
 .mu-times{display:flex;justify-content:space-between;font-size:14px;color:var(--txt-dim);font-variant-numeric:tabular-nums}
+.mu-vol-row{display:flex;align-items:center;gap:12px;margin:0 2px 20px}
+.mu-vol-ic{font-size:20px;flex:none;width:26px;text-align:center}
+.mu-vol{-webkit-appearance:none;appearance:none;flex:1;height:8px;border-radius:8px;background:rgba(10,8,16,.75);box-shadow:inset 0 2px 5px rgba(0,0,0,.6);outline:none;cursor:pointer}
+.mu-vol::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:18px;height:18px;border-radius:50%;background:radial-gradient(circle at 36% 30%,#fff 0%,#ecdff8 42%,#c4aae8 80%);box-shadow:0 3px 10px rgba(0,0,0,.55),0 0 12px rgba(185,163,227,.5);cursor:pointer}
+.mu-vol::-moz-range-thumb{width:18px;height:18px;border:none;border-radius:50%;background:radial-gradient(circle at 36% 30%,#fff,#c4aae8);box-shadow:0 3px 10px rgba(0,0,0,.55);cursor:pointer}
 
 .mu-ctrls{display:flex;justify-content:center;align-items:center;gap:18px;margin-bottom:28px}
 .mu-btn{background:linear-gradient(180deg,rgba(42,30,62,.82) 0%,rgba(22,14,36,.92) 100%);border:1px solid rgba(185,163,227,.22);border-top-color:rgba(220,205,250,.34);cursor:pointer;font-size:22px;color:var(--glic-hi);padding:8px;border-radius:50%;transition:all .18s;width:48px;height:48px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.06),inset 0 -2px 4px rgba(0,0,0,.3)}
@@ -692,6 +697,10 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
       <button class="mu-btn" onclick="muPrev()" aria-label="Precedente"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><rect x="4" y="5" width="2.5" height="14" rx="1.2"/><path d="M8 12 19 5v14z"/></svg></button>
       <button class="mu-btn mu-play" id="mu-play" onclick="muToggle()" aria-label="Play/Pausa"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
       <button class="mu-btn" onclick="muNext()" aria-label="Successiva"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><rect x="17.5" y="5" width="2.5" height="14" rx="1.2"/><path d="M16 12 5 5v14z"/></svg></button>
+    </div>
+    <div class="mu-vol-row">
+      <span class="mu-vol-ic" id="mu-vol-ic">🔊</span>
+      <input class="mu-vol" id="mu-vol" type="range" min="0" max="100" value="100" aria-label="Volume musica">
     </div>
     <div class="mu-list-hd">Tutte le tracce</div>
     <div id="mu-list"></div>
@@ -1569,7 +1578,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     var f=au.duration?(au.currentTime/au.duration):0;
     dayFrame.contentWindow.postMessage({
       t:'mu:state', active:muIdx>=0, playing:!au.paused,
-      title:tr?tr.t:'', cat:tr?tr.cat:'', frac:f,
+      title:tr?tr.t:'', cat:tr?tr.cat:'', frac:f, vol:au.volume,
       cur:mmss(au.currentTime), dur:mmss(au.duration||0)
     }, location.origin);
   }
@@ -1595,6 +1604,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     else if(m.cmd==='seek'){ if(au.duration&&muIdx>=0) au.currentTime=Math.max(0,Math.min(1,m.v))*au.duration; }
     else if(m.cmd==='state'){ postState(); }
     else if(m.cmd==='playcat'){ for(var pci=0;pci<TRACKS.length;pci++){ if(TRACKS[pci].cat===m.v){ muPlay(pci); break; } } }
+    else if(m.cmd==='vol'){ if(window.muSetVol) window.muSetVol(+m.v); }
   });
 
   au.addEventListener('play',  function(){ setPlayBtn(true); });
@@ -1644,6 +1654,17 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
   }
   attachSeek(document.getElementById('mu-bar'));
   attachSeek(document.getElementById('mm-bar'));
+
+  /* volume: regolabile e ricordato (così la musica non copre la voce di Elisa) */
+  (function(){
+    var vEl=document.getElementById('mu-vol'), vIc=document.getElementById('mu-vol-ic');
+    var v=1; try{ var sv=parseFloat(localStorage.getItem('ovl-mu-vol')); if(!isNaN(sv)) v=Math.max(0,Math.min(1,sv)); }catch(e){}
+    au.volume=v;
+    function paint(x){ if(vEl && Math.round(+vEl.value)!==Math.round(x*100)) vEl.value=Math.round(x*100); if(vIc) vIc.textContent = x===0?'🔇':(x<0.5?'🔉':'🔊'); }
+    window.muSetVol=function(x){ x=Math.max(0,Math.min(1,x)); au.volume=x; try{ localStorage.setItem('ovl-mu-vol', String(x)); }catch(e){} paint(x); postState(); };
+    paint(v);
+    if(vEl) vEl.addEventListener('input', function(){ window.muSetVol(vEl.value/100); });
+  })();
 
   /* costruisci playlist */
   var list=document.getElementById('mu-list');

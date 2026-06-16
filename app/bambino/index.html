@@ -251,6 +251,31 @@ textarea:focus,.fperche:focus{outline:none;border-color:var(--glic-hi);box-shado
 .medrefl-q{font-size:16px;color:#f0eaf6;font-weight:600;line-height:1.4;margin:14px 0 7px}
 .medrefl-ta{width:100%;font-family:'Cormorant Garamond',serif;color:var(--txt);background:var(--field);border:1px solid var(--field-line);border-radius:10px;padding:11px 13px;font-size:17px;line-height:1.5;resize:none;overflow:hidden;min-height:60px}
 .medrefl-ta:focus{outline:none;border-color:var(--glic-hi);box-shadow:0 0 0 1px rgba(220,205,250,.4), 0 0 16px rgba(150,110,215,.2)}
+/* consiglio "minuto 1:25" in evidenza */
+.medbig{display:flex;align-items:center;gap:13px;margin:6px 0 12px;padding:15px 16px;border-radius:14px;
+  background:linear-gradient(180deg, rgba(201,168,76,.22), rgba(120,95,40,.14));border:1px solid rgba(201,168,76,.5);
+  font-family:'Cinzel',serif;font-size:17px;font-weight:600;color:var(--gold-pale);line-height:1.35;box-shadow:0 0 22px rgba(201,168,76,.12)}
+.medbig b{color:#fff;font-size:21px;letter-spacing:.01em}
+.medbig .mb-ic{flex:none;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;color:#2a2208;background:radial-gradient(circle at 38% 30%, #e8d9ae, var(--gold));box-shadow:0 0 14px rgba(201,168,76,.5)}
+/* pannello di controllo musica (comanda il player della shell) */
+.medpanel{margin-top:14px;border:1px solid rgba(185,163,227,.3);border-radius:14px;padding:14px 14px 16px;background:rgba(10,8,16,.4)}
+.medp-title{font-family:'Cinzel',serif;font-size:13px;letter-spacing:.06em;color:var(--glic-hi);text-align:center;margin-bottom:11px}
+.medp-seek{position:relative;height:8px;border-radius:8px;background:rgba(10,8,16,.75);cursor:pointer;touch-action:none;box-shadow:inset 0 2px 5px rgba(0,0,0,.6)}
+.medp-seek::before{content:'';position:absolute;left:0;right:0;top:-11px;bottom:-11px}
+.medp-fill{height:100%;border-radius:8px;background:linear-gradient(180deg,var(--glic-hi),var(--glic) 55%,#9070c8);width:0%;pointer-events:none;box-shadow:0 0 10px rgba(185,163,227,.55)}
+.medp-knob{position:absolute;top:50%;width:16px;height:16px;border-radius:50%;transform:translate(-8px,-50%);left:0;pointer-events:none;background:radial-gradient(circle at 36% 30%,#fff,#c4aae8 80%);box-shadow:0 3px 10px rgba(0,0,0,.55),0 0 12px rgba(185,163,227,.5)}
+.medp-times{display:flex;justify-content:space-between;font-size:13px;color:var(--txt-dim);font-variant-numeric:tabular-nums;margin-top:6px}
+.medp-ctrls{display:flex;justify-content:center;margin:12px 0 10px}
+.medp-btn{width:54px;height:54px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--glic-hi);
+  background:radial-gradient(circle at 38% 32%,rgba(220,205,250,.3),rgba(185,163,227,.18) 45%,rgba(80,50,120,.4));border:1px solid rgba(185,163,227,.55);box-shadow:0 6px 22px rgba(0,0,0,.5),0 0 22px rgba(185,163,227,.25);transition:all .18s}
+.medp-btn:hover{border-color:rgba(220,205,250,.9)}
+.medp-btn.on{background:radial-gradient(circle at 38% 32%,rgba(127,214,160,.4),rgba(30,60,45,.5));border-color:rgba(127,214,160,.6)}
+.medp-btn svg{width:24px;height:24px;display:block}
+.medp-vol-row{display:flex;align-items:center;gap:11px;margin-top:4px}
+.medp-vol-ic{font-size:19px;flex:none;width:24px;text-align:center}
+.medp-vol{-webkit-appearance:none;appearance:none;flex:1;height:7px;border-radius:7px;background:rgba(10,8,16,.75);box-shadow:inset 0 2px 5px rgba(0,0,0,.6);outline:none;cursor:pointer}
+.medp-vol::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:18px;height:18px;border-radius:50%;background:radial-gradient(circle at 36% 30%,#fff,#c4aae8 80%);box-shadow:0 3px 10px rgba(0,0,0,.55),0 0 12px rgba(185,163,227,.5);cursor:pointer}
+.medp-vol::-moz-range-thumb{width:18px;height:18px;border:none;border-radius:50%;background:radial-gradient(circle at 36% 30%,#fff,#c4aae8);box-shadow:0 3px 10px rgba(0,0,0,.55);cursor:pointer}
 
 /* ===== pannello GUIDA (luce) ===== */
 #veil{position:fixed;inset:0;z-index:60;background:rgba(4,3,8,.72);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);opacity:0;pointer-events:none;transition:opacity .45s ease}
@@ -449,11 +474,18 @@ textarea:focus,.fperche:focus{outline:none;border-color:var(--glic-hi);box-shado
 
       <div class="medmus">
         <div class="mtitle">🎵 Musica consigliata da Elisa</div>
-        <div class="mnote">Elisa fa questa meditazione con delle <b>frequenze musicali</b>. Intorno al <b>minuto 1:25</b> del video dice: <span class="say">«…potete prendere una musica e iniziare a metterla»</span> — è lì che ti consiglio di <b>avviarla</b>, lasciandola suonare <b>insieme</b> alla voce di Elisa fino alla fine.</div>
-        <div class="medmus-go">
-          <button class="medmus-play" id="medMusBtn" type="button"><span class="mi">▶</span><span id="medMusLbl">Avvia la musica (Heteryc)</span></button>
+        <div class="medbig"><span class="mb-ic">▶</span><span>Consigliato: avvia la musica al <b>minuto 1:25</b> del video</span></div>
+        <div class="mnote">Elisa fa la meditazione con delle <b>frequenze musicali</b>: lasciala suonare <b>insieme</b> alla sua voce. Tieni il <b>volume</b> basso, così non copre Elisa.</div>
+        <div class="medpanel">
+          <div class="medp-title" id="medpTitle">Heteryc</div>
+          <div class="medp-seek" id="medpSeek"><div class="medp-fill" id="medpFill"></div><div class="medp-knob" id="medpKnob"></div></div>
+          <div class="medp-times"><span id="medpCur">0:00</span><span id="medpDur">--:--</span></div>
+          <div class="medp-ctrls">
+            <button class="medp-btn" id="medpPlay" type="button" aria-label="Play/Pausa"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
+          </div>
+          <div class="medp-vol-row"><span class="medp-vol-ic" id="medpVolIc">🔊</span><input class="medp-vol" id="medpVol" type="range" min="0" max="100" value="100" aria-label="Volume musica"></div>
         </div>
-        <div class="mhint">Suona <b>insieme</b> al video; puoi metterla in pausa in qualsiasi momento anche dalla <b>luce</b> 🔆.</div>
+        <div class="mhint">Suona <b>insieme</b> al video; puoi gestirla anche dalla <b>luce</b> 🔆.</div>
       </div>
 
       <div class="medcard medrefl">
@@ -561,7 +593,7 @@ textarea:focus,.fperche:focus{outline:none;border-color:var(--glic-hi);box-shado
       var z0=foglio.querySelector('.fzone');
       if(z0){ setTimeout(function(){ lightUp(z0); }, 420); } else lumeHome();
     } else { lumeHome(); }
-    if(v==='medit'){ loadMedVideo(); setTimeout(function(){ [].forEach.call(document.querySelectorAll('.medrefl-ta'), autogrow); }, 40); }
+    if(v==='medit'){ loadMedVideo(); muSend('state'); setTimeout(function(){ [].forEach.call(document.querySelectorAll('.medrefl-ta'), autogrow); }, 40); }
     else if(window.__medVideoPause){ window.__medVideoPause(); }   /* fuori dalla meditazione: fermo il video (la musica resta gestibile dalla luce) */
   }
   window.goHub=function(){ showView('hub'); };
@@ -667,14 +699,32 @@ textarea:focus,.fperche:focus{outline:none;border-color:var(--glic-hi);box-shado
   window.__medVideoPause=function(){ if(medPlayer){ try{ medPlayer.pause(); }catch(e){} } };
   (function(){
     /* musica: comanda la musica della shell — suona INSIEME al video ed è gestibile dalla luce */
-    var btn=document.getElementById('medMusBtn');
-    if(btn){
-      var lbl=document.getElementById('medMusLbl'), mi=btn.querySelector('.mi'), playing=false;
-      function upd(){ if(playing){ btn.classList.add('on'); if(lbl)lbl.textContent='Metti in pausa'; if(mi)mi.textContent='⏸'; } else { btn.classList.remove('on'); if(lbl)lbl.textContent='Avvia la musica (Heteryc)'; if(mi)mi.textContent='▶'; } }
-      btn.addEventListener('click', function(){ if(playing) muSend('toggle'); else muSend('playcat','Heteryc'); });
-      window.addEventListener('message', function(e){ if(e.origin!==location.origin)return; var m=e.data||{}; if(m.t!=='mu:state')return; playing=!!(m.active&&m.playing); upd(); });
-      upd();
-    }
+    (function(){
+      var play=document.getElementById('medpPlay'); if(!play) return;
+      var title=document.getElementById('medpTitle'), fill=document.getElementById('medpFill'), knob=document.getElementById('medpKnob'),
+          seek=document.getElementById('medpSeek'), curEl=document.getElementById('medpCur'), durEl=document.getElementById('medpDur'),
+          vol=document.getElementById('medpVol'), volIc=document.getElementById('medpVolIc');
+      var active=false;
+      var SVG_PLAY='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
+      var SVG_PAUSE='<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>';
+      play.addEventListener('click', function(){ if(active) muSend('toggle'); else muSend('playcat','Heteryc'); });
+      if(seek){ var sfrac=function(e){ var r=seek.getBoundingClientRect(); return Math.max(0,Math.min(1,(e.clientX-r.left)/r.width)); };
+        seek.addEventListener('pointerdown', function(e){ if(!active)return; e.preventDefault(); muSend('seek',sfrac(e));
+          var mv=function(ev){ muSend('seek',sfrac(ev)); }, up=function(){ document.removeEventListener('pointermove',mv); document.removeEventListener('pointerup',up); document.removeEventListener('pointercancel',up); };
+          document.addEventListener('pointermove',mv); document.addEventListener('pointerup',up); document.addEventListener('pointercancel',up);
+        }); }
+      function paintVol(x){ if(volIc) volIc.textContent = x===0?'🔇':(x<0.5?'🔉':'🔊'); }
+      if(vol) vol.addEventListener('input', function(){ muSend('vol', vol.value/100); paintVol(vol.value/100); });
+      window.addEventListener('message', function(e){ if(e.origin!==location.origin)return; var m=e.data||{}; if(m.t!=='mu:state')return;
+        active=!!m.active;
+        var pl=!!(m.active&&m.playing);
+        play.innerHTML=pl?SVG_PAUSE:SVG_PLAY; play.classList.toggle('on', pl);
+        if(title) title.textContent=m.title||'Heteryc';
+        var pct=((m.frac||0)*100).toFixed(1)+'%'; if(fill)fill.style.width=pct; if(knob)knob.style.left=pct;
+        if(curEl)curEl.textContent=m.cur||'0:00'; if(durEl)durEl.textContent=m.dur||'--:--';
+        if(typeof m.vol==='number' && vol && document.activeElement!==vol){ vol.value=Math.round(m.vol*100); paintVol(m.vol); }
+      });
+    })();
     /* riflessione facoltativa: salvata sul dispositivo */
     var RKEY='ovl-bambino-medit:'+who, rdata={};
     try{ rdata=JSON.parse(localStorage.getItem(RKEY)||'{}')||{}; }catch(e){ rdata={}; }
