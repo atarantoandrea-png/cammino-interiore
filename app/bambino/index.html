@@ -178,6 +178,60 @@ textarea:focus,.fperche:focus{outline:none;border-color:var(--glic-hi);box-shado
 .medbox p{font-size:17px;color:var(--txt-soft);line-height:1.55;max-width:440px;margin:0 auto}
 .medbox p b{color:var(--gold-pale)}
 
+/* ===== Esercizio 2 · meditazione guidata ===== */
+.medwrap{margin:0 18px}
+.medintro{font-size:16.5px;color:var(--txt-soft);line-height:1.65;margin-bottom:18px}
+.medintro b{color:var(--gold-pale);font-weight:600}
+.medcard{border:1px solid var(--card-line);border-radius:18px;padding:18px 18px 20px;margin-bottom:16px;
+  background:linear-gradient(180deg, rgba(26,21,36,.78), rgba(16,13,23,.85));box-shadow:0 6px 20px rgba(0,0,0,.4)}
+.medlbl{font-family:'Cinzel',serif;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--glic);margin-bottom:12px}
+.medprep{list-style:none;margin:0;padding:0}
+.medprep li{display:flex;gap:12px;align-items:flex-start;font-size:16px;color:var(--txt-soft);line-height:1.5;margin-bottom:12px}
+.medprep li:last-child{margin-bottom:0}
+.medprep .pi{flex:none;font-size:21px;line-height:1.1;filter:drop-shadow(0 0 8px var(--lm-g2))}
+.medprep b{color:var(--gold-pale);font-weight:600}
+/* lettore musica consigliata */
+.medmus{border:1px solid rgba(185,163,227,.4);border-radius:18px;padding:16px 16px 18px;margin-bottom:18px;
+  background:radial-gradient(120% 100% at 50% 0%, rgba(60,46,92,.5), rgba(18,14,28,.65));box-shadow:0 6px 22px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.05)}
+.medmus .mtitle{font-family:'Cinzel',serif;font-size:14px;font-weight:600;color:#f0eaf6;text-align:center;letter-spacing:.02em}
+.medmus .mnote{font-size:14px;color:var(--txt-soft);line-height:1.5;text-align:center;margin:7px 0 14px}
+.medmus .mnote b{color:var(--gold-pale)}
+.medmus .mnow{font-family:'Cinzel',serif;font-size:13px;letter-spacing:.08em;color:var(--glic-hi);text-align:center;margin-bottom:10px}
+.medmus-ctrls{display:flex;align-items:center;justify-content:center;gap:18px;margin-bottom:13px}
+.medmus-btn{background:linear-gradient(180deg,rgba(42,30,62,.82),rgba(22,14,36,.92));border:1px solid rgba(185,163,227,.28);border-top-color:rgba(220,205,250,.4);
+  color:var(--glic-hi);width:42px;height:42px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .18s;box-shadow:0 3px 10px rgba(0,0,0,.4)}
+.medmus-btn:hover{border-color:rgba(205,178,242,.7);color:#fff}
+.medmus-btn svg{width:18px;height:18px;display:block}
+.medmus-btn.play{width:58px;height:58px;background:radial-gradient(circle at 38% 32%,rgba(220,205,250,.3),rgba(185,163,227,.18) 45%,rgba(80,50,120,.4));border-color:rgba(185,163,227,.55);box-shadow:0 6px 22px rgba(0,0,0,.5),0 0 22px rgba(185,163,227,.28)}
+.medmus-btn.play svg{width:24px;height:24px}
+.medmus-bar{position:relative;height:6px;border-radius:6px;background:rgba(10,8,16,.75);margin:0 4px 13px;cursor:pointer;touch-action:none;box-shadow:inset 0 2px 4px rgba(0,0,0,.55)}
+.medmus-bar::before{content:'';position:absolute;left:0;right:0;top:-11px;bottom:-11px}
+.medmus-fill{height:100%;border-radius:6px;background:linear-gradient(180deg,var(--glic-hi),var(--glic) 55%,#9070c8);width:0%;pointer-events:none;box-shadow:0 0 8px rgba(185,163,227,.5)}
+.medmus-chips{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}
+.medmus-chip{font-family:'Cinzel',serif;font-size:11px;letter-spacing:.04em;color:var(--txt-soft);cursor:pointer;
+  border:1px solid rgba(185,163,227,.3);border-radius:20px;padding:7px 14px;background:rgba(185,163,227,.06);transition:all .15s}
+.medmus-chip.on{color:#fff;border-color:rgba(205,178,242,.8);background:rgba(150,110,215,.28);box-shadow:0 0 14px rgba(150,110,215,.3)}
+/* i passi della meditazione */
+.medstep{padding:16px 0;border-top:1px solid rgba(185,163,227,.12)}
+.medstep:first-of-type{border-top:none;padding-top:2px}
+.medstep .sn{font-family:'Cinzel',serif;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+.medstep p{font-size:16.5px;color:var(--txt);line-height:1.72;margin:0}
+.medstep p+p{margin-top:10px}
+.medstep p b{color:var(--gold-pale);font-weight:600}
+.medstep .say{color:var(--glic-hi);font-style:italic}
+.medaffirm{border:1px solid rgba(201,168,76,.35);border-radius:16px;padding:16px 18px;margin:16px 0 2px;
+  background:radial-gradient(120% 100% at 50% 0%, rgba(60,50,28,.5), rgba(20,16,10,.5))}
+.medaffirm .sn{color:var(--gold-pale)}
+.medaffirm ul{list-style:none;margin:0;padding:0}
+.medaffirm li{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:600;color:var(--gold-pale);line-height:1.5;margin-bottom:9px;text-align:center}
+.medaffirm li:last-child{margin-bottom:0}
+.medaffirm li::before{content:'« ';opacity:.45}
+.medaffirm li::after{content:' »';opacity:.45}
+.medclose{font-size:16px;color:var(--txt-soft);line-height:1.65;margin-top:18px}
+.medclose b{color:var(--gold-pale);font-weight:600}
+.medactions{display:flex;justify-content:center;margin-top:24px}
+.medactions .fbtn{flex:0 1 340px;min-width:240px}
+
 /* ===== pannello GUIDA (luce) ===== */
 #veil{position:fixed;inset:0;z-index:60;background:rgba(4,3,8,.72);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);opacity:0;pointer-events:none;transition:opacity .45s ease}
 #veil.on{opacity:1;pointer-events:auto}
@@ -215,7 +269,7 @@ textarea:focus,.fperche:focus{outline:none;border-color:var(--glic-hi);box-shado
 
 @media(max-width:520px){
   .exwrap{padding:6px 13px 0}
-  .fbox{margin:0 13px}.factions{margin-left:13px;margin-right:13px}.medbox{margin:0 13px}
+  .fbox{margin:0 13px}.factions{margin-left:13px;margin-right:13px}.medbox{margin:0 13px}.medwrap{margin:0 13px}
   .exic{width:48px;height:48px;font-size:23px}
 }
 
@@ -276,14 +330,14 @@ textarea:focus,.fperche:focus{outline:none;border-color:var(--glic-hi);box-shado
         <span class="exarrow">→</span>
       </button>
 
-      <button class="exitem locked" id="ex-medit" type="button">
+      <button class="exitem" id="ex-medit" type="button">
         <span class="exic">🧘</span>
         <span class="exmeta">
           <span class="extag">Esercizio 2 · La meditazione</span>
           <h3>Incontra il Bambino</h3>
-          <p>L'area di meditazione guidata dove dare un volto al tuo bambino interiore.</p>
+          <p>Una meditazione guidata, con la musica consigliata, per dare un <b>volto</b> al tuo bambino interiore.</p>
         </span>
-        <span class="exstate">In arrivo</span>
+        <span class="exstate" id="st-medit">Da fare</span>
         <span class="exarrow">→</span>
       </button>
     </div>
@@ -353,12 +407,71 @@ textarea:focus,.fperche:focus{outline:none;border-color:var(--glic-hi);box-shado
     </div>
   </section>
 
-  <!-- ===== ESERCIZIO 2 · MEDITAZIONE (area placeholder) ===== -->
+  <!-- ===== ESERCIZIO 2 · MEDITAZIONE GUIDATA ===== -->
   <section id="medit" class="view">
-    <div class="medbox">
-      <div class="glyph">🧘</div>
-      <h3>L'area di meditazione sta arrivando</h3>
-      <p>Qui Elisa ti guiderà, con la sua voce e una musica di sottofondo, a <b>incontrare e dare un volto</b> al tuo bambino interiore. La stiamo preparando con cura: la troverai qui a breve.</p>
+    <div class="medwrap">
+      <p class="medintro">Hai ascoltato il tuo bambino interiore sul foglio. Ora lo <b>incontri</b> e gli dai un <b>volto</b>. È una meditazione guidata: leggila una volta con calma, poi falla a occhi chiusi, lasciandoti accompagnare dalla musica.</p>
+
+      <div class="medcard">
+        <div class="medlbl">Prima di iniziare</div>
+        <ul class="medprep">
+          <li><span class="pi">🌿</span><span>Trova un luogo tranquillo. Se puoi, stai a <b>piedi nudi a contatto con la terra</b> — un prato, la spiaggia, la natura; va bene anche in casa.</span></li>
+          <li><span class="pi">🕯️</span><span>Accendi una <b>candela</b>: aiuta a creare uno spazio di calma e di amore.</span></li>
+          <li><span class="pi">🎧</span><span>Avvia la <b>musica consigliata</b> qui sotto e lasciala andare per tutta la meditazione.</span></li>
+          <li><span class="pi">🌬️</span><span>Chiudi gli occhi e fai qualche <b>respiro profondo</b>. Non devi controllare nulla, non devi essere perfetta/o.</span></li>
+        </ul>
+      </div>
+
+      <div class="medmus">
+        <div class="mtitle">Musica consigliata da Elisa</div>
+        <div class="mnote">Elisa fa questa meditazione con delle <b>frequenze musicali</b>. Avviala ora — i brani si susseguono e ripartono da soli, così ti accompagnano fino alla fine.</div>
+        <div class="mnow" id="medNow">Heteryc I</div>
+        <div class="medmus-ctrls">
+          <button class="medmus-btn" id="medPrev" type="button" aria-label="Precedente"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="5" width="2.5" height="14" rx="1.2"/><path d="M8 12 19 5v14z"/></svg></button>
+          <button class="medmus-btn play" id="medPlay" type="button" aria-label="Play/Pausa"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
+          <button class="medmus-btn" id="medNext" type="button" aria-label="Successiva"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="17.5" y="5" width="2.5" height="14" rx="1.2"/><path d="M16 12 5 5v14z"/></svg></button>
+        </div>
+        <div class="medmus-bar" id="medBar"><div class="medmus-fill" id="medFill"></div></div>
+        <div class="medmus-chips">
+          <button class="medmus-chip on" type="button">Heteryc I</button>
+          <button class="medmus-chip" type="button">Heteryc II</button>
+          <button class="medmus-chip" type="button">Heteryc III</button>
+        </div>
+      </div>
+
+      <div class="medcard">
+        <div class="medlbl">La meditazione guidata</div>
+
+        <div class="medstep"><div class="sn">Il respiro</div><p>Chiudi lentamente gli occhi e inizia a respirare: inspira… espira, piano, cinque o sei volte. A ogni espiro lascia andare la tensione della giornata, lo stress accumulato sulle spalle, e immagina di farlo uscire dal corpo. Concediti solo di <b>esserci</b>, di sentirti.</p></div>
+
+        <div class="medstep"><div class="sn">Il sentiero</div><p>Immagina di essere all'aperto e di camminare lentamente lungo un <b>sentiero tranquillo</b>, come piace a te: la natura, il mare, un lago. Lungo questa strada ti senti accolto, al sicuro. Senti il terreno sotto i piedi, l'aria sulla pelle, i suoni intorno. E più vai avanti, più senti che qualcosa di importante si sta avvicinando.</p></div>
+
+        <div class="medstep"><div class="sn">L'incontro</div><p>Poco lontano, davanti a te, vedi una <b>piccola figura</b>. È ancora sfocata. Avvicinati senza fretta: piano piano vedi i capelli, il nasino. È un piccolo te, una versione bambina di te. E capisci che <b>quel bambino sei tu</b>.</p><p>Osservalo senza giudicarlo: il viso, la postura, gli occhi. Come si sente — sereno, triste, confuso? Ha bisogno di affetto? Non cercare la risposta giusta: lascia solo che arrivi la sensazione.</p></div>
+
+        <div class="medstep"><div class="sn">«Non avere paura di me»</div><p>Avvicinati ancora, accarezzagli la testa, mettilo a suo agio. Digli, con il cuore: <span class="say">«Non avere paura di me. Io sono te, e sono qui per ascoltarti. Non per cambiarti, non per allontanarti — ma per conoscere chi sei davvero.»</span> Poi siediti accanto a lui: <span class="say">«Io ti vedo, ti sento. Adesso ti vedo davvero.»</span></p></div>
+
+        <div class="medstep"><div class="sn">«Di cosa hai bisogno?»</div><p>Guardalo negli occhi e chiedigli dolcemente: <span class="say">«Di cosa hai bisogno?»</span> Non forzare nulla: ascolta. Può arrivare una parola, un'intuizione, un ricordo, una sensazione nel corpo… o solo silenzio. Anche se non vuole esprimersi, <b>va bene così</b>. L'hai incontrato: adesso sai che c'è.</p></div>
+
+        <div class="medstep"><div class="sn">La luce</div><p>Mentre resta vicino a te, senza più sentirsi giudicato, immagina una <b>luce calda e delicata</b> che vi avvolge entrambi — morbida, calma, protettiva. Non darle un significato: limitati a sentire la sicurezza, la pace, l'amore, l'accoglienza che porta con sé.</p></div>
+
+        <div class="medaffirm">
+          <div class="sn">Ripeti lentamente dentro di te</div>
+          <ul>
+            <li>Non devo più abbandonarmi</li>
+            <li>Le mie emozioni meritano ascolto</li>
+            <li>Non sono sbagliata/o per ciò che provo</li>
+            <li>Posso imparare a prendermi cura di me</li>
+          </ul>
+        </div>
+
+        <div class="medstep"><div class="sn">Il ritorno</div><p>Prendi dolcemente la sua mano: senti amore, protezione, gratitudine. Quella parte di te ti sta <b>ringraziando</b> — cercava di essere ascoltata da anni. Dille: <span class="say">«Ti sto ascoltando. Adesso sono qui, e non ti lascio più.»</span></p><p>Poi alzatevi insieme, mano nella mano, e portalo con te. <b>Guarire non significa eliminare quella parte: significa smettere di lasciarla sola.</b> Riporta piano l'attenzione al respiro, senti le mani, i piedi, i suoni intorno. E quando ti senti pronta/o, apri lentamente gli occhi.</p></div>
+      </div>
+
+      <p class="medclose">Hai incontrato il tuo bambino interiore: da oggi <b>fa parte di te</b>. Ascoltalo ogni volta che ti parlerà. E continua il <b>Giornaliero</b> — è ciò che radica tutto il cammino.</p>
+
+      <div class="medactions">
+        <button class="fbtn gold" type="button" id="btnMedit">Segna come completato</button>
+      </div>
     </div>
   </section>
 
@@ -450,6 +563,7 @@ textarea:focus,.fperche:focus{outline:none;border-color:var(--glic-hi);box-shado
       var z0=foglio.querySelector('.fzone');
       if(z0){ setTimeout(function(){ lightUp(z0); }, 420); } else lumeHome();
     } else { lumeHome(); }
+    if(v!=='medit' && window.__medPause) window.__medPause();   /* uscendo dalla meditazione, fermo la musica */
   }
   window.goHub=function(){ showView('hub'); };
   document.getElementById('ex-foglio').addEventListener('click', function(){ showView('foglio'); });
@@ -527,12 +641,57 @@ textarea:focus,.fperche:focus{outline:none;border-color:var(--glic-hi);box-shado
     var bF=document.getElementById('btnDone'), it=document.getElementById('ex-foglio'), st=document.getElementById('st-foglio');
     if(prog.foglio){ bF.classList.add('done'); bF.textContent='Completato'; it.classList.add('seen'); st.textContent='✓ Fatto'; }
     else { bF.classList.remove('done'); bF.textContent='Segna come completato'; it.classList.remove('seen'); st.textContent='Da fare'; }
+    var bM=document.getElementById('btnMedit'), im=document.getElementById('ex-medit'), sm=document.getElementById('st-medit');
+    if(bM){
+      if(prog.medit){ bM.classList.add('done'); bM.textContent='Completato'; if(im)im.classList.add('seen'); if(sm)sm.textContent='✓ Fatto'; }
+      else { bM.classList.remove('done'); bM.textContent='Segna come completato'; if(im)im.classList.remove('seen'); if(sm)sm.textContent='Da fare'; }
+    }
   }
   document.getElementById('btnDone').addEventListener('click', function(){
     saveForm(true);
     prog.foglio = !prog.foglio; saveProg(); refreshProg();
     toast(prog.foglio?'Esercizio completato 🌱':'Segno rimosso');
   });
+
+  /* ===== Esercizio 2 · meditazione: lettore musica consigliata (Heteryc) + completamento ===== */
+  (function(){
+    var TR=[{t:'Heteryc I',src:'/app/music/heteryc-1.mp3'},{t:'Heteryc II',src:'/app/music/heteryc-2.mp3'},{t:'Heteryc III',src:'/app/music/heteryc-3.mp3'}];
+    var pb=document.getElementById('medPlay'); if(!pb) return;
+    var now=document.getElementById('medNow'), fill=document.getElementById('medFill'), bar=document.getElementById('medBar'),
+        pv=document.getElementById('medPrev'), nx=document.getElementById('medNext'),
+        chips=[].slice.call(document.querySelectorAll('.medmus-chip'));
+    var au=new Audio(); au.preload='none';
+    var idx=0, loaded=false;
+    var SVG_PLAY='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
+    var SVG_PAUSE='<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>';
+    function setPlay(p){ pb.innerHTML=p?SVG_PAUSE:SVG_PLAY; }
+    function upd(){ if(now)now.textContent=TR[idx].t; chips.forEach(function(c,i){ c.classList.toggle('on', i===idx); }); }
+    function load(i){ idx=(i+TR.length)%TR.length; loaded=true; au.src=TR[idx].src; upd(); }
+    function play(){
+      if(!loaded) load(0);
+      if(inShell){ try{ window.parent.postMessage({t:'mu:cmd',cmd:'pause'}, location.origin); }catch(e){} }  /* niente sovrapposizione con la musica di sfondo */
+      var pr=au.play(); if(pr&&pr.catch) pr.catch(function(){ setPlay(false); });
+    }
+    window.__medPause=function(){ try{ au.pause(); }catch(e){} setPlay(false); };
+    pb.addEventListener('click', function(){ if(au.paused) play(); else { au.pause(); } });
+    if(pv) pv.addEventListener('click', function(){ load(idx-1); play(); });
+    if(nx) nx.addEventListener('click', function(){ load(idx+1); play(); });
+    chips.forEach(function(c,i){ c.addEventListener('click', function(){ load(i); play(); }); });
+    au.addEventListener('play',  function(){ setPlay(true); });
+    au.addEventListener('pause', function(){ setPlay(false); });
+    au.addEventListener('ended', function(){ load(idx+1); play(); });   /* in sequenza e poi riparte */
+    au.addEventListener('timeupdate', function(){ if(au.duration&&fill) fill.style.width=(au.currentTime/au.duration*100).toFixed(1)+'%'; });
+    if(bar){ var frac=function(e){ var r=bar.getBoundingClientRect(); return Math.max(0,Math.min(1,(e.clientX-r.left)/r.width)); };
+      bar.addEventListener('pointerdown', function(e){ e.preventDefault(); if(au.duration) au.currentTime=frac(e)*au.duration; }); }
+    upd();
+
+    var bm=document.getElementById('btnMedit');
+    if(bm) bm.addEventListener('click', function(){
+      prog.medit=!prog.medit; saveProg(); refreshProg();
+      toast(prog.medit?'Meditazione completata 🌱':'Segno rimosso');
+    });
+  })();
+
   refreshProg();
 
   function toast(m){ var t=document.getElementById('saved'); t.textContent=m; t.classList.add('show'); clearTimeout(toast._t); toast._t=setTimeout(function(){ t.classList.remove('show'); }, 1800); }
