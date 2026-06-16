@@ -323,6 +323,14 @@ input:focus,textarea:focus{border-color:rgba(205,178,242,.85);box-shadow:0 0 14p
 .dvframe{position:relative;padding-top:56.25%;height:0;overflow:hidden;background:#000;border-radius:16px;border:1px solid var(--card-line);box-shadow:0 8px 26px rgba(0,0,0,.5)}
 .dvframe iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
 .dvph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif;font-size:14px;letter-spacing:.12em;color:var(--txt-dim)}
+/* mini-guida "quando farlo" (Osservatorio) */
+.exguide{border:1px solid rgba(201,168,76,.32);border-left:3px solid #c9a84c;border-radius:12px;
+  background:linear-gradient(180deg, rgba(40,33,22,.5), rgba(22,17,28,.62));
+  padding:14px 16px;margin:6px 0 16px;font-size:19px;line-height:1.62;color:var(--txt-soft)}
+.exguide .exg-t{font-family:'Cinzel',serif;font-size:13.5px;letter-spacing:.16em;text-transform:uppercase;color:#c9a84c;margin-bottom:7px}
+.exguide p{margin:0 0 9px}.exguide p:last-child{margin-bottom:0}
+.exguide b{color:#e8d9ae;font-weight:600}
+.exguide i{color:var(--glic-hi);font-style:italic}
 .spbtn{padding:5px 11px;border:1px solid rgba(47,224,198,.25);border-radius:20px;background:transparent;
   font-family:'Cinzel',serif;font-size:14.5px;color:var(--txt-dim);cursor:pointer;transition:all .18s}
 .spbtn:hover{border-color:rgba(47,224,198,.6);color:var(--aqua-hi)}
@@ -514,6 +522,12 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
     <div class="dots" id="s2-dots"></div>
 
     <button class="vsbtn" onclick="apriVS('s2')"><span class="gi">📖</span> Versione scritta della pratica</button>
+
+    <div class="exguide">
+      <div class="exg-t">Quando farlo</div>
+      <p>Questo esercizio si fa <b>ogni giorno</b>, bastano 15-20 minuti. Si lavora sulle <b>emozioni che abbiamo vissuto durante la giornata</b>: i momenti che non ci sono piaciuti, le volte in cui ci siamo giudicati o ci siamo sentiti sbagliati.</p>
+      <p>Quando arriva un pensiero come <i>«non vado bene», «non sono abbastanza», «ho sbagliato tutto»</i>, <b>fermati</b> e dì a te stessa/o: <i>«non sto facendo un pensiero, mi sto giudicando»</i>. Da lì lo osserviamo insieme — da dove nasce — e impariamo a trasformarlo.</p>
+    </div>
 
     <div class="blk"><label>Il giudizio che sto dando a me stesso</label><input type="text" placeholder="Scrivilo così com'è, oppure lascia vuoto…" data-f="j"></div>
     <div class="phase"><div class="pnum">1</div><div class="ptxt">Osserva il pensiero</div></div>
