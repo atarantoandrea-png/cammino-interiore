@@ -188,7 +188,7 @@ textarea:focus,.fperche:focus{outline:none;border-color:var(--glic-hi);box-shado
 .medprep{list-style:none;margin:0;padding:0}
 .medprep li{display:flex;gap:12px;align-items:flex-start;font-size:16px;color:var(--txt-soft);line-height:1.5;margin-bottom:12px}
 .medprep li:last-child{margin-bottom:0}
-.medprep .pi{flex:none;font-size:21px;line-height:1.1;filter:drop-shadow(0 0 8px var(--lm-g2))}
+.medprep .pi{flex:none;width:7px;height:7px;border-radius:50%;background:var(--gold);margin-top:9px;box-shadow:0 0 8px var(--lm-g2)}
 .medprep b{color:var(--gold-pale);font-weight:600}
 /* lettore musica consigliata */
 .medmus{border:1px solid rgba(185,163,227,.4);border-radius:18px;padding:16px 16px 18px;margin-bottom:18px;
@@ -256,7 +256,8 @@ textarea:focus,.fperche:focus{outline:none;border-color:var(--glic-hi);box-shado
   background:linear-gradient(180deg, rgba(201,168,76,.22), rgba(120,95,40,.14));border:1px solid rgba(201,168,76,.5);
   font-family:'Cinzel',serif;font-size:17px;font-weight:600;color:var(--gold-pale);line-height:1.35;box-shadow:0 0 22px rgba(201,168,76,.12)}
 .medbig b{color:#fff;font-size:21px;letter-spacing:.01em}
-.medbig .mb-ic{flex:none;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;color:#2a2208;background:radial-gradient(circle at 38% 30%, #e8d9ae, var(--gold));box-shadow:0 0 14px rgba(201,168,76,.5)}
+.medbig .mb-ic{flex:none;display:flex;align-items:center;justify-content:center;width:26px;height:26px}
+.medbig .mb-ic svg{width:24px;height:24px;display:block;filter:drop-shadow(0 0 6px rgba(201,168,76,.55))}
 /* pannello di controllo musica (comanda il player della shell) */
 .medpanel{margin-top:14px;border:1px solid rgba(185,163,227,.3);border-radius:14px;padding:14px 14px 16px;background:rgba(10,8,16,.4)}
 .medp-title{font-family:'Cinzel',serif;font-size:13px;letter-spacing:.06em;color:var(--glic-hi);text-align:center;margin-bottom:11px}
@@ -460,10 +461,10 @@ textarea:focus,.fperche:focus{outline:none;border-color:var(--glic-hi);box-shado
       <div class="medcard">
         <div class="medlbl">Prima di iniziare</div>
         <ul class="medprep">
-          <li><span class="pi">🌿</span><span>Trova un luogo tranquillo. Se puoi, stai a <b>piedi nudi a contatto con la terra</b> — un prato, la spiaggia, la natura; va bene anche in casa.</span></li>
-          <li><span class="pi">🕯️</span><span>Accendi una <b>candela</b>: aiuta a creare uno spazio di calma e di amore.</span></li>
-          <li><span class="pi">🎧</span><span>Mettiti comoda/o, con le <b>cuffie</b> se puoi, e fai qualche <b>respiro profondo</b>. Non devi controllare nulla.</span></li>
-          <li><span class="pi">▶️</span><span>Avvia il <b>video di Elisa</b> e lasciati guidare. Quando lei lo dice, avvia anche la <b>musica</b> (te lo ricordo qui sotto).</span></li>
+          <li><span class="pi"></span><span>Trova un luogo tranquillo. Se puoi, stai a <b>piedi nudi a contatto con la terra</b> — un prato, la spiaggia, la natura; va bene anche in casa.</span></li>
+          <li><span class="pi"></span><span>Accendi una <b>candela</b>: aiuta a creare uno spazio di calma e di amore.</span></li>
+          <li><span class="pi"></span><span>Mettiti comoda/o, con le <b>cuffie</b> se puoi, e fai qualche <b>respiro profondo</b>. Non devi controllare nulla.</span></li>
+          <li><span class="pi"></span><span>Avvia il <b>video di Elisa</b> e lasciati guidare. Quando lei lo dice, avvia anche la <b>musica</b> (te lo ricordo qui sotto).</span></li>
         </ul>
       </div>
 
@@ -473,8 +474,8 @@ textarea:focus,.fperche:focus{outline:none;border-color:var(--glic-hi);box-shado
       </div>
 
       <div class="medmus">
-        <div class="mtitle">🎵 Musica consigliata da Elisa</div>
-        <div class="medbig"><span class="mb-ic">▶</span><span>Consigliato: avvia la musica al <b>minuto 1:25</b> del video</span></div>
+        <div class="mtitle">Musica consigliata da Elisa</div>
+        <div class="medbig"><span class="mb-ic"><svg viewBox="0 0 24 24" fill="#e8d9ae" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span><span>Consigliato: avvia la musica al <b>minuto 1:25</b> del video</span></div>
         <div class="mnote">Elisa fa la meditazione con delle <b>frequenze musicali</b>: lasciala suonare <b>insieme</b> alla sua voce. Tieni il <b>volume</b> basso, così non copre Elisa.</div>
         <div class="medpanel">
           <div class="medp-title" id="medpTitle">Heteryc</div>
@@ -485,7 +486,7 @@ textarea:focus,.fperche:focus{outline:none;border-color:var(--glic-hi);box-shado
           </div>
           <div class="medp-vol-row"><span class="medp-vol-ic" id="medpVolIc">🔊</span><input class="medp-vol" id="medpVol" type="range" min="0" max="100" value="100" aria-label="Volume musica"></div>
         </div>
-        <div class="mhint">Suona <b>insieme</b> al video; puoi gestirla anche dalla <b>luce</b> 🔆.</div>
+        <div class="mhint">Suona <b>insieme</b> al video; puoi gestirla anche dalla <b>luce</b>.</div>
       </div>
 
       <div class="medcard medrefl">
@@ -681,7 +682,7 @@ textarea:focus,.fperche:focus{outline:none;border-color:var(--glic-hi);box-shado
   document.getElementById('btnDone').addEventListener('click', function(){
     saveForm(true);
     prog.foglio = !prog.foglio; saveProg(); refreshProg();
-    toast(prog.foglio?'Esercizio completato 🌱':'Segno rimosso');
+    toast(prog.foglio?'Esercizio completato':'Segno rimosso');
   });
 
   /* ===== Esercizio 2 · meditazione: video di Elisa (canalizzazione) + musica consigliata + riflessione ===== */
@@ -713,8 +714,15 @@ textarea:focus,.fperche:focus{outline:none;border-color:var(--glic-hi);box-shado
           var mv=function(ev){ muSend('seek',sfrac(ev)); }, up=function(){ document.removeEventListener('pointermove',mv); document.removeEventListener('pointerup',up); document.removeEventListener('pointercancel',up); };
           document.addEventListener('pointermove',mv); document.addEventListener('pointerup',up); document.addEventListener('pointercancel',up);
         }); }
+      var volBusy=false;
       function paintVol(x){ if(volIc) volIc.textContent = x===0?'🔇':(x<0.5?'🔉':'🔊'); }
-      if(vol) vol.addEventListener('input', function(){ muSend('vol', vol.value/100); paintVol(vol.value/100); });
+      if(vol){
+        var clrBusy=function(){ volBusy=false; };
+        vol.addEventListener('pointerdown', function(){ volBusy=true; });
+        vol.addEventListener('input', function(){ volBusy=true; muSend('vol', vol.value/100); paintVol(vol.value/100); });
+        vol.addEventListener('pointerup', clrBusy); vol.addEventListener('pointercancel', clrBusy);
+        vol.addEventListener('change', clrBusy); vol.addEventListener('blur', clrBusy);
+      }
       window.addEventListener('message', function(e){ if(e.origin!==location.origin)return; var m=e.data||{}; if(m.t!=='mu:state')return;
         active=!!m.active;
         var pl=!!(m.active&&m.playing);
@@ -722,7 +730,7 @@ textarea:focus,.fperche:focus{outline:none;border-color:var(--glic-hi);box-shado
         if(title) title.textContent=m.title||'Heteryc';
         var pct=((m.frac||0)*100).toFixed(1)+'%'; if(fill)fill.style.width=pct; if(knob)knob.style.left=pct;
         if(curEl)curEl.textContent=m.cur||'0:00'; if(durEl)durEl.textContent=m.dur||'--:--';
-        if(typeof m.vol==='number' && vol && document.activeElement!==vol){ vol.value=Math.round(m.vol*100); paintVol(m.vol); }
+        if(typeof m.vol==='number' && vol && !volBusy){ vol.value=Math.round(m.vol*100); paintVol(m.vol); }
       });
     })();
     /* riflessione facoltativa: salvata sul dispositivo */
@@ -736,7 +744,7 @@ textarea:focus,.fperche:focus{outline:none;border-color:var(--glic-hi);box-shado
     var bm=document.getElementById('btnMedit');
     if(bm) bm.addEventListener('click', function(){
       prog.medit=!prog.medit; saveProg(); refreshProg();
-      toast(prog.medit?'Meditazione completata 🌱':'Segno rimosso');
+      toast(prog.medit?'Meditazione completata':'Segno rimosso');
     });
   })();
 
