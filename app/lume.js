@@ -70,7 +70,8 @@ window.OVL_LUME=(function(){
   /* SOLA LETTURA dalla nuvola: nessun PUT, nessun sendBeacon */
   function pullStore(email,store,meta,then){
     if(!email){ if(then)then(false); return; }
-    fetch('/api/store?email='+encodeURIComponent(email))
+    var _tk=''; try{_tk=localStorage.getItem('ovl-session')||'';}catch(e){}
+    fetch('/api/store?email='+encodeURIComponent(email)+'&token='+encodeURIComponent(_tk))
       .then(function(r){ if(!r.ok)throw 0; return r.json(); })
       .then(function(remote){
         var changed=mergeIn(store,meta,remote);

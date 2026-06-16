@@ -935,7 +935,8 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
             } else if(s.reason==='active'){
               err.style.color='#c0392b';
               err.innerHTML='Account gi\xe0 connesso da un altro dispositivo.<br><button onclick="entrForce(\''+v+'\');return false" style="margin-top:12px;width:100%;padding:13px;background:linear-gradient(135deg,#8a3030,#c0392b);border:none;border-radius:10px;color:#fff;font-family:Cinzel,serif;font-size:15px;letter-spacing:.1em;cursor:pointer;">Forza accesso</button>';
-            } else { err.style.color='#c0392b'; err.textContent='Errore. Riprova.'; }
+            } else if(s.reason==='unauthorized'){ err.style.color='#c0392b'; err.textContent='Email non autorizzata. Contatta Elisa per accedere.'; }
+            else { err.style.color='#c0392b'; err.textContent='Errore. Riprova.'; }
           });
       })
       .catch(function(){ err.style.color='#c0392b'; err.textContent='Errore di rete. Riprova.'; });
@@ -945,6 +946,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     fetch('/api/auth/session',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:v,force:true})})
       .then(function(r){return r.json();}).then(function(s){
         if(s.ok){ try{localStorage.setItem(KEY,v);localStorage.setItem('ovl-session',s.token);}catch(e){} err.textContent=''; show('dash'); }
+        else if(s.reason==='unauthorized'){ err.style.color='#c0392b'; err.textContent='Email non autorizzata. Contatta Elisa per accedere.'; }
         else{ err.style.color='#c0392b'; err.textContent='Errore. Riprova.'; }
       }).catch(function(){ err.style.color='#c0392b'; err.textContent='Errore di rete.'; });
   };
