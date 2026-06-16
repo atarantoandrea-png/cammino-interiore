@@ -331,6 +331,14 @@ input:focus,textarea:focus{border-color:rgba(205,178,242,.85);box-shadow:0 0 14p
 .exguide p{margin:0 0 9px}.exguide p:last-child{margin-bottom:0}
 .exguide b{color:#e8d9ae;font-weight:600}
 .exguide i{color:var(--glic-hi);font-style:italic}
+.exguide .exg-q{margin-top:4px;color:#e8d9ae;font-weight:600}
+/* scelta Osservatorio: giudizio / giornata serena */
+.oscelta{display:flex;gap:10px;flex-wrap:wrap;margin:2px 0 16px}
+.osc-btn{flex:1;min-width:150px;font-family:'Cinzel',serif;font-size:15px;letter-spacing:.03em;cursor:pointer;
+  padding:13px 14px;border-radius:14px;color:var(--txt-soft);text-align:center;
+  border:1px solid rgba(185,163,227,.4);background:linear-gradient(180deg,rgba(40,32,54,.5),rgba(22,17,28,.6));transition:all .2s}
+.osc-btn:hover{border-color:rgba(205,178,242,.7);color:#fff}
+.osc-btn.on{color:#fff;border-color:#c9a84c;background:linear-gradient(180deg,rgba(60,50,30,.45),rgba(30,24,18,.6));box-shadow:0 0 14px rgba(201,168,76,.25)}
 .spbtn{padding:5px 11px;border:1px solid rgba(47,224,198,.25);border-radius:20px;background:transparent;
   font-family:'Cinzel',serif;font-size:14.5px;color:var(--txt-dim);cursor:pointer;transition:all .18s}
 .spbtn:hover{border-color:rgba(47,224,198,.6);color:var(--aqua-hi)}
@@ -525,31 +533,47 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
 
     <div class="exguide">
       <div class="exg-t">Quando farlo</div>
-      <p>Questo esercizio si fa <b>ogni giorno</b>, bastano 15-20 minuti. Si lavora sulle <b>emozioni che abbiamo vissuto durante la giornata</b>: i momenti che non ci sono piaciuti, le volte in cui ci siamo giudicati o ci siamo sentiti sbagliati.</p>
-      <p>Quando arriva un pensiero come <i>«non vado bene», «non sono abbastanza», «ho sbagliato tutto»</i>, <b>fermati</b> e dì a te stessa/o: <i>«non sto facendo un pensiero, mi sto giudicando»</i>. Da lì lo osserviamo insieme — da dove nasce — e impariamo a trasformarlo.</p>
+      <p>Questo esercizio si fa <b>ogni giorno</b>, 15-20 minuti. Si lavora sul <b>giudizio</b> — la prima fase di ogni pensiero, che spesso non nasce da noi ma da ciò che ci hanno insegnato: imparare a <b>guardarlo dall'esterno</b>, senza identificarci, e <b>trasformarlo</b>. Lo facciamo sulle <b>emozioni della giornata</b>: i momenti che non ci sono piaciuti, le volte in cui ci siamo giudicati o sentiti sbagliati.</p>
+      <p>Quando arriva un pensiero come <i>«non sono abbastanza», «ho sbagliato tutto»</i>, <b>fermati</b> e dì: <i>«non sto facendo un pensiero, mi sto giudicando»</i>. Ma non sempre arriva un giudizio: ci sono anche le <b>giornate serene</b>, e <i>anche il bello va riconosciuto — farlo nostro alza la nostra frequenza</i>.</p>
+      <p class="exg-q">Allora, com'è andata oggi?</p>
     </div>
 
-    <div class="blk"><label>Il giudizio che sto dando a me stesso</label><input type="text" placeholder="Scrivilo così com'è, oppure lascia vuoto…" data-f="j"></div>
-    <div class="phase"><div class="pnum">1</div><div class="ptxt">Osserva il pensiero</div></div>
-    <div class="qg">
-      <div class="blk"><p class="qt">Che tono sto usando verso me stesso?</p><textarea rows="2" placeholder="Aggressivo, freddo, duro…" data-f="q1"></textarea></div>
-      <div class="blk"><p class="qt">Questa voce mi appartiene davvero?</p><textarea rows="2" placeholder="La tua risposta…" data-f="q2"></textarea></div>
+    <div class="oscelta">
+      <button class="osc-btn" type="button" onclick="osservaMode('neg')">È arrivato un giudizio</button>
+      <button class="osc-btn" type="button" onclick="osservaMode('pos')">Oggi mi sono sentita/o bene</button>
     </div>
-    <div class="phase"><div class="pnum">2</div><div class="ptxt">Risali alla fonte</div></div>
-    <div class="qg">
-      <div class="blk"><p class="qt">Chi o cosa mi ha fatto pensare di essere così?</p><textarea rows="2" placeholder="La tua risposta…" data-f="q3"></textarea></div>
-      <div class="blk"><p class="qt">A una persona che amo, parlerei così?</p><textarea rows="2" placeholder="La tua risposta…" data-f="q4"></textarea></div>
+
+    <div id="s2-neg" class="ospath" style="display:none">
+      <div class="blk"><label>Il giudizio che sto dando a me stesso</label><input type="text" placeholder="Scrivilo così com'è, oppure lascia vuoto…" data-f="j"></div>
+      <div class="phase"><div class="pnum">1</div><div class="ptxt">Osserva il pensiero</div></div>
+      <div class="qg">
+        <div class="blk"><p class="qt">Che tono sto usando verso me stesso?</p><textarea rows="2" placeholder="Aggressivo, freddo, duro…" data-f="q1"></textarea></div>
+        <div class="blk"><p class="qt">Questa voce mi appartiene davvero?</p><textarea rows="2" placeholder="La tua risposta…" data-f="q2"></textarea></div>
+      </div>
+      <div class="phase"><div class="pnum">2</div><div class="ptxt">Risali alla fonte</div></div>
+      <div class="qg">
+        <div class="blk"><p class="qt">Chi o cosa mi ha fatto pensare di essere così?</p><textarea rows="2" placeholder="La tua risposta…" data-f="q3"></textarea></div>
+        <div class="blk"><p class="qt">A una persona che amo, parlerei così?</p><textarea rows="2" placeholder="La tua risposta…" data-f="q4"></textarea></div>
+      </div>
+      <div class="phase"><div class="pnum">3</div><div class="ptxt">Trasforma il giudizio</div></div>
+      <div class="trrow">
+        <div class="blk"><label>Il giudizio negativo</label><textarea rows="2" placeholder="Es. Sono sbagliata…" data-f="neg"></textarea></div>
+        <div class="trarr">→</div>
+        <div class="blk"><label>Visto dall'esterno</label><textarea rows="2" placeholder="Es. C'è una parte di me che oggi…" data-f="pos"></textarea></div>
+      </div>
+      <p class="trex">esempio: "Sono sbagliata" → <b>"C'è una parte di me che oggi si sente sbagliata"</b></p>
+      <div class="blk"><span class="blab">♪ Canzone di oggi</span><input type="text" placeholder="Una canzone che ti porta in alto…" data-f="song"></div>
+      <div class="mantra"><div class="ml">Il mantra di chiusura</div><p class="mt">"Io posso guardarmi, posso amarmi,<br>posso riconoscermi e abbracciarmi.<br>Io sono degno/a di tutto questo."</p></div>
+      <div class="blk"><span class="blab">Come mi sento ora →</span><textarea rows="2" placeholder="Dopo la pratica…" data-f="after"></textarea></div>
     </div>
-    <div class="phase"><div class="pnum">3</div><div class="ptxt">Trasforma il giudizio</div></div>
-    <div class="trrow">
-      <div class="blk"><label>Il giudizio negativo</label><textarea rows="2" placeholder="Es. Sono sbagliata…" data-f="neg"></textarea></div>
-      <div class="trarr">→</div>
-      <div class="blk"><label>Visto dall'esterno</label><textarea rows="2" placeholder="Es. C'è una parte di me che oggi…" data-f="pos"></textarea></div>
+
+    <div id="s2-pos" class="ospath" style="display:none">
+      <p class="intro" style="margin:2px 0 12px">Bene così. Fermati un attimo <b>sul positivo</b>: riconoscerlo e assaporarlo è parte del cammino — è ciò che, giorno dopo giorno, <b>alza la tua frequenza</b>.</p>
+      <div class="blk"><label>Il momento bello di oggi</label><textarea rows="2" placeholder="Qualcosa che ti è piaciuto, che ti ha fatto stare bene…" data-f="pgood"></textarea></div>
+      <div class="blk"><label>Una parola d'affetto per me</label><textarea rows="2" placeholder="Es. oggi mi sono trattata/o con gentilezza; me lo merito…" data-f="pword"></textarea></div>
+      <div class="mantra"><div class="ml">Il mantra di chiusura</div><p class="mt">"Io posso guardarmi, posso amarmi,<br>posso riconoscermi e abbracciarmi.<br>Io sono degno/a di tutto questo."</p></div>
+      <div class="blk"><span class="blab">♪ La canzone di oggi</span><input type="text" placeholder="Una canzone che ti porta in alto…" data-f="psong"></div>
     </div>
-    <p class="trex">esempio: "Sono sbagliata" → <b>"C'è una parte di me che oggi si sente sbagliata"</b></p>
-    <div class="blk"><span class="blab">♪ Canzone di oggi</span><input type="text" placeholder="Una canzone che ti porta in alto…" data-f="song"></div>
-    <div class="mantra"><div class="ml">Il mantra di chiusura</div><p class="mt">"Io posso guardarmi, posso amarmi,<br>posso riconoscermi e abbracciarmi.<br>Io sono degno/a di tutto questo."</p></div>
-    <div class="blk"><span class="blab">Come mi sento ora →</span><textarea rows="2" placeholder="Dopo la pratica…" data-f="after"></textarea></div>
 
     <button class="segna" id="s2-segna" onclick="segnaPratica('s2')">Segna la pratica come fatta</button>
     <div class="segna-foot" id="s2-foot"></div>
@@ -751,7 +775,7 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
 
   /* ============ SCHEDE DATATE ============ */
   var sheetDay={s1:todayIso(), s2:todayIso()};
-  var FIELDS={ s1:['think','q1','q2','q3','q4','body','emo','after'], s2:['j','q1','q2','q3','q4','neg','pos','song','after'] };
+  var FIELDS={ s1:['think','q1','q2','q3','q4','body','emo','after'], s2:['j','q1','q2','q3','q4','neg','pos','song','after','pgood','pword','psong'] };
   var MONTHS_S=['Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov','Dic'];
   function isoAdd(iso,days){ var p=iso.split('-'); var d=new Date(+p[0],+p[1]-1,+p[2]); d.setDate(d.getDate()+days); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
   function labelFor(iso){ var t=todayIso(); if(iso===t)return 'Oggi'; if(iso===isoAdd(t,-1))return 'Ieri'; var p=iso.split('-'); return (+p[2])+' '+MONTHS_S[+p[1]-1]+' '+p[0]; }
@@ -764,6 +788,22 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
     document.getElementById(s+'-daylab').textContent=labelFor(iso);
     document.getElementById(s+'-next').disabled=(iso>=todayIso());
     renderDots(s); refreshSegna(s);
+    if(s==='s2') osservaAuto();   /* mostra il percorso (giudizio/positivo) in base a cosa è già scritto quel giorno */
+  }
+  /* Osservatorio: scelta tra percorso del giudizio e percorso positivo */
+  function osservaMode(m){
+    var neg=document.getElementById('s2-neg'), pos=document.getElementById('s2-pos');
+    if(neg) neg.style.display = (m==='neg')?'':'none';
+    if(pos) pos.style.display = (m==='pos')?'':'none';
+    var btns=document.querySelectorAll('.oscelta .osc-btn');
+    if(btns[0]) btns[0].classList.toggle('on', m==='neg');
+    if(btns[1]) btns[1].classList.toggle('on', m==='pos');
+  }
+  window.osservaMode=osservaMode;
+  function osservaAuto(){
+    var iso=sheetDay.s2, has=function(arr){ return arr.some(function(f){ var v=store['s2:'+iso+':'+f]; return v&&String(v).trim(); }); };
+    var neg=has(['j','q1','q2','q3','q4','neg','pos','after']), positivo=has(['pgood','pword','psong']);
+    osservaMode( positivo&&!neg ? 'pos' : (neg ? 'neg' : '') );   /* niente scritto → solo la scelta */
   }
   function renderDots(s){
     var box=document.getElementById(s+'-dots'); box.innerHTML=''; var t=todayIso();
@@ -887,7 +927,7 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
   var DGIORNI=['Domenica','Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'];
   var DMESI=['gennaio','febbraio','marzo','aprile','maggio','giugno','luglio','agosto','settembre','ottobre','novembre','dicembre'];
   var DIA_LBL={
-    s2:{ name:'Osservatorio', f:[['j','Il giudizio che mi davo'],['q1','Il tono verso me stesso/a'],['q2','Mi appartiene davvero?'],['q3','Da dove veniva'],['q4','Parlerei così a chi amo?'],['neg','Il giudizio'],['pos','Visto dall\'esterno'],['song','La canzone'],['after','Come mi sentivo dopo']] },
+    s2:{ name:'Osservatorio', f:[['j','Il giudizio che mi davo'],['q1','Il tono verso me stesso/a'],['q2','Mi appartiene davvero?'],['q3','Da dove veniva'],['q4','Parlerei così a chi amo?'],['neg','Il giudizio'],['pos','Visto dall\'esterno'],['song','La canzone'],['after','Come mi sentivo dopo'],['pgood','Il momento bello'],['pword','Una parola d\'affetto per me'],['psong','La canzone']] },
     s1:{ name:'Spazio Emotivo', f:[['think','Il pensiero arrivato'],['q1','È reale o automatico?'],['q2','Presente o passato?'],['q3','Mi aiuta o mi limita?'],['q4','Lo farei a chi amo?'],['body','Dove sentivo il blocco'],['emo','L\'emozione'],['after','Come mi sentivo dopo']] }
   };
   function diaEsc(s){ return String(s).replace(/[&<>]/g,function(c){return c==='&'?'&amp;':(c==='<'?'&lt;':'&gt;');}); }
