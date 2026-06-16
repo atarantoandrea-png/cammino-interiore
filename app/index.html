@@ -770,7 +770,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
       <div class="lvl-next" id="lvlNext"></div>
     </div>
 
-    <div class="gp-sec">La scala dei fiori</div>
+    <div class="gp-sec">I gradi del cammino</div>
     <div class="scalav" id="scala"></div>
 
     <div class="gp-sec">Come funziona</div>
@@ -802,10 +802,10 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     </details>
 
     <details class="gd">
-      <summary><span class="gi">🌸</span>La scala dei fiori<span class="arr">▶</span></summary>
+      <summary><span class="gi">🌸</span>I gradi del cammino<span class="arr">▶</span></summary>
       <div class="gd-c">
-        <p>La tua piccola luce <b>cambia colore con i giorni di pratica</b>, come un fiore che sboccia. Si parte dalla <b>margherita</b>, il fiore semplice dell'inizio; con la costanza arrivano il bucaneve, la stella alpina, l'ortensia, il fiordaliso, la viola… fino al <span class="gold">glicine</span>, il fiore del Cammino.</p>
-        <p>Conta ogni giorno in cui fai <b>almeno una pratica</b>. Non è una gara: i fiori arrivano da soli, un giorno alla volta. La scala qui sopra ti mostra sempre a che punto sei.</p>
+        <p>La tua piccola luce <b>cambia colore man mano che avanzi nei gradi</b> del cammino. Si parte dal <b>Risveglio</b>; con la costanza arrivano il <b>Radicamento</b> e l'<span class="gold">Equilibrio</span>. I gradi successivi sono <b>in arrivo</b>: si sveleranno con le tappe che verranno.</p>
+        <p>Conta ogni giorno in cui fai <b>almeno una pratica</b>. Non è una gara: i gradi arrivano da soli, un passo alla volta. La scala qui sopra ti mostra sempre a che punto sei.</p>
       </div>
     </details>
 
@@ -852,7 +852,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
 
 <div id="saved">✓ Salvato</div>
 
-<script src="/app/lume.js?v=3"></script>
+<script src="/app/lume.js?v=4"></script>
 <script src="/app/ovl-cloud.js?v=2"></script>
 <script src="/app/elisa-chat.js?v=16"></script>
 <script>
@@ -910,7 +910,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     frequenza:{t:'La Frequenza Nascosta',
       h:'<p>Il <b>Capitolo Primo</b> e la base di tutto: siamo energia, e tutto parte da come ci sentiamo. È la <b>spiegazione del Giornaliero</b>: vedere questo video apre la pratica di ogni giorno.</p>'},
     day:{t:'Il Giornaliero',
-      h:'<p>È la pratica di ogni giorno: lo <b>Spazio Emotivo</b>, l\'<b>Osservatorio Interiore</b> e il <b>Diario della Settimana</b>. Si apre dopo aver visto <b>«La Frequenza Nascosta»</b> — la sua spiegazione. Sulla card vedi i tuoi giorni di pratica e il tuo fiore. Apri l\'esercizio e lasciati guidare: dentro, la luce sarà con te sezione per sezione.</p>'},
+      h:'<p>È la pratica di ogni giorno: lo <b>Spazio Emotivo</b>, l\'<b>Osservatorio Interiore</b> e il <b>Diario della Settimana</b>. Si apre dopo aver visto <b>«La Frequenza Nascosta»</b> — la sua spiegazione. Sulla card vedi i tuoi giorni di pratica e il tuo grado. Apri l\'esercizio e lasciati guidare: dentro, la luce sarà con te sezione per sezione.</p>'},
     capitolo2:{t:'Il Mondo Interiore',
       h:'<p>Il secondo capitolo: otto video in cui ti presento le parti che ti compongono. Si apre dopo <b>10 giorni</b> di Giornaliero — il tempo di prendere l\'abitudine di osservarti. Guardali liberamente, nell\'ordine che senti.</p>'},
     bambino:{t:'Il Bambino Interiore',
@@ -1307,14 +1307,16 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     document.getElementById('lvlNext').textContent=nextTxt;
     var sc=document.getElementById('scala'); sc.innerHTML='';
     OVL_LUME.TIERS.forEach(function(tt,k){
-      var when = tt.soon ? 'in arrivo'
+      /* i gradi futuri non mostrano il nome: appaiono come "In arrivo" */
+      var nameTxt = tt.soon ? 'In arrivo' : tt.nome;
+      var when = tt.soon ? ''
                : tt.ev==='mondo' ? 'quando concludi il Mondo Interiore'
                : tt.d===0 ? 'l\'inizio del cammino'
                : 'da '+tt.d+' giorni di pratica';
       var d=document.createElement('div');
       d.className='sv-row'+(k<=tier?' on':'')+(k===tier?' cur':'')+(tt.soon?' soon':'');
       d.innerHTML='<span class="sv-dot" style="background:'+tt.col+';color:'+tt.col+'"></span>'+
-        '<span class="sv-name">'+tt.nome+'</span>'+
+        '<span class="sv-name">'+nameTxt+'</span>'+
         '<span class="sv-d">'+when+'</span>';
       sc.appendChild(d);
     });

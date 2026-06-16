@@ -1006,13 +1006,13 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
   /* ============ FIORI / LUCE ============ */
   function clamp01(v){ return v<0?0:(v>1?1:v); }
   var TIERS=[
-    {d:0,        cls:'',    nome:'Margherita',    art:'una ', col:'#dca06b'},   /* rame chiaro metallico */
-    {d:10,       cls:'lt1', nome:'Bucaneve',      art:'un ',  col:'#a8c8e0'},   /* 10 giorni */
-    {ev:'mondo', cls:'lt2', nome:'Stella Alpina', art:'una ', col:'#c6cbd2'},   /* grigio metallico — Mondo Interiore concluso */
-    {soon:true,  cls:'lt3', nome:'Ortensia',      art:'un\'', col:'#b9ddf6'},   /* in arrivo */
-    {soon:true,  cls:'lt4', nome:'Fiordaliso',    art:'un ',  col:'#a7b6ef'},
-    {soon:true,  cls:'lt5', nome:'Viola',         art:'una ', col:'#ad7ff0'},
-    {soon:true,  cls:'lt6', nome:'Glicine',       art:'un ',  col:'#cdb2f2'}
+    {d:0,        cls:'',    nome:'Risveglio',      art:'il ', col:'#dca06b'},   /* rame chiaro metallico */
+    {d:10,       cls:'lt1', nome:'Radicamento',    art:'il ', col:'#a8c8e0'},   /* 10 giorni */
+    {ev:'mondo', cls:'lt2', nome:'Equilibrio',     art:"l'",  col:'#c6cbd2'},   /* grigio metallico — Mondo Interiore concluso */
+    {soon:true,  cls:'lt3', nome:'Percezione',     art:'la ', col:'#b9ddf6'},   /* in arrivo (nascosto) */
+    {soon:true,  cls:'lt4', nome:'Sintonia',       art:'la ', col:'#a7b6ef'},   /* in arrivo (nascosto) */
+    {soon:true,  cls:'lt5', nome:'Protezione',     art:'la ', col:'#ad7ff0'},   /* in arrivo (nascosto) */
+    {soon:true,  cls:'lt6', nome:'Canalizzazione', art:'la ', col:'#cdb2f2'}    /* in arrivo (nascosto) */
   ];
   /* il Mondo Interiore concluso lo segnala la shell nel flag ovl-mondo:<email> */
   function mondoDoneFlag(){ try{ var e=(localStorage.getItem('ovl-user')||'').trim().toLowerCase(); return localStorage.getItem('ovl-mondo:'+e)==='1'; }catch(e){ return false; } }
@@ -1123,7 +1123,7 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
     document.getElementById('lvlFill').style.width=(fill*100).toFixed(0)+'%';
     document.getElementById('lvlNext').textContent=nextTxt;
     var sc=document.getElementById('scala'); sc.innerHTML='';
-    TIERS.forEach(function(tt,k){ var when=tt.soon?'in arrivo':(tt.ev==='mondo'?'Mondo Interiore':(tt.d===0?'inizio':'da '+tt.d+'g')); var x=document.createElement('div'); x.className='sc-step'+(k<=i?' on':'')+(k===i?' cur':'')+(tt.soon?' soon':''); x.innerHTML='<div class="sc-dot" style="background:'+tt.col+';color:'+tt.col+';box-shadow:0 0 10px '+tt.col+'66"></div><span class="sc-lab">'+tt.nome+'</span><span class="sc-d">'+when+'</span>'; sc.appendChild(x); });
+    TIERS.forEach(function(tt,k){ var nameTxt=tt.soon?'In arrivo':tt.nome; var when=tt.soon?'':(tt.ev==='mondo'?'Mondo Interiore':(tt.d===0?'inizio':'da '+tt.d+'g')); var x=document.createElement('div'); x.className='sc-step'+(k<=i?' on':'')+(k===i?' cur':'')+(tt.soon?' soon':''); x.innerHTML='<div class="sc-dot" style="background:'+tt.col+';color:'+tt.col+';box-shadow:0 0 10px '+tt.col+'66"></div><span class="sc-lab">'+nameTxt+'</span><span class="sc-d">'+when+'</span>'; sc.appendChild(x); });
     var bg=document.getElementById('bgrid'); bg.innerHTML='';
     TRAGUARDI.forEach(function(b){ var won=false; try{ won=b.test(); }catch(e){} var d=document.createElement('div'); d.className='trag'+(won?' won':''); d.innerHTML='<span class="tck">✓</span><span>'+b.cond+'</span>'; bg.appendChild(d); });
   }

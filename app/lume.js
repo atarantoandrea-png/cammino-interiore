@@ -10,15 +10,17 @@
 window.OVL_LUME=(function(){
 
   /* ---- il Sentiero della Luce: la luce fiorisce coi giorni di pratica ---- */
-  /* d = giorni di pratica per raggiungerla; ev = sblocco a evento; soon = in arrivo (non ancora raggiungibile) */
+  /* I GRADI del cammino (nomi medianici). d = giorni per raggiungerlo; ev = sblocco a evento;
+     soon = "in arrivo". I primi 3 sono attivi; i gradi successivi sono pronti nel dato ma la
+     scala NON ne mostra il nome (li rende come "In arrivo"): si sveleranno con le tappe future. */
   var TIERS=[
-    {d:0,        cls:'',    nome:'Margherita',    art:'una ', col:'#dca06b'},   /* rame chiaro metallico, splendente */
-    {d:10,       cls:'lt1', nome:'Bucaneve',      art:'un ',  col:'#a8c8e0'},   /* 10 giorni di pratica */
-    {ev:'mondo', cls:'lt2', nome:'Stella Alpina', art:'una ', col:'#c6cbd2'},   /* grigio lucente metallico — quando si conclude il Mondo Interiore */
-    {soon:true,  cls:'lt3', nome:'Ortensia',      art:'un\'', col:'#b9ddf6'},   /* in arrivo */
-    {soon:true,  cls:'lt4', nome:'Fiordaliso',    art:'un ',  col:'#a7b6ef'},
-    {soon:true,  cls:'lt5', nome:'Viola',         art:'una ', col:'#ad7ff0'},
-    {soon:true,  cls:'lt6', nome:'Glicine',       art:'un ',  col:'#cdb2f2'}
+    {d:0,        cls:'',    nome:'Risveglio',      art:'il ', col:'#dca06b'},   /* rame chiaro metallico, splendente */
+    {d:10,       cls:'lt1', nome:'Radicamento',    art:'il ', col:'#a8c8e0'},   /* 10 giorni di pratica */
+    {ev:'mondo', cls:'lt2', nome:'Equilibrio',     art:"l'",  col:'#c6cbd2'},   /* grigio lucente metallico — quando si conclude il Mondo Interiore */
+    {soon:true,  cls:'lt3', nome:'Percezione',     art:'la ', col:'#b9ddf6'},   /* in arrivo (nascosto) */
+    {soon:true,  cls:'lt4', nome:'Sintonia',       art:'la ', col:'#a7b6ef'},   /* in arrivo (nascosto) */
+    {soon:true,  cls:'lt5', nome:'Protezione',     art:'la ', col:'#ad7ff0'},   /* in arrivo (nascosto) */
+    {soon:true,  cls:'lt6', nome:'Canalizzazione', art:'la ', col:'#cdb2f2'}    /* in arrivo (nascosto) */
   ];
   /* tier raggiunto: la più alta tappa con la condizione soddisfatta (giorni o evento);
      le tappe "soon" non sono ancora raggiungibili */
