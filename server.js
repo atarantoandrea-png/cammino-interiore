@@ -124,7 +124,7 @@ function getGToken(cb) {
 function emailsFromRows(rows) {
   if (!rows || !rows.length) return [];
   const header = rows[0].map(h => String(h == null ? '' : h).trim().toLowerCase());
-  const col = header.findIndex(h => /e[-\s]?mail/.test(h));
+  const col = header.findIndex(h => /mail/.test(h));   /* "Email", "Mail", "E-mail"… */
   const out = [];
   if (col >= 0) {
     for (let i = 1; i < rows.length; i++) {
