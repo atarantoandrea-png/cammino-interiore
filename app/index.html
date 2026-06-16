@@ -1529,7 +1529,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     {f:'sciamana.mp3',     t:'Sciamana',        cat:'Sacro'}
   ];
   var au=document.getElementById('mu-audio');
-  var muIdx=-1, muDur=0;
+  var muIdx=-1, muDur=0, muVol=1;
 
   function mmss(s){ s=Math.max(0,Math.floor(s||0)); return Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); }
 
@@ -1578,7 +1578,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     var f=au.duration?(au.currentTime/au.duration):0;
     dayFrame.contentWindow.postMessage({
       t:'mu:state', active:muIdx>=0, playing:!au.paused,
-      title:tr?tr.t:'', cat:tr?tr.cat:'', frac:f, vol:au.volume,
+      title:tr?tr.t:'', cat:tr?tr.cat:'', frac:f, vol:muVol,
       cur:mmss(au.currentTime), dur:mmss(au.duration||0)
     }, location.origin);
   }
@@ -1655,14 +1655,30 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
   attachSeek(document.getElementById('mu-bar'));
   attachSeek(document.getElementById('mm-bar'));
 
-  /* volume: regolabile e ricordato (così la musica non copre la voce di Elisa) */
+  /* volume regolabile e ricordato. NB: iOS Safari ignora au.volume, quindi uso un
+     GainNode Web Audio (l'unico modo per regolare il volume via codice su iPhone),
+     sbloccato al primo gesto dell'utente. Fallback ad au.volume dove Web Audio manca. */
   (function(){
     var vEl=document.getElementById('mu-vol'), vIc=document.getElementById('mu-vol-ic');
-    var v=1; try{ var sv=parseFloat(localStorage.getItem('ovl-mu-vol')); if(!isNaN(sv)) v=Math.max(0,Math.min(1,sv)); }catch(e){}
-    au.volume=v;
+    try{ var sv=parseFloat(localStorage.getItem('ovl-mu-vol')); if(!isNaN(sv)) muVol=Math.max(0,Math.min(1,sv)); }catch(e){}
+    var actx=null, gainNode=null;
+    function applyVol(){ if(gainNode){ try{ gainNode.gain.value=muVol; }catch(e){} au.volume=1; } else { au.volume=muVol; } }
+    function ensureGraph(){
+      if(actx) return;
+      try{
+        var AC=window.AudioContext||window.webkitAudioContext; if(!AC) return;
+        actx=new AC();
+        var src=actx.createMediaElementSource(au);
+        gainNode=actx.createGain();
+        src.connect(gainNode); gainNode.connect(actx.destination);
+        applyVol();
+      }catch(e){ actx=null; gainNode=null; }
+    }
+    function unlock(){ ensureGraph(); if(actx && actx.state==='suspended'){ try{ actx.resume(); }catch(e){} } }
+    ['pointerdown','touchend','click','keydown'].forEach(function(ev){ document.addEventListener(ev, unlock, true); });
     function paint(x){ if(vEl && Math.round(+vEl.value)!==Math.round(x*100)) vEl.value=Math.round(x*100); if(vIc) vIc.textContent = x===0?'🔇':(x<0.5?'🔉':'🔊'); }
-    window.muSetVol=function(x){ x=Math.max(0,Math.min(1,x)); au.volume=x; try{ localStorage.setItem('ovl-mu-vol', String(x)); }catch(e){} paint(x); postState(); };
-    paint(v);
+    window.muSetVol=function(x){ muVol=Math.max(0,Math.min(1,x)); applyVol(); try{ localStorage.setItem('ovl-mu-vol', String(muVol)); }catch(e){} paint(muVol); postState(); };
+    applyVol(); paint(muVol);
     if(vEl) vEl.addEventListener('input', function(){ window.muSetVol(vEl.value/100); });
   })();
 
