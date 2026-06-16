@@ -371,8 +371,8 @@ var LEZ={
       nextBtn.style.display = seen ? '' : 'none';   /* la sessione successiva si apre dopo aver visto la spiegazione */
     }
   }
-  /* il pulsante porta alla sessione successiva: il Giornaliero (apre nella shell) */
-  function goToDay(){ if(inShell){ window.parent.postMessage({t:'open', route:'/app/day/'}, location.origin); } else { location.href='/app/day/'; } }
+  /* il pulsante NON entra nel Giornaliero: torna alla home e ti porta sulla sua card (poi entri tu) */
+  function goToDay(){ if(inShell){ window.parent.postMessage({t:'goto', id:'day'}, location.origin); } else { location.href='/app/'; } }
   nextBtn.addEventListener('click', goToDay);
 
   /* carico il video + tracciamento */

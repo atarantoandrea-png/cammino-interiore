@@ -1198,18 +1198,22 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
   function updateResumeBtn(){
     var b=document.getElementById('resumeBtn'); if(b) b.style.display='';   /* sempre visibile */
   }
-  /* scorre fino alla card dell'ultima sezione aperta (o, se non c'è, alla tappa consigliata) — senza entrarci */
-  window.ricominciaDove=function(){
-    var id=lastSection();
-    if(!id || !document.querySelector('#sentiero .stage[data-stage="'+id+'"]')){
-      try{ id=recommendedStage(); }catch(e){ id=''; }
-    }
-    if(!id) id='start';
+  /* scorre fino alla card di una tappa ed evidenzia — senza entrarci */
+  function scrollToStage(id){
+    if(!id)return;
     var li=document.querySelector('#sentiero .stage[data-stage="'+id+'"]'); if(!li)return;
     li.scrollIntoView({behavior:'smooth', block:'center'});
     var card=li.querySelector('.excard');
     if(card){ card.classList.remove('justhere'); void card.offsetWidth; card.classList.add('justhere');
       setTimeout(function(){ card.classList.remove('justhere'); }, 2600); }
+  }
+  /* "Ricomincia dove hai lasciato": ultima sezione aperta (o, se non c'è, la tappa consigliata) */
+  window.ricominciaDove=function(){
+    var id=lastSection();
+    if(!id || !document.querySelector('#sentiero .stage[data-stage="'+id+'"]')){
+      try{ id=recommendedStage(); }catch(e){ id=''; }
+    }
+    scrollToStage(id||'start');
   };
   function doPull(){
     if(!EMAIL)return;
@@ -1719,6 +1723,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     if(e.origin!==location.origin) return;
     var m=e.data||{}; if(!m.t) return;
     if(m.t==='day:back'){ closeDay(); return; }
+    if(m.t==='goto'){ closeDay(); var gid=(typeof m.id==='string')?m.id:''; setTimeout(function(){ scrollToStage(gid); }, 120); return; }   /* torna alla home e scorre alla card, senza entrarci */
     if(m.t==='open'){ if(window.openFrame && typeof m.route==='string' && m.route.charAt(0)==='/'){ window.openFrame(m.route); } return; }
     if(m.t==='cap2-changed'){ if(window.OVL_refresh) window.OVL_refresh(); return; }
     if(m.t!=='mu:cmd') return;
