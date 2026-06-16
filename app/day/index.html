@@ -1240,7 +1240,7 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
       if(mini) mini.style.display = m.active ? 'block' : 'none';
       var tt=document.getElementById('mm-title'); if(tt) tt.textContent=m.title||'—';
       if(bT) bT.innerHTML = m.playing ? SVG_PAUSE : SVG_PLAY;
-      var fl=document.getElementById('mm-fill'); if(fl) fl.style.width=((m.frac||0)*100).toFixed(1)+'%';
+      var fl=document.getElementById('mm-fill'); if(fl) fl.style.width=((m.frac||0)*100).toFixed(2)+'%';
     });
     window.parent.postMessage({t:'mu:cmd',cmd:'state'},location.origin);  /* stato attuale all'apertura */
   })();

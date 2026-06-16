@@ -760,7 +760,7 @@ textarea:focus,.fperche:focus{outline:none;border-color:var(--glic-hi);box-shado
         play.innerHTML=pl?SVG_PAUSE:SVG_PLAY; play.classList.toggle('on', pl);
         if(title) title.textContent=m.title||'Heteryc';
         if(m.f){ selF=m.f; trks.forEach(function(c){ c.classList.toggle('on', c.getAttribute('data-f')===m.f); }); }
-        var pct=((m.frac||0)*100).toFixed(1)+'%'; if(fill)fill.style.width=pct; if(knob)knob.style.left=pct;
+        var pct=((m.frac||0)*100).toFixed(2)+'%'; if(fill)fill.style.width=pct; if(knob)knob.style.left=pct;
         if(curEl)curEl.textContent=m.cur||'0:00'; if(durEl)durEl.textContent=m.dur||'--:--';
         if(typeof m.vol==='number' && vol && !volBusy){ vol.value=Math.round(m.vol*100); paintVol(m.vol); }
       });
@@ -891,7 +891,7 @@ textarea:focus,.fperche:focus{outline:none;border-color:var(--glic-hi);box-shado
       mini.style.display = m.active ? 'block' : 'none';
       var tt=document.getElementById('mm-title'); if(tt) tt.textContent=m.title||'—';
       if(bT) bT.innerHTML = m.playing ? SVG_PAUSE : SVG_PLAY;
-      var fl=document.getElementById('mm-fill'); if(fl) fl.style.width=((m.frac||0)*100).toFixed(1)+'%';
+      var fl=document.getElementById('mm-fill'); if(fl) fl.style.width=((m.frac||0)*100).toFixed(2)+'%';
     });
     muSend('state');
   })();

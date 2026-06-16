@@ -604,7 +604,7 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
       mini.style.display = m.active ? 'block' : 'none';
       var tt=document.getElementById('mm-title'); if(tt) tt.textContent=m.title||'—';
       if(bT) bT.innerHTML = m.playing ? SVG_PAUSE : SVG_PLAY;
-      var fl=document.getElementById('mm-fill'); if(fl) fl.style.width=((m.frac||0)*100).toFixed(1)+'%';
+      var fl=document.getElementById('mm-fill'); if(fl) fl.style.width=((m.frac||0)*100).toFixed(2)+'%';
     });
     muSend('state');
   })();

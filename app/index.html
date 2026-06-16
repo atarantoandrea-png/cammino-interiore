@@ -1737,9 +1737,9 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     else if(m.cmd==='vol'){ if(window.muSetVol) window.muSetVol(+m.v); }
   });
 
-  au.addEventListener('play',  function(){ setPlayBtn(true); });
-  au.addEventListener('pause', function(){ setPlayBtn(false); });
-  au.addEventListener('ended', function(){ window.muNext(); });
+  au.addEventListener('play',  function(){ setPlayBtn(true); startBar(); });
+  au.addEventListener('pause', function(){ setPlayBtn(false); stopBar(); });
+  au.addEventListener('ended', function(){ stopBar(); window.muNext(); });
 
   au.addEventListener('loadedmetadata', function(){
     muDur=au.duration;
@@ -1748,16 +1748,28 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     postState();
   });
 
-  au.addEventListener('timeupdate', function(){
+  /* La barra: 'timeupdate' scatta solo ~4 volte/sec → movimento a scatti. Dipingo invece a
+     ~60fps con requestAnimationFrame leggendo au.currentTime (che è continuo), e così anche
+     gli iframe (bambino, giornaliero) ricevono uno stato fluido via postState(). */
+  var barRaf=null, lastSec=-1, lastPost=0;
+  function paintLocal(){            /* le barre della shell (playlist): 60fps pieni */
     if(!au.duration) return;
-    var f=au.currentTime/au.duration;
-    var pct=(f*100).toFixed(1)+'%';
+    var pct=((au.currentTime/au.duration)*100).toFixed(2)+'%';
     setW('mu-fill', pct); setL('mu-knob', pct);
     setW('mm-fill', pct);
-    setText('mu-cur',  mmss(au.currentTime));
-    setText('mu-cur2', mmss(au.currentTime));
-    postState();
-  });
+    var s=au.currentTime|0;
+    if(s!==lastSec){ lastSec=s; setText('mu-cur', mmss(au.currentTime)); setText('mu-cur2', mmss(au.currentTime)); }
+  }
+  function paintBar(){ paintLocal(); postState(); }   /* one-shot: barra + stato agli iframe */
+  function barTick(ts){
+    paintLocal();
+    if(ts-lastPost>=33){ lastPost=ts; postState(); }   /* verso gli iframe ~30fps: fluido senza riscrivere l'SVG 60 volte/sec */
+    barRaf=requestAnimationFrame(barTick);
+  }
+  function startBar(){ if(barRaf===null) barRaf=requestAnimationFrame(barTick); }
+  function stopBar(){ if(barRaf!==null){ cancelAnimationFrame(barRaf); barRaf=null; } paintBar(); }
+  /* fallback: a scheda in background rAF è sospeso ma l'audio continua → uso timeupdate */
+  au.addEventListener('timeupdate', function(){ if(barRaf===null) paintBar(); });
 
   /* barre con scrubbing a trascinamento (i pointer events coprono mouse + tocco) */
   function attachSeek(el){
@@ -1766,6 +1778,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
       if(!au.duration||muIdx<0) return;
       var r=el.getBoundingClientRect();
       au.currentTime=Math.max(0,Math.min(1,(e.clientX-r.left)/r.width))*au.duration;
+      paintBar();   /* feedback immediato anche in pausa */
     }
     el.addEventListener('pointerdown', function(e){
       if(!au.duration||muIdx<0) return;
