@@ -86,9 +86,9 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
 .hd .orn{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:12px}
 .hd .orn .l{width:80px;height:1px;background:linear-gradient(90deg,transparent,rgba(185,163,227,.6),transparent)}
 .hd .orn .d{width:6px;height:6px;border:1px solid var(--glic);transform:rotate(45deg)}
-.hd .cap{font-family:'Cinzel',serif;font-size:11px;font-weight:600;letter-spacing:.3em;color:var(--gold);text-shadow:0 0 14px rgba(201,168,76,.4);margin-bottom:8px}
+.hd .cap{font-family:'Cinzel',serif;font-size:12.5px;font-weight:600;letter-spacing:.3em;color:var(--gold);text-shadow:0 0 14px rgba(201,168,76,.4);margin-bottom:8px}
 .hd h1{font-family:'Cinzel',serif;font-weight:600;font-size:clamp(23px,5.4vw,32px);letter-spacing:.07em;color:#f0eaf6;text-shadow:0 0 30px rgba(185,163,227,.35)}
-.hd .lead{font-size:16px;color:var(--txt-soft);margin:13px auto 0;max-width:560px;line-height:1.55}
+.hd .lead{font-size:18px;color:var(--txt-soft);margin:13px auto 0;max-width:560px;line-height:1.55}
 .hd .lead b{color:var(--gold-pale);font-weight:600}
 
 /* ===== HUB: le due icone/esercizi ===== */
@@ -106,78 +106,76 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
   border:1px solid rgba(185,163,227,.3);box-shadow:inset 0 1px 2px rgba(255,255,255,.12), 0 3px 10px rgba(0,0,0,.4)}
 .exitem.seen .exic{background:radial-gradient(circle at 38% 30%, rgba(127,214,160,.4), rgba(30,52,40,.7));border-color:rgba(127,214,160,.45)}
 .exmeta{flex:1;min-width:0}
-.extag{font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:.16em;color:var(--gold);opacity:.85;margin-bottom:3px}
-.exitem h3{font-family:'Cinzel',serif;font-weight:600;font-size:17px;color:#f0eaf6;line-height:1.25;margin-bottom:5px}
-.exitem p{font-size:14.5px;color:var(--txt-soft);line-height:1.45}
+.extag{font-family:'Cinzel',serif;font-size:11px;letter-spacing:.16em;color:var(--gold);opacity:.85;margin-bottom:3px}
+.exitem h3{font-family:'Cinzel',serif;font-weight:600;font-size:19px;color:#f0eaf6;line-height:1.25;margin-bottom:5px}
+.exitem p{font-size:16.5px;color:var(--txt-soft);line-height:1.45}
 .exarrow{flex:none;color:var(--glic);font-size:20px;opacity:.7}
-.exstate{flex:none;font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:.08em;color:var(--txt-dim);white-space:nowrap}
+.exstate{flex:none;font-family:'Cinzel',serif;font-size:11px;letter-spacing:.08em;color:var(--txt-dim);white-space:nowrap}
 .exitem.seen .exstate{color:var(--seen);text-shadow:0 0 8px var(--seen-glow)}
 .exitem.locked .exarrow{color:var(--gold-pale)}
 
-.hubnote{margin:18px 18px 0;text-align:center;font-size:14px;color:var(--txt-dim);line-height:1.55}
+.hubnote{margin:18px 18px 0;text-align:center;font-size:16px;color:var(--txt-dim);line-height:1.55}
 .hubnote b{color:var(--gold-pale);font-weight:600}
 
 /* ===== vista esercizio (foglio) ===== */
 .view{display:none}
 .view.on{display:block}
-.vback{margin:2px 18px 10px;display:inline-flex;align-items:center;gap:6px;cursor:pointer;background:none;border:none;
-  font-family:'Cinzel',serif;font-size:11px;letter-spacing:.1em;color:var(--glic);padding:6px 0}
-.vback::before{content:'←'}
 .fbox{margin:0 18px;border:1px solid var(--card-line);border-radius:18px;padding:20px 18px 22px;
   background:linear-gradient(180deg, rgba(26,21,36,.78), rgba(16,13,23,.85));box-shadow:0 6px 20px rgba(0,0,0,.4)}
 .fintro{font-size:15.5px;color:var(--txt-soft);line-height:1.6;margin-bottom:8px}
 .fintro b{color:var(--gold-pale);font-weight:600}
 .fq{margin-top:22px}
-.fq-n{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.2em;color:var(--gold);margin-bottom:6px}
-.fq-q{font-size:17px;color:#f0eaf6;line-height:1.4;margin-bottom:10px;font-weight:600}
-.fld label{display:block;font-family:'Cinzel',serif;font-size:10px;letter-spacing:.1em;color:var(--txt-dim);margin:12px 0 5px}
+.fq-n{font-family:'Cinzel',serif;font-size:11.5px;letter-spacing:.2em;color:var(--gold);margin-bottom:6px}
+.fq-q{font-size:19px;color:#f0eaf6;line-height:1.4;margin-bottom:10px;font-weight:600}
+.fld label{display:block;font-family:'Cinzel',serif;font-size:11.5px;letter-spacing:.1em;color:var(--txt-dim);margin:12px 0 5px}
 textarea,.fperche{width:100%;font-family:'Cormorant Garamond',serif;color:var(--txt);
-  background:var(--field);border:1px solid var(--field-line);border-radius:10px;padding:11px 13px;font-size:16px;line-height:1.5;
+  background:var(--field);border:1px solid var(--field-line);border-radius:10px;padding:11px 13px;font-size:18px;line-height:1.5;
   resize:none;overflow:hidden}  /* niente scroll interno: le caselle crescono col testo */
 textarea{min-height:70px}
 textarea:focus,.fperche:focus{outline:none;border-color:var(--glic-hi);box-shadow:0 0 0 1px rgba(220,205,250,.4), 0 0 16px rgba(150,110,215,.2)}
 .fperche-wrap{margin-top:6px;display:flex;flex-direction:column;gap:7px}
-.fperche{font-size:15px;min-height:44px}
-.fwhy{font-style:italic;color:var(--txt-dim);font-size:13.5px;margin:14px 0 2px}
+.fperche{font-size:17px;min-height:44px}
+.fwhy{font-style:italic;color:var(--txt-dim);font-size:15.5px;margin:14px 0 2px}
 
-.factions{display:flex;flex-wrap:wrap;gap:10px;margin:24px 18px 0;align-items:center;justify-content:center}
-.fbtn{font-family:'Cinzel',serif;font-size:11px;letter-spacing:.08em;cursor:pointer;padding:10px 20px;border-radius:22px;
+.factions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:26px 18px 0}
+.fbtn{font-family:'Cinzel',serif;font-size:13px;letter-spacing:.05em;cursor:pointer;min-height:64px;padding:12px 14px;border-radius:16px;
+  display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.35;
   border:1px solid rgba(185,163,227,.5);color:var(--glic-hi);background:linear-gradient(180deg, rgba(60,46,92,.6), rgba(34,26,52,.7));
   box-shadow:0 3px 10px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.1);transition:all .2s}
-.fbtn:hover{border-color:rgba(205,178,242,.8);color:#fff;box-shadow:0 4px 14px rgba(120,80,200,.4)}
+.fbtn:hover{border-color:rgba(205,178,242,.8);color:#fff;transform:translateY(-1px);box-shadow:0 6px 18px rgba(120,80,200,.4)}
 .fbtn.gold{color:#2a2208;border-color:rgba(201,168,76,.8);background:linear-gradient(180deg, #e8d9ae, var(--gold));text-shadow:none}
 .fbtn.done{color:#0e2a1b;border-color:rgba(127,214,160,.8);background:linear-gradient(180deg, #9fe6bd, var(--seen))}
 .fbtn.done::before{content:'✓ '}
-.fhint{width:100%;text-align:center;font-size:13px;color:var(--txt-dim);font-style:italic}
+.fhint{grid-column:1 / -1;text-align:center;font-size:13px;color:var(--txt-dim);font-style:italic;margin-top:2px}
 
 /* video di Elisa in cima al foglio */
 .fvideo{margin:0 18px 16px}
-.fvintro{font-size:15px;color:var(--txt-soft);line-height:1.55;margin-bottom:10px;text-align:center}
+.fvintro{font-size:17px;color:var(--txt-soft);line-height:1.55;margin-bottom:10px;text-align:center}
 .fvintro b{color:var(--gold-pale);font-weight:600}
 .lframe{position:relative;padding-top:56.25%;height:0;overflow:hidden;background:#000;border-radius:14px;border:1px solid rgba(185,163,227,.2)}
 .lframe iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
-.lframe .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif;font-size:11px;letter-spacing:.12em;color:var(--txt-dim)}
+.lframe .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif;font-size:12.5px;letter-spacing:.12em;color:var(--txt-dim)}
 
 /* zone del foglio (ogni domanda = una zona per la luce) */
 .fzone{position:relative;padding:18px 4px 16px;border-top:1px solid rgba(185,163,227,.12);scroll-margin-top:70px;transition:background .3s}
 .fzone:first-of-type{border-top:none}
 .fzone.lit{background:linear-gradient(90deg, rgba(185,163,227,.07), transparent 70%)}
-.fq-help{font-size:14.5px;color:var(--txt-soft);line-height:1.55;margin:8px 0 6px}
+.fq-help{font-size:16.5px;color:var(--txt-soft);line-height:1.55;margin:8px 0 6px}
 .fq-help b{color:var(--gold-pale);font-weight:600}
 .fprop{display:flex;flex-direction:column;gap:8px;margin-top:4px}
-.fradio{display:flex;align-items:center;gap:9px;font-size:15px;color:var(--txt-soft);cursor:pointer;
+.fradio{display:flex;align-items:center;gap:9px;font-size:17px;color:var(--txt-soft);cursor:pointer;
   padding:9px 12px;border:1px solid var(--field-line);border-radius:10px;background:var(--field);transition:border-color .2s}
 .fradio:hover{border-color:rgba(205,178,242,.6)}
 .fradio input{accent-color:var(--glic);width:16px;height:16px}
-.fclose{font-size:15px;color:var(--txt-soft);line-height:1.6;margin-top:20px;padding-top:16px;border-top:1px solid rgba(185,163,227,.14)}
+.fclose{font-size:17px;color:var(--txt-soft);line-height:1.6;margin-top:20px;padding-top:16px;border-top:1px solid rgba(185,163,227,.14)}
 .fclose b{color:var(--gold-pale);font-weight:600}
 
 /* ===== area meditazione (placeholder) ===== */
 .medbox{margin:0 18px;border:1px dashed rgba(185,163,227,.32);border-radius:18px;padding:34px 22px;text-align:center;
   background:linear-gradient(180deg, rgba(22,17,30,.6), rgba(14,11,20,.7))}
 .medbox .glyph{font-size:42px;filter:drop-shadow(0 0 16px var(--lm-g1));margin-bottom:14px}
-.medbox h3{font-family:'Cinzel',serif;font-size:18px;color:#f0eaf6;margin-bottom:10px}
-.medbox p{font-size:15px;color:var(--txt-soft);line-height:1.55;max-width:440px;margin:0 auto}
+.medbox h3{font-family:'Cinzel',serif;font-size:20px;color:#f0eaf6;margin-bottom:10px}
+.medbox p{font-size:17px;color:var(--txt-soft);line-height:1.55;max-width:440px;margin:0 auto}
 .medbox p b{color:var(--gold-pale)}
 
 /* ===== pannello GUIDA (luce) ===== */
@@ -190,16 +188,16 @@ textarea:focus,.fperche:focus{outline:none;border-color:var(--glic-hi);box-shado
 #gpan.on{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1)}
 .gp-hd{display:flex;align-items:center;gap:12px;padding:18px 20px 14px;border-bottom:1px solid rgba(185,163,227,.2)}
 .gp-orb{width:34px;height:34px;border-radius:50%;flex-shrink:0;background:radial-gradient(circle at 38% 34%, #fff 0%, #fff 30%, var(--lm-mid) 60%, transparent 80%);box-shadow:0 0 10px 3px var(--lm-g1), 0 0 26px 10px var(--lm-g2);animation:lflick 3.1s ease-in-out infinite}
-.gp-hd h2{font-family:'Cinzel',serif;font-size:17px;font-weight:600;color:#f0eaf6;flex:1}
-.gp-x{background:none;border:1px solid rgba(185,163,227,.4);color:var(--txt-soft);width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:15px}
+.gp-hd h2{font-family:'Cinzel',serif;font-size:19px;font-weight:600;color:#f0eaf6;flex:1}
+.gp-x{background:none;border:1px solid rgba(185,163,227,.4);color:var(--txt-soft);width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:17px}
 .gp-x:hover{color:#fff;border-color:var(--glic-hi)}
 .gp-bd{flex:1;overflow-y:auto;padding:18px 20px 26px;-webkit-overflow-scrolling:touch}
-.gp-bd p{font-size:16px;line-height:1.62;color:var(--txt-soft);margin-bottom:12px}
+.gp-bd p{font-size:18px;line-height:1.62;color:var(--txt-soft);margin-bottom:12px}
 .gp-bd p b{color:var(--gold-pale);font-weight:600}
 .gp-giorn{margin-top:18px;padding:14px 16px;border:1px solid rgba(201,168,76,.3);border-radius:14px;background:rgba(40,33,22,.45)}
-.gp-giorn p{margin:0;font-size:15px;color:var(--txt-soft)}
+.gp-giorn p{margin:0;font-size:17px;color:var(--txt-soft)}
 
-#saved{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(60px);background:rgba(22,17,28,.96);color:var(--glic-hi);border:1px solid rgba(185,163,227,.5);border-radius:30px;padding:9px 20px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:.1em;z-index:70;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none}
+#saved{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(60px);background:rgba(22,17,28,.96);color:var(--glic-hi);border:1px solid rgba(185,163,227,.5);border-radius:30px;padding:9px 20px;font-family:'Cinzel',serif;font-size:12.5px;letter-spacing:.1em;z-index:70;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none}
 #saved.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
 @media(max-width:520px){
@@ -281,7 +279,6 @@ textarea:focus,.fperche:focus{outline:none;border-color:var(--glic-hi);box-shado
 
   <!-- ===== ESERCIZIO 1 · IL FOGLIO ===== -->
   <section id="foglio" class="view">
-    <button class="vback" type="button" onclick="goHub()">Torna agli esercizi del Bambino</button>
     <div class="fvideo">
       <p class="fvintro"><b>Prima di rispondere, riguarda il video «Il Bambino Interiore»</b> — quello in cui Elisa ti spiega cos'è il bambino interiore. Le emozioni della prima domanda sono proprio su <b>questo</b> video.</p>
       <div class="lframe" id="fvframe-teoria"><div class="ph">Carico il video…</div></div>
@@ -290,8 +287,7 @@ textarea:focus,.fperche:focus{outline:none;border-color:var(--glic-hi);box-shado
     </div>
 
     <div class="fbox">
-      <p class="fintro">Questo non è un esercizio di testa, è un esercizio del <b>sentire</b>. Si parte dal video <b>«Il Bambino Interiore»</b> qui sopra — quello in cui Elisa ti spiega cos'è il tuo bambino interiore: rispondi <b>di getto</b>, senza pensarci troppo e senza giudicarti — sii sincera/o con te stessa/o.</p>
-      <p class="fintro"><b>I tre «perché».</b> Dopo ogni risposta, chiediti «perché» tre volte. Serve perché la <b>prima risposta è sempre razionale</b>; poi inizi a scavare e a sentirti dentro. La seconda è più pensata, la terza più intuitiva, la quarta arriva da <b>ciò che senti davvero dentro — dalla tua anima</b>. Il cammino interiore è proprio questo: imparare a sentirsi.</p>
+      <p class="fintro">Non è un esercizio di testa, ma del <b>sentire</b>: rispondi <b>di getto</b>, senza giudicarti. Dopo ogni risposta chiediti <b>«perché» tre volte</b> — la prima è razionale, è dal terzo «perché» che affiora ciò che senti <b>davvero, dall'anima</b>.</p>
 
       <div class="fzone" data-zone="emozione">
         <div class="fq-n">Domanda 1 · L'emozione</div>
@@ -337,16 +333,15 @@ textarea:focus,.fperche:focus{outline:none;border-color:var(--glic-hi);box-shado
 
     <div class="factions">
       <button class="fbtn" type="button" id="btnSave">Salva</button>
+      <button class="fbtn gold" type="button" id="btnDone">Segna come completato</button>
       <button class="fbtn" type="button" id="btnPrint">Stampa vuoto (da scrivere a mano)</button>
       <button class="fbtn" type="button" id="btnPrintFilled">Stampa con le mie risposte</button>
-      <button class="fbtn gold" type="button" id="btnDone">Segna come completato</button>
       <div class="fhint">Puoi scrivere qui — resta salvato nel tuo account, e potrai rileggerlo tra qualche mese — oppure <b>stampare il foglio e scriverlo a mano</b>, come consiglia Elisa.</div>
     </div>
   </section>
 
   <!-- ===== ESERCIZIO 2 · MEDITAZIONE (area placeholder) ===== -->
   <section id="medit" class="view">
-    <button class="vback" type="button" onclick="goHub()">Torna agli esercizi del Bambino</button>
     <div class="medbox">
       <div class="glyph">🧘</div>
       <h3>L'area di meditazione sta arrivando</h3>
