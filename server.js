@@ -84,7 +84,16 @@ const FULL_TABS = (process.env.SHEETS_TABS ? process.env.SHEETS_TABS.split(',') 
   .map(s => s.trim()).filter(Boolean);
 const MONTHLY_TABS = (process.env.SHEETS_TABS_MONTHLY ? process.env.SHEETS_TABS_MONTHLY.split(',') : [SHEETS_TAB3])
   .map(s => s.trim()).filter(Boolean);
-const SHEETS_TABS = [...FULL_TABS, ...MONTHLY_TABS];
+/* GERARCHIA ACCESSI: rank più alto = più accesso. Sui doppioni (stessa mail in più
+   schede) vince SEMPRE il rank più alto, indipendentemente dall'ordine di lettura.
+   Per un livello FUTURO (es. il "trailer" dell'app) basta aggiungere qui una riga con
+   un rank più basso e le sue schede — la regola del "vince il più alto" vale da sola. */
+const TIER_GROUPS = [
+  { tier: 'full',    rank: 30, tabs: FULL_TABS },     /* annuali + Cammino Interiore Speciali: accesso completo */
+  { tier: 'monthly', rank: 20, tabs: MONTHLY_TABS },  /* Mensili: anteprima/trailer fino al Giornaliero */
+];
+const TIER_RANK = TIER_GROUPS.reduce((m, g) => { m[g.tier] = g.rank; return m; }, {});
+const SHEETS_TABS = TIER_GROUPS.reduce((a, g) => a.concat(g.tabs), []);
 const SESSION_TTL = 30 * 24 * 60 * 60 * 1000; /* 30 giorni */
 const EMAIL_CACHE_TTL = 5 * 60 * 1000;  /* 5 min */
 
@@ -181,10 +190,10 @@ function fetchSheetTitles(token, cb) {
   }).on('error', () => cb([]));
 }
 
-/* cache: mappa email -> livello ('full' | 'monthly').
-   'full' = annuali + Cammino Interiore Speciali (vince sempre, anche se la mail è
-   pure tra i mensili). 'monthly' = solo nel foglio Mensili. L'allowlist è l'insieme
-   delle chiavi. I nomi dei fogli sono risolti ai titoli reali in modo case-insensitive. */
+/* cache: mappa email -> livello (es. 'full' | 'monthly'). Sui DOPPIONI (stessa mail in
+   più schede/livelli) vince SEMPRE il livello con più accesso (rank più alto), qualunque
+   sia l'ordine di lettura dei fogli — regola valida anche per i livelli futuri.
+   L'allowlist è l'insieme delle chiavi. I nomi dei fogli sono risolti ai titoli reali. */
 let tierCache = null, tierCacheAt = 0;
 function getTierMap(cb) {
   if (tierCache && Date.now() - tierCacheAt < EMAIL_CACHE_TTL) return cb(null, tierCache);
@@ -193,14 +202,13 @@ function getTierMap(cb) {
     fetchSheetTitles(token, titles => {
       const norm = s => String(s).trim().toLowerCase();
       const resolve = want => { const hit = titles.find(t => norm(t) === norm(want)); return hit || want; };
-      const fullTabs = [...new Set(FULL_TABS.map(resolve))];
-      const monthlyTabs = [...new Set(MONTHLY_TABS.map(resolve))].filter(t => fullTabs.indexOf(t) < 0);
-      const jobs = fullTabs.map(t => ({tab: t, tier: 'full'}))
-                   .concat(monthlyTabs.map(t => ({tab: t, tier: 'monthly'})));
+      const jobs = [];
+      TIER_GROUPS.forEach(g => [...new Set(g.tabs.map(resolve))].forEach(tab => jobs.push({tab, tier: g.tier})));
       let pending = jobs.length; const map = new Map();
       if (!pending) { tierCache = map; tierCacheAt = Date.now(); return cb(null, map); }
       jobs.forEach(job => fetchTabRows(token, job.tab, emails => {
-        emails.forEach(e => { if (job.tier === 'full' || !map.has(e)) map.set(e, job.tier); });
+        const r = TIER_RANK[job.tier] || 0;
+        emails.forEach(e => { const cur = map.get(e); if (!cur || r > (TIER_RANK[cur] || 0)) map.set(e, job.tier); });
         if (--pending === 0) { tierCache = map; tierCacheAt = Date.now(); cb(null, map); }
       }));
     });
