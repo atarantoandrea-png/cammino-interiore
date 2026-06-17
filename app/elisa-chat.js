@@ -17,7 +17,7 @@ window.OVL_ELISA=(function(){
      curata). Token PUBBLICO: sblocca solo /api/chat, sicuro nel browser. Se il
      server non risponde o è sotto soglia, si usa la riserva locale qui sotto. */
   var REMOTE='https://jcsj7vgdv8uliwi4odt9cjbq.178.104.199.138.sslip.io/kpub-zJ0UwjRA5VWQVYbSi8sLRn8lKmwpPvNa/api/chat';
-  var REMOTE_TIMEOUT=8000;
+  var REMOTE_TIMEOUT=60000; /* il cervello generativo (macchina accesa) può metterci ~15-55s; il semantico resta istantaneo, quindi questo è solo un tetto massimo prima della riserva locale */
 
   /* ---------- sicurezza: il guardrail viene SEMPRE prima di tutto ---------- */
   var CRISIS=/suicid|uccider|ammazzar|farla finita|togliermi la vita|non voglio (pi[uù] )?vivere|voglio morire|non ce la faccio pi[uù]|eutanasia|autoles|farmi del male/i;

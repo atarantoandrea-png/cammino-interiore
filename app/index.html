@@ -866,7 +866,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
 
 <script src="/app/lume.js?v=4"></script>
 <script src="/app/ovl-cloud.js?v=2"></script>
-<script src="/app/elisa-chat.js?v=17"></script>
+<script src="/app/elisa-chat.js?v=18"></script>
 <script>
 (function(){
   var KEY='ovl-user';
@@ -1525,13 +1525,22 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     var typing=chatBubble('bot','· · ·',{}); typing.classList.add('typing');
     var prior=chatHist.slice();
     chatHist.push({role:'user',text:text});
+    /* se la risposta tarda oltre 6s (cervello generativo acceso, ~15-55s) avvisa con dolcezza;
+       per le risposte veloci (semantico) non compare mai */
+    var deepTimer=setTimeout(function(){
+      var t=typing.querySelector('.mtxt');
+      if(t)t.textContent='Sto riflettendo a fondo su quello che mi hai chiesto… dammi qualche secondo 💓';
+      typing.classList.remove('typing');
+    },6000);
     setTimeout(function(){
       if(!window.OVL_ELISA){
+        clearTimeout(deepTimer);
         if(typing.parentNode)typing.parentNode.removeChild(typing);
         chatBubble('bot','In questo momento non riesco a risponderti 🙏🏻 Riprova tra poco, ricaricando la pagina.',{});
         return;
       }
       OVL_ELISA.rispondi(text,prior,function(r){
+        clearTimeout(deepTimer);
         if(typing.parentNode)typing.parentNode.removeChild(typing);
         chatReply(r);
       });
