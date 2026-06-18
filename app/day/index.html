@@ -1064,7 +1064,8 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
   window.togglePrac=function(el,dayIso,s){
     var on=!store['cal-'+dayIso+'-'+s];
     setVal('cal-'+dayIso+'-'+s, on?true:null);
-    el.classList.toggle('on',on);
+    /* un giorno in cui hai davvero compilato resta segnato (non si può togliere a mano) */
+    el.classList.toggle('on', (s==='s1'||s==='s2') ? did(s,dayIso) : on);
     updateOggi(); applyTier(); renderHome();
     if(s==='s1'||s==='s2')renderDots(s);
   };
@@ -1079,7 +1080,7 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
       var date=new Date(mon); date.setDate(mon.getDate()+i);
       var di=iso(date), today=isToday(date), fut=isFuture(date);
       var moodSel=store['cal-'+di+'-mood'];
-      var s1on=!!store['cal-'+di+'-s1'], s2on=!!store['cal-'+di+'-s2'];
+      var s1on=did('s1',di), s2on=did('s2',di);   /* segnata se compilata (anche un solo campo) O segnata a mano */
       var moods='';
       for(var mi=0;mi<5;mi++){ moods+='<button class="mood'+(moodSel===mi?' on':'')+'" onclick="setMood(this,\''+di+'\','+mi+')" aria-label="umore '+(mi+1)+'">'+MOODS[mi]+'</button>'; }
       var card=document.createElement('div'); card.className='dday'+(today?' today':'');
