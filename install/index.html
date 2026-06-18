@@ -183,6 +183,7 @@ footer{
 
   <!-- ANDROID / DESKTOP: pulsante installa nativo -->
   <button class="btn btn-primary" id="installBtn" hidden>⬇ Scarica l'applicazione</button>
+  <p class="hint" id="chromeHint" hidden>L'app si installa da <strong>Chrome</strong>: tocca il pulsante e si aprirà lì.</p>
 
   <!-- ISTRUZIONI iOS -->
   <div class="steps" id="iosSteps" hidden>
@@ -333,7 +334,7 @@ body{padding-bottom:150px}
 
   // riapre QUESTA pagina in Chrome (necessario quando si arriva da dentro un'altra app: lì
   // Android non permette di installare; in Chrome invece il pulsante installa davvero)
-  var CHROME_INTENT = 'intent://oltreilvelo.elisasoulmedium.com/install#Intent;scheme=https;package=com.android.chrome;end';
+  var CHROME_INTENT = 'intent://oltreilvelo.elisasoulmedium.com/install#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=' + encodeURIComponent('https://oltreilvelo.elisasoulmedium.com/install') + ';end';
 
   installBtn.addEventListener('click', async function(){
     if (deferred) {
@@ -360,8 +361,10 @@ body{padding-bottom:150px}
   setTimeout(function(){
     if (!deferred && isAndroid && installBtn && !installBtn.hidden) {
       installBtn.textContent = '⬇ Apri in Chrome e installa';
+      var h = document.getElementById('chromeHint');
+      if (h) h.hidden = false;
     }
-  }, 2500);
+  }, 1500);
 
   window.addEventListener('appinstalled', function(){
     installBtn.hidden = true;
