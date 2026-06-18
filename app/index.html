@@ -312,6 +312,10 @@ footer a{color:var(--glic-hi);text-decoration:none}
 @media(max-width:760px){
   #chatpan{left:0;right:0;top:0;width:100%;max-width:100%;height:100dvh;border-radius:0;border-left:0;border-right:0;transform:translateY(18px)}
   #chatpan.on{transform:translateY(0)}
+  /* header sotto la barra di stato (batteria/notch) + X più piccola */
+  #chatpan .gp-hd{padding-top:calc(12px + env(safe-area-inset-top,0px));padding-bottom:12px}
+  #chatpan .gp-x{width:32px;height:32px;font-size:15px}
+  #chatpan .gp-orb{width:28px;height:28px}
 }
 .gp-hd{
   display:flex;align-items:center;gap:12px;padding:18px 20px 14px;
