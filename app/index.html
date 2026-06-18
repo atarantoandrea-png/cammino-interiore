@@ -414,7 +414,7 @@ details.gd[open]{border-color:rgba(205,178,242,.5);box-shadow:0 0 16px rgba(170,
 .gd-c li{margin-bottom:7px}
 
 /* ================= SCRIVI A ELISA (in preparazione) ================= */
-.chat-msgs{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:18px 16px;display:flex;flex-direction:column;gap:10px;-webkit-overflow-scrolling:touch}
+.chat-msgs{position:relative;flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:18px 16px;display:flex;flex-direction:column;gap:10px;-webkit-overflow-scrolling:touch}
 .msg{max-width:84%;padding:12px 15px;border-radius:14px;font-size:20.5px;line-height:1.65;color:var(--txt)}
 .msg .mwho{display:block;font-family:'Cinzel',serif;font-size:13.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--glic);margin-bottom:6px}
 .msg.elisa{align-self:flex-start;background:rgba(185,163,227,.09);border:1px solid rgba(185,163,227,.3);border-bottom-left-radius:4px}
@@ -1432,7 +1432,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     document.documentElement.classList.add('chat-viva');
     setTimeout(lumeAllaChat,60);
     if(window.OVL_ELISA && OVL_ELISA.preload)OVL_ELISA.preload();   /* il cervello si scalda in anticipo */
-    document.getElementById('chat-in').focus();
+    /* niente focus automatico: la tastiera non si apre da sola, si vede la chat com'è */
   }
   function chiudiChat(){
     chatpan.classList.remove('on');
@@ -1446,6 +1446,8 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
 
   var chatHist=[];
   var chatMsgs=document.getElementById('chat-msgs');
+  var lastQ=null;
+  function scrollToEl(el){ if(el) chatMsgs.scrollTop=Math.max(0, el.offsetTop - 12); }   /* porta l'elemento in cima alla chat */
   function chatBubble(role,text,opts){
     opts=opts||{};
     var d=document.createElement('div');
@@ -1466,6 +1468,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
       var b2=document.createElement('span'); b2.className='mode'; b2.textContent='📖 approfondimento · dalle fonti di Elisa'; d.appendChild(b2);
     }
     chatMsgs.appendChild(d);
+    if(role==='user')lastQ=d;
     chatMsgs.scrollTop=chatMsgs.scrollHeight;
     return d;
   }
@@ -1503,7 +1506,8 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
         caricaDeep(function(ok){
           if(ok && OVL_ELISA_DEEP[r.id]){
             if(btn.parentNode)btn.parentNode.removeChild(btn);
-            chatBubble('bot',OVL_ELISA_DEEP[r.id],{mode:'deep'});
+            var dd=chatBubble('bot',OVL_ELISA_DEEP[r.id],{mode:'deep'});
+            scrollToEl(dd);   /* l'approfondimento si vede dall'inizio */
             chatHist.push({role:'bot',text:'[approfondimento: '+r.id+']'});
           } else {
             btn.disabled=false; btn.textContent='📖 Approfondisci';
@@ -1512,8 +1516,8 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
         });
       });
       d.appendChild(btn);
-      chatMsgs.scrollTop=chatMsgs.scrollHeight;
     }
+    scrollToEl(lastQ);   /* fermati all'inizio: la domanda in alto, la risposta sotto */
   }
   /* domanda scelta dal menu: risposta esatta, senza avvertenza */
   function chatAskId(id,label){
