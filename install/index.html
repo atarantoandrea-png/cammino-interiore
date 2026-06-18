@@ -224,11 +224,7 @@ footer{
   </div>
 
   <div class="success" id="installedMsg">✦ App installata!</div>
-
-  <div class="divider"></div>
-
-  <button class="btn btn-ghost" id="notifBtn">🔔 Attiva le notifiche</button>
-  <div class="success" id="notifMsg">✦ Notifiche attivate!</div>
+  <!-- Le notifiche NON si chiedono qui: si attivano dentro l'app, dopo l'installazione -->
 </div>
 
 <footer>Il Cammino Interiore · Elisa Soul Medium</footer>
@@ -313,8 +309,6 @@ body{padding-bottom:150px}
   var iosSteps     = document.getElementById('iosSteps');
   var androidSteps = document.getElementById('androidSteps');
   var installedMsg = document.getElementById('installedMsg');
-  var notifBtn     = document.getElementById('notifBtn');
-  var notifMsg     = document.getElementById('notifMsg');
 
   // Mostra SEMPRE le istruzioni giuste per il dispositivo (niente scorciatoie:
   // la modalità "standalone" è vera anche dentro un'altra app, e ci farebbe sbagliare).
@@ -349,35 +343,7 @@ body{padding-bottom:150px}
     androidSteps.hidden = true;
     installedMsg.classList.add('show');
   });
-
-  // Notifiche
-  if (!('Notification' in window)) {
-    notifBtn.hidden = true;
-  } else if (Notification.permission === 'granted') {
-    notifBtn.hidden = true;
-    notifMsg.classList.add('show');
-  }
-
-  notifBtn.addEventListener('click', async function(){
-    notifBtn.disabled = true;
-    var original = notifBtn.textContent;
-    notifBtn.textContent = 'Attivazione…';
-    try {
-      var sub = (window.PWAManager && window.PWAManager.subscribe)
-        ? await window.PWAManager.subscribe()
-        : null;
-      if (sub) {
-        notifBtn.hidden = true;
-        notifMsg.classList.add('show');
-      } else {
-        notifBtn.textContent = original;
-        notifBtn.disabled = false;
-      }
-    } catch(e) {
-      notifBtn.textContent = original;
-      notifBtn.disabled = false;
-    }
-  });
+  /* Niente richiesta notifiche qui: le notifiche si attivano dentro l'app, dopo l'installazione */
 })();
 </script>
 </body>
