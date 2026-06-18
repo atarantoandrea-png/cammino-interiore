@@ -331,6 +331,10 @@ body{padding-bottom:150px}
     androidSteps.hidden = true;
   });
 
+  // riapre QUESTA pagina in Chrome (necessario quando si arriva da dentro un'altra app: lì
+  // Android non permette di installare; in Chrome invece il pulsante installa davvero)
+  var CHROME_INTENT = 'intent://oltreilvelo.elisasoulmedium.com/install#Intent;scheme=https;package=com.android.chrome;end';
+
   installBtn.addEventListener('click', async function(){
     if (deferred) {
       // installazione automatica in un tocco
@@ -341,12 +345,23 @@ body{padding-bottom:150px}
         installedMsg.classList.add('show');
       }
       deferred = null;
+    } else if (isAndroid) {
+      // installazione non disponibile qui (sei dentro un'altra app): riapro in Chrome, lì funziona
+      window.location.href = CHROME_INTENT;
     } else {
-      // automatica non disponibile (es. pagina aperta dentro un'altra app): mostro i passi manuali
+      // desktop o altro browser: mostro i passi manuali
       androidSteps.hidden = false;
       androidSteps.scrollIntoView({behavior:'smooth', block:'center'});
     }
   });
+
+  // Se dopo un attimo l'installazione automatica non è arrivata, su Android lo dico chiaro:
+  // il pulsante diventa "Apri in Chrome per installare".
+  setTimeout(function(){
+    if (!deferred && isAndroid && installBtn && !installBtn.hidden) {
+      installBtn.textContent = '⬇ Apri in Chrome e installa';
+    }
+  }, 2500);
 
   window.addEventListener('appinstalled', function(){
     installBtn.hidden = true;
