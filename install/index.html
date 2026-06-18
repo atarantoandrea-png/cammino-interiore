@@ -5,14 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Installa · Il Cammino Interiore</title>
 
-<!-- Se l'app è già installata e viene aperta, vai subito all'app vera -->
-<script>
-  (function(){
-    var standalone = window.navigator.standalone === true ||
-      (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches);
-    if (standalone) { window.location.replace('/app'); }
-  })();
-</script>
+<!-- Questa pagina mostra SEMPRE le istruzioni di installazione del Cammino Interiore
+     (nessun salto automatico all'app: anche aperta da dentro un'altra app resta qui). -->
 
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#b9a3e3">
@@ -322,16 +316,12 @@ body{padding-bottom:150px}
   var notifBtn     = document.getElementById('notifBtn');
   var notifMsg     = document.getElementById('notifMsg');
 
-  // Se è già installata, mostra conferma (e in teoria il redirect a /app è già scattato)
-  if (standalone) {
-    installedMsg.classList.add('show');
-  } else if (isIOS) {
+  // Mostra SEMPRE le istruzioni giuste per il dispositivo (niente scorciatoie:
+  // la modalità "standalone" è vera anche dentro un'altra app, e ci farebbe sbagliare).
+  if (isIOS) {
     iosSteps.hidden = false;
-  } else if (isAndroid) {
-    // mostra le istruzioni manuali; se arriva il prompt nativo le sostituiamo col pulsante
-    androidSteps.hidden = false;
   } else {
-    androidSteps.hidden = false;
+    androidSteps.hidden = false;   // Android e desktop: istruzioni manuali; il prompt nativo le sostituisce col pulsante
   }
 
   // Prompt di installazione nativo (Chrome / Edge / Android)
