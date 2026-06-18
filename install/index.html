@@ -146,6 +146,12 @@ h1{
   font-size:15px;color:var(--txt-dim);text-align:center;
   margin-top:6px;font-style:italic;line-height:1.4;
 }
+/* titolo + video verticale delle istruzioni */
+.vtitle{font-family:'Cinzel',serif;font-weight:600;font-size:16px;letter-spacing:.07em;text-transform:uppercase;color:var(--gold-pale);line-height:1.45;margin:4px 0 16px}
+.vid{margin:0 auto 4px;max-width:232px}
+.vframe{position:relative;width:100%;padding-top:217%;border-radius:18px;overflow:hidden;background:#0c0913;border:1px solid var(--card-line);box-shadow:0 14px 36px rgba(0,0,0,.5)}
+.vframe iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--txt-dim);font-family:'Cinzel',serif;font-size:13px}
 .success{
   display:none;align-items:center;justify-content:center;gap:8px;
   background:rgba(120,200,150,.12);border:1px solid rgba(120,200,150,.3);
@@ -172,25 +178,38 @@ footer{
 
   <div class="divider"></div>
 
+  <h2 class="vtitle">Istruzioni importanti per il Cammino Interiore</h2>
+  <div class="vid"><div class="vframe" id="vf"><div class="vph">Carico il video…</div></div></div>
+
+  <div class="divider"></div>
+
   <!-- ANDROID / DESKTOP: pulsante installa nativo -->
-  <button class="btn btn-primary" id="installBtn" hidden>⬇ Installa l'app</button>
+  <button class="btn btn-primary" id="installBtn" hidden>⬇ Scarica l'applicazione</button>
 
   <!-- ISTRUZIONI iOS -->
   <div class="steps" id="iosSteps" hidden>
     <p class="steps-title">Installa su iPhone / iPad</p>
     <div class="step">
       <div class="step-num">1</div>
-      <div class="step-txt">Tocca l'icona <span class="ios-share"><svg viewBox="0 0 24 24"><path d="M12 15V4M12 4l-4 4M12 4l4 4M5 12v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg></span> <strong>Condividi</strong> nella barra di Safari</div>
+      <div class="step-txt">Apri questa pagina con <strong>Safari</strong> (non un altro browser: solo Safari può installarla).</div>
     </div>
     <div class="step">
       <div class="step-num">2</div>
-      <div class="step-txt">Scorri e tocca <strong>"Aggiungi a Home"</strong></div>
+      <div class="step-txt">Tocca l'icona <span class="ios-share"><svg viewBox="0 0 24 24"><path d="M12 15V4M12 4l-4 4M12 4l4 4M5 12v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg></span> <strong>Condividi</strong> (il quadrato con la freccia), in basso al centro.</div>
     </div>
     <div class="step">
       <div class="step-num">3</div>
-      <div class="step-txt">Tocca <strong>Aggiungi</strong> in alto a destra</div>
+      <div class="step-txt"><strong>Scorri verso il basso</strong> e tocca <strong>«Aggiungi a Home»</strong>. Se non la vedi, tocca prima <strong>«Altro»</strong> (o «Modifica azioni») e attivala.</div>
     </div>
-    <p class="hint">L'icona apparirà sulla tua schermata Home ✦<br>aprila per entrare nel Cammino</p>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-txt">Tocca <strong>Aggiungi</strong> in alto a destra.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-txt">Chiudi Safari e apri l'app dalla <strong>schermata Home</strong>: si aprirà <strong>a tutto schermo</strong>, come un'app vera, senza la barra del browser.</div>
+    </div>
+    <p class="hint">L'icona del Cammino apparirà sulla tua schermata Home ✦</p>
   </div>
 
   <!-- ISTRUZIONI ANDROID fallback (se il prompt nativo non è disponibile) -->
@@ -225,6 +244,13 @@ footer{
 
 <script>
 (function(){
+  /* video "Tour Cammino Interiore": embed nativo (no dnt) → views e tempo di visione tracciati su Vimeo */
+  (function(){ var f=document.getElementById('vf'); if(!f)return;
+    var ifr=document.createElement('iframe');
+    ifr.src='https://player.vimeo.com/video/1202625088?title=0&byline=0&portrait=0&badge=0';
+    ifr.setAttribute('allow','autoplay; fullscreen; picture-in-picture'); ifr.setAttribute('allowfullscreen','');
+    f.innerHTML=''; f.appendChild(ifr);
+  })();
   var ua = navigator.userAgent || '';
   var isIOS = /iPad|iPhone|iPod/.test(ua) ||
               (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
