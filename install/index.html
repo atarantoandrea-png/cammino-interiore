@@ -226,7 +226,7 @@ footer{
       <div class="step-num">3</div>
       <div class="step-txt">Conferma con <strong>Installa</strong></div>
     </div>
-    <p class="hint">Se non vedi «Installa app», apri questa pagina con <strong>Chrome</strong> (non con un browser dentro un'altra app).</p>
+    <p class="hint">Se non trovi «Installa app», è probabile che <strong>l'app sia già installata</strong>: cercala nella tua <strong>schermata Home</strong> e aprila da lì.</p>
   </div>
 
   <div class="success" id="installedMsg">✦ App installata!</div>
@@ -332,9 +332,18 @@ body{padding-bottom:150px}
     androidSteps.hidden = true;
   });
 
-  // riapre QUESTA pagina in Chrome (necessario quando si arriva da dentro un'altra app: lì
-  // Android non permette di installare; in Chrome invece il pulsante installa davvero)
-  var CHROME_INTENT = 'intent://oltreilvelo.elisasoulmedium.com/install#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=' + encodeURIComponent('https://oltreilvelo.elisasoulmedium.com/install') + ';end';
+  // riapre QUESTA pagina in Chrome (quando si arriva da dentro un'altra app, lì Android non
+  // permette di installare). Marcatore ?c=1: se siamo GIÀ tornati in Chrome non lo riproponiamo
+  // più (altrimenti loop infinito quando il prompt non arriva, es. app già installata).
+  var alreadyTriedChrome = /[?&]c=1/.test(location.search);
+  var CHROME_INTENT = 'intent://oltreilvelo.elisasoulmedium.com/install?c=1#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=' + encodeURIComponent('https://oltreilvelo.elisasoulmedium.com/install?c=1') + ';end';
+
+  function mostraManuale(){
+    if (installBtn) installBtn.hidden = true;
+    var h = document.getElementById('chromeHint'); if (h) h.hidden = true;
+    androidSteps.hidden = false;
+    androidSteps.scrollIntoView({behavior:'smooth', block:'center'});
+  }
 
   installBtn.addEventListener('click', async function(){
     if (deferred) {
@@ -346,25 +355,29 @@ body{padding-bottom:150px}
         installedMsg.classList.add('show');
       }
       deferred = null;
-    } else if (isAndroid) {
-      // installazione non disponibile qui (sei dentro un'altra app): riapro in Chrome, lì funziona
+    } else if (isAndroid && !alreadyTriedChrome) {
+      // sei dentro un'altra app: riapro in Chrome, lì l'installazione funziona
       window.location.href = CHROME_INTENT;
     } else {
-      // desktop o altro browser: mostro i passi manuali
-      androidSteps.hidden = false;
-      androidSteps.scrollIntoView({behavior:'smooth', block:'center'});
+      // già in Chrome senza prompt (spesso: app già installata) oppure desktop: mostro i passi manuali
+      mostraManuale();
     }
   });
 
-  // Se dopo un attimo l'installazione automatica non è arrivata, su Android lo dico chiaro:
-  // il pulsante diventa "Apri in Chrome per installare".
+  // Dopo un attimo, se l'installazione automatica non è arrivata:
   setTimeout(function(){
-    if (!deferred && isAndroid && installBtn && !installBtn.hidden) {
-      installBtn.textContent = '⬇ Apri in Chrome e installa';
-      var h = document.getElementById('chromeHint');
-      if (h) h.hidden = false;
+    if (deferred || !isAndroid) return;
+    if (!alreadyTriedChrome) {
+      // siamo dentro un'altra app: invito ad aprire in Chrome
+      if (installBtn && !installBtn.hidden) {
+        installBtn.textContent = '⬇ Apri in Chrome e installa';
+        var h = document.getElementById('chromeHint'); if (h) h.hidden = false;
+      }
+    } else {
+      // siamo GIÀ in Chrome ma il prompt non c'è (di solito: app già installata) → niente loop, mostro i passi
+      mostraManuale();
     }
-  }, 1500);
+  }, 2000);
 
   window.addEventListener('appinstalled', function(){
     installBtn.hidden = true;
