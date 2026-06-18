@@ -1980,14 +1980,14 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
 
 <!-- ===== Mensili: pulsante fisso "Passa all'annuale" + popup (video + link) ===== -->
 <style>
-.ann-fab{position:fixed;right:16px;bottom:16px;z-index:220;display:none;align-items:center;justify-content:center;
-  width:54px;height:54px;border-radius:50%;padding:0;cursor:pointer;color:#06302a;
+.ann-fab{position:fixed;right:18px;bottom:22px;z-index:220;display:none;align-items:center;justify-content:center;
+  width:36px;height:36px;border-radius:50%;padding:0;cursor:pointer;color:#06302a;
   border:1px solid rgba(154,247,234,.55);
   background:radial-gradient(circle at 38% 30%, #5cead6 0%, #2fe0c6 46%, #0e8f7f 100%);
-  box-shadow:0 4px 16px rgba(0,0,0,.45),0 0 18px rgba(47,224,198,.4);transition:transform .15s, box-shadow .2s}
-.ann-fab:hover{transform:scale(1.06);box-shadow:0 6px 22px rgba(0,0,0,.5),0 0 26px rgba(47,224,198,.6)}
-.ann-fab svg{width:27px;height:27px;display:block}
-@media(max-width:760px){.ann-fab{width:50px;height:50px;right:13px;bottom:13px}.ann-fab svg{width:25px;height:25px}}
+  box-shadow:0 4px 13px rgba(0,0,0,.45),0 0 13px rgba(47,224,198,.35);transition:transform .15s, box-shadow .2s}
+.ann-fab:hover{transform:scale(1.08);box-shadow:0 6px 18px rgba(0,0,0,.5),0 0 20px rgba(47,224,198,.55)}
+.ann-fab svg{width:19px;height:19px;display:block}
+@media(max-width:760px){.ann-fab{width:34px;height:34px;right:16px;bottom:20px}.ann-fab svg{width:18px;height:18px}}
 .ups-veil{position:fixed;inset:0;z-index:260;display:none;align-items:center;justify-content:center;padding:22px;background:rgba(8,6,12,.72);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
 .ups-veil.on{display:flex}
 .ups-card{position:relative;max-width:400px;width:100%;max-height:92vh;overflow-y:auto;border:1px solid rgba(201,168,76,.4);border-radius:20px;padding:30px 22px 22px;text-align:center;
@@ -2007,7 +2007,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
 .ups-info{font-family:'Cormorant Garamond',Georgia,serif;font-size:15px;color:#b7aec4;margin:12px 0 0}
 .ups-info b{color:#e8d9ae}
 </style>
-<button id="annualFab" class="ann-fab" type="button" onclick="OVL_showAnnual()" aria-label="Passa all'annuale" title="Passa all'annuale"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 20 C 11 18 6 13 11 11 C 16 9 12 6 16 4.5" stroke-dasharray="0.4 3.1"/><circle cx="6" cy="20" r="1.5" fill="currentColor" stroke="none"/><circle cx="16.5" cy="4" r="2.2" fill="currentColor" stroke="none"/></svg></button>
+<button id="annualFab" class="ann-fab" type="button" onclick="OVL_showAnnual()" aria-label="Passa all'annuale" title="Passa all'annuale"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 21 L10 3.5" stroke-width="1.8"/><path d="M17.5 21 L14 3.5" stroke-width="1.8"/><path d="M12 20.5 L12 4" stroke-width="1.5" stroke-dasharray="2.3 2.8"/></svg></button>
 <div id="upsell" class="ups-veil" role="dialog" aria-modal="true" aria-label="Passa all'annuale">
   <div class="ups-card">
     <button class="ups-x" id="upsX" type="button" aria-label="Chiudi">✕</button>
