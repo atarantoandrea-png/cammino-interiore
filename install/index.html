@@ -221,6 +221,7 @@ footer{
       <div class="step-num">3</div>
       <div class="step-txt">Conferma con <strong>Installa</strong></div>
     </div>
+    <p class="hint">Se non vedi «Installa app», apri questa pagina con <strong>Chrome</strong> (non con un browser dentro un'altra app).</p>
   </div>
 
   <div class="success" id="installedMsg">✦ App installata!</div>
@@ -310,32 +311,37 @@ body{padding-bottom:150px}
   var androidSteps = document.getElementById('androidSteps');
   var installedMsg = document.getElementById('installedMsg');
 
-  // Mostra SEMPRE le istruzioni giuste per il dispositivo (niente scorciatoie:
-  // la modalità "standalone" è vera anche dentro un'altra app, e ci farebbe sbagliare).
+  // iOS → istruzioni passo-passo. Android/desktop → pulsante SEMPRE visibile.
   if (isIOS) {
     iosSteps.hidden = false;
   } else {
-    androidSteps.hidden = false;   // Android e desktop: istruzioni manuali; il prompt nativo le sostituisce col pulsante
+    installBtn.hidden = false;   // pulsante sempre presente: l'utente vede subito come fare
   }
 
-  // Prompt di installazione nativo (Chrome / Edge / Android)
+  // Prompt di installazione nativo (Chrome / Edge / Android): se arriva, il pulsante lo userà
   var deferred = null;
   window.addEventListener('beforeinstallprompt', function(e){
     e.preventDefault();
     deferred = e;
-    androidSteps.hidden = true;
     installBtn.hidden = false;
+    androidSteps.hidden = true;
   });
 
   installBtn.addEventListener('click', async function(){
-    if (!deferred) return;
-    deferred.prompt();
-    var res = await deferred.userChoice;
-    if (res.outcome === 'accepted') {
-      installBtn.hidden = true;
-      installedMsg.classList.add('show');
+    if (deferred) {
+      // installazione automatica in un tocco
+      deferred.prompt();
+      var res = await deferred.userChoice;
+      if (res.outcome === 'accepted') {
+        installBtn.hidden = true;
+        installedMsg.classList.add('show');
+      }
+      deferred = null;
+    } else {
+      // automatica non disponibile (es. pagina aperta dentro un'altra app): mostro i passi manuali
+      androidSteps.hidden = false;
+      androidSteps.scrollIntoView({behavior:'smooth', block:'center'});
     }
-    deferred = null;
   });
 
   window.addEventListener('appinstalled', function(){
