@@ -325,6 +325,14 @@ input:focus,textarea:focus{border-color:rgba(205,178,242,.85);box-shadow:0 0 14p
 .dvframe{position:relative;padding-top:56.25%;height:0;overflow:hidden;background:#000;border-radius:16px;border:1px solid var(--card-line);box-shadow:0 8px 26px rgba(0,0,0,.5)}
 .dvframe iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
 .dvph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif;font-size:14px;letter-spacing:.12em;color:var(--txt-dim)}
+/* la luce spiega la sezione su cui sei (pannello guida, in cima) */
+.gp-ctx{display:none;border:1px solid rgba(201,168,76,.3);border-left:3px solid #c9a84c;border-radius:12px;
+  background:linear-gradient(180deg,rgba(40,33,22,.42),rgba(22,17,28,.5));padding:13px 16px;margin:0 0 18px}
+.gp-ctx.on{display:block}
+.gp-ctx .gc-t{font-family:'Cinzel',serif;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#c9a84c;margin-bottom:6px}
+.gp-ctx p{font-family:'Cormorant Garamond',Georgia,serif;font-size:18px;line-height:1.55;color:#e6e0ec;margin:0 0 8px}
+.gp-ctx p:last-child{margin-bottom:0}
+.gp-ctx b{color:#e8d9ae}.gp-ctx i{color:var(--glic-hi);font-style:italic}
 /* mini-guida "quando farlo" (Osservatore) */
 .exguide{border:1px solid rgba(201,168,76,.32);border-left:3px solid #c9a84c;border-radius:12px;
   background:linear-gradient(180deg, rgba(40,33,22,.5), rgba(22,17,28,.62));
@@ -493,7 +501,7 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
   </nav>
 
   <!-- ============ 0 · HOME ============ -->
-  <section class="panel on" id="p0">
+  <section class="panel on" id="p0" data-ctx="home">
     <div class="home-prog">
       <div class="hp-orb"></div>
       <div class="hp-txt">
@@ -519,7 +527,7 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
   </section>
 
   <!-- ============ 1 · OSSERVATORIO ============ -->
-  <section class="panel" id="p2">
+  <section class="panel" id="p2" data-ctx="oss">
     <button class="back-btn" onclick="goTab(0)">Torna alla Home</button>
     <div class="shdr">
       <div><div class="stag">Pratica · Osservazione del giudizio</div><div class="sh1">Osservatore</div></div>
@@ -527,7 +535,7 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
     </div>
     <p class="intro">Quando arriva un giudizio su di te, fermati. Fai un respiro e premi play: lo osserviamo insieme.</p>
 
-    <div class="dvideo"><div class="dvframe" id="s2-vframe"><div class="dvph">Carico il video…</div></div></div>
+    <div class="dvideo" data-ctx="oss-video"><div class="dvframe" id="s2-vframe"><div class="dvph">Carico il video…</div></div></div>
 
     <div class="daynav">
       <button class="dn-btn" onclick="dayGo('s2',-1)">←</button>
@@ -548,7 +556,7 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
     <p class="oschint">Scegli tu: tocca una delle due qui sotto per iniziare l'osservazione</p>
     <div class="osc-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></div>
 
-    <div class="oscelta">
+    <div class="oscelta" data-ctx="oss-scelta">
       <button class="osc-btn" type="button" onclick="osservaMode('neg')">Ho qualcosa da osservare</button>
       <button class="osc-btn" type="button" onclick="osservaMode('pos')">Oggi mi sono sentita/o bene</button>
     </div>
@@ -556,41 +564,41 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
     <div id="s2-neg" class="ospath" style="display:none">
       <div class="blk"><label>Il giudizio che sto dando a me stesso</label><input type="text" placeholder="Scrivilo così com'è, oppure lascia vuoto…" data-f="j"></div>
       <div class="phase"><div class="pnum">1</div><div class="ptxt">Osserva il pensiero</div></div>
-      <div class="qg">
+      <div class="qg" data-ctx="oss-osserva">
         <div class="blk"><p class="qt">Che tono sto usando verso me stesso? Sono aggressivo, freddo, duro?</p><textarea rows="2" placeholder="La tua risposta…" data-f="q1"></textarea></div>
         <div class="blk"><p class="qt">Questa voce e queste sensazioni mi appartengono davvero?</p><textarea rows="2" placeholder="La tua risposta…" data-f="q2"></textarea></div>
       </div>
       <div class="phase"><div class="pnum">2</div><div class="ptxt">Risali alla fonte</div></div>
-      <div class="qg">
+      <div class="qg" data-ctx="oss-fonte">
         <div class="blk"><p class="qt">Chi o cosa mi ha fatto pensare di essere così? Cosa ho vissuto per arrivare a questo giudizio?</p><textarea rows="2" placeholder="La tua risposta…" data-f="q3"></textarea></div>
         <div class="blk"><p class="qt">Se al mio posto ci fosse qualcuno che amo, come le parlerei?</p><textarea rows="2" placeholder="La tua risposta…" data-f="q4"></textarea></div>
       </div>
       <div class="phase"><div class="pnum">3</div><div class="ptxt">Trasforma il giudizio</div></div>
-      <div class="trrow">
+      <div class="trrow" data-ctx="oss-trasforma">
         <div class="blk"><label>Il giudizio negativo</label><textarea rows="2" placeholder="Es. Sono sbagliata…" data-f="neg"></textarea></div>
         <div class="trarr">→</div>
         <div class="blk"><label>Visto dall'esterno</label><textarea rows="2" placeholder="Es. C'è una parte di me che oggi…" data-f="pos"></textarea></div>
       </div>
       <p class="trex">esempio: "Sono sbagliata" → <b>"C'è una parte di me che oggi si sente sbagliata"</b></p>
       <div class="blk"><span class="blab">♪ Canzone di oggi</span><input type="text" placeholder="Una canzone che ti porta in alto…" data-f="song"></div>
-      <div class="mantra"><div class="ml">Il mantra di chiusura</div><p class="mt">"Io posso guardarmi, posso amarmi,<br>posso riconoscermi e abbracciarmi.<br>Io sono degno/a di tutto questo."</p></div>
+      <div class="mantra" data-ctx="mantra"><div class="ml">Il mantra di chiusura</div><p class="mt">"Io posso guardarmi, posso amarmi,<br>posso riconoscermi e abbracciarmi.<br>Io sono degno/a di tutto questo."</p></div>
       <div class="blk"><span class="blab">Come mi sento ora →</span><textarea rows="2" placeholder="Dopo la pratica…" data-f="after"></textarea></div>
     </div>
 
-    <div id="s2-pos" class="ospath" style="display:none">
+    <div id="s2-pos" class="ospath" data-ctx="oss-positivo" style="display:none">
       <p class="intro" style="margin:2px 0 12px">Bene così. Fermati un attimo <b>sul positivo</b>: riconoscerlo e assaporarlo è parte del cammino — è ciò che, giorno dopo giorno, <b>alza la tua frequenza</b>.</p>
       <div class="blk"><label>Il momento bello di oggi</label><textarea rows="2" placeholder="Qualcosa che ti è piaciuto, che ti ha fatto stare bene…" data-f="pgood"></textarea></div>
       <div class="blk"><label>Una parola d'affetto per me</label><textarea rows="2" placeholder="Es. oggi mi sono trattata/o con gentilezza; me lo merito…" data-f="pword"></textarea></div>
-      <div class="mantra"><div class="ml">Il mantra di chiusura</div><p class="mt">"Io posso guardarmi, posso amarmi,<br>posso riconoscermi e abbracciarmi.<br>Io sono degno/a di tutto questo."</p></div>
+      <div class="mantra" data-ctx="mantra"><div class="ml">Il mantra di chiusura</div><p class="mt">"Io posso guardarmi, posso amarmi,<br>posso riconoscermi e abbracciarmi.<br>Io sono degno/a di tutto questo."</p></div>
       <div class="blk"><span class="blab">♪ La canzone di oggi</span><input type="text" placeholder="Una canzone che ti porta in alto…" data-f="psong"></div>
     </div>
 
-    <button class="segna" id="s2-segna" onclick="segnaPratica('s2')">Segna la pratica come fatta</button>
+    <button class="segna" id="s2-segna" data-ctx="segna" onclick="segnaPratica('s2')">Segna la pratica come fatta</button>
     <div class="segna-foot" id="s2-foot"></div>
   </section>
 
   <!-- ============ 2 · SPAZIO EMOTIVO ============ -->
-  <section class="panel" id="p1">
+  <section class="panel" id="p1" data-ctx="se">
     <button class="back-btn" onclick="goTab(0)">Torna alla Home</button>
     <div class="shdr">
       <div><div class="stag">Pratica · Sblocco Emotivo</div><div class="sh1">Spazio Emotivo</div></div>
@@ -598,7 +606,7 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
     </div>
     <p class="intro">Metti una musica rilassante, portati in uno spazio tranquillo e, quando vuoi, premi play: ti guido io.</p>
 
-    <div class="dvideo"><div class="dvframe" id="s1-vframe"><div class="dvph">Carico il video…</div></div></div>
+    <div class="dvideo" data-ctx="se-video"><div class="dvframe" id="s1-vframe"><div class="dvph">Carico il video…</div></div></div>
 
     <div class="daynav">
       <button class="dn-btn" onclick="dayGo('s1',-1)">←</button>
@@ -618,25 +626,25 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
 
     <div class="blk"><label>Il pensiero / la frase che è arrivata</label><input type="text" placeholder="Scrivi qui, oppure lascia vuoto…" data-f="think"></div>
     <div class="phase"><div class="pnum">1</div><div class="ptxt">Le quattro domande</div></div>
-    <div class="qg">
+    <div class="qg" data-ctx="se-domande">
       <div class="blk"><p class="qt">Questo pensiero e questa sensazione sono reali, vengono da me o sono automatici?</p><textarea rows="2" placeholder="La tua risposta…" data-f="q1"></textarea></div>
       <div class="blk"><p class="qt">Nasce dal presente — da ciò che sto vivendo adesso — o dal mio passato?</p><textarea rows="2" placeholder="La tua risposta…" data-f="q2"></textarea></div>
       <div class="blk"><p class="qt">Mi sta aiutando o mi sta togliendo la possibilità di fare ciò che sento?</p><textarea rows="2" placeholder="La tua risposta…" data-f="q3"></textarea></div>
       <div class="blk"><p class="qt">Se al mio posto ci fosse qualcuno che amo, agirei come voglio fare adesso?</p><textarea rows="2" placeholder="La tua risposta…" data-f="q4"></textarea></div>
     </div>
     <div class="phase"><div class="pnum">2</div><div class="ptxt">Il respiro · dove sento il blocco</div></div>
-    <div class="blk"><textarea rows="2" placeholder="Petto, stomaco, gola, gambe…" data-f="body"></textarea></div>
+    <div class="blk" data-ctx="se-blocco"><textarea rows="2" placeholder="Petto, stomaco, gola, gambe…" data-f="body"></textarea></div>
     <div class="phase"><div class="pnum">3</div><div class="ptxt">L'emozione</div></div>
-    <div class="blk"><textarea rows="2" placeholder="Rabbia, tristezza, frustrazione, dolore… come la senti?" data-f="emo"></textarea></div>
-    <div class="mantra"><div class="ml">Il mantra — 3 volte ad alta voce</div><p class="mt">"Io posso vedermi senza ferirmi. Posso sentirmi amato senza sentirmi sbagliato.<br>Posso riconoscere ciò che provo, senza giudicarlo, senza condannarlo."</p></div>
+    <div class="blk" data-ctx="se-emozione"><textarea rows="2" placeholder="Rabbia, tristezza, frustrazione, dolore… come la senti?" data-f="emo"></textarea></div>
+    <div class="mantra" data-ctx="mantra"><div class="ml">Il mantra — 3 volte ad alta voce</div><p class="mt">"Io posso vedermi senza ferirmi. Posso sentirmi amato senza sentirmi sbagliato.<br>Posso riconoscere ciò che provo, senza giudicarlo, senza condannarlo."</p></div>
     <div class="blk"><span class="blab">Come mi sento ora →</span><textarea rows="2" placeholder="Dopo la pratica…" data-f="after"></textarea></div>
 
-    <button class="segna" id="s1-segna" onclick="segnaPratica('s1')">Segna la pratica come fatta</button>
+    <button class="segna" id="s1-segna" data-ctx="segna" onclick="segnaPratica('s1')">Segna la pratica come fatta</button>
     <div class="segna-foot" id="s1-foot"></div>
   </section>
 
   <!-- ============ 3 · DIARIO ============ -->
-  <section class="panel" id="p3">
+  <section class="panel" id="p3" data-ctx="diario">
     <button class="back-btn" onclick="goTab(0)">Torna alla Home</button>
     <div class="shdr"><div><div class="stag">Diario · Settimana per settimana</div><div class="sh1">Il mio Diario</div></div></div>
     <div class="cal-istr"><b>Ogni giorno:</b> scegli come ti senti e, se vuoi, una parola che racconta la giornata.<br>Le pratiche fatte si segnano da sole. Puoi navigare tra le settimane: ognuna ricorda ciò che hai scritto.</div>
@@ -647,30 +655,30 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
       <div class="wnav-lbl"><span id="wrange"></span><span class="wnav-badge" id="wbadge"></span></div>
       <button class="wnav-btn" onclick="weekGo(1)">Succ. →</button>
     </div>
-    <div class="dweek" id="dweek"></div>
+    <div class="dweek" id="dweek" data-ctx="diario-settimana"></div>
     <div class="wnote" style="margin-top:14px">
       <div class="app-lab">Note di fine settimana — cosa ho scoperto su di me</div>
       <textarea id="wnote" rows="3" placeholder="Scrivi qui le tue riflessioni…"></textarea>
     </div>
     <div class="seclbl">Il tuo andamento</div>
-    <div class="statgrid">
+    <div class="statgrid" data-ctx="diario-stat">
       <div class="stat"><div class="sv g" id="st-streak">0</div><div class="sl">Giorni<br>di fila</div></div>
       <div class="stat"><div class="sv" id="st-s1">0</div><div class="sl">Sessioni<br>Spazio Emotivo</div></div>
       <div class="stat"><div class="sv" id="st-s2">0</div><div class="sl">Sessioni<br>Osservatore</div></div>
       <div class="stat"><div class="sv g" id="st-days">0</div><div class="sl">Giorni<br>di pratica</div></div>
     </div>
-    <div class="chartcard"><div class="cht">Il tuo umore · ultimi 14 giorni</div><div class="chs">La linea segue gli umori che hai scelto nel Diario.</div><canvas id="ch-mood"></canvas><div class="rempty" id="mood-empty" style="display:none">Scegli gli umori nel Diario e qui apparirà la tua linea dell'anima.</div></div>
+    <div class="chartcard" data-ctx="diario-umore"><div class="cht">Il tuo umore · ultimi 14 giorni</div><div class="chs">La linea segue gli umori che hai scelto nel Diario.</div><canvas id="ch-mood"></canvas><div class="rempty" id="mood-empty" style="display:none">Scegli gli umori nel Diario e qui apparirà la tua linea dell'anima.</div></div>
 
     <div class="seclbl">Riflessioni periodiche</div>
-    <div class="refl">
+    <div class="refl" data-ctx="diario-rifl">
       <div class="refl-hd"><span class="refl-t">Cos'ho riconosciuto</span><div class="refl-dots" id="reco-dots"></div><button class="refl-add" onclick="reflAdd('reco')">+ nuovo</button></div>
       <div class="refl-wrap"><button class="refl-arr prev" onclick="reflArrow('reco',-1)" aria-label="precedente">‹</button><div class="refl-track" id="reco-track"></div><button class="refl-arr next" onclick="reflArrow('reco',1)" aria-label="successivo">›</button></div>
     </div>
-    <div class="refl">
+    <div class="refl" data-ctx="diario-rifl">
       <div class="refl-hd"><span class="refl-t">I progressi che ho notato</span><div class="refl-dots" id="prog-dots"></div><button class="refl-add" onclick="reflAdd('prog')">+ nuovo</button></div>
       <div class="refl-wrap"><button class="refl-arr prev" onclick="reflArrow('prog',-1)" aria-label="precedente">‹</button><div class="refl-track" id="prog-track"></div><button class="refl-arr next" onclick="reflArrow('prog',1)" aria-label="successivo">›</button></div>
     </div>
-    <div class="refl">
+    <div class="refl" data-ctx="diario-rifl">
       <div class="refl-hd"><span class="refl-t">Le mie intenzioni</span><div class="refl-dots" id="int-dots"></div><button class="refl-add" onclick="reflAdd('int')">+ nuova</button></div>
       <div class="refl-wrap"><button class="refl-arr prev" onclick="reflArrow('int',-1)" aria-label="precedente">‹</button><div class="refl-track" id="int-track"></div><button class="refl-arr next" onclick="reflArrow('int',1)" aria-label="successivo">›</button></div>
     </div>
@@ -694,6 +702,7 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
       </div>
       <div class="mm-bar" id="mm-bar"><div class="mm-fill" id="mm-fill"></div></div>
     </div>
+    <div class="gp-ctx" id="gpCtx"></div>
     <div class="lvl"><div class="lvl-n">La tua costanza</div><div class="lvl-t" id="lvlT">0 giorni di pratica</div><div class="lvl-d" id="lvlD"></div><div class="lvl-bar"><div class="lvl-fill" id="lvlFill"></div></div><div class="lvl-next" id="lvlNext"></div></div>
     <div class="scala" id="scala"></div>
     <div class="gp-sec">I tuoi traguardi</div>
@@ -839,7 +848,31 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
   document.addEventListener('input',function(e){ var k=e.target.dataset.k||''; if(k.indexOf('s1:')===0)renderDots('s1'); else if(k.indexOf('s2:')===0)renderDots('s2'); });
 
   /* ============ LA LUCE GUIDA ============ */
-  var lume=document.getElementById('lume'), litEl=null;
+  var lume=document.getElementById('lume'), litEl=null, curCtx='';
+  /* La luce è una guida: per ogni elemento, la spiegazione che mostra quando la tocchi.
+     Voce di Elisa, prima persona. La chiave arriva da data-ctx sull'elemento illuminato. */
+  var DCTX={
+    home:{t:'Il tuo spazio di ogni giorno', h:'<p>Questa è la tua casa del Cammino. In alto vedi la <b>tua luce</b>, che cresce con la costanza. Sotto, le pratiche: l\'<b>Osservatore</b> ogni giorno, lo <b>Spazio Emotivo</b> qualche volta a settimana, e il <b>Diario</b> dove resta tutto ciò che vivi. Non serve la perfezione: conta la direzione.</p>'},
+    oss:{t:'L\'Osservatore', h:'<p>Qui imparo con te a <b>guardare un giudizio dall\'esterno</b>, senza identificarmi con esso. È la pratica di ogni giorno: bastano quindici minuti per cambiare, piano piano, il modo in cui ti parli.</p>'},
+    'oss-video':{t:'Il video dell\'Osservatore', h:'<p>In questo video ti accompagno passo passo: come fermarti davanti a un giudizio, guardarlo e trasformarlo. Premi play quando vuoi, anche più volte — è la mia voce accanto a te.</p>'},
+    'oss-scelta':{t:'Com\'è andata oggi?', h:'<p>Scegli tu: se oggi è arrivato un <b>giudizio</b> da osservare, oppure se è stata una <b>giornata serena</b> da riconoscere. Tocca una delle due e la pratica si apre di conseguenza. Anche il bello va accolto.</p>'},
+    'oss-osserva':{t:'Osserva il pensiero', h:'<p>Prima si <b>osserva</b>. Guarda il tono che usi con te — aggressivo, freddo, duro? — e chiediti se quella voce è davvero tua. Spesso ripetiamo parole che ci hanno insegnato. Rispondi di getto, senza giudicarti.</p>'},
+    'oss-fonte':{t:'Risali alla fonte', h:'<p>Ora chiediti <b>da dove nasce</b> quel giudizio: cosa hai vissuto per arrivarci. E se al tuo posto ci fosse una persona che ami, come le parleresti? È da lì che comincia la gentilezza verso di te.</p>'},
+    'oss-trasforma':{t:'Trasforma il giudizio', h:'<p>Riscrivi la frase <b>vista dall\'esterno</b>: da «sono sbagliata» a «c\'è una parte di me che oggi si sente sbagliata». Non sei quell\'emozione: la guardi. Chiudi sempre con uno sguardo positivo.</p>'},
+    'oss-positivo':{t:'Oggi è andata bene', h:'<p>Fermati un attimo <b>sul positivo</b>. Riconoscere un momento bello e darti una parola d\'affetto non è poco: è ciò che, giorno dopo giorno, <b>alza la tua frequenza</b>.</p>'},
+    se:{t:'Lo Spazio Emotivo', h:'<p>Qui non si lavora con la testa, ma con il <b>sentire</b>. Si scioglie quel peso che resta nel corpo anche dopo che il pensiero è passato. Tre volte a settimana, con calma e una musica che ti accompagna.</p>'},
+    'se-video':{t:'Il video dello Spazio Emotivo', h:'<p>In questo video ti guido a <b>sentire il blocco nel corpo</b>, respirarci dentro e lasciarlo andare. È una pratica del sentire: lasciati guidare, non c\'è nulla da fare di giusto o sbagliato.</p>'},
+    'se-domande':{t:'Le quattro domande', h:'<p>Servono a capire se quel pensiero è davvero tuo o <b>automatico</b>, se nasce dall\'oggi o dal passato, se ti aiuta o ti limita, e come ti comporteresti con chi ami. Rispondi senza fretta.</p>'},
+    'se-blocco':{t:'Dove sento il blocco', h:'<p>Chiudi gli occhi e respira: <b>dove senti che l\'energia si ferma?</b> Petto, stomaco, gola… ognuno ha il suo punto. Non combatterlo: portagli il respiro, fagli spazio.</p>'},
+    'se-emozione':{t:'Dai un nome all\'emozione', h:'<p>Rabbia, tristezza, peso, paura… <b>nominare</b> ciò che senti è già iniziare ad attraversarlo. Non serve spiegarlo: basta riconoscerlo.</p>'},
+    mantra:{t:'Il mantra di chiusura', h:'<p>Chiude la pratica. Ripetilo con calma, anche <b>ad alta voce</b>: serve a riportare tutto in positivo e a radicare ciò che hai sentito. Sono parole d\'amore per te.</p>'},
+    segna:{t:'Segna la pratica', h:'<p>Quando hai finito, segnala. Si salva su <b>tutti i tuoi dispositivi</b> e fa crescere la tua costanza — la luce che ti accompagna. Anche un solo momento conta.</p>'},
+    diario:{t:'Il tuo Diario', h:'<p>Qui resta tutto ciò che vivi nel Cammino: gli umori, le parole, le pratiche, le riflessioni. Rileggerlo tra qualche mese ti mostrerà <b>quanto è cambiato il tuo sguardo</b>.</p>'},
+    'diario-settimana':{t:'La tua settimana', h:'<p>Segna come ti senti e, se vuoi, una parola per la giornata. Le pratiche fatte si segnano da sole. Puoi navigare tra le settimane: ognuna ricorda ciò che hai scritto.</p>'},
+    'diario-stat':{t:'Il tuo andamento', h:'<p>Giorni di pratica, sessioni, giorni di fila. <b>Non è una gara</b>: servono solo a farti vedere, con dolcezza, quanta strada stai facendo.</p>'},
+    'diario-umore':{t:'La tua linea dell\'anima', h:'<p>La linea segue gli umori che scegli giorno per giorno. Col tempo vedrai come <b>si solleva</b>: è il tuo sentire che cambia.</p>'},
+    'diario-rifl':{t:'Le tue riflessioni', h:'<p>Qui raccogli ciò che riconosci di te, i progressi che noti e le tue intenzioni. Scrivile in positivo: sono semi che ritroverai più avanti.</p>'}
+  };
   function isNarrow(){ return innerWidth < 760; }   /* sotto questa soglia la colonna riempie lo schermo: niente margine laterale */
   function lumeHome(){
     var x = isNarrow() ? (scrollX + 34) : Math.max(30, innerWidth/2 - 400);
@@ -848,10 +881,11 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
   function moveLume(x,y){ lume.style.transform='translate3d('+(x|0)+'px,'+(y|0)+'px,0)'; }
   function lumeAt(x,y,boost){ moveLume(x,y); if(boost)lume.classList.add('boost'); else lume.classList.remove('boost'); }
   function lightUp(el, noBoost){
-    if(!el){ if(litEl)litEl.classList.remove('lit'); litEl=null; lume.classList.remove('boost'); lumeHome(); return; }
+    if(!el){ if(litEl)litEl.classList.remove('lit'); litEl=null; curCtx=''; lume.classList.remove('boost'); lumeHome(); return; }
     if(litEl && litEl!==el)litEl.classList.remove('lit');
     litEl=el;
     el.classList.add('lit');
+    try{ var cx=el.closest&&el.closest('[data-ctx]'); curCtx=cx?cx.getAttribute('data-ctx'):''; }catch(_e){ curCtx=''; }
     var r=el.getBoundingClientRect();
     var narrow=isNarrow();
     var docY, x;
@@ -873,7 +907,7 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
   document.addEventListener('click',function(e){
     if(e.target.closest('#lume'))return;
     if(e.target.closest('.pplay'))return; /* il play la gestisce da sé */
-    var b=e.target.closest('.blk, .intenz, .dday, .pcard, .chartcard, .stat, .vsbtn, .segna, .pchip, .mood, .pcrow, .daynav, .dots, .refl, .home-prog, .home-note, .player, .mantra, .tbox, .wnav');
+    var b=e.target.closest('.dvideo, .oscelta, .trrow, .exguide, .blk, .intenz, .dday, .pcard, .chartcard, .stat, .vsbtn, .segna, .pchip, .mood, .pcrow, .daynav, .dots, .refl, .home-prog, .home-note, .player, .mantra, .tbox, .wnav');
     if(b)lightUp(b);
   });
   addEventListener('resize',function(){ if(litEl)lightUp(litEl); else lumeHome(); });
@@ -882,12 +916,13 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
   window.goTab=function(idx){
     document.querySelectorAll('.panel').forEach(function(p,i){p.classList.toggle('on',i===idx);});
     document.querySelectorAll('.tabs .tab').forEach(function(b,i){b.classList.toggle('on',i===idx);});
-    if(litEl){litEl.classList.remove('lit');litEl=null;}
+    if(litEl){litEl.classList.remove('lit');litEl=null;} curCtx='';
     lume.classList.remove('boost'); lumeHome();
     window.scrollTo({top:0,behavior:'smooth'});
     if(idx===0)renderHome();
-    if(idx===1)loadVideo('s2');   /* Osservatore */
-    if(idx===2)loadVideo('s1');   /* Spazio Emotivo */
+    /* la luce accompagna: entrando in una pratica si posa sul video (cliccandola lo spiega) */
+    if(idx===1){ loadVideo('s2'); setTimeout(function(){ var v=document.querySelector('#p2 .dvideo'); if(v)lightUp(v,true); }, 440); }   /* Osservatore */
+    if(idx===2){ loadVideo('s1'); setTimeout(function(){ var v=document.querySelector('#p1 .dvideo'); if(v)lightUp(v,true); }, 440); }   /* Spazio Emotivo */
     if(idx===3){ renderWeek(); renderReport(); renderAllRefl(); }
   };
 
@@ -1190,6 +1225,8 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
   /* ============ GUIDA ============ */
   var veil=document.getElementById('veil'), gpan=document.getElementById('gpan');
   function renderGuida(){
+    var gc=document.getElementById('gpCtx'), d=DCTX[curCtx];
+    if(gc){ if(d){ gc.innerHTML='<div class="gc-t">'+d.t+'</div>'+d.h; gc.classList.add('on'); } else { gc.innerHTML=''; gc.classList.remove('on'); } }
     var days=allActiveDays().length, i=applyTier(), t=TIERS[i];
     document.getElementById('lvlT').textContent=days+(days===1?' giorno':' giorni')+' di pratica';
     document.getElementById('lvlD').textContent='La tua luce è '+t.art+t.nome.toLowerCase()+': cresce con la costanza, non con la fretta.';
