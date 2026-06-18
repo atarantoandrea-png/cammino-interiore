@@ -31,7 +31,7 @@
   /* VERDE ACQUA — solo per il lettore audio (tono provvisorio) */
   --aqua:#2fe0c6; --aqua-deep:#0e8f7f; --aqua-hi:#9af7ea;
   --aqua-line:rgba(47,224,198,.34); --aqua-glow:rgba(47,224,198,.5);
-  /* BLU ELETTRICO — identità dell'Osservatorio quando completato */
+  /* BLU ELETTRICO — identità dell'Osservatore quando completato */
   --blu:#3a7bff; --blu-hi:#cfe0ff; --blu-glow:rgba(58,123,255,.6);
 }
 html{scroll-behavior:smooth}
@@ -82,7 +82,9 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
 
 /* ================= MENU 3D ARROTONDATO ================= */
 .tabs{position:sticky;top:calc(env(safe-area-inset-top,0px));z-index:30;display:flex;gap:7px;justify-content:center;align-items:stretch;
-  padding:12px 12px 13px 58px}
+  padding:12px 12px 13px 58px;
+  background:rgba(9,8,13,.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border-bottom:1px solid rgba(185,163,227,.12);box-shadow:0 6px 16px rgba(0,0,0,.4)}
 .tab{flex:1;max-width:172px;border:1px solid rgba(185,163,227,.2);border-radius:16px;cursor:pointer;
   padding:12px 5px;display:flex;align-items:center;justify-content:center;text-align:center;
   background:linear-gradient(180deg, rgba(46,37,62,.85), rgba(20,16,28,.92));
@@ -318,12 +320,12 @@ input:focus,textarea:focus{border-color:rgba(205,178,242,.85);box-shadow:0 0 14p
 @media(min-width:740px){.refl-arr{display:flex}.refl-track{margin:0 18px}}
 
 .pspeed{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;padding:10px 0 4px}
-/* video della pratica (Osservatorio / Spazio Emotivo) al posto dell'audio */
+/* video della pratica (Osservatore / Spazio Emotivo) al posto dell'audio */
 .dvideo{margin:14px 0 8px}
 .dvframe{position:relative;padding-top:56.25%;height:0;overflow:hidden;background:#000;border-radius:16px;border:1px solid var(--card-line);box-shadow:0 8px 26px rgba(0,0,0,.5)}
 .dvframe iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
 .dvph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif;font-size:14px;letter-spacing:.12em;color:var(--txt-dim)}
-/* mini-guida "quando farlo" (Osservatorio) */
+/* mini-guida "quando farlo" (Osservatore) */
 .exguide{border:1px solid rgba(201,168,76,.32);border-left:3px solid #c9a84c;border-radius:12px;
   background:linear-gradient(180deg, rgba(40,33,22,.5), rgba(22,17,28,.62));
   padding:14px 16px;margin:6px 0 16px;font-size:19px;line-height:1.62;color:var(--txt-soft)}
@@ -332,7 +334,12 @@ input:focus,textarea:focus{border-color:rgba(205,178,242,.85);box-shadow:0 0 14p
 .exguide b{color:#e8d9ae;font-weight:600}
 .exguide i{color:var(--glic-hi);font-style:italic}
 .exguide .exg-q{margin-top:4px;color:#e8d9ae;font-weight:600}
-/* scelta Osservatorio: giudizio / giornata serena */
+/* invito a scegliere + freccia elegante verso le due opzioni */
+.oschint{text-align:center;margin:2px 0 6px;font-family:'Cormorant Garamond',Georgia,serif;font-size:17px;font-style:italic;color:var(--glic-hi);line-height:1.4}
+.osc-arrow{display:block;margin:4px auto 2px;color:var(--gold);animation:oscbob 1.9s ease-in-out infinite}
+.osc-arrow svg{width:22px;height:22px;display:block;margin:0 auto}
+@keyframes oscbob{0%,100%{transform:translateY(0);opacity:.65}50%{transform:translateY(4px);opacity:1}}
+/* scelta Osservatore: giudizio / giornata serena */
 .oscelta{display:flex;gap:10px;flex-wrap:wrap;margin:2px 0 16px}
 .osc-btn{flex:1;min-width:150px;font-family:'Cinzel',serif;font-size:15px;letter-spacing:.03em;cursor:pointer;
   padding:13px 14px;border-radius:14px;color:var(--txt-soft);text-align:center;
@@ -480,7 +487,7 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
 
   <nav class="tabs">
     <button class="tab on" onclick="goTab(0)"><span class="lbl">Home</span></button>
-    <button class="tab" onclick="goTab(1)"><span class="lbl">Osservatorio</span></button>
+    <button class="tab" onclick="goTab(1)"><span class="lbl">Osservatore</span></button>
     <button class="tab" onclick="goTab(2)"><span class="lbl">Spazio Emotivo</span></button>
     <button class="tab" onclick="goTab(3)"><span class="lbl">Diario</span></button>
   </nav>
@@ -497,7 +504,7 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
     <div class="pcards">
       <button class="pcard" onclick="goTab(1)">
         <div class="pc-tag">Pratica · ogni giorno</div>
-        <h3>Osservatorio</h3>
+        <h3>Osservatore</h3>
         <div class="pc-d">Osserva un giudizio e trasformalo. Un allenamento quotidiano per parlarti con gentilezza.</div>
         <div class="pc-row"><span class="pc-meta">~8 min · <span class="au">la mia voce</span></span><span class="pc-go">Entra →</span></div>
       </button>
@@ -515,7 +522,7 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
   <section class="panel" id="p2">
     <button class="back-btn" onclick="goTab(0)">Torna alla Home</button>
     <div class="shdr">
-      <div><div class="stag">Pratica · Osservazione del giudizio</div><div class="sh1">Osservatorio</div></div>
+      <div><div class="stag">Pratica · Osservazione del giudizio</div><div class="sh1">Osservatore</div></div>
       <div class="tbox"><div class="tn">15'</div><div class="tl">minuti</div><div class="tf">ogni giorno</div></div>
     </div>
     <p class="intro">Quando arriva un giudizio su di te, fermati. Fai un respiro e premi play: lo osserviamo insieme.</p>
@@ -537,6 +544,9 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
       <p>Quando arriva un pensiero come <i>«non sono abbastanza», «ho sbagliato tutto»</i>, <b>fermati</b> e dì: <i>«non sto facendo un pensiero, mi sto giudicando»</i>. Ma non sempre arriva un giudizio: ci sono anche le <b>giornate serene</b>, e <i>anche il bello va riconosciuto — farlo nostro alza la nostra frequenza</i>.</p>
       <p class="exg-q">Allora, com'è andata oggi?</p>
     </div>
+
+    <p class="oschint">Scegli tu: tocca una delle due qui sotto per iniziare l'osservazione</p>
+    <div class="osc-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></div>
 
     <div class="oscelta">
       <button class="osc-btn" type="button" onclick="osservaMode('neg')">Ho qualcosa da osservare</button>
@@ -646,7 +656,7 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
     <div class="statgrid">
       <div class="stat"><div class="sv g" id="st-streak">0</div><div class="sl">Giorni<br>di fila</div></div>
       <div class="stat"><div class="sv" id="st-s1">0</div><div class="sl">Sessioni<br>Spazio Emotivo</div></div>
-      <div class="stat"><div class="sv" id="st-s2">0</div><div class="sl">Sessioni<br>Osservatorio</div></div>
+      <div class="stat"><div class="sv" id="st-s2">0</div><div class="sl">Sessioni<br>Osservatore</div></div>
       <div class="stat"><div class="sv g" id="st-days">0</div><div class="sl">Giorni<br>di pratica</div></div>
     </div>
     <div class="chartcard"><div class="cht">Il tuo umore · ultimi 14 giorni</div><div class="chs">La linea segue gli umori che hai scelto nel Diario.</div><canvas id="ch-mood"></canvas><div class="rempty" id="mood-empty" style="display:none">Scegli gli umori nel Diario e qui apparirà la tua linea dell'anima.</div></div>
@@ -797,7 +807,7 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
     renderDots(s); refreshSegna(s);
     if(s==='s2') osservaAuto();   /* mostra il percorso (giudizio/positivo) in base a cosa è già scritto quel giorno */
   }
-  /* Osservatorio: scelta tra percorso del giudizio e percorso positivo */
+  /* Osservatore: scelta tra percorso del giudizio e percorso positivo */
   function osservaMode(m){
     var neg=document.getElementById('s2-neg'), pos=document.getElementById('s2-pos');
     if(neg) neg.style.display = (m==='neg')?'':'none';
@@ -876,13 +886,13 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
     lume.classList.remove('boost'); lumeHome();
     window.scrollTo({top:0,behavior:'smooth'});
     if(idx===0)renderHome();
-    if(idx===1)loadVideo('s2');   /* Osservatorio */
+    if(idx===1)loadVideo('s2');   /* Osservatore */
     if(idx===2)loadVideo('s1');   /* Spazio Emotivo */
     if(idx===3){ renderWeek(); renderReport(); renderAllRefl(); }
   };
 
-  /* ============ VIDEO DELLE PRATICHE (Osservatorio / Spazio Emotivo) ============ */
-  var VIDEO={ s1:'1184907857', s2:'1184907860' };   /* Vimeo: Spazio Emotivo / Osservatorio (embed nativo) */
+  /* ============ VIDEO DELLE PRATICHE (Osservatore / Spazio Emotivo) ============ */
+  var VIDEO={ s1:'1184907857', s2:'1184907860' };   /* Vimeo: Spazio Emotivo / Osservatore (embed nativo) */
   function mmss(s){ s=Math.max(0,Math.floor(s||0)); var m=Math.floor(s/60); var r=s%60; return m+':'+String(r).padStart(2,'0'); }
   /* carica il video della pratica (una sola volta). Embed Vimeo nativo: le statistiche
      di visualizzazione si registrano da sole, senza SDK. */
@@ -908,7 +918,7 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
         {h:'Dai un nome all\'emozione', b:'Rabbia, tristezza, frustrazione, dolore… descrivi come la senti. Poi chiediti: <i>questa voce che mi giudica mi vuole comprendere o ferire?</i> E ripeti dentro di te: <i>io non posso e non voglio ferirmi</i>.'},
         {h:'Il mantra e la luce', b:'<span class="man">"Io posso vedermi senza ferirmi. Posso sentirmi amato senza sentirmi sbagliato. Posso riconoscere ciò che provo, senza giudicarlo, senza condannarlo."</span> Mentre lo ripeti 3 volte, immagina una <b>luce che parte dal punto del blocco</b> e accompagnala fuori — dalla bocca o dai piedi — finché quel peso se ne va.'}
       ] },
-    s2:{ title:'Osservatorio — versione scritta',
+    s2:{ title:'Osservatore — versione scritta',
       intro:'Un allenamento di <b>15–20 minuti, ogni giorno</b>. Scioglie gli schemi mentali, un giudizio alla volta.',
       steps:[
         {h:'Accorgiti del giudizio', b:'Quando arriva un pensiero come <i>"non vado bene", "non sono abbastanza"</i>… fermati e dì: <b>"non sto facendo un pensiero, mi sto giudicando"</b>. Fai 1–2 respiri lenti.'},
@@ -934,7 +944,7 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
   var DGIORNI=['Domenica','Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'];
   var DMESI=['gennaio','febbraio','marzo','aprile','maggio','giugno','luglio','agosto','settembre','ottobre','novembre','dicembre'];
   var DIA_LBL={
-    s2:{ name:'Osservatorio', f:[['j','Il giudizio che mi davo'],['q1','Il tono verso me stesso/a'],['q2','Mi appartiene davvero?'],['q3','Da dove veniva'],['q4','Parlerei così a chi amo?'],['neg','Il giudizio'],['pos','Visto dall\'esterno'],['song','La canzone'],['after','Come mi sentivo dopo'],['pgood','Il momento bello'],['pword','Una parola d\'affetto per me'],['psong','La canzone']] },
+    s2:{ name:'Osservatore', f:[['j','Il giudizio che mi davo'],['q1','Il tono verso me stesso/a'],['q2','Mi appartiene davvero?'],['q3','Da dove veniva'],['q4','Parlerei così a chi amo?'],['neg','Il giudizio'],['pos','Visto dall\'esterno'],['song','La canzone'],['after','Come mi sentivo dopo'],['pgood','Il momento bello'],['pword','Una parola d\'affetto per me'],['psong','La canzone']] },
     s1:{ name:'Spazio Emotivo', f:[['think','Il pensiero arrivato'],['q1','È reale o automatico?'],['q2','Presente o passato?'],['q3','Mi aiuta o mi limita?'],['q4','Lo farei a chi amo?'],['body','Dove sentivo il blocco'],['emo','L\'emozione'],['after','Come mi sentivo dopo']] }
   };
   function diaEsc(s){ return String(s).replace(/[&<>]/g,function(c){return c==='&'?'&amp;':(c==='<'?'&lt;':'&gt;');}); }
@@ -1041,7 +1051,7 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
         '</div>'+
         '<div class="dd-prac">'+
           '<button class="pchip s1'+(s1on?' on':'')+'" onclick="togglePrac(this,\''+di+'\',\'s1\')"><span class="pchk">✓</span>Spazio Emotivo</button>'+
-          '<button class="pchip s2'+(s2on?' on':'')+'" onclick="togglePrac(this,\''+di+'\',\'s2\')"><span class="pchk">✓</span>Osservatorio</button>'+
+          '<button class="pchip s2'+(s2on?' on':'')+'" onclick="togglePrac(this,\''+di+'\',\'s2\')"><span class="pchk">✓</span>Osservatore</button>'+
         '</div>'+
         '<div class="dd-moodlab">'+(today?'Come ti senti oggi?':'Come ti senti?')+'</div>'+
         '<div class="dd-moods">'+moods+'</div>'+
@@ -1091,7 +1101,7 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
     {cond:'7 giorni consecutivi di pratica',  test:function(){return streak()>=7}},
     {cond:'30 giorni consecutivi di pratica', test:function(){return streak()>=30}},
     {cond:'10 sessioni di Spazio Emotivo',    test:function(){return countSessions('s1')>=10}},
-    {cond:'15 sessioni di Osservatorio',      test:function(){return countSessions('s2')>=15}},
+    {cond:'15 sessioni di Osservatore',      test:function(){return countSessions('s2')>=15}},
     {cond:'5 giudizi trasformati',            test:function(){return countTransforms()>=5}},
     {cond:'14 giorni di diario compilato',    test:function(){return countDiaryDays()>=14}}
   ];
