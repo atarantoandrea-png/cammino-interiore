@@ -614,22 +614,33 @@ MONTHLY-->
 .flock-btn:hover{filter:brightness(1.06)}
 .ups-veil{position:fixed;inset:0;z-index:120;display:none;align-items:center;justify-content:center;padding:22px;background:rgba(8,6,12,.72)}
 .ups-veil.on{display:flex}
-.ups-card{max-width:380px;width:100%;border:1px solid rgba(201,168,76,.4);border-radius:20px;padding:26px 22px 22px;text-align:center;
+.ups-card{position:relative;max-width:400px;width:100%;max-height:92vh;overflow-y:auto;border:1px solid rgba(201,168,76,.4);border-radius:20px;padding:30px 22px 22px;text-align:center;
   background:linear-gradient(180deg,rgba(28,22,40,.98),rgba(14,11,20,.98));box-shadow:0 18px 60px rgba(0,0,0,.6)}
+.ups-x{position:absolute;top:10px;right:12px;width:32px;height:32px;border-radius:50%;border:none;background:rgba(255,255,255,.08);
+  color:#fff;font-size:16px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s}
+.ups-x:hover{background:rgba(255,255,255,.2)}
 .ups-ic{font-size:30px;margin-bottom:8px}
 .ups-h{font-family:'Cinzel',serif;font-weight:600;font-size:20px;color:#f0eaf6;line-height:1.3;margin:0 0 12px}
-.ups-p{font-family:'Cormorant Garamond',Georgia,serif;font-size:18px;line-height:1.55;color:#d7cfe4;margin:0 0 12px}
+.ups-p{font-family:'Cormorant Garamond',Georgia,serif;font-size:18px;line-height:1.55;color:#d7cfe4;margin:0 0 14px}
 .ups-p b{color:#e8d9ae}
-.ups-btn{margin-top:6px;font-family:'Cinzel',serif;font-size:15px;letter-spacing:.06em;cursor:pointer;color:#0e0b14;border:none;border-radius:24px;padding:12px 28px;background:linear-gradient(180deg,#e8d9ae,#c9a84c)}
+.ups-video{margin:2px 0 16px}
+.ups-vframe{position:relative;width:100%;padding-top:56.25%;border-radius:12px;overflow:hidden;background:#0c0a12;border:1px solid rgba(185,163,227,.2)}
+.ups-vframe iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.ups-vph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#8d8499;font-family:'Cinzel',serif;font-size:13px}
+.ups-btn{display:inline-block;text-decoration:none;font-family:'Cinzel',serif;font-size:16px;letter-spacing:.06em;cursor:pointer;color:#0e0b14;border:none;border-radius:24px;padding:13px 30px;background:linear-gradient(180deg,#e8d9ae,#c9a84c)}
 .ups-btn:hover{filter:brightness(1.06)}
+.ups-info{font-family:'Cormorant Garamond',Georgia,serif;font-size:15px;color:#b7aec4;margin:12px 0 0}
+.ups-info b{color:#e8d9ae}
 </style>
 <div id="upsell" class="ups-veil" role="dialog" aria-modal="true" aria-label="Passa all'annuale">
   <div class="ups-card">
+    <button class="ups-x" id="upsX" type="button" aria-label="Chiudi">✕</button>
     <div class="ups-ic">💓</div>
     <h3 class="ups-h">Questo fa parte del Cammino annuale</h3>
-    <p class="ups-p">I video del Mondo Interiore e gli esercizi ti aspettano qui, nel <b>Cammino annuale</b> della community. Quando senti che è il tuo momento, possiamo proseguirlo insieme.</p>
-    <p class="ups-p">Scrivimi a <b>oltreilvelo.elisa@gmail.com</b> e ti accompagno io nel passaggio all'annuale.</p>
-    <button class="ups-btn" id="upsX" type="button">Va bene 💓</button>
+    <p class="ups-p">Ti spiego in un minuto come passare dal mensile all'annuale e proseguire insieme tutto il Cammino.</p>
+    <div class="ups-video"><div class="ups-vframe" id="upsVframe"><div class="ups-vph">Carico il video…</div></div></div>
+    <a class="ups-btn" id="upsGo" href="https://www.elisasoulmedium.com/oltreilvelo" target="_blank" rel="noopener">Passa all'annuale →</a>
+    <p class="ups-info">Per info scrivimi a <b>oltreilvelo.elisa@gmail.com</b></p>
   </div>
 </div>
 
@@ -656,8 +667,17 @@ MONTHLY-->
   var TRAILER=!!window.TRAILER;
 
   /* popup "passa all'annuale" (Mensili) */
-  function showUpsell(){ var u=document.getElementById('upsell'); if(u) u.classList.add('on'); }
-  function closeUpsell(){ var u=document.getElementById('upsell'); if(u) u.classList.remove('on'); }
+  function upsLoadVideo(){   /* video "come passare all'annuale": embed nativo (statistiche Vimeo attive) */
+    var f=document.getElementById('upsVframe'); if(!f || f.getAttribute('data-loaded')==='1') return;
+    f.setAttribute('data-loaded','1');
+    var ifr=document.createElement('iframe');
+    ifr.src='https://player.vimeo.com/video/1202457317?title=0&byline=0&portrait=0&badge=0';
+    ifr.setAttribute('allow','autoplay; fullscreen; picture-in-picture'); ifr.setAttribute('allowfullscreen','');
+    f.innerHTML=''; f.appendChild(ifr);
+  }
+  function showUpsell(){ var u=document.getElementById('upsell'); if(u) u.classList.add('on'); upsLoadVideo(); }
+  function closeUpsell(){ var u=document.getElementById('upsell'); if(u) u.classList.remove('on');
+    var f=document.getElementById('upsVframe'); if(f){ f.innerHTML='<div class="ups-vph">Carico il video…</div>'; f.removeAttribute('data-loaded'); } }
   window.showUpsell=showUpsell;
   (function(){ var u=document.getElementById('upsell'), x=document.getElementById('upsX');
     if(x) x.addEventListener('click', closeUpsell);
