@@ -412,6 +412,21 @@ details.gd[open]{border-color:rgba(205,178,242,.5);box-shadow:0 0 16px rgba(170,
 .gd-c .gold{color:var(--gold-pale);font-weight:600}
 .gd-c ol,.gd-c ul{margin:0 0 10px 20px}
 .gd-c li{margin-bottom:7px}
+/* schema "com'è fatta una sezione" */
+.scheme{display:flex;align-items:flex-start;gap:12px;margin:14px 0 6px}
+.scheme-light{flex:none;width:30px;height:30px;border-radius:50%;margin-top:18px;
+  background:radial-gradient(circle at 38% 32%, #fff5ea 0%, var(--lm-mid,#dca06b) 60%, transparent 80%);
+  box-shadow:0 0 10px 3px var(--lm-g1,rgba(235,186,138,.6)),0 0 22px 8px var(--lm-g2,rgba(205,148,96,.4))}
+.scheme-sec{flex:1;min-width:0;border:1px solid rgba(201,168,76,.32);border-radius:16px;
+  background:linear-gradient(180deg,rgba(40,33,22,.4),rgba(22,17,28,.55));padding:12px 14px;
+  box-shadow:0 8px 22px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.05)}
+.scheme-cap{font-family:'Cinzel',serif;font-size:12.5px;letter-spacing:.2em;text-transform:uppercase;color:#c9a84c;text-align:center;margin-bottom:10px}
+.scheme-row{display:flex;align-items:center;gap:12px;padding:10px 8px;border-radius:11px;background:rgba(185,163,227,.06);border:1px solid rgba(185,163,227,.12);margin-bottom:8px}
+.scheme-row:last-child{margin-bottom:0}
+.scheme-row .si{flex:none;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;color:#e8d9ae;background:rgba(10,8,14,.5);border:1px solid rgba(201,168,76,.3)}
+.scheme-row .st{display:flex;flex-direction:column;line-height:1.3}
+.scheme-row .st b{font-family:'Cinzel',serif;font-size:15.5px;color:#f0eaf6;font-weight:600}
+.scheme-row .st span{font-size:15px;color:var(--txt-soft)}
 
 /* ================= SCRIVI A ELISA (in preparazione) ================= */
 .chat-msgs{position:relative;flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:18px 16px;display:flex;flex-direction:column;gap:10px;-webkit-overflow-scrolling:touch}
@@ -805,12 +820,38 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     </details>
 
     <details class="gd">
-      <summary><span class="gi">👣</span>Come funziona il sentiero<span class="arr">▶</span></summary>
+      <summary><span class="gi">👣</span>Il sentiero e le sezioni<span class="arr">▶</span></summary>
       <div class="gd-c">
-        <p>La pagina è un <b>sentiero</b>, da percorrere dall'alto verso il basso: <b>«Inizia da qui»</b>, l'<b>Introduzione</b>, il <b>Capitolo Primo · La Frequenza Nascosta</b> — la spiegazione del Giornaliero — e poi <b>il Giornaliero</b>, la pratica di ogni giorno. Più in basso, le tappe che verranno.</p>
-        <p>Ogni tappa è <b>propedeutica</b> alla successiva: la prepara. Per questo alcune si aprono solo quando hai fatto la precedente — non è un limite, è il modo in cui ti accompagno con ordine. La tappa col <b>bordo luminoso</b> è quella che ti consiglio oggi.</p>
-        <p><b>Prenditi il tuo tempo.</b> Anche quando una parte si è sbloccata, non sei obbligata/o a farla subito: alcuni esercizi più avanti chiedono una <b>consapevolezza</b> che nasce solo dalla pratica di ogni giorno. Se non te la senti, o se guardi una tappa e pensi «ci torno più avanti», <b>puoi e devi farlo</b>. Non c'è nessuna fretta.</p>
-        <p>Soffermati su ogni passo e <b>fallo tuo</b>; quando vuoi, <b>torna indietro</b> a rivivere le tappe già fatte — non è tornare indietro, è radicare. <span class="gold">Il cammino si crea camminando.</span></p>
+        <p>La pagina è un <b>sentiero</b>, da percorrere dall'alto verso il basso: <b>«Inizia da qui»</b>, l'<b>Introduzione</b>, il <b>Capitolo Primo · La Frequenza Nascosta</b> e poi <b>il Giornaliero</b>. Più in basso, le tappe che verranno.</p>
+        <p>Ho scelto apposta di costruire <b>ogni sezione nello stesso identico modo</b>. Non è una semplificazione: è il cuore del metodo. Quando la forma è sempre la stessa, smetti di pensare a «come si fa» e puoi dedicare <b>tutta la tua attenzione a ciò che conta</b> — vivere davvero quella parte di te.</p>
+        <p>Ogni sezione è <b>propedeutica</b> alla successiva: la prepara. Per questo ti chiedo di <b>fare tua ogni sezione</b>, di comprenderla davvero, e di passare alla prossima <b>solo quando ti senti pronta/o</b>. La tappa col <b>bordo luminoso</b> è quella che ti consiglio oggi.</p>
+        <p><b>Non c'è nessuna fretta.</b> Puoi fermarti, e puoi <b>tornare indietro</b> a rivivere le tappe già fatte quando vuoi: non è tornare indietro, è radicare. <span class="gold">Il cammino si crea camminando.</span></p>
+      </div>
+    </details>
+
+    <details class="gd">
+      <summary><span class="gi">🎬</span>Com'è fatta una sezione<span class="arr">▶</span></summary>
+      <div class="gd-c">
+        <p>Dentro ogni sezione trovi <b>sempre le stesse cose, nello stesso ordine</b>:</p>
+        <div class="scheme">
+          <div class="scheme-light" aria-hidden="true"></div>
+          <div class="scheme-sec">
+            <div class="scheme-cap">Una sezione</div>
+            <div class="scheme-row"><span class="si">▷</span><span class="st"><b>Il mio video</b><span>la mia voce ti accompagna</span></span></div>
+            <div class="scheme-row"><span class="si">✎</span><span class="st"><b>Gli esercizi</b><span>tutto si salva da solo</span></span></div>
+            <div class="scheme-row"><span class="si">☾</span><span class="st"><b>La meditazione</b><span>con la musica della playlist</span></span></div>
+          </div>
+        </div>
+        <p>Prima <b>il mio video</b>: la mia voce che ti spiega e ti guida. Poi <b>gli esercizi</b> da vivere — domande, scelte, riflessioni da scrivere. In alcune sezioni c'è anche una <b>meditazione guidata</b>, che chiede una musica di sottofondo.</p>
+        <p><b>Tutto ciò che scrivi si salva da solo, all'istante</b>, nel tuo account: puoi compilare, correggere, lasciare a metà e riprendere, persino rifare un esercizio più avanti — <b>non perdi mai nulla</b>, su qualunque dispositivo. Senti libera/o di provare: è il tuo spazio.</p>
+      </div>
+    </details>
+
+    <details class="gd">
+      <summary><span class="gi">🎵</span>La musica<span class="arr">▶</span></summary>
+      <div class="gd-c">
+        <p>Nella sezione <b>«Musica per meditare»</b> trovi le musiche che ho scelto io. Avviale quando vuoi: <b>continuano a suonare</b> anche mentre navighi nel sentiero e dentro le sezioni — non si fermano se cambi pagina.</p>
+        <p>Sono pensate proprio per <b>accompagnare le meditazioni</b>: quando un esercizio ti chiede una musica di sottofondo, usa la mia playlist. Puoi gestirla da lì, oppure direttamente dalla <b>piccola luce</b> (qui sotto).</p>
       </div>
     </details>
 
@@ -833,8 +874,13 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     <details class="gd">
       <summary><span class="gi">✨</span>La piccola luce<span class="arr">▶</span></summary>
       <div class="gd-c">
-        <p>La luce che vedi sulla pagina è la tua <b>compagna di cammino</b>. Ti segue mentre scorri, si ferma accanto alla tappa consigliata e — dentro gli esercizi — si posa sulla sezione in cui stai lavorando.</p>
-        <p><b>Toccala in qualsiasi momento</b>: si apre questa guida, con la spiegazione di dove ti trovi e di cosa fare. Quando hai un dubbio, la luce è lì per questo.</p>
+        <p>La luce che vedi sulla pagina è la tua <b>compagna di cammino</b>. Ti segue mentre scorri e si posa accanto a dove sei, senza mai darti fastidio. Fa tre cose per te:</p>
+        <ul>
+          <li><b>Ti consiglia.</b> Dentro una sezione, toccala: ti dice cosa stai facendo in quel punto e come viverlo.</li>
+          <li><b>Comanda la musica.</b> Dalla sua piccola barra puoi mettere in pausa, riprendere, cambiare brano e regolare il volume — senza uscire da dove sei.</li>
+          <li><b>Apre questa guida.</b> In qualunque momento, toccala e ritrovi tutto questo.</li>
+        </ul>
+        <p>Quando hai un dubbio, la luce è lì per questo. 💓</p>
       </div>
     </details>
 
