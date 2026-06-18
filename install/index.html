@@ -239,6 +239,63 @@ footer{
 
 <footer>Il Cammino Interiore · Elisa Soul Medium</footer>
 
+<!-- ===== Barra di navigazione Oltre il Velo (solo su questa pagina) ===== -->
+<style>
+body{padding-bottom:150px}
+.olv-nav{position:fixed;bottom:14px;left:14px;right:14px;max-width:540px;margin-left:auto;margin-right:auto;
+  display:flex;justify-content:space-between;align-items:flex-end;padding:14px 12px 14px;border-radius:30px;
+  background:linear-gradient(165deg,#2c2240 0%,#150f22 55%,#1f1630 100%);border:1px solid rgba(185,163,227,.45);
+  box-shadow:0 0 0 1px rgba(10,8,16,.8),0 -2px 26px rgba(130,95,210,.2),0 10px 38px rgba(0,0,0,.55),inset 0 0 30px rgba(150,110,215,.08);
+  z-index:999999;font-family:'Cinzel',Georgia,serif;overflow:visible}
+.olv-link{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;
+  color:rgba(208,195,232,.62);font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;line-height:1.25;
+  text-align:center;flex:1;min-width:0;transition:all .25s ease}
+.olv-link svg{width:22px;height:22px;margin-bottom:5px}
+.olv-link:not(.olv-home){padding-top:8px;padding-bottom:12px}
+.olv-home{position:relative;flex:0 0 78px;width:78px;height:78px;min-width:78px;max-width:78px;margin-top:-46px;border-radius:50%;
+  background:radial-gradient(circle at 35% 28%,#5b4585 0%,#2c2144 55%,#16101f 100%);border:2px solid rgba(205,178,242,.85);color:#dccdf6!important;
+  box-shadow:0 0 0 4px rgba(18,13,28,.95),0 0 0 5px rgba(185,163,227,.45),0 10px 30px rgba(0,0,0,.5),0 0 22px rgba(170,135,230,.45);z-index:5}
+.olv-home::before{content:"";position:absolute;inset:-12px;border-radius:50%;background:radial-gradient(rgba(186,150,240,.22),transparent 70%);z-index:-1}
+.olv-home svg{width:26px;height:26px;margin-bottom:3px}
+.olv-home span{font-size:9.5px;font-weight:700;letter-spacing:.1em}
+.olv-link.olv-active:not(.olv-home){color:#fff;text-shadow:0 0 10px rgba(190,160,240,.65)}
+.olv-link.olv-active:not(.olv-home) svg{filter:drop-shadow(0 0 6px rgba(200,165,250,.85))}
+.olv-link.olv-active:not(.olv-home)::after{content:"";position:absolute;bottom:2px;left:50%;transform:translateX(-50%);width:20px;height:4px;border-radius:4px;background:#cdb2f2;box-shadow:0 0 10px 2px rgba(190,150,245,.85)}
+.olv-home.olv-active{color:#fff!important;border-color:rgba(225,205,255,.95);background:radial-gradient(circle at 35% 28%,#7558a8 0%,#382a55 55%,#1a1228 100%);
+  box-shadow:0 0 0 4px rgba(18,13,28,.95),0 0 0 5px rgba(205,178,242,.7),0 10px 30px rgba(0,0,0,.5),0 0 30px rgba(186,150,240,.75),0 0 60px rgba(150,110,215,.35)}
+.olv-link:hover{color:#fff}
+@media(max-width:600px){.olv-nav{max-width:none;padding:12px 6px 12px;border-radius:26px}.olv-link{font-size:8px;letter-spacing:.04em}.olv-link svg{width:21px;height:21px}.olv-home{flex:0 0 70px;width:70px;height:70px;min-width:70px;max-width:70px;margin-top:-42px}.olv-home svg{width:24px;height:24px}}
+@supports (padding-bottom: env(safe-area-inset-bottom)){.olv-nav{padding-bottom:calc(14px + env(safe-area-inset-bottom))}body{padding-bottom:calc(150px + env(safe-area-inset-bottom))}}
+</style>
+<div class="olv-nav">
+  <a href="https://www.elisasoulmedium.com/school/course/oltreilvelo/lecture/8196012" class="olv-link">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+    Registrazioni
+  </a>
+  <a href="https://www.elisasoulmedium.com/school/course/oltreilvelo/lecture/9190294" class="olv-link">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+    Biblioteca
+  </a>
+  <a href="https://www.elisasoulmedium.com/school/course/oltreilvelo/lecture/8195421" class="olv-link olv-home">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    <span>Home</span>
+  </a>
+  <a href="https://www.elisasoulmedium.com/school/course/livezoom2/lecture/8244172" class="olv-link">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16" fill="currentColor"/></svg>
+    Accesso Live
+  </a>
+  <a href="https://oltreilvelo.elisasoulmedium.com/install" class="olv-link">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="6" r="4"/><path d="M4 22c0-5.5 3.6-9 8-9s8 3.5 8 9"/></svg>
+    Cammino
+  </a>
+</div>
+<script>
+(function(){
+  var links=document.querySelectorAll('.olv-nav .olv-link'), cur=window.location.href;
+  links.forEach(function(l){ if(cur.indexOf(l.getAttribute('href'))!==-1) l.classList.add('olv-active'); });
+})();
+</script>
+
 <!-- Script PWA Manager: registra il service worker e gestisce le notifiche push -->
 <script src="https://pwa.elisasoulmedium.com/cammino-interiore/init.js"></script>
 
