@@ -868,7 +868,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
   <h3 id="lkT">Sicuro di voler continuare?</h3>
   <p id="lkB"></p>
   <button class="btn-gold" id="lkBack">Torna indietro</button>
-  <button class="btn-ghost" id="lkGo">Vai avanti comunque</button>
+  <button class="btn-ghost" id="lkGo">Vai avanti →</button>
 </div>
 
 <div id="saved">✓ Salvato</div>
@@ -1595,46 +1595,43 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
   function openLock(ex,fromEl){
     lockTarget=ex; lastFocus=fromEl;
     var puoiEntrare=!!(ex.route||ex.shell);   /* c'è una destinazione → si può entrare comunque */
-    document.getElementById('lkT').textContent = puoiEntrare ? 'Sicuro di voler continuare?' : 'Questa parte è ancora chiusa';
-    var fatti=(days===0?'Non hai ancora iniziato il Giornaliero.':
+    var goNote=' Se lo desideri, puoi comunque entrare ora con «Vai avanti».';
+    var fatti=(days===0?'Per ora non hai ancora iniziato il Giornaliero.':
                days===1?'Finora hai fatto 1 giorno di pratica.':'Finora hai fatto '+days+' giorni di pratica.');
-    var msg;
-    if(!unlockOk(ex) && ownUnlock(ex)){
-      /* avrebbe i requisiti propri, ma una tappa precedente del percorso è ancora bloccata */
-      msg='Questa tappa fa parte di un percorso: prima vanno sbloccate, in ordine, le tappe precedenti. Comincia da «La Frequenza Nascosta» e prosegui passo dopo passo. Se senti di volerlo, puoi entrare comunque.';
-    } else if(ex.id==='capitolo2'){
-      msg='Il «Mondo Interiore» si apre dopo '+ex.requires.days+' giorni di Giornaliero: così arrivi con l\'osservatore già allenato e le lezioni ti parlano di più. '+fatti+
-        ' Se senti di volerlo, puoi entrare comunque.';
-    } else if(ex.partVideo){
-      var soonNote = ex.route ? '' : ' Gli esercizi di questa parte stanno arrivando: appena pronti, si sbloccheranno proprio così.';
-      if(unlockOk(ex)){
-        msg = ex.route ? 'Tutto pronto: gli esercizi del «'+ex.title+'» sono sbloccati.'
-                       : 'Hai sbloccato questa parte.'+soonNote;
-      } else {
-        var req=[];
-        if(ex.id==='bambino'){
-          if(!videoSeen('mondo'))req.push('guarda il video «Il Mondo Interiore»');
-          if(!videoSeen('bambino'))req.push('guarda il video «Il Bambino Interiore»');
-        } else {
-          if(!videoSeen(ex.id))req.push('guarda il video «'+ex.title+'» nel Mondo Interiore');
-          var pi=PART_ORDER.indexOf(ex.id), mancano=[];
-          for(var pk=0;pk<pi;pk++){ if(!partDone(PART_ORDER[pk])) mancano.push('«'+partTitle(PART_ORDER[pk])+'»'); }
-          if(mancano.length)req.push('completa prima tutti gli esercizi di: '+mancano.join(', '));
-        }
-        msg='Per accedere a questa parte devi prima: '+req.join('; ')+'.'+soonNote+
-          (ex.route?' Se senti di volerlo, puoi entrare comunque.':'');
-      }
+    var title, msg;
+    if(!puoiEntrare){
+      /* area non ancora pubblicata: messaggio semplice, nient'altro */
+      title='Quest’area è ancora chiusa';
+      msg='Quest’area è ancora chiusa. Prossimamente verrà pubblicata.';
     } else if(ex.requiresVideo){
-      msg = unlockOk(ex)
-        ? 'Tutto pronto: il Giornaliero è aperto.'
-        : 'Il Giornaliero è la pratica di ogni giorno. Prima, guarda «La Frequenza Nascosta»: è la sua spiegazione. Poi questa pratica si apre da sola. Se senti di volerlo, puoi entrare comunque.';
-    } else if(ex.route){
-      msg='Questa tappa si apre dopo '+ex.requires.days+' giorni di Giornaliero. '+fatti+' Se senti di volerlo, puoi entrare comunque.';
+      /* il Giornaliero */
+      title='Vuoi continuare?';
+      msg = unlockOk(ex) ? 'Tutto pronto: il Giornaliero è aperto.'
+        : 'Il Giornaliero è una pratica importante, da svolgere ogni singolo giorno. Prima di accedere a quest’area ti consiglio di guardare e concludere «La Frequenza Nascosta»: è la spiegazione di tutto il cammino. Una volta completata, quest’area si sbloccherà da sola.'+goNote;
+    } else if(ex.id==='capitolo2'){
+      title='Vuoi continuare?';
+      msg='Il «Mondo Interiore» è il cuore del Cammino. Ti consiglio di arrivarci dopo almeno '+ex.requires.days+' giorni di Giornaliero: così l\'osservatore è già allenato e le lezioni ti parlano di più. '+fatti+' Quest’area si sbloccherà da sola al momento giusto.'+goNote;
+    } else if(!unlockOk(ex) && ownUnlock(ex)){
+      /* tappa con requisiti propri ok, ma una precedente del percorso è ancora chiusa */
+      title='Vuoi continuare?';
+      msg='Questa tappa fa parte di un percorso da seguire in ordine. Ti consiglio di completare prima le tappe precedenti, a partire da «La Frequenza Nascosta». Quest’area si sbloccherà da sola quando sarà il momento.'+goNote;
+    } else if(ex.partVideo){
+      title='Vuoi continuare?';
+      var req=[];
+      if(ex.id==='bambino'){
+        if(!videoSeen('mondo'))req.push('guarda il video «Il Mondo Interiore»');
+        if(!videoSeen('bambino'))req.push('guarda il video «Il Bambino Interiore»');
+      }
+      msg = req.length
+        ? 'Per vivere al meglio quest’area ti consiglio prima di: '+req.join('; ')+'. Quest’area si sbloccherà da sola una volta completati.'+goNote
+        : 'Quest’area ti aspetta.'+goNote;
     } else {
-      msg='Gli esercizi del Mondo Interiore si apriranno quando avrai completato le otto lezioni del Capitolo Secondo «Il Mondo Interiore». Stanno prendendo forma: li troverai qui appena pronti.';
+      title='Vuoi continuare?';
+      msg='Quest’area si apre dopo '+(ex.requires?ex.requires.days:10)+' giorni di Giornaliero. '+fatti+' Si sbloccherà da sola al momento giusto.'+goNote;
     }
+    document.getElementById('lkT').textContent=title;
     document.getElementById('lkB').textContent=msg;
-    document.getElementById('lkGo').style.display=(ex.route||ex.shell)?'':'none';
+    document.getElementById('lkGo').style.display=puoiEntrare?'':'none';
     veil.classList.add('on'); lkpop.classList.add('on');
     document.getElementById('lkBack').focus();
   }
