@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Installa · Il Cammino Interiore</title>
 
+<!-- Cattura l'evento di installazione il PRIMA possibile (può scattare prima del resto del codice):
+     così, premendo il pulsante, l'installazione su Android parte davvero. -->
+<script>window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();window.__olvPrompt=e;});</script>
+
 <!-- Questa pagina mostra SEMPRE le istruzioni di installazione del Cammino Interiore
      (nessun salto automatico all'app: anche aperta da dentro un'altra app resta qui). -->
 
@@ -319,10 +323,10 @@ body{padding-bottom:150px}
   }
 
   // Prompt di installazione nativo (Chrome / Edge / Android): se arriva, il pulsante lo userà
-  var deferred = null;
+  var deferred = window.__olvPrompt || null;   // evento già catturato in <head>?
   window.addEventListener('beforeinstallprompt', function(e){
     e.preventDefault();
-    deferred = e;
+    deferred = e; window.__olvPrompt = e;
     installBtn.hidden = false;
     androidSteps.hidden = true;
   });
