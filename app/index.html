@@ -563,6 +563,63 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
 .start-row .excard{flex:1;min-width:0}
 @media(max-width:480px){.start-row .excard .excover{height:100px}.start-row .excard h3{font-size:19px}.start-row .excard .exdesc{display:none}}
 
+/* ================= SUGGERIMENTI ================= */
+.sugg-cta{list-style:none;margin:14px 0 0;padding:0}
+.sugg-cta::before{content:none}
+.suggbox{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;
+  background:linear-gradient(135deg,rgba(42,32,62,.62),rgba(22,16,34,.72));border:1px solid rgba(185,163,227,.22);
+  border-radius:18px;padding:16px 18px;box-shadow:0 8px 26px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.04)}
+.suggbox-txt{flex:1;min-width:170px}
+.suggbox-txt h3{font-family:'Cinzel',serif;font-size:17px;color:var(--glic-hi);margin:0 0 3px}
+.suggbox-txt p{font-size:15px;color:var(--txt-soft);line-height:1.4;margin:0}
+.suggbtn{flex-shrink:0;cursor:pointer;border:none;font-family:'Cinzel',serif;font-weight:600;font-size:14px;letter-spacing:.03em;
+  border-radius:13px;padding:13px 18px;color:#1c1428;background:linear-gradient(135deg,#c9b3ef,#a98fd6);
+  box-shadow:0 6px 20px rgba(185,163,227,.32);transition:transform .15s}
+.suggbtn:active{transform:scale(.97)}
+@media(max-width:520px){.suggbtn{width:100%}}
+
+#suggest{display:none;padding:0 18px 60px;max-width:600px;margin:0 auto;width:100%;position:relative}
+#suggest.on{display:block}
+.sugg-title{font-family:'Cinzel',serif;font-size:22px;color:var(--glic-hi);text-align:center;margin:6px 36px 6px}
+.sugg-anon{text-align:center;color:var(--txt-dim);font-size:14.5px;font-style:italic;margin:0 24px 22px;line-height:1.45}
+.sugg-q{font-family:'Cinzel',serif;font-size:13.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--gold-pale);text-align:center;margin-bottom:14px}
+.themes{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:22px}
+@media(max-width:430px){.themes{grid-template-columns:1fr}}
+.theme{display:flex;align-items:center;gap:11px;cursor:pointer;text-align:left;
+  background:rgba(185,163,227,.06);border:1px solid rgba(185,163,227,.18);border-radius:14px;padding:13px 14px;transition:all .18s}
+.theme:hover{border-color:rgba(185,163,227,.4);background:rgba(185,163,227,.1)}
+.theme.sel{border-color:var(--glic);background:rgba(185,163,227,.16);box-shadow:0 0 0 1px var(--glic),0 6px 18px rgba(185,163,227,.18)}
+.theme .ti{font-size:23px;flex-shrink:0;line-height:1}
+.theme .tn{font-family:'Cinzel',serif;font-size:14.5px;color:var(--txt)}
+.sugg-write{margin-top:2px}
+.sugg-write .lab{font-size:15px;color:var(--txt-soft);margin:0 2px 9px}
+.sugg-write .lab b{color:var(--glic-hi)}
+.sugg-ta{width:100%;min-height:150px;resize:vertical;font-family:'Cormorant Garamond',serif;font-size:18px;line-height:1.5;
+  color:var(--txt);background:rgba(185,163,227,.06);border:1px solid rgba(185,163,227,.22);border-radius:14px;padding:14px 16px;outline:none}
+.sugg-ta:focus{border-color:var(--glic)}
+.sugg-ta::placeholder{color:var(--txt-dim);font-style:italic}
+.sugg-send{margin-top:14px;width:100%;cursor:pointer;border:none;font-family:'Cinzel',serif;font-weight:600;font-size:15px;letter-spacing:.03em;
+  border-radius:14px;padding:15px;color:#1c1428;background:linear-gradient(135deg,#c9b3ef,#a98fd6);box-shadow:0 8px 24px rgba(185,163,227,.35);transition:transform .15s,opacity .2s}
+.sugg-send:active{transform:scale(.98)}
+.sugg-send[disabled]{opacity:.5;cursor:default}
+.sugg-err{color:#e8a0a0;font-size:14.5px;text-align:center;min-height:18px;margin-top:8px}
+.sugg-done{text-align:center;padding:34px 12px}
+.sugg-done .em{font-size:40px}
+.sugg-done h3{font-family:'Cinzel',serif;color:var(--glic-hi);font-size:21px;margin:12px 0 6px}
+.sugg-done p{color:var(--txt-soft);font-size:16px;line-height:1.5}
+.sugg-done .again{margin-top:18px;background:none;border:1px solid rgba(185,163,227,.4);color:var(--glic-hi);
+  font-family:'Cinzel',serif;font-size:14px;border-radius:12px;padding:11px 18px;cursor:pointer}
+
+/* la piccola luce in alto: punto interrogativo che lampeggia, spiega i temi */
+.sugg-lume{position:absolute;top:2px;right:4px;width:42px;height:42px;border-radius:50%;cursor:pointer;border:none;z-index:6;padding:0;
+  background:radial-gradient(circle at 38% 32%,#fff7e0,#dca06b 62%,#a8651f);
+  box-shadow:0 0 14px rgba(220,160,107,.7),0 0 30px rgba(220,160,107,.35);animation:suggBlink 1.5s ease-in-out infinite}
+.sugg-lume::after{content:"?";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-family:'Cinzel',serif;font-weight:700;font-size:19px;color:#2a1a06}
+@keyframes suggBlink{0%,100%{box-shadow:0 0 14px rgba(220,160,107,.7),0 0 30px rgba(220,160,107,.35);transform:scale(1)}
+  50%{box-shadow:0 0 22px rgba(255,225,150,.95),0 0 46px rgba(255,210,120,.55);transform:scale(1.08)}}
+@media(prefers-reduced-motion:reduce){.sugg-lume{animation:none}}
+
 .excard.mu-entry .excover{background:linear-gradient(145deg,rgba(18,12,32,.92),rgba(12,8,24,.96));border-bottom:1px solid rgba(185,163,227,.14)}
 .excard.mu-entry .excover .ring{border-color:rgba(185,163,227,.3);animation:none}
 .excard.mu-entry .excover .sym{font-size:52px}
@@ -710,6 +767,16 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
         </div>
       </li>
 
+      <li class="sugg-cta">
+        <div class="suggbox">
+          <div class="suggbox-txt">
+            <h3>Il tuo pensiero conta</h3>
+            <p>Un'idea, qualcosa da migliorare, una cosa che ti è piaciuta? Raccontacelo: è <b>anonimo</b>.</p>
+          </div>
+          <button class="suggbtn" type="button" onclick="showView('suggest')">Facci sapere il tuo pensiero</button>
+        </div>
+      </li>
+
       <!-- le tappe successive nascono qui dal registro degli esercizi -->
 
     </ol>
@@ -742,6 +809,34 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     <div class="mu-list-hd">Tutte le tracce</div>
     <div id="mu-list"></div>
     <p class="mu-foot">La riproduzione continua anche se torni al sentiero.</p>
+  </section>
+
+  <!-- ============ SUGGERIMENTI (anonimi) ============ -->
+  <section id="suggest">
+    <button class="sugg-lume" id="suggLume" type="button" aria-label="Cosa significa ogni tema"></button>
+    <button class="mu-back" onclick="showView('dash')">← Torna al Sentiero</button>
+
+    <div id="suggForm">
+      <h2 class="sugg-title">Facci sapere il tuo pensiero</h2>
+      <p class="sugg-anon">È <b>anonimo</b>: non sapremo chi ci scrive. Scrivi liberamente quello che senti 💓<br>Tocca la <b>luce</b> in alto se non sai quale tema scegliere.</p>
+
+      <p class="sugg-q">Di cosa vuoi parlarci?</p>
+      <div class="themes" id="themes"></div>
+
+      <div class="sugg-write hide" id="suggWrite">
+        <p class="lab">Stai scrivendo su: <b id="suggSel"></b></p>
+        <textarea class="sugg-ta" id="suggText" placeholder="Scrivi quello che senti…" maxlength="4000"></textarea>
+        <button class="sugg-send" id="suggSend" type="button">Invia il tuo pensiero</button>
+        <p class="sugg-err" id="suggErr"></p>
+      </div>
+    </div>
+
+    <div class="sugg-done hide" id="suggDone">
+      <div class="em">💓</div>
+      <h3>Grazie del tuo pensiero</h3>
+      <p>L'abbiamo ricevuto, in modo anonimo.<br>Ci aiuta a far crescere il Cammino.</p>
+      <button class="again" type="button" id="suggAgain">Lascia un altro pensiero</button>
+    </div>
   </section>
 
 </div>
@@ -852,6 +947,15 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
       <div class="gd-c">
         <p>Nella sezione <b>«Musica per meditare»</b> trovi le musiche che ho scelto io. Avviale quando vuoi: <b>continuano a suonare</b> anche mentre navighi nel sentiero e dentro le sezioni — non si fermano se cambi pagina.</p>
         <p>Sono pensate proprio per <b>accompagnare le meditazioni</b>: quando un esercizio ti chiede una musica di sottofondo, usa la mia playlist. Puoi gestirla da lì, oppure direttamente dalla <b>piccola luce</b> (qui sotto).</p>
+      </div>
+    </details>
+
+    <details class="gd">
+      <summary><span class="gi">💬</span>I suggerimenti<span class="arr">▶</span></summary>
+      <div class="gd-c">
+        <p>Subito sotto <b>«Inizia da qui»</b> trovi <b>«Facci sapere il tuo pensiero»</b>: è il posto dove lasciarci un'idea, segnalare qualcosa da migliorare o dirci cosa ti è piaciuto. <b>È anonimo</b>: non sappiamo chi scrive, quindi scrivi liberamente quello che senti 💓</p>
+        <p>Prima <b>scegli un tema</b> (così sappiamo di cosa parli), poi scrivi. Quando l'area è aperta, in alto c'è una <b>piccola luce con un «?»</b>: toccala e ti spiego a cosa serve ogni tema.</p>
+        <p>I temi sono: <b>🛠 Tecnico</b> (qualcosa non funziona), <b>📝 Esercizi</b>, <b>🎬 Video e lezioni</b>, <b>🎵 Musica e meditazioni</b>, <b>✨ Nuove idee</b> e <b>💬 Generale</b>.</p>
       </div>
     </details>
 
@@ -989,7 +1093,15 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     bambino:{t:'Il Bambino Interiore',
       h:'<p>La prima parte da incontrare. Si apre quando avrai <b>completato le otto lezioni</b> del Mondo Interiore. Dentro trovi due esercizi: il <b>foglio delle tre domande</b>, per ascoltare la tua emozione e da dove nasce, e la <b>meditazione</b>, per dare un volto al tuo bambino interiore.</p>'},
     ex2:{t:'Le tappe più avanti',
-      h:'<p>Dopo il Bambino arriveranno l\'Adulto, l\'Ombra e le altre parti, una a una. Non c\'è fretta — il sentiero non scappa.</p>'}
+      h:'<p>Dopo il Bambino arriveranno l\'Adulto, l\'Ombra e le altre parti, una a una. Non c\'è fretta — il sentiero non scappa.</p>'},
+    suggest:{t:'I suggerimenti',
+      h:'<p>Qui ci lasci un <b>pensiero</b>, in modo <b>anonimo</b>: non sappiamo chi scrive. Prima scegli il <b>tema</b>, così sappiamo di cosa parli; poi scrivi liberamente quello che senti. Ecco a cosa serve ogni tema:</p>'+
+        '<p><b>🛠 Tecnico</b> — qualcosa non funziona, un errore o un problema dell\'app.<br>'+
+        '<b>📝 Esercizi</b> — il Giornaliero e le pratiche da scrivere: cosa miglioreresti.<br>'+
+        '<b>🎬 Video e lezioni</b> — i video del Cammino e del Mondo Interiore.<br>'+
+        '<b>🎵 Musica e meditazioni</b> — le tracce e le meditazioni guidate.<br>'+
+        '<b>✨ Nuove idee</b> — cosa ti piacerebbe trovare qui dentro.<br>'+
+        '<b>💬 Generale</b> — un pensiero libero, tutto il resto.</p>'}
   };
 
   /* ================= toast ================= */
@@ -1007,7 +1119,11 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     document.getElementById('login').classList.toggle('on', view==='login');
     document.getElementById('dash').classList.toggle('on', view==='dash');
     document.getElementById('music').classList.toggle('on', view==='music');
+    document.getElementById('suggest').classList.toggle('on', view==='suggest');
     var fab=document.getElementById('annualFab'); if(fab) fab.style.display=(view!=='login' && plan==='monthly')?'flex':'none';   /* CTA annuale: solo Mensili */
+    /* nella vista suggerimenti la luce del sentiero si nasconde: lì c'è la sua piccola luce "?" dedicata */
+    var lm=document.getElementById('lume'); if(lm) lm.style.display=(view==='suggest')?'none':'';
+    if(view==='suggest'){ resetSuggest(); window.scrollTo(0,0); }
     if(view==='dash'){
       var u='';
       try{ u=localStorage.getItem(KEY)||''; }catch(e){}
@@ -1018,6 +1134,72 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
       cachePositions(); placeLume();
     }
   }
+  /* ================= SUGGERIMENTI (anonimi) ================= */
+  var SUGG_THEMES=[
+    {k:'tecnico',  i:'🛠', n:'Tecnico',              d:'Qualcosa non funziona, un errore o un problema dell\'app.'},
+    {k:'esercizi', i:'📝', n:'Esercizi',             d:'Il Giornaliero e le pratiche da scrivere: cosa miglioreresti.'},
+    {k:'video',    i:'🎬', n:'Video e lezioni',      d:'I video del Cammino e del Mondo Interiore.'},
+    {k:'musica',   i:'🎵', n:'Musica e meditazioni', d:'Le tracce e le meditazioni guidate.'},
+    {k:'idee',     i:'✨', n:'Nuove idee',           d:'Cosa ti piacerebbe trovare qui dentro.'},
+    {k:'generale', i:'💬', n:'Generale',             d:'Un pensiero libero: tutto il resto.'}
+  ];
+  var suggSel=null;
+  function themeByKey(k){ for(var i=0;i<SUGG_THEMES.length;i++) if(SUGG_THEMES[i].k===k) return SUGG_THEMES[i]; return null; }
+  function renderThemes(){
+    var box=document.getElementById('themes'); if(!box) return;
+    box.innerHTML='';
+    SUGG_THEMES.forEach(function(t){
+      var b=document.createElement('button');
+      b.type='button'; b.className='theme'; b.setAttribute('data-k',t.k);
+      b.innerHTML='<span class="ti">'+t.i+'</span><span class="tn">'+t.n+'</span>';
+      b.addEventListener('click',function(){ pickTheme(t.k); });
+      box.appendChild(b);
+    });
+  }
+  function pickTheme(k){
+    suggSel=k;
+    document.querySelectorAll('#themes .theme').forEach(function(el){ el.classList.toggle('sel', el.getAttribute('data-k')===k); });
+    var t=themeByKey(k);
+    document.getElementById('suggSel').textContent=(t?t.i+' '+t.n:'');
+    document.getElementById('suggWrite').classList.remove('hide');
+    document.getElementById('suggErr').textContent='';
+    setTimeout(function(){ document.getElementById('suggWrite').scrollIntoView({behavior:'smooth',block:'center'}); },80);
+  }
+  function resetSuggest(){
+    suggSel=null;
+    if(!document.getElementById('themes').children.length) renderThemes();
+    document.querySelectorAll('#themes .theme').forEach(function(el){ el.classList.remove('sel'); });
+    document.getElementById('suggWrite').classList.add('hide');
+    var ta=document.getElementById('suggText'); if(ta) ta.value='';
+    document.getElementById('suggErr').textContent='';
+    document.getElementById('suggForm').classList.remove('hide');
+    document.getElementById('suggDone').classList.add('hide');
+    var s=document.getElementById('suggSend'); if(s) s.disabled=false;
+  }
+  function inviaSuggerimento(){
+    var ta=document.getElementById('suggText'); var txt=(ta.value||'').trim();
+    var err=document.getElementById('suggErr');
+    if(!suggSel){ err.textContent='Scegli prima un tema.'; return; }
+    if(txt.length<2){ err.textContent='Scrivi il tuo pensiero, anche poche parole.'; ta.focus(); return; }
+    var em=EMAIL; if(!em){ try{ em=(localStorage.getItem(KEY)||'').trim().toLowerCase(); }catch(e){} }
+    var tk=''; try{ tk=localStorage.getItem('ovl-session')||''; }catch(e){}
+    var btn=document.getElementById('suggSend'); btn.disabled=true; err.textContent='';
+    fetch('/api/suggest',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({email:em,token:tk,theme:suggSel,text:txt})})
+      .then(function(r){ return r.json(); })
+      .then(function(d){
+        if(d&&d.ok){ document.getElementById('suggForm').classList.add('hide'); document.getElementById('suggDone').classList.remove('hide'); }
+        else { err.textContent='Non è stato possibile inviare. Riprova.'; btn.disabled=false; }
+      })
+      .catch(function(){ err.textContent='Errore di rete. Riprova.'; btn.disabled=false; });
+  }
+  (function wireSuggest(){
+    var send=document.getElementById('suggSend'); if(send) send.addEventListener('click', inviaSuggerimento);
+    var again=document.getElementById('suggAgain'); if(again) again.addEventListener('click', resetSuggest);
+    var sl=document.getElementById('suggLume'); if(sl) sl.addEventListener('click', function(e){ e.stopPropagation(); if(window.apriGuida) apriGuida('suggest', sl); });
+    renderThemes();
+  })();
+
   window.entra=function(){
     var el=document.getElementById('mail');
     var v=(el.value||'').trim().toLowerCase();

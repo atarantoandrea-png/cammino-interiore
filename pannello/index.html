@@ -97,6 +97,17 @@ td .tier{font-size:12px;padding:2px 8px;border-radius:20px;border:1px solid var(
 a.lk{color:var(--glic);text-decoration:none}
 .dorm{font-size:14.5px;color:var(--txt-soft);margin-bottom:7px}
 .dorm b{color:var(--txt);font-weight:600}
+/* suggerimenti */
+.sfilter{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.schip{cursor:pointer;font-size:13.5px;font-family:'Cinzel',serif;border:1px solid var(--card-line);border-radius:20px;padding:7px 13px;color:var(--txt-soft);background:transparent;transition:all .15s}
+.schip:hover{color:var(--glic-hi);border-color:var(--glic)}
+.schip.on{color:#1c1428;background:linear-gradient(135deg,#c9b3ef,#a98fd6);border-color:transparent}
+.scard{position:relative;background:rgba(185,163,227,.05);border:1px solid var(--card-line);border-radius:14px;padding:13px 40px 12px 14px;margin-bottom:10px}
+.scard .smeta{display:flex;gap:10px;align-items:center;margin-bottom:7px;font-size:13px;color:var(--txt-dim)}
+.scard .stag{font-size:12.5px;padding:2px 9px;border-radius:20px;border:1px solid rgba(201,168,76,.4);color:var(--gold-pale)}
+.scard .stext{font-size:16px;color:var(--txt);line-height:1.5;white-space:pre-wrap;word-break:break-word}
+.scard .sdel{position:absolute;top:9px;right:10px;cursor:pointer;background:none;border:none;color:var(--txt-dim);font-size:17px;line-height:1}
+.scard .sdel:hover{color:#f0a8a8}
 </style>
 </head>
 <body>
@@ -226,6 +237,11 @@ a.lk{color:var(--glic);text-decoration:none}
     html+=kpi('Tempo totale', fmtMin(t.totalMin30), 'ultimi 30 giorni');
     html+='</div>';
 
+    /* suggerimenti delle persone (anonimi) */
+    html+='<div class="panel"><h2>Suggerimenti delle persone (<span id="suggTot">…</span>)</h2>'+
+      '<div class="sfilter" id="sfilter"></div>'+
+      '<div id="suggList"><p class="muted">Carico…</p></div></div>';
+
     /* visite giornaliere */
     html+='<div class="panel"><h2>Visite giornaliere · ultimi 30 giorni</h2>'+
       lineChart(d.dailySeries,'users','#c9b3ef')+
@@ -276,6 +292,44 @@ a.lk{color:var(--glic);text-decoration:none}
     var ths=$('dashBody').querySelectorAll('th[data-k]');
     ths.forEach(function(el){ el.addEventListener('click', function(){ var k=el.getAttribute('data-k'); if(sortKey===k) sortDir*=-1; else { sortKey=k; sortDir=(k==='email'||k==='tier')?1:-1; } renderRows(); }); });
     renderRows();
+    loadSuggestions();
+  }
+
+  /* ---------- SUGGERIMENTI (anonimi) ---------- */
+  var S_THEMES={tecnico:{i:'🛠',n:'Tecnico'},esercizi:{i:'📝',n:'Esercizi'},video:{i:'🎬',n:'Video e lezioni'},musica:{i:'🎵',n:'Musica e meditazioni'},idee:{i:'✨',n:'Nuove idee'},generale:{i:'💬',n:'Generale'}};
+  var SUGG=null, suggFilter='all';
+  function loadSuggestions(){
+    fetch('/api/admin/suggestions').then(function(r){ if(r.status===403){ show('login'); throw 0; } return r.json(); })
+      .then(function(j){ if(j&&j.ok){ SUGG=j; renderSuggestions(); } })
+      .catch(function(){});
+  }
+  function fmtDateTime(ts){ return new Date(ts).toLocaleDateString('it-IT',{day:'2-digit',month:'2-digit',year:'2-digit'})+' '+new Date(ts).toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'}); }
+  function renderSuggestions(){
+    if(!SUGG) return;
+    if($('suggTot')) $('suggTot').textContent=SUGG.total;
+    /* chips filtro: Tutti + ogni tema con conteggio */
+    var chips='<button class="schip'+(suggFilter==='all'?' on':'')+'" data-f="all">Tutti ('+SUGG.total+')</button>';
+    Object.keys(S_THEMES).forEach(function(k){
+      var c=SUGG.counts[k]||0;
+      chips+='<button class="schip'+(suggFilter===k?' on':'')+'" data-f="'+k+'">'+S_THEMES[k].i+' '+S_THEMES[k].n+' ('+c+')</button>';
+    });
+    $('sfilter').innerHTML=chips;
+    $('sfilter').querySelectorAll('.schip').forEach(function(el){ el.addEventListener('click',function(){ suggFilter=el.getAttribute('data-f'); renderSuggestions(); }); });
+    /* lista */
+    var items=SUGG.items.filter(function(it){ return suggFilter==='all'||it.theme===suggFilter; });
+    if(!items.length){ $('suggList').innerHTML='<p class="muted">Nessun suggerimento'+(suggFilter==='all'?' ancora.':' in questo tema.')+'</p>'; return; }
+    $('suggList').innerHTML=items.map(function(it){
+      var th=S_THEMES[it.theme]||{i:'•',n:it.theme};
+      return '<div class="scard"><button class="sdel" data-id="'+it.id+'" title="Elimina">✕</button>'+
+        '<div class="smeta"><span class="stag">'+th.i+' '+th.n+'</span><span>'+fmtDateTime(it.ts)+'</span></div>'+
+        '<div class="stext">'+esc(it.text)+'</div></div>';
+    }).join('');
+    $('suggList').querySelectorAll('.sdel').forEach(function(el){ el.addEventListener('click',function(){ delSuggestion(el.getAttribute('data-id')); }); });
+  }
+  function delSuggestion(id){
+    if(!id) return;
+    fetch('/api/admin/suggestions/delete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id})})
+      .then(function(r){ return r.json(); }).then(function(){ loadSuggestions(); }).catch(function(){});
   }
 
   function kpi(lbl,val,note){ return '<div class="kpi"><div class="lbl">'+lbl+'</div><div class="val">'+val+'</div>'+(note?'<div class="note">'+note+'</div>':'')+'</div>'; }

@@ -110,6 +110,56 @@ app.post('/api/track', (req, res) => {
   } catch(e) { console.error('track:', e); res.status(500).json({ ok:false }); }
 });
 
+/* ── SUGGERIMENTI (anonimi) ──
+   Le persone, dall'app, ci lasciano un pensiero scegliendo un tema. Richiede una
+   sessione valida (solo iscritti, niente spam pubblico) MA non salva l'email: i
+   suggerimenti restano anonimi anche per l'admin. Archivio: /data/suggestions.json */
+const SUGG_FILE = path.join(DATA, 'suggestions.json');
+const SUGG_THEMES = ['tecnico', 'esercizi', 'video', 'musica', 'idee', 'generale'];
+function readSuggest(){ const j = readJsonFile(SUGG_FILE); return (j && Array.isArray(j.items)) ? j : { items:[] }; }
+function writeSuggest(obj){ const tmp = SUGG_FILE + '.tmp'; fs.writeFileSync(tmp, JSON.stringify(obj)); fs.renameSync(tmp, SUGG_FILE); }
+
+app.post('/api/suggest', (req, res) => {
+  const b = req.body || {};
+  const email = String(b.email || '').trim().toLowerCase();
+  if (!emailRe.test(email)) return res.status(400).json({ ok:false });
+  if (!storeAuthOk(req, email)) return res.status(401).json({ ok:false });   /* deve essere iscritto… */
+  const theme = SUGG_THEMES.indexOf(String(b.theme || '')) >= 0 ? String(b.theme) : null;
+  const text = String(b.text || '').trim().slice(0, 4000);
+  if (!theme) return res.status(400).json({ ok:false, reason:'theme' });
+  if (text.length < 2) return res.status(400).json({ ok:false, reason:'empty' });
+  try {
+    const store = readSuggest();
+    /* …ma NON salviamo chi è: solo tema, testo, data → resta anonimo */
+    store.items.push({ id: crypto.randomBytes(6).toString('hex'), theme, text, ts: Date.now() });
+    if (store.items.length > 5000) store.items = store.items.slice(-5000);
+    writeSuggest(store);
+    res.json({ ok:true });
+  } catch(e) { console.error('suggest:', e); res.status(500).json({ ok:false }); }
+});
+
+/* admin: elenco suggerimenti (anonimi) + conteggi per tema */
+app.get('/api/admin/suggestions', (req, res) => {
+  if (!adminFromReq(req)) return res.status(403).json({ ok:false });
+  const store = readSuggest();
+  const counts = {}; SUGG_THEMES.forEach(t => counts[t] = 0);
+  store.items.forEach(it => { if (counts[it.theme] != null) counts[it.theme]++; });
+  const items = store.items.slice().sort((a, b) => b.ts - a.ts);
+  res.json({ ok:true, items, counts, total: items.length });
+});
+/* admin: elimina un suggerimento (gestione spam) */
+app.post('/api/admin/suggestions/delete', (req, res) => {
+  if (!adminFromReq(req)) return res.status(403).json({ ok:false });
+  const id = String((req.body || {}).id || '');
+  try {
+    const store = readSuggest();
+    const before = store.items.length;
+    store.items = store.items.filter(it => it.id !== id);
+    if (store.items.length !== before) writeSuggest(store);
+    res.json({ ok:true });
+  } catch(e) { res.status(500).json({ ok:false }); }
+});
+
 /* ── AUTH: verifica email su Google Sheet + sessione singola ── */
 
 const SHEETS_ID  = process.env.SHEETS_ID  || '';
