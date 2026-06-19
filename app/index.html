@@ -137,8 +137,8 @@ header.hd{padding:54px 0 8px;text-align:center;position:relative;z-index:2}
 .prova-cta{display:block;text-decoration:none;text-align:center;margin-top:14px;padding:13px 16px;border-radius:13px;
   border:1px solid rgba(201,168,76,.45);background:linear-gradient(180deg,rgba(201,168,76,.14),rgba(201,168,76,.05));transition:border-color .2s,box-shadow .25s}
 .prova-cta:hover{border-color:var(--gold);box-shadow:0 0 16px rgba(201,168,76,.25)}
-.prova-cta .pc-1{display:block;font-family:'Cinzel',serif;font-size:16px;letter-spacing:.04em;color:var(--gold-pale)}
-.prova-cta .pc-2{display:block;font-size:15px;color:var(--txt-dim);margin-top:3px}
+.prova-cta{font-family:'Cinzel',serif;font-size:16px;letter-spacing:.04em;color:var(--gold-pale)}
+.prova-cta[hidden]{display:none}
 
 /* ================= DASHBOARD: IL SENTIERO ================= */
 #dash{display:none;position:relative;z-index:2}
@@ -737,10 +737,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
              placeholder="nome@esempio.it" onkeydown="if(event.key==='Enter')entra()">
       <div class="lerr" id="lerr"></div>
       <button class="btn-gold" onclick="entra()">Entra nel Cammino</button>
-      <a href="/prova" class="prova-cta">
-        <span class="pc-1">Prova il Cammino Interiore</span>
-        <span class="pc-2">Non hai un accesso? Iscriviti gratis →</span>
-      </a>
+      <a href="/prova" class="prova-cta" id="provaCta" hidden>Prova il Cammino Interiore</a>
       <p class="lnote">Questo dispositivo ricorderà il tuo accesso:<br>non dovrai riscrivere la mail ogni volta.</p>
     </div>
   </section>
@@ -1233,11 +1230,11 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)){
       err.textContent='Scrivi una mail valida, per favore.'; el.focus(); return;
     }
-    err.style.color=''; err.textContent='Verifica accesso…';
+    err.style.color=''; err.textContent='Verifica accesso…'; var pc0=document.getElementById('provaCta'); if(pc0) pc0.hidden=true;
     fetch('/api/auth/check?email='+encodeURIComponent(v))
       .then(function(r){return r.json();})
       .then(function(d){
-        if(!d.ok){ err.style.color='#c0392b'; err.textContent='Email non autorizzata. Contattami per accedere.'; return; }
+        if(!d.ok){ err.style.color='#c0392b'; err.textContent='Email non autorizzata. Contattami per accedere.'; var pc=document.getElementById('provaCta'); if(pc) pc.hidden=false; return; }
         var tk=''; try{tk=localStorage.getItem('ovl-session')||'';}catch(e){}
         return fetch('/api/auth/session',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:v,token:tk})})
           .then(function(r){return r.json();}).then(function(s){
@@ -1248,7 +1245,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
             } else if(s.reason==='active'){
               err.style.color='#c0392b';
               err.innerHTML='Account gi\xe0 connesso da un altro dispositivo.<br><button onclick="entrForce(\''+v+'\');return false" style="margin-top:12px;width:100%;padding:13px;background:linear-gradient(135deg,#8a3030,#c0392b);border:none;border-radius:10px;color:#fff;font-family:Cinzel,serif;font-size:17px;letter-spacing:.1em;cursor:pointer;">Forza accesso</button>';
-            } else if(s.reason==='unauthorized'){ err.style.color='#c0392b'; err.textContent='Email non autorizzata. Contattami per accedere.'; }
+            } else if(s.reason==='unauthorized'){ err.style.color='#c0392b'; err.textContent='Email non autorizzata. Contattami per accedere.'; var pc=document.getElementById('provaCta'); if(pc) pc.hidden=false; }
             else { err.style.color='#c0392b'; err.textContent='Errore. Riprova.'; }
           });
       })
@@ -1259,7 +1256,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     fetch('/api/auth/session',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:v,force:true})})
       .then(function(r){return r.json();}).then(function(s){
         if(s.ok){ try{localStorage.setItem(KEY,v);localStorage.setItem('ovl-session',s.token);}catch(e){} savePlan(v, s.tier); plan=s.tier||'full'; window.OVL_PLAN=plan; err.textContent=''; show('dash'); }
-        else if(s.reason==='unauthorized'){ err.style.color='#c0392b'; err.textContent='Email non autorizzata. Contattami per accedere.'; }
+        else if(s.reason==='unauthorized'){ err.style.color='#c0392b'; err.textContent='Email non autorizzata. Contattami per accedere.'; var pc=document.getElementById('provaCta'); if(pc) pc.hidden=false; }
         else{ err.style.color='#c0392b'; err.textContent='Errore. Riprova.'; }
       }).catch(function(){ err.style.color='#c0392b'; err.textContent='Errore di rete.'; });
   };
