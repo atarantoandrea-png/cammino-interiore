@@ -233,8 +233,20 @@ app.post('/api/trial/register', (req, res) => {
   const id = crypto.randomBytes(9).toString('hex');
   /* salvo subito il lead in locale: non si perde anche se il CRM è lento o giù */
   try { const s = readLeads(); s.items.push({ id, name, email, phone, ts:Date.now(), crm:false }); if (s.items.length>20000) s.items=s.items.slice(-20000); writeLeads(s); } catch(e){}
-  setTrialCookie(res, id);
-  res.json({ ok:true });   /* la UX non aspetta il CRM */
+
+  /* sessione APP con livello "prova": l'utente entra nell'app VERA, ma fail-closed (vede solo
+     Introduzione, metà Frequenza, musiche e Luce; tutto il resto è bloccato lato server).
+     Se l'email è GIÀ di un pagante (nel foglio), NON la declasso: mantiene il suo livello reale. */
+  getTierMap((err, map) => {
+    const sheetTier = (!err && map && map.get(email)) || null;   /* full | monthly | null */
+    const token = crypto.randomBytes(32).toString('hex');
+    const sess = { token, at: Date.now() };
+    if (!sheetTier) sess.tier = 'trial';                         /* marcatore di sessione-prova */
+    try { fs.writeFileSync(sessFile(email), JSON.stringify(sess)); } catch(e){}
+    setSessionCookie(res, email, token);   /* cookie ovl_sess: entra nell'app */
+    setTrialCookie(res, id);               /* cookie ovl_trial: per la chat 3/giorno */
+    res.json({ ok:true });
+  });
 
   /* CRM in background: crea il contatto (o lo trova se già esiste) e assegna il tag */
   const parts = name.split(' '); const first = parts.shift() || name; const surname = parts.join(' ');
@@ -451,11 +463,20 @@ function getTierMap(cb) {
 function getAllowedEmails(cb) {
   getTierMap((err, map) => err ? cb(err) : cb(null, new Set(map.keys())));
 }
-/* livello dell'utente della richiesta (dal cookie di sessione): 'full' | 'monthly' | null */
+/* livello dell'utente della richiesta (dal cookie di sessione): 'full' | 'monthly' | 'trial' | null.
+   FAIL-CLOSED: chi non è nel foglio NON diventa 'full'. Se la sessione è marcata 'trial' → 'trial';
+   altrimenti, email sconosciuta → null (nessun accesso). I paganti restano decisi dal foglio. */
 function tierForReq(req, cb) {
   const s = sessionFromReq(req);
   if (!s) return cb(null, null);
-  getTierMap((err, map) => cb(err, err ? null : (map.get(s.email) || 'full')));
+  const sess = readSess(sessFile(s.email));
+  const sessTier = sess && sess.tier;   /* 'trial' per le sessioni di prova */
+  getTierMap((err, map) => {
+    if (err) return cb(err, sessTier === 'trial' ? 'trial' : null);
+    const sheetTier = map.get(s.email);
+    if (sheetTier) return cb(null, sheetTier);
+    return cb(null, sessTier === 'trial' ? 'trial' : null);
+  });
 }
 
 /* file di sessione per email */
@@ -584,11 +605,13 @@ app.post('/api/auth/verify', (req, res) => {
   if (!emailRe.test(email) || !token) return res.status(400).json({ok: false});
   const sess = readSess(sessFile(email));
   if (sess && sess.token === token && (Date.now() - sess.at) < SESSION_TTL) {
-    fs.writeFileSync(sessFile(email), JSON.stringify({token, at: Date.now()}));
+    sess.at = Date.now();
+    fs.writeFileSync(sessFile(email), JSON.stringify(sess));   /* PRESERVA 'tier' (es. la prova): non declassare/elevare */
     setSessionCookie(res, email, token);   /* installa/aggiorna il cookie: upgrade trasparente */
-    /* restituisco anche il livello aggiornato (best-effort: se i fogli non rispondono, ometto) */
+    /* livello reale: foglio se pagante, altrimenti 'trial' se è una sessione di prova */
     getTierMap((err, map) => {
-      res.json(err ? {ok: true} : {ok: true, tier: map.get(email) || 'full'});
+      const tier = (!err && map.get(email)) || sess.tier || (err ? undefined : 'full');
+      res.json(tier ? {ok: true, tier} : {ok: true});
     });
   } else {
     res.json({ok: false, reason: sess ? 'expired' : 'not_found'});
@@ -820,13 +843,24 @@ function isReserved(p) {
   if (p.indexOf('/app/install') === 0) return false;   /* installazione PWA: pubblica */
   return p.slice('/app/'.length).indexOf('/') >= 0;    /* /app/<cartella>/... = riservato */
 }
+/* il livello "prova" può accedere SOLO all'Introduzione/Frequenza (percorso) e alle musiche */
+function trialAllowedPath(p){
+  return p.indexOf('/app/percorso') === 0 || p.indexOf('/app/music/') === 0;
+}
 app.use((req, res, next) => {
   if (req.method !== 'GET' && req.method !== 'HEAD') return next();
   if (!isReserved(req.path)) return next();
-  if (sessionFromReq(req)) return next();
+  const s = sessionFromReq(req);
+  let allowed = false;
+  if (s) {
+    const sess = readSess(sessFile(s.email));
+    if (sess && sess.tier === 'trial') allowed = trialAllowedPath(req.path);   /* prova: solo percorso + musiche */
+    else allowed = true;                                                       /* sessione normale = pagante */
+  }
+  if (allowed) return next();
   res.set('Cache-Control', 'no-store');
   const isDoc = req.path.charAt(req.path.length - 1) === '/' || /\.html?$/.test(req.path);
-  if (isDoc) return res.redirect(302, '/app/');         /* pagina → al login */
+  if (isDoc) return res.redirect(302, '/app/');         /* pagina riservata non concessa → home (sentiero coi lucchetti) */
   return res.status(403).end();                          /* media/asset riservato → negato */
 });
 
