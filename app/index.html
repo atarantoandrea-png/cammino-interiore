@@ -1796,9 +1796,9 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
   function trialChatDate(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
   function trialChatPaywall(){
     var d=chatBubble('bot','',{}); var p=d.querySelector('.mtxt');
-    if(p) p.innerHTML='<b>Per oggi la Luce si ferma qui</b> 💓<br><br>'+
-      'Sono tantissime le persone che ogni giorno scrivono alla Luce, e la Luce è una sola. Per riuscire a esserci con calma per ciascuno, qui ti accompagno con <b>tre domande al giorno</b>: così ogni risposta resta curata, e non si perde nella fretta di mille richieste.<br><br>'+
-      'La presenza piena, senza queste pause, la tengo per chi cammina dentro <b>Oltre il Velo</b>: è giusto dare la precedenza a chi ha scelto di restare. Torna domani e la Luce sarà di nuovo qui, con altre tre — e se senti che è il tuo momento, ti aspetto dentro.';
+    if(p) p.innerHTML='<b>Hai usato le tue 3 domande di oggi</b> 💓<br><br>'+
+      'Questa chat attinge alla <b>conoscenza di Elisa</b> ed è aperta a tutti: nella prova sono <b>3 domande al giorno</b>, e domani se ne riaprono altre tre.<br><br>'+
+      'Per avere <b>accesso illimitato</b> alla chat — e a tutto il Cammino Interiore — entra nella <b>community Oltre il Velo</b>.';
     var a=document.createElement('a'); a.href='https://www.elisasoulmedium.com/oltreilvelo'; a.target='_blank'; a.rel='noopener'; a.textContent='Entra in Oltre il Velo →';
     a.style.cssText='display:inline-block;margin-top:14px;padding:12px 18px;border-radius:12px;text-decoration:none;color:#1c1428;font-family:Cinzel,serif;font-weight:600;letter-spacing:.03em;background:linear-gradient(135deg,#e8d9ae,#c9a84c);box-shadow:0 8px 22px rgba(201,168,76,.32)';
     d.appendChild(a); if(chatMsgs) chatMsgs.scrollTop=chatMsgs.scrollHeight;
