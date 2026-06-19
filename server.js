@@ -636,9 +636,9 @@ function computeOverview(cb){
 
     /* 5) dormienti: attivati che non entrano da >14 giorni */
     const limite = Date.now() - 14*86400000;
-    const dormienti = users.filter(u => u.attivato && u.lastActive && u.lastActive < limite)
-      .sort((a, b) => a.lastActive - b.lastActive)
-      .slice(0, 60)
+    const dormAll = users.filter(u => u.attivato && u.lastActive && u.lastActive < limite)
+      .sort((a, b) => a.lastActive - b.lastActive);
+    const dormienti = dormAll.slice(0, 60)
       .map(u => ({ email:u.email, tier:u.tier, lastActive:u.lastActive, giorniPratica:u.giorniPratica }));
 
     /* 6) confronto livelli */
@@ -667,7 +667,7 @@ function computeOverview(cb){
         totalMin30, totalMinAll, opens30: totalOpens30
       },
       frequency: { fedeli, costanti, occasionali },
-      hours, topAreas, dailySeries, dormienti,
+      hours, topAreas, dailySeries, dormienti, dormientiTot: dormAll.length,
       byTier: tierAgg,
       users: users.sort((a, b) => (b.lastActive || 0) - (a.lastActive || 0))
     };
