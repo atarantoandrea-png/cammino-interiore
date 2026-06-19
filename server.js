@@ -256,15 +256,22 @@ app.post('/api/trial/register', (req, res) => {
   const fields = [{ slug:'first_name', value:first }];
   if (surname) fields.push({ slug:'surname', value:surname });
   if (phone) fields.push({ slug:'phone_number', value:phone });
-  function assignTag(contactId){ if (!contactId) return; systemeApi('POST', '/api/contacts/'+contactId+'/tags', { tagId:SYSTEME_TRIAL_TAG_ID }, ()=>markLeadCrm(id)); }
+  function assignTag(contactId, tryN){ if (!contactId) return;
+    systemeApi('POST', '/api/contacts/'+contactId+'/tags', { tagId:SYSTEME_TRIAL_TAG_ID }, (err, r) => {
+      if (!err && r && r.status >= 200 && r.status < 300) { markLeadCrm(id); }   /* crm=true SOLO se il tag è andato */
+      else if ((tryN||0) < 1) { setTimeout(()=>assignTag(contactId, (tryN||0)+1), 800); }   /* un retry su errore transitorio */
+      else console.error('trial CRM: TAG non assegnato a', contactId, 'status', r && r.status, JSON.stringify(r && r.json));
+    });
+  }
   systemeApi('POST', '/api/contacts', { email, locale:'it', fields }, (err, r) => {
     if (!err && r && (r.status===201||r.status===200) && r.json && r.json.id) return assignTag(r.json.id);
-    /* probabilmente esiste già: lo cerco per email e gli metto comunque il tag */
+    if (r && r.status === 422) console.error('trial CRM: email RIFIUTATA da systeme (non valida/non recapitabile):', email, r.json && r.json.detail);
+    /* esiste già o create non riuscito: lo cerco per email e gli metto comunque il tag */
     systemeApi('GET', '/api/contacts?email='+encodeURIComponent(email), null, (e2, r2) => {
       const body = r2 && r2.json; const arr = body && (body.items || (Array.isArray(body) ? body : null));
       const c = arr && arr[0];
       if (c && c.id) assignTag(c.id);
-      else console.error('trial CRM: contatto non creato/trovato per', email, r && r.status);
+      else console.error('trial CRM: contatto non creato/trovato per', email, 'create status', r && r.status);
     });
   });
 });
