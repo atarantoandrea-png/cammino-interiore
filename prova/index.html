@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Il Cammino Interiore · Prova gratuita — Elisa Soul Medium</title>
+<link rel="icon" type="image/png" href="/src/favicon-32.png" sizes="32x32">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{--glic:#b9a3e3;--glic-hi:#dccdf6;--gold:#c9a84c;--gold-pale:#e8d9ae;--cele:#b9ddf6;
+  --txt:#e9e4f0;--txt-soft:#bcb3c9;--txt-dim:#8d8499;--card:rgba(28,23,38,.66);--card-line:rgba(185,163,227,.18)}
+html{scroll-behavior:smooth}
+body{font-family:'Cormorant Garamond',Georgia,serif;color:var(--txt);min-height:100dvh;
+  background:radial-gradient(120% 80% at 50% -10%,rgba(185,163,227,.16),transparent 60%),
+    radial-gradient(100% 70% at 50% 110%,rgba(201,168,76,.10),transparent 60%),
+    linear-gradient(180deg,#120e1b 0%,#0c0913 100%);
+  background-attachment:fixed;padding:26px 18px calc(40px + env(safe-area-inset-bottom));position:relative;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.5;
+  background-image:radial-gradient(1.5px 1.5px at 18% 22%,rgba(255,255,255,.5),transparent),
+    radial-gradient(1.5px 1.5px at 78% 16%,rgba(220,205,246,.45),transparent),
+    radial-gradient(1.2px 1.2px at 62% 70%,rgba(185,221,246,.4),transparent),
+    radial-gradient(1.3px 1.3px at 30% 80%,rgba(232,217,174,.4),transparent)}
+.wrap{position:relative;z-index:1;max-width:560px;margin:0 auto}
+.hd{text-align:center;margin-bottom:22px}
+.hd .em{font-size:34px}
+h1{font-family:'Cinzel',serif;font-weight:600;font-size:25px;letter-spacing:.02em;color:var(--glic-hi);margin:8px 0 6px;text-shadow:0 2px 20px rgba(185,163,227,.3)}
+.hd p{font-size:18px;color:var(--txt-soft);line-height:1.5}
+.glass{position:relative;overflow:hidden;background:linear-gradient(135deg,rgba(190,165,235,.14),rgba(150,120,210,.06) 48%,rgba(255,255,255,.04));
+  border:1px solid rgba(205,180,245,.30);border-radius:22px;padding:24px 22px;
+  -webkit-backdrop-filter:blur(16px) saturate(140%);backdrop-filter:blur(16px) saturate(140%);
+  box-shadow:0 14px 40px rgba(0,0,0,.4),0 0 30px rgba(170,135,230,.1),inset 0 1px 0 rgba(255,255,255,.16)}
+.glass::before{content:"";position:absolute;top:-40%;left:-12%;width:55%;height:180%;pointer-events:none;
+  background:linear-gradient(115deg,rgba(255,255,255,.13),rgba(255,255,255,0) 60%);transform:rotate(8deg)}
+.glass>*{position:relative;z-index:1}
+/* form */
+.field{margin-bottom:14px}
+.field label{display:block;font-size:15px;color:var(--txt-soft);letter-spacing:.03em;margin:0 0 6px 4px}
+.field input{width:100%;font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--txt);
+  background:rgba(185,163,227,.07);border:1px solid var(--card-line);border-radius:13px;padding:14px 15px;outline:none}
+.field input:focus{border-color:var(--glic)}
+.consent{display:flex;gap:10px;align-items:flex-start;margin:6px 2px 16px;font-size:15px;color:var(--txt-soft);line-height:1.4}
+.consent input{width:20px;height:20px;flex-shrink:0;margin-top:2px;accent-color:#a98fd6}
+.consent a{color:var(--glic-hi)}
+.btn{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;border:none;cursor:pointer;
+  font-family:'Cinzel',serif;font-weight:600;font-size:16px;letter-spacing:.03em;border-radius:15px;padding:16px;
+  color:#1c1428;background:linear-gradient(135deg,#c9b3ef,#a98fd6);box-shadow:0 8px 26px rgba(185,163,227,.4);transition:transform .15s,opacity .2s}
+.btn:active{transform:scale(.98)} .btn[disabled]{opacity:.55;cursor:default}
+.err{color:#f0a8a8;font-size:15px;text-align:center;min-height:20px;margin-top:10px}
+.mini{font-size:14px;color:var(--txt-dim);text-align:center;margin-top:14px;line-height:1.5}
+.hide{display:none!important}
+/* casa */
+.sect-t{font-family:'Cinzel',serif;font-size:15px;letter-spacing:.07em;text-transform:uppercase;color:var(--gold-pale);text-align:center;margin:0 0 14px}
+.vid{margin:0 auto;max-width:232px}
+.vframe{position:relative;width:100%;padding-top:217%;border-radius:18px;overflow:hidden;background:#0c0913;border:1px solid var(--card-line);box-shadow:0 14px 36px rgba(0,0,0,.5)}
+.vframe iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--txt-dim);font-family:'Cinzel',serif;font-size:13px}
+/* chat */
+.chat-msgs{max-height:300px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;margin-bottom:12px;padding:2px}
+.msg{max-width:88%;padding:11px 14px;border-radius:15px;font-size:16.5px;line-height:1.5;white-space:pre-wrap}
+.msg.io{align-self:flex-end;background:linear-gradient(135deg,#c9b3ef,#a98fd6);color:#1c1428;border-bottom-right-radius:5px}
+.msg.bot{align-self:flex-start;background:rgba(185,163,227,.1);border:1px solid var(--card-line);color:var(--txt);border-bottom-left-radius:5px}
+.msg.bot .who{display:block;font-family:'Cinzel',serif;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--glic);margin-bottom:4px}
+.chat-in{display:flex;gap:8px}
+.chat-in input{flex:1;font-family:'Cormorant Garamond',serif;font-size:17px;color:var(--txt);background:rgba(185,163,227,.07);border:1px solid var(--card-line);border-radius:13px;padding:13px 14px;outline:none}
+.chat-in input:focus{border-color:var(--glic)}
+.chat-send{flex-shrink:0;border:none;cursor:pointer;border-radius:13px;padding:0 18px;color:#1c1428;background:linear-gradient(135deg,#c9b3ef,#a98fd6);font-family:'Cinzel',serif;font-weight:600}
+.left-count{font-size:14px;color:var(--txt-dim);text-align:center;margin-top:9px}
+/* paywall */
+.paywall{text-align:center;padding:6px 2px}
+.paywall .em{font-size:34px}
+.paywall p{font-size:16.5px;color:var(--txt-soft);line-height:1.55;margin:10px 0}
+.paywall b{color:var(--glic-hi);font-weight:600}
+/* anteprime bloccate */
+.locks{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:460px){.locks{grid-template-columns:1fr}}
+.lock{position:relative;border-radius:16px;overflow:hidden;border:1px solid var(--card-line);padding:18px 16px;min-height:108px;
+  background:linear-gradient(160deg,rgba(40,30,60,.6),rgba(18,13,28,.7));display:flex;flex-direction:column;justify-content:flex-end}
+.lock .ico{position:absolute;top:12px;right:13px;font-size:17px;opacity:.8}
+.lock h3{font-family:'Cinzel',serif;font-size:16px;color:var(--glic-hi);margin-bottom:3px;filter:blur(.3px)}
+.lock p{font-size:14.5px;color:var(--txt-dim);line-height:1.35}
+.lock::after{content:"";position:absolute;inset:0;backdrop-filter:blur(1.5px);background:rgba(12,9,19,.18)}
+.cta{display:block;text-align:center;text-decoration:none;margin-top:4px;border-radius:15px;padding:16px;
+  font-family:'Cinzel',serif;font-weight:600;font-size:16px;letter-spacing:.03em;color:#1c1428;
+  background:linear-gradient(135deg,#e8d9ae,#c9a84c);box-shadow:0 8px 26px rgba(201,168,76,.32);transition:transform .15s}
+.cta:active{transform:scale(.98)}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--card-line),transparent);margin:26px 0}
+.spazio{height:18px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hd">
+    <div class="em">🕯️</div>
+    <h1>Il Cammino Interiore</h1>
+    <p id="hdSub">Un assaggio del percorso di Elisa Soul Medium.</p>
+  </div>
+
+  <!-- ============ REGISTRAZIONE ============ -->
+  <div id="formView" class="glass">
+    <p class="sect-t">Inizia la tua prova gratuita</p>
+    <div class="field"><label>Come ti chiami?</label><input id="f-name" type="text" autocomplete="name" placeholder="Nome e cognome"></div>
+    <div class="field"><label>La tua email</label><input id="f-email" type="email" autocomplete="email" placeholder="latua@email.it"></div>
+    <div class="field"><label>Il tuo numero di telefono</label><input id="f-phone" type="tel" autocomplete="tel" placeholder="+39 …"></div>
+    <label class="consent"><input id="f-consent" type="checkbox">
+      <span>Acconsento al trattamento dei miei dati per ricevere l'accesso alla prova e comunicazioni sul Cammino Interiore e la community Oltre il Velo, come da <a href="/prova/privacy" target="_blank" rel="noopener">informativa privacy</a>.</span></label>
+    <button class="btn" id="f-btn">Inizia la prova gratuita</button>
+    <p class="err" id="f-err"></p>
+    <p class="mini">È gratis e bastano pochi secondi 💓</p>
+  </div>
+
+  <!-- ============ CASA DELLA PROVA ============ -->
+  <div id="casaView" class="hide">
+    <!-- video -->
+    <div class="glass">
+      <p class="sect-t">Come funziona il Cammino</p>
+      <div class="vid"><div class="vframe" id="vf"><div class="vph">Carico il video…</div></div></div>
+    </div>
+    <div class="spazio"></div>
+
+    <!-- chat con la Luce -->
+    <div class="glass">
+      <p class="sect-t">✦ Scrivi alla Luce</p>
+      <div class="chat-msgs" id="chatMsgs"></div>
+      <div class="chat-in" id="chatInWrap">
+        <input id="chatIn" type="text" placeholder="Scrivi quello che senti…" maxlength="500">
+        <button class="chat-send" id="chatSend">Invia</button>
+      </div>
+      <p class="left-count" id="leftCount"></p>
+    </div>
+    <div class="spazio"></div>
+
+    <!-- anteprime bloccate + CTA -->
+    <div class="glass">
+      <p class="sect-t">Dentro Oltre il Velo ti aspetta tutto questo</p>
+      <div class="locks">
+        <div class="lock"><span class="ico">🔒</span><h3>Il Giornaliero</h3><p>La pratica di ogni giorno: Spazio Emotivo e Osservatore.</p></div>
+        <div class="lock"><span class="ico">🔒</span><h3>Il Mondo Interiore</h3><p>Otto lezioni sulle parti che ti compongono.</p></div>
+        <div class="lock"><span class="ico">🔒</span><h3>Il Bambino Interiore</h3><p>Incontrare e riabbracciare la tua parte più tenera.</p></div>
+        <div class="lock"><span class="ico">🔒</span><h3>La Luce, sempre con te</h3><p>Accanto a te in ogni sezione, senza limiti di domande.</p></div>
+      </div>
+      <div class="divider"></div>
+      <a class="cta" href="https://www.elisasoulmedium.com/oltreilvelo" target="_blank" rel="noopener">Entra in Oltre il Velo →</a>
+      <p class="mini">Il cammino intero, la community e gli incontri del mercoledì sera.</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- il cervello della Luce (stesso modulo dell'app) -->
+<script src="/app/elisa-chat.js"></script>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id);};
+  function show(which){ $('formView').classList.toggle('hide',which!=='form'); $('casaView').classList.toggle('hide',which!=='casa'); }
+
+  /* ---------- REGISTRAZIONE ---------- */
+  function register(){
+    var name=$('f-name').value.trim(), email=$('f-email').value.trim().toLowerCase(), phone=$('f-phone').value.trim();
+    var err=$('f-err'); err.textContent='';
+    if(!name){ err.textContent='Scrivi il tuo nome.'; return; }
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)){ err.textContent='Scrivi una email valida.'; return; }
+    if(phone.replace(/\D/g,'').length<6){ err.textContent='Scrivi un numero di telefono valido.'; return; }
+    if(!$('f-consent').checked){ err.textContent='Per procedere serve il consenso alla privacy.'; return; }
+    var btn=$('f-btn'); btn.disabled=true; btn.textContent='Un attimo…';
+    fetch('/api/trial/register',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({name:name,email:email,phone:phone,consent:true})})
+      .then(function(r){return r.json();})
+      .then(function(d){
+        if(d&&d.ok){ enterCasa(name); }
+        else { err.textContent=(d&&d.reason==='consent')?'Per procedere serve il consenso.':'Qualcosa non ha funzionato. Riprova.'; btn.disabled=false; btn.textContent='Inizia la prova gratuita'; }
+      })
+      .catch(function(){ err.textContent='Errore di rete. Riprova.'; btn.disabled=false; btn.textContent='Inizia la prova gratuita'; });
+  }
+  $('f-btn').addEventListener('click',register);
+  $('f-phone').addEventListener('keydown',function(e){ if(e.key==='Enter') register(); });
+
+  /* ---------- CASA ---------- */
+  var videoLoaded=false;
+  function enterCasa(name){
+    show('casa');
+    $('hdSub').textContent = name ? ('Benvenuto/a, '+name.split(' ')[0]+' 💓') : 'Il tuo assaggio del Cammino 💓';
+    if(!videoLoaded){
+      videoLoaded=true;
+      var f=$('vf'); var ifr=document.createElement('iframe');
+      ifr.src='https://player.vimeo.com/video/1202625088?title=0&byline=0&portrait=0&badge=0';
+      ifr.setAttribute('allow','autoplay; fullscreen; picture-in-picture'); ifr.setAttribute('allowfullscreen','');
+      f.innerHTML=''; f.appendChild(ifr);
+    }
+    primaLuce();
+  }
+  window.scrollTo(0,0);
+
+  /* ---------- CHAT con la Luce (3 al giorno, limite lato server) ---------- */
+  var chatHist=[], greeted=false, blocked=false;
+  function localDate(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+  function bubble(role,text){
+    var d=document.createElement('div'); d.className='msg '+(role==='io'?'io':'bot');
+    if(role!=='io'){ var w=document.createElement('span'); w.className='who'; w.textContent='La Luce'; d.appendChild(w); }
+    var p=document.createElement('span'); p.textContent=text; d.appendChild(p);
+    $('chatMsgs').appendChild(d); $('chatMsgs').scrollTop=$('chatMsgs').scrollHeight; return d;
+  }
+  function primaLuce(){
+    if(greeted) return; greeted=true;
+    bubble('bot','Ciao 💓 Sono la Luce che accompagna il Cammino. Puoi farmi qualche domanda su ciò che senti, sul tuo percorso, sull\'aldilà. Scrivi pure quello che hai dentro.');
+  }
+  function setLeft(used,max){
+    var left=Math.max(0,max-used);
+    $('leftCount').textContent = left>0 ? ('Ti '+(left===1?'resta':'restano')+' '+left+' '+(left===1?'domanda':'domande')+' oggi.') : '';
+  }
+  function paywall(){
+    blocked=true;
+    $('chatInWrap').classList.add('hide'); $('leftCount').textContent='';
+    var box=document.createElement('div'); box.className='paywall';
+    box.innerHTML='<div class="em">💓</div>'+
+      '<p><b>Per oggi la Luce si ferma qui.</b></p>'+
+      '<p>Sono tantissime le persone che ogni giorno scrivono alla Luce, e la Luce è una sola. Per riuscire a esserci con calma per ciascuno, qui ti accompagno con poche domande al giorno: così ogni risposta resta curata, e non si perde nella fretta di mille richieste.</p>'+
+      '<p>La presenza piena, senza queste pause, la tengo per chi cammina dentro <b>Oltre il Velo</b>: è giusto dare la precedenza a chi ha scelto di restare. Torna domani per altre domande — e se senti che è il tuo momento, ti aspetto dentro.</p>'+
+      '<a class="cta" href="https://www.elisasoulmedium.com/oltreilvelo" target="_blank" rel="noopener" style="margin-top:14px">Entra in Oltre il Velo →</a>';
+    $('chatMsgs').appendChild(box); $('chatMsgs').scrollTop=$('chatMsgs').scrollHeight;
+  }
+  function ask(text){
+    text=(text||'').trim(); if(!text||blocked) return;
+    $('chatIn').value='';
+    bubble('io',text);
+    var typing=bubble('bot','…');
+    /* prima il GATE lato server: quante domande oggi? */
+    fetch('/api/trial/chat-allow',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({lday:localDate()})})
+      .then(function(r){return r.json();})
+      .then(function(g){
+        if(!g||!g.ok){ typing.querySelector('span:last-child').textContent='In questo momento non riesco a risponderti, riprova tra poco.'; return; }
+        if(!g.allowed){ if(typing.parentNode)typing.parentNode.removeChild(typing); paywall(); return; }
+        setLeft(g.used,g.max);
+        if(!window.OVL_ELISA){ typing.querySelector('span:last-child').textContent='In questo momento non riesco a risponderti, riprova tra poco.'; return; }
+        OVL_ELISA.rispondi(text, chatHist, function(rr){
+          if(typing.parentNode)typing.parentNode.removeChild(typing);
+          var ans=(rr&&rr.answer)||'Su questo non ho ancora una risposta pronta 🙏🏻';
+          bubble('bot',ans);
+          chatHist.push({role:'user',text:text}); chatHist.push({role:'bot',text:ans});
+          if(g.used>=g.max) setTimeout(paywall,400);
+        });
+      })
+      .catch(function(){ if(typing.querySelector('span:last-child')) typing.querySelector('span:last-child').textContent='Errore di rete, riprova.'; });
+  }
+  $('chatSend').addEventListener('click',function(){ ask($('chatIn').value); });
+  $('chatIn').addEventListener('keydown',function(e){ if(e.key==='Enter'){ e.preventDefault(); ask(this.value); } });
+
+  /* ---------- avvio: già iscritto? ---------- */
+  fetch('/api/trial/me').then(function(r){return r.json();}).then(function(d){
+    if(d&&d.ok){ enterCasa(''); } else { show('form'); }
+  }).catch(function(){ show('form'); });
+})();
+</script>
+</body>
+</html>

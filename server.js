@@ -160,6 +160,132 @@ app.post('/api/admin/suggestions/delete', (req, res) => {
   } catch(e) { res.status(500).json({ ok:false }); }
 });
 
+/* ════════════════ PROVA / TRIAL (lead-gen, area separata e blindata) ════════════════
+   La pagina /prova (sul NOSTRO dominio) raccoglie nome/email/telefono e crea il contatto
+   su systeme.io con il tag "App - Prova". La sessione trial usa un cookie SEPARATO
+   (ovl_trial), firmato, che NON ha alcun potere su /app: l'app pagante resta blindata. */
+const SYSTEME_KEY_FILE = path.join(DATA, 'systeme.key');
+let _skCache = null, _skAt = 0;
+function systemeKey(){
+  if (process.env.SYSTEME_KEY) return process.env.SYSTEME_KEY;
+  if (_skCache !== null && Date.now() - _skAt < 60000) return _skCache;
+  try { _skCache = fs.readFileSync(SYSTEME_KEY_FILE, 'utf8').trim(); } catch(e) { _skCache = ''; }
+  _skAt = Date.now();
+  return _skCache;
+}
+const SYSTEME_TRIAL_TAG_ID = parseInt(process.env.SYSTEME_TRIAL_TAG_ID || '2060361', 10);
+
+/* chiamata all'API systeme.io (https, header X-API-Key) */
+function systemeApi(method, apiPath, body, cb){
+  const key = systemeKey();
+  if (!key) return cb('no-key');
+  const data = body ? JSON.stringify(body) : null;
+  const opts = { hostname:'api.systeme.io', path:apiPath, method:method,
+    headers:{ 'X-API-Key':key, 'Accept':'application/json' } };
+  if (data){ opts.headers['Content-Type']='application/json'; opts.headers['Content-Length']=Buffer.byteLength(data); }
+  const r = https.request(opts, resp => {
+    let d=''; resp.on('data', c=>d+=c);
+    resp.on('end', ()=>{ let j=null; try{ j = d ? JSON.parse(d) : null; }catch(e){} cb(null, { status:resp.statusCode, json:j }); });
+  });
+  r.on('error', e=>cb(e));
+  if (data) r.write(data);
+  r.end();
+}
+
+/* cookie sessione trial (HMAC con un segreto persistente in /data) — niente potere su /app */
+const TRIAL_COOKIE = 'ovl_trial';
+const TRIAL_SECRET_FILE = path.join(DATA, 'trial.secret');
+let _trialSecret = null;
+function trialSecret(){
+  if (_trialSecret) return _trialSecret;
+  try { _trialSecret = fs.readFileSync(TRIAL_SECRET_FILE,'utf8').trim(); } catch(e) {}
+  if (!_trialSecret){ _trialSecret = crypto.randomBytes(32).toString('hex'); try { fs.writeFileSync(TRIAL_SECRET_FILE, _trialSecret); } catch(e){} }
+  return _trialSecret;
+}
+function trialToken(id){ return crypto.createHmac('sha256', trialSecret()).update('trial:'+id).digest('hex'); }
+function setTrialCookie(res, id){
+  const val = Buffer.from(id).toString('base64url') + '.' + trialToken(id);
+  res.append('Set-Cookie', TRIAL_COOKIE + '=' + val + '; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=' + (180*24*3600));
+}
+function trialFromReq(req){
+  const raw = parseCookies(req)[TRIAL_COOKIE];
+  if (!raw) return null;
+  const dot = raw.indexOf('.'); if (dot < 0) return null;
+  let id; try { id = Buffer.from(raw.slice(0,dot),'base64url').toString('utf8'); } catch(e){ return null; }
+  if (!id) return null;
+  return safeEq(raw.slice(dot+1), trialToken(id)) ? { id } : null;
+}
+
+const TRIAL_LEADS = path.join(DATA, 'trial-leads.json');
+function readLeads(){ const j = readJsonFile(TRIAL_LEADS); return (j && Array.isArray(j.items)) ? j : { items:[] }; }
+function writeLeads(obj){ const tmp = TRIAL_LEADS+'.tmp'; fs.writeFileSync(tmp, JSON.stringify(obj)); fs.renameSync(tmp, TRIAL_LEADS); }
+function markLeadCrm(id){ try { const s = readLeads(); const it = s.items.find(x=>x.id===id); if (it && !it.crm){ it.crm = true; writeLeads(s); } } catch(e){} }
+
+/* POST /api/trial/register — iscrizione alla prova (nome/email/telefono) → CRM + tag */
+app.post('/api/trial/register', (req, res) => {
+  const b = req.body || {};
+  const name = String(b.name||'').trim().replace(/\s+/g,' ').slice(0,80);
+  const email = String(b.email||'').trim().toLowerCase();
+  const phone = String(b.phone||'').trim().slice(0,30);
+  if (!name || !emailRe.test(email) || phone.replace(/\D/g,'').length < 6) return res.status(400).json({ ok:false, reason:'fields' });
+  if (!b.consent) return res.status(400).json({ ok:false, reason:'consent' });
+
+  const id = crypto.randomBytes(9).toString('hex');
+  /* salvo subito il lead in locale: non si perde anche se il CRM è lento o giù */
+  try { const s = readLeads(); s.items.push({ id, name, email, phone, ts:Date.now(), crm:false }); if (s.items.length>20000) s.items=s.items.slice(-20000); writeLeads(s); } catch(e){}
+  setTrialCookie(res, id);
+  res.json({ ok:true });   /* la UX non aspetta il CRM */
+
+  /* CRM in background: crea il contatto (o lo trova se già esiste) e assegna il tag */
+  const parts = name.split(' '); const first = parts.shift() || name; const surname = parts.join(' ');
+  const fields = [{ slug:'first_name', value:first }];
+  if (surname) fields.push({ slug:'surname', value:surname });
+  if (phone) fields.push({ slug:'phone_number', value:phone });
+  function assignTag(contactId){ if (!contactId) return; systemeApi('POST', '/api/contacts/'+contactId+'/tags', { tagId:SYSTEME_TRIAL_TAG_ID }, ()=>markLeadCrm(id)); }
+  systemeApi('POST', '/api/contacts', { email, locale:'it', fields }, (err, r) => {
+    if (!err && r && (r.status===201||r.status===200) && r.json && r.json.id) return assignTag(r.json.id);
+    /* probabilmente esiste già: lo cerco per email e gli metto comunque il tag */
+    systemeApi('GET', '/api/contacts?email='+encodeURIComponent(email), null, (e2, r2) => {
+      const body = r2 && r2.json; const arr = body && (body.items || (Array.isArray(body) ? body : null));
+      const c = arr && arr[0];
+      if (c && c.id) assignTag(c.id);
+      else console.error('trial CRM: contatto non creato/trovato per', email, r && r.status);
+    });
+  });
+});
+
+/* sessione trial valida? (per saltare il form a chi è già iscritto) */
+app.get('/api/trial/me', (req, res) => { res.json({ ok: !!trialFromReq(req) }); });
+
+/* gate della chat con la Luce: max 3 domande al giorno per ogni iscritto alla prova.
+   Conteggio LATO SERVER per id-trial + giorno → non aggirabile svuotando il browser. */
+const TRIAL_CHAT_MAX = parseInt(process.env.TRIAL_CHAT_MAX || '3', 10);
+const TRIAL_CHAT_DIR = path.join(DATA, 'trial-chat');
+try { fs.mkdirSync(TRIAL_CHAT_DIR, { recursive: true }); } catch(e) {}
+app.post('/api/trial/chat-allow', (req, res) => {
+  const t = trialFromReq(req);
+  if (!t) return res.status(401).json({ ok:false });
+  const lday = /^\d{4}-\d{2}-\d{2}$/.test(String((req.body||{}).lday||'')) ? req.body.lday : isoOf(Date.now());
+  try {
+    const f = path.join(TRIAL_CHAT_DIR, lday + '.json');
+    const cur = readJsonFile(f) || { ids:{} };
+    if (!cur.ids) cur.ids = {};
+    const used = cur.ids[t.id] || 0;
+    if (used >= TRIAL_CHAT_MAX) return res.json({ ok:true, allowed:false, used, max:TRIAL_CHAT_MAX });
+    cur.ids[t.id] = used + 1;
+    const tmp = f + '.tmp'; fs.writeFileSync(tmp, JSON.stringify(cur)); fs.renameSync(tmp, f);
+    res.json({ ok:true, allowed:true, used: used + 1, max: TRIAL_CHAT_MAX });
+  } catch(e) { res.status(500).json({ ok:false }); }
+});
+
+/* admin: riepilogo iscritti alla prova (per il pannello) */
+app.get('/api/admin/trial', (req, res) => {
+  if (!adminFromReq(req)) return res.status(403).json({ ok:false });
+  const s = readLeads();
+  const items = s.items.slice().sort((a,b)=>b.ts-a.ts);
+  res.json({ ok:true, total: items.length, withCrm: items.filter(x=>x.crm).length, items: items.slice(0,200) });
+});
+
 /* ── AUTH: verifica email su Google Sheet + sessione singola ── */
 
 const SHEETS_ID  = process.env.SHEETS_ID  || '';
