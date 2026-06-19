@@ -1131,7 +1131,10 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     document.getElementById('dash').classList.toggle('on', view==='dash');
     document.getElementById('music').classList.toggle('on', view==='music');
     document.getElementById('suggest').classList.toggle('on', view==='suggest');
-    var fab=document.getElementById('annualFab'); if(fab) fab.style.display=(view!=='login' && plan==='monthly')?'flex':'none';   /* CTA annuale: solo Mensili */
+    /* FAB: ai Mensili "passa all'annuale", ai Prova "entra in Oltre il Velo" — stessa icona, azione diversa */
+    var fab=document.getElementById('annualFab');
+    if(fab){ var showFab=(view!=='login' && (plan==='monthly'||plan==='trial')); fab.style.display=showFab?'flex':'none';
+      if(showFab){ var tr=(plan==='trial'); fab.setAttribute('title', tr?'Entra in Oltre il Velo':"Passa all'annuale"); fab.setAttribute('aria-label', tr?'Entra in Oltre il Velo':"Passa all'annuale"); } }
     /* nella vista suggerimenti la luce del sentiero si nasconde: lì c'è la sua piccola luce "?" dedicata */
     var lm=document.getElementById('lume'); if(lm) lm.style.display=(view==='suggest')?'none':'';
     if(view==='suggest'){ resetSuggest(); window.scrollTo(0,0); }
@@ -1293,6 +1296,9 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
      Il percorso è una CATENA: una pratica bloccata blocca tutte le successive, anche se
      queste avrebbero i requisiti propri (servono sbloccate tutte le tappe precedenti). */
   function unlockOk(ex){
+    /* Prova (trial): accessibili SOLO l'Introduzione e «La Frequenza Nascosta» (quest'ultima a
+       metà video). Tutto il resto resta col lucchetto — e comunque è bloccato lato server. */
+    if(plan==='trial') return ex.id==='intro' || ex.id==='frequenza';
     /* Mensili: Mondo Interiore e Bambino sono apribili SUBITO come anteprima (il blocco
        vero dei contenuti è dentro la pagina, lato server). Salta requisiti e catena. */
     if(plan==='monthly' && isTrailerSection(ex)) return true;
@@ -1832,6 +1838,8 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
   /* ================= il consiglio della luce (tappa più avanti) ================= */
   var lockTarget=null;
   function openLock(ex,fromEl){
+    /* Prova: una tappa col lucchetto invita a entrare in Oltre il Velo (non i requisiti del percorso) */
+    if(plan==='trial'){ if(window.OVL_showComm) OVL_showComm(); return; }
     lockTarget=ex; lastFocus=fromEl;
     var puoiEntrare=!!(ex.route||ex.shell);   /* c'è una destinazione → si può entrare comunque */
     var goNote=' Se lo desideri, puoi comunque entrare ora con «Vai avanti».';
@@ -2251,7 +2259,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
 .ups-info{font-family:'Cormorant Garamond',Georgia,serif;font-size:15px;color:#b7aec4;margin:12px 0 0}
 .ups-info b{color:#e8d9ae}
 </style>
-<button id="annualFab" class="ann-fab" type="button" onclick="OVL_showAnnual()" aria-label="Passa all'annuale" title="Passa all'annuale"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 21 L10 3.5" stroke-width="1.8"/><path d="M17.5 21 L14 3.5" stroke-width="1.8"/><path d="M12 20.5 L12 4" stroke-width="1.5" stroke-dasharray="2.3 2.8"/></svg></button>
+<button id="annualFab" class="ann-fab" type="button" onclick="OVL_fabAction()" aria-label="Passa all'annuale" title="Passa all'annuale"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 21 L10 3.5" stroke-width="1.8"/><path d="M17.5 21 L14 3.5" stroke-width="1.8"/><path d="M12 20.5 L12 4" stroke-width="1.5" stroke-dasharray="2.3 2.8"/></svg></button>
 <div id="upsell" class="ups-veil" role="dialog" aria-modal="true" aria-label="Passa all'annuale">
   <div class="ups-card">
     <button class="ups-x" id="upsX" type="button" aria-label="Chiudi">✕</button>
@@ -2260,6 +2268,16 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     <p class="ups-p">I video del Mondo Interiore e gli esercizi ti aspettano qui, nel <b>Cammino annuale</b>. Non c'è fretta — quando senti che è il tuo momento, lo proseguiamo insieme. Nel video ti spiego come passare dal mensile all'annuale.</p>
     <div class="ups-video"><div class="ups-vframe" id="upsVframe"><div class="ups-vph">Carico il video…</div></div></div>
     <a class="ups-btn" href="https://www.elisasoulmedium.com/oltreilvelo" target="_blank" rel="noopener">Passa all'annuale →</a>
+    <p class="ups-info">Per info scrivimi a <b>oltreilvelo.elisa@gmail.com</b></p>
+  </div>
+</div>
+<div id="commPop" class="ups-veil" role="dialog" aria-modal="true" aria-label="Entra in Oltre il Velo">
+  <div class="ups-card">
+    <button class="ups-x" id="commX" type="button" aria-label="Chiudi">✕</button>
+    <div class="ups-ic">💓</div>
+    <h3 class="ups-h">Entra in Oltre il Velo</h3>
+    <p class="ups-p">Stai vivendo la <b>prova</b> del Cammino Interiore. Il percorso intero — il Giornaliero, il Mondo Interiore, il Bambino e tutti gli esercizi — ti aspetta dentro la community <b>Oltre il Velo</b>, dove camminiamo insieme, passo dopo passo.</p>
+    <a class="ups-btn" href="https://www.elisasoulmedium.com/oltreilvelo" target="_blank" rel="noopener">Entra in Oltre il Velo →</a>
     <p class="ups-info">Per info scrivimi a <b>oltreilvelo.elisa@gmail.com</b></p>
   </div>
 </div>
@@ -2281,6 +2299,17 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
   if(x) x.addEventListener('click', closeUpsell);
   if(u) u.addEventListener('click', function(e){ if(e.target===u) closeUpsell(); });
   document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeUpsell(); });
+
+  /* pop-up COMMUNITY per il livello "prova": stessa icona del FAB, ma porta a iscriversi */
+  function showComm(){ var c=document.getElementById('commPop'); if(c) c.classList.add('on'); }
+  function closeComm(){ var c=document.getElementById('commPop'); if(c) c.classList.remove('on'); }
+  window.OVL_showComm=showComm;
+  /* il FAB sceglie in base al piano: prova → community, mensile → annuale */
+  window.OVL_fabAction=function(){ if(window.OVL_PLAN==='trial') showComm(); else showUpsell(); };
+  var cp=document.getElementById('commPop'), cx=document.getElementById('commX');
+  if(cx) cx.addEventListener('click', closeComm);
+  if(cp) cp.addEventListener('click', function(e){ if(e.target===cp) closeComm(); });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeComm(); });
 })();
 </script>
 <script src="/app/track.js"></script>

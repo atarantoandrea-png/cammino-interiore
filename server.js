@@ -241,11 +241,12 @@ app.post('/api/trial/register', (req, res) => {
     const sheetTier = (!err && map && map.get(email)) || null;   /* full | monthly | null */
     const token = crypto.randomBytes(32).toString('hex');
     const sess = { token, at: Date.now() };
+    const tier = sheetTier || 'trial';
     if (!sheetTier) sess.tier = 'trial';                         /* marcatore di sessione-prova */
     try { fs.writeFileSync(sessFile(email), JSON.stringify(sess)); } catch(e){}
     setSessionCookie(res, email, token);   /* cookie ovl_sess: entra nell'app */
     setTrialCookie(res, id);               /* cookie ovl_trial: per la chat 3/giorno */
-    res.json({ ok:true });
+    res.json({ ok:true, email, token, tier });   /* il front di /prova li salva in localStorage per entrare in /app */
   });
 
   /* CRM in background: crea il contatto (o lo trova se già esiste) e assegna il tag */
