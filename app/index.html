@@ -133,6 +133,12 @@ header.hd{padding:54px 0 8px;text-align:center;position:relative;z-index:2}
 }
 .btn-ghost:hover{color:var(--glic-hi);border-color:var(--glic)}
 .lnote{font-size:17.5px;color:var(--txt-dim);margin-top:16px;line-height:1.6}
+/* CTA verso la prova gratuita, sotto il pulsante di accesso */
+.prova-cta{display:block;text-decoration:none;text-align:center;margin-top:14px;padding:13px 16px;border-radius:13px;
+  border:1px solid rgba(201,168,76,.45);background:linear-gradient(180deg,rgba(201,168,76,.14),rgba(201,168,76,.05));transition:border-color .2s,box-shadow .25s}
+.prova-cta:hover{border-color:var(--gold);box-shadow:0 0 16px rgba(201,168,76,.25)}
+.prova-cta .pc-1{display:block;font-family:'Cinzel',serif;font-size:16px;letter-spacing:.04em;color:var(--gold-pale)}
+.prova-cta .pc-2{display:block;font-size:15px;color:var(--txt-dim);margin-top:3px}
 
 /* ================= DASHBOARD: IL SENTIERO ================= */
 #dash{display:none;position:relative;z-index:2}
@@ -731,6 +737,10 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
              placeholder="nome@esempio.it" onkeydown="if(event.key==='Enter')entra()">
       <div class="lerr" id="lerr"></div>
       <button class="btn-gold" onclick="entra()">Entra nel Cammino</button>
+      <a href="/prova" class="prova-cta">
+        <span class="pc-1">Prova il Cammino Interiore</span>
+        <span class="pc-2">Non hai un accesso? Iscriviti gratis →</span>
+      </a>
       <p class="lnote">Questo dispositivo ricorderà il tuo accesso:<br>non dovrai riscrivere la mail ogni volta.</p>
     </div>
   </section>
