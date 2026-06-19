@@ -288,16 +288,21 @@ const TRIAL_CHAT_MAX = parseInt(process.env.TRIAL_CHAT_MAX || '3', 10);
 const TRIAL_CHAT_DIR = path.join(DATA, 'trial-chat');
 try { fs.mkdirSync(TRIAL_CHAT_DIR, { recursive: true }); } catch(e) {}
 app.post('/api/trial/chat-allow', (req, res) => {
-  const t = trialFromReq(req);
-  if (!t) return res.status(401).json({ ok:false });
+  /* identifica l'utente prova: sessione app con tier 'trial' (entrato da /app o /prova)
+     oppure cookie ovl_trial (registrazione). Conteggio per identificatore + giorno. */
+  let key = null;
+  const s = sessionFromReq(req);
+  if (s) { const x = readSess(sessFile(s.email)); if (x && x.tier === 'trial') key = 'e:' + crypto.createHash('sha1').update('chat:' + s.email).digest('hex'); }
+  if (!key) { const t = trialFromReq(req); if (t) key = 't:' + t.id; }
+  if (!key) return res.status(401).json({ ok:false });
   const lday = /^\d{4}-\d{2}-\d{2}$/.test(String((req.body||{}).lday||'')) ? req.body.lday : isoOf(Date.now());
   try {
     const f = path.join(TRIAL_CHAT_DIR, lday + '.json');
     const cur = readJsonFile(f) || { ids:{} };
     if (!cur.ids) cur.ids = {};
-    const used = cur.ids[t.id] || 0;
+    const used = cur.ids[key] || 0;
     if (used >= TRIAL_CHAT_MAX) return res.json({ ok:true, allowed:false, used, max:TRIAL_CHAT_MAX });
-    cur.ids[t.id] = used + 1;
+    cur.ids[key] = used + 1;
     const tmp = f + '.tmp'; fs.writeFileSync(tmp, JSON.stringify(cur)); fs.renameSync(tmp, f);
     res.json({ ok:true, allowed:true, used: used + 1, max: TRIAL_CHAT_MAX });
   } catch(e) { res.status(500).json({ ok:false }); }

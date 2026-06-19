@@ -1785,10 +1785,31 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     chatBubble('user',label);
     chatHist.push({role:'user',text:label});
     var typing=chatBubble('bot','· · ·',{}); typing.classList.add('typing');
-    setTimeout(function(){
-      if(typing.parentNode)typing.parentNode.removeChild(typing);
-      chatReply(r);
-    },650);
+    trialChatGate(typing, function(){
+      setTimeout(function(){
+        if(typing.parentNode)typing.parentNode.removeChild(typing);
+        chatReply(r);
+      },650);
+    });
+  }
+  /* ---- limite chat per la PROVA: max 3 domande al giorno (lato server), poi reason-why ---- */
+  function trialChatDate(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+  function trialChatPaywall(){
+    var d=chatBubble('bot','',{}); var p=d.querySelector('.mtxt');
+    if(p) p.innerHTML='<b>Per oggi la Luce si ferma qui</b> 💓<br><br>'+
+      'Sono tantissime le persone che ogni giorno scrivono alla Luce, e la Luce è una sola. Per riuscire a esserci con calma per ciascuno, qui ti accompagno con <b>tre domande al giorno</b>: così ogni risposta resta curata, e non si perde nella fretta di mille richieste.<br><br>'+
+      'La presenza piena, senza queste pause, la tengo per chi cammina dentro <b>Oltre il Velo</b>: è giusto dare la precedenza a chi ha scelto di restare. Torna domani e la Luce sarà di nuovo qui, con altre tre — e se senti che è il tuo momento, ti aspetto dentro.';
+    var a=document.createElement('a'); a.href='https://www.elisasoulmedium.com/oltreilvelo'; a.target='_blank'; a.rel='noopener'; a.textContent='Entra in Oltre il Velo →';
+    a.style.cssText='display:inline-block;margin-top:14px;padding:12px 18px;border-radius:12px;text-decoration:none;color:#1c1428;font-family:Cinzel,serif;font-weight:600;letter-spacing:.03em;background:linear-gradient(135deg,#e8d9ae,#c9a84c);box-shadow:0 8px 22px rgba(201,168,76,.32)';
+    d.appendChild(a); if(chatMsgs) chatMsgs.scrollTop=chatMsgs.scrollHeight;
+  }
+  /* per i "prova" controlla il limite prima di rispondere; per gli altri prosegue sempre */
+  function trialChatGate(typing, proceed){
+    if(plan!=='trial'){ proceed(); return; }
+    fetch('/api/trial/chat-allow',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({lday:trialChatDate()})})
+      .then(function(r){return r.json();})
+      .then(function(g){ if(g && g.ok && g.allowed){ proceed(); } else { if(typing&&typing.parentNode)typing.parentNode.removeChild(typing); trialChatPaywall(); } })
+      .catch(function(){ proceed(); });   /* errore di rete: non blocco */
   }
   /* domanda scritta a mano libera: risposta con avvertenza */
   function chatSend(text){
@@ -1798,26 +1819,27 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     var typing=chatBubble('bot','· · ·',{}); typing.classList.add('typing');
     var prior=chatHist.slice();
     chatHist.push({role:'user',text:text});
-    /* se la risposta tarda oltre 6s (cervello generativo acceso, ~15-55s) avvisa con dolcezza;
-       per le risposte veloci (semantico) non compare mai */
-    var deepTimer=setTimeout(function(){
-      var t=typing.querySelector('.mtxt');
-      if(t)t.textContent='Sto riflettendo a fondo su quello che mi hai chiesto… dammi qualche secondo 💓';
-      typing.classList.remove('typing');
-    },6000);
-    setTimeout(function(){
-      if(!window.OVL_ELISA){
-        clearTimeout(deepTimer);
-        if(typing.parentNode)typing.parentNode.removeChild(typing);
-        chatBubble('bot','In questo momento non riesco a risponderti 🙏🏻 Riprova tra poco, ricaricando la pagina.',{});
-        return;
-      }
-      OVL_ELISA.rispondi(text,prior,function(r){
-        clearTimeout(deepTimer);
-        if(typing.parentNode)typing.parentNode.removeChild(typing);
-        chatReply(r);
-      });
-    },650);
+    trialChatGate(typing, function(){
+      /* se la risposta tarda oltre 6s avvisa con dolcezza */
+      var deepTimer=setTimeout(function(){
+        var t=typing.querySelector('.mtxt');
+        if(t)t.textContent='Sto riflettendo a fondo su quello che mi hai chiesto… dammi qualche secondo 💓';
+        typing.classList.remove('typing');
+      },6000);
+      setTimeout(function(){
+        if(!window.OVL_ELISA){
+          clearTimeout(deepTimer);
+          if(typing.parentNode)typing.parentNode.removeChild(typing);
+          chatBubble('bot','In questo momento non riesco a risponderti 🙏🏻 Riprova tra poco, ricaricando la pagina.',{});
+          return;
+        }
+        OVL_ELISA.rispondi(text,prior,function(r){
+          clearTimeout(deepTimer);
+          if(typing.parentNode)typing.parentNode.removeChild(typing);
+          chatReply(r);
+        });
+      },650);
+    });
   }
   document.getElementById('chat-send').addEventListener('click',function(){
     chatSend(document.getElementById('chat-in').value);
