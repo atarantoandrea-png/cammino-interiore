@@ -141,7 +141,18 @@ const EMAIL_CACHE_TTL = 5 * 60 * 1000;  /* 5 min */
    non è segreta, quindi ha un default. Accesso = email admin + password. ── */
 const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || 'ataranto.andrea@gmail.com')
   .split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
-const ADMIN_KEY = process.env.ADMIN_KEY || '';
+/* password admin: dalla env ADMIN_KEY, oppure (fallback) dal file /data/admin.key
+   nel volume persistente — così non sta MAI nel repo pubblico. Letta dinamicamente
+   (cache 60s) per non richiedere riavvii quando la si imposta/cambia. */
+const ADMIN_KEY_FILE = path.join(DATA, 'admin.key');
+let _akCache = null, _akAt = 0;
+function adminKey() {
+  if (process.env.ADMIN_KEY) return process.env.ADMIN_KEY;
+  if (_akCache !== null && Date.now() - _akAt < 60000) return _akCache;
+  try { _akCache = fs.readFileSync(ADMIN_KEY_FILE, 'utf8').trim(); } catch(e) { _akCache = ''; }
+  _akAt = Date.now();
+  return _akCache;
+}
 
 let saKey = null;
 try { saKey = JSON.parse(process.env.GOOGLE_SA_KEY || ''); } catch(e) {}
@@ -332,10 +343,10 @@ function safeEq(a, b) {
   return ba.length === bb.length && crypto.timingSafeEqual(ba, bb);
 }
 function adminToken(email) {
-  return crypto.createHmac('sha256', ADMIN_KEY).update('admin:' + email).digest('hex');
+  return crypto.createHmac('sha256', adminKey()).update('admin:' + email).digest('hex');
 }
 function adminFromReq(req) {
-  if (!ADMIN_KEY) return null;
+  if (!adminKey()) return null;
   const raw = parseCookies(req)[ADMIN_COOKIE];
   if (!raw) return null;
   const dot = raw.indexOf('.');
@@ -454,8 +465,9 @@ app.post('/api/admin/login', (req, res) => {
   const b = req.body || {};
   const email = String(b.email || '').trim().toLowerCase();
   const key = String(b.key || '');
-  if (!ADMIN_KEY) return res.status(500).json({ ok:false, reason:'config' });   /* password non impostata su Coolify */
-  if (ADMIN_EMAILS.indexOf(email) < 0 || !safeEq(key, ADMIN_KEY))
+  const AK = adminKey();
+  if (!AK) return res.status(500).json({ ok:false, reason:'config' });   /* password non ancora impostata */
+  if (ADMIN_EMAILS.indexOf(email) < 0 || !safeEq(key, AK))
     return res.status(403).json({ ok:false, reason:'denied' });
   const val = Buffer.from(email).toString('base64url') + '.' + adminToken(email);
   res.append('Set-Cookie', ADMIN_COOKIE + '=' + val + '; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=' + (30*24*3600));
@@ -467,7 +479,7 @@ app.post('/api/admin/logout', (req, res) => {
 });
 app.get('/api/admin/me', (req, res) => {
   const a = adminFromReq(req);
-  res.json({ ok: !!a, email: a ? a.email : null, configured: !!ADMIN_KEY });
+  res.json({ ok: !!a, email: a ? a.email : null, configured: !!adminKey() });
 });
 
 /* aggregazione completa per la dashboard (cache 60s, è pesante: legge i file di tutti) */
