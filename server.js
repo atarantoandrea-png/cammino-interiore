@@ -220,6 +220,8 @@ const TRIAL_LEADS = path.join(DATA, 'trial-leads.json');
 function readLeads(){ const j = readJsonFile(TRIAL_LEADS); return (j && Array.isArray(j.items)) ? j : { items:[] }; }
 function writeLeads(obj){ const tmp = TRIAL_LEADS+'.tmp'; fs.writeFileSync(tmp, JSON.stringify(obj)); fs.renameSync(tmp, TRIAL_LEADS); }
 function markLeadCrm(id){ try { const s = readLeads(); const it = s.items.find(x=>x.id===id); if (it && !it.crm){ it.crm = true; writeLeads(s); } } catch(e){} }
+/* email già iscritta alla prova? (per farla RIENTRARE dal login dell'app, anche da un altro device) */
+function isTrialLead(email){ try { return readLeads().items.some(x => x.email === email); } catch(e){ return false; } }
 
 /* POST /api/trial/register — iscrizione alla prova (nome/email/telefono) → CRM + tag */
 app.post('/api/trial/register', (req, res) => {
@@ -562,7 +564,9 @@ app.get('/api/auth/check', (req, res) => {
   if (!SHEETS_ID) return res.status(500).json({ok: false, reason: 'config'});
   getTierMap((err, map) => {
     if (err) { console.error('sheets:', err); return res.status(500).json({ok: false, reason: 'sheets'}); }
-    res.json({ok: map.has(email), tier: map.get(email) || null});
+    if (map.has(email)) return res.json({ok: true, tier: map.get(email)});
+    if (isTrialLead(email)) return res.json({ok: true, tier: 'trial'});   /* rientro prova */
+    res.json({ok: false, tier: null});
   });
 });
 
@@ -577,22 +581,25 @@ app.post('/api/auth/session', (req, res) => {
   if (!SHEETS_ID) return res.status(500).json({ok: false, reason: 'config'});
   getTierMap((err, map) => {
     if (err) { console.error('sheets:', err); return res.status(500).json({ok: false, reason: 'sheets'}); }
-    if (!map.has(email)) return res.status(403).json({ok: false, reason: 'unauthorized'});
-    const tier = map.get(email) || 'full';
+    const isTrial = !map.has(email);
+    if (isTrial && !isTrialLead(email)) return res.status(403).json({ok: false, reason: 'unauthorized'});
+    const tier = isTrial ? 'trial' : (map.get(email) || 'full');
+    /* record di sessione: i "prova" portano il marcatore tier:'trial' (gating fail-closed) */
+    const rec = (tok) => isTrial ? {token: tok, at: Date.now(), tier: 'trial'} : {token: tok, at: Date.now()};
     const f = sessFile(email);
     const sess = readSess(f);
     if (sess && sess.token && (Date.now() - sess.at) < SESSION_TTL) {
       if (existingToken && existingToken === sess.token) {
         /* stesso dispositivo: rinnova timestamp */
-        fs.writeFileSync(f, JSON.stringify({token: sess.token, at: Date.now()}));
+        fs.writeFileSync(f, JSON.stringify(rec(sess.token)));
         setSessionCookie(res, email, sess.token);
         return res.json({ok: true, token: sess.token, tier});
       }
       if (!force) return res.json({ok: false, reason: 'active'});
-      /* force=true: scaccia l'altra sessione, ma resta comunque vincolato all'allowlist */
+      /* force=true: scaccia l'altra sessione */
     }
     const token = crypto.randomBytes(32).toString('hex');
-    fs.writeFileSync(f, JSON.stringify({token, at: Date.now()}));
+    fs.writeFileSync(f, JSON.stringify(rec(token)));
     setSessionCookie(res, email, token);
     res.json({ok: true, token, tier});
   });

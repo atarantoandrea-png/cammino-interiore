@@ -1135,6 +1135,8 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     var fab=document.getElementById('annualFab');
     if(fab){ var showFab=(view!=='login' && (plan==='monthly'||plan==='trial')); fab.style.display=showFab?'flex':'none';
       if(showFab){ var tr=(plan==='trial'); fab.setAttribute('title', tr?'Entra in Oltre il Velo':"Passa all'annuale"); fab.setAttribute('aria-label', tr?'Entra in Oltre il Velo':"Passa all'annuale"); } }
+    /* il box «Il tuo pensiero conta» (suggerimenti) NON va mostrato a chi è in prova */
+    var sc=document.querySelector('.sugg-cta'); if(sc) sc.style.display=(plan==='trial')?'none':'';
     /* nella vista suggerimenti la luce del sentiero si nasconde: lì c'è la sua piccola luce "?" dedicata */
     var lm=document.getElementById('lume'); if(lm) lm.style.display=(view==='suggest')?'none':'';
     if(view==='suggest'){ resetSuggest(); window.scrollTo(0,0); }
@@ -1337,7 +1339,8 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     el.insertAdjacentHTML('beforeend', ok?lockOpenBadge():lockBadge());  /* lucchetto figlio della card, NON di .excover: così i filtri di oscuramento non lo toccano */
     var go=el.querySelector('.exgo');
     if(go){
-      if(!ok && ownUnlock(ex)){ go.textContent = 'Sblocca prima le tappe precedenti'; }   /* bloccata dalla catena del percorso */
+      if(plan==='trial' && !ok){ go.textContent = '🔒 Entra in Oltre il Velo'; }   /* prova: ogni tappa chiusa invita alla community */
+      else if(!ok && ownUnlock(ex)){ go.textContent = 'Sblocca prima le tappe precedenti'; }   /* bloccata dalla catena del percorso */
       else if(ex.partVideo){ go.textContent = ok ? (ex.route?'Apri gli esercizi →':'Esercizi in arrivo')
                                             : (ex.id==='bambino' ? 'Guarda «Il Mondo Interiore» e «Il Bambino Interiore»'
                                                                  : 'Completa prima le parti precedenti'); }
