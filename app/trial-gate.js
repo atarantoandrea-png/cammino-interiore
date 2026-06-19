@@ -1,9 +1,10 @@
 /* Vetrina della PROVA dentro le sezioni (Giornaliero, Mondo Interiore, Bambino).
    La prova ENTRA, NAVIGA e VEDE tutto liberamente (freccia indietro, menu in alto, card,
    sfogliare, scorrere). Il pop-up "Entra in Oltre il Velo" compare SOLO quando prova a
-   USARE un contenuto premium: riprodurre un video o aprire/scrivere un esercizio.
-   I video delle pratiche del Giornaliero sono mostrati come COPERTINA bloccata (come nel
-   Mondo Interiore). Sostituisce anche l'upsell "annuale" del trailer con quello community.
+   USARE un contenuto premium: cliccare per riprodurre un video o aprire/scrivere un esercizio.
+   I video delle pratiche del Giornaliero sono mostrati come COPERTINA bloccata: se la pagina
+   prova a caricare il player (anche cambiando scheda) lo blocco e rimetto la copertina, SENZA
+   pop-up; il pop-up esce solo se è l'utente a cliccarci sopra.
    ⚠️ Si attiva SOLO per il livello "trial": per i paganti/mensili NON fa nulla (app ufficiale intatta). */
 (function(){
   var email=''; try{ email=(localStorage.getItem('ovl-user')||'').trim().toLowerCase(); }catch(e){}
@@ -24,7 +25,6 @@
     '#tgComm .tgcont{display:block;width:100%;margin-top:10px;background:none;border:1px solid rgba(185,163,227,.4);'+
     'color:#dccdf6;border-radius:12px;padding:11px;cursor:pointer;font-size:15px;font-family:Georgia,serif}'+
     '#tgComm .tgx{position:absolute;top:10px;right:13px;background:none;border:none;color:#bcb3c9;font-size:20px;cursor:pointer}'+
-    /* copertina bloccata dei video del Giornaliero */
     '.tgcover{position:absolute;inset:0;background:#0c0913 center/cover no-repeat;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;cursor:pointer}'+
     '.tgcover::before{content:"";position:absolute;inset:0;background:linear-gradient(rgba(12,9,19,.5),rgba(12,9,19,.72))}'+
     '.tgcover>*{position:relative;z-index:1}'+
@@ -49,9 +49,22 @@
   v.querySelector('.tgx').addEventListener('click', function(e){ e.stopPropagation(); hide(); });
   v.querySelector('.tgcont').addEventListener('click', function(e){ e.stopPropagation(); hide(); });
 
-  /* NAVIGAZIONE sempre libera: menu in alto, card della home, freccia indietro, settimane, luce, musica, guida */
+  /* copertina bloccata di un video del Giornaliero (fr = .dvframe con id sX-vframe) */
+  function renderDayCover(fr){
+    var m=(fr.id||'').match(/^(s\d)-vframe$/); if(!m) return false;
+    if(fr.getAttribute('data-tg')==='1' && fr.querySelector('.tgcover')) return true;
+    fr.setAttribute('data-tg','1');
+    fr.innerHTML='<div class="tgcover" style="background-image:url(\'/api/cover?s=day&k='+m[1]+'\')">'+
+      '<div class="tglk">🔒</div>'+
+      '<button class="tgpl" type="button" aria-label="Anteprima"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>'+
+      '<div class="tgcap">Anteprima — entra in Oltre il Velo per guardarlo</div></div>';
+    return true;
+  }
+  [].forEach.call(document.querySelectorAll('.dvframe'), renderDayCover);
+
+  /* NAVIGAZIONE sempre libera */
   var FREE='#back-fab,#back-btn,nav.tabs,.tabs,.tab,.pcard,.wnav-btn,#lume,.mu-mini,.mu-mini *,.gp-orb,#gpan,#gpan *';
-  /* contenuto PREMIUM: al clic → pop-up (video, copertine, esercizi, pulsanti azione) */
+  /* contenuto PREMIUM: al CLIC dell'utente → pop-up */
   var BLOCK='.dvideo,.dvframe,.tgcover,.vframe,.excover,.segna,.llock,.llock-play,.lcover,.vcard,.vcover,input,textarea,select,[contenteditable="true"]';
   function within(t, sel){ return t && t.closest && t.closest(sel); }
 
@@ -59,30 +72,28 @@
     var t=e.target; if(t && (t.tagName==='INPUT'||t.tagName==='TEXTAREA'||t.tagName==='SELECT'||t.isContentEditable)){ try{t.blur();}catch(x){} show(); } }, true);
   document.addEventListener('click', function(e){
     if(v.contains(e.target)) return;
-    if(within(e.target, FREE)) return;                 /* navigazione: libera */
+    if(within(e.target, FREE)) return;                 /* navigazione: libera, niente pop-up */
     if(within(e.target, BLOCK)){ e.preventDefault(); e.stopPropagation(); show(); }
   }, true);
 
-  /* Giornaliero: mostro la COPERTINA bloccata dei video (Osservatore=s2, Spazio Emotivo=s1) */
-  [].forEach.call(document.querySelectorAll('.dvframe'), function(fr){
-    var m=(fr.id||'').match(/^(s\d)-vframe$/); if(!m) return;
-    fr.innerHTML='<div class="tgcover" style="background-image:url(\'/api/cover?s=day&k='+m[1]+'\')">'+
-      '<div class="tglk">🔒</div>'+
-      '<button class="tgpl" type="button" aria-label="Anteprima"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>'+
-      '<div class="tgcap">Anteprima — entra in Oltre il Velo per guardarlo</div></div>';
-  });
-
-  /* RIPRODUZIONE video → pop-up; e sostituzione upsell annuale del trailer con community */
-  function killVimeo(node){
+  /* Se la pagina inserisce un player Vimeo (anche da sola, cambiando scheda): lo tolgo.
+     Se è un video del Giornaliero rimetto la copertina. NESSUN pop-up qui: il pop-up
+     esce solo quando è l'UTENTE a cliccare (gestito sopra). */
+  function neutralizeVimeo(node){
     var ifr=(node.tagName==='IFRAME' && /vimeo/.test(node.src||'')) ? node : (node.querySelector?node.querySelector('iframe[src*="vimeo"]'):null);
-    if(ifr){ try{ ifr.remove(); }catch(x){} show(); return true; } return false;
+    if(!ifr) return false;
+    var box = ifr.closest ? ifr.closest('.dvframe') : null;
+    try{ ifr.remove(); }catch(x){}
+    if(box) renderDayCover(box);
+    return true;
   }
+  /* upsell "annuale" del trailer (Mondo Interiore/Bambino) aperto da un clic dell'utente → community */
   function killUpsell(){ var u=document.getElementById('upsell'); if(u && u.classList.contains('on')){ u.classList.remove('on'); show(); return true; } return false; }
   try{
-    [].forEach.call(document.querySelectorAll('iframe[src*="vimeo"]'), function(f){ try{ f.remove(); }catch(x){} });
+    [].forEach.call(document.querySelectorAll('iframe[src*="vimeo"]'), function(f){ var b=f.closest?f.closest('.dvframe'):null; try{f.remove();}catch(x){} if(b)renderDayCover(b); });
     var mo=new MutationObserver(function(muts){ muts.forEach(function(m){
       if(m.type==='attributes'){ killUpsell(); return; }
-      for(var i=0;i<m.addedNodes.length;i++){ var n=m.addedNodes[i]; if(n.nodeType===1) killVimeo(n); }
+      for(var i=0;i<m.addedNodes.length;i++){ var n=m.addedNodes[i]; if(n.nodeType===1) neutralizeVimeo(n); }
     }); });
     mo.observe(document.documentElement, {childList:true, subtree:true});
     var ups=document.getElementById('upsell'); if(ups) mo.observe(ups, {attributes:true, attributeFilter:['class']});
