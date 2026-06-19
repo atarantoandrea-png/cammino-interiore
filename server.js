@@ -49,6 +49,9 @@ const saveStore = (req,res)=>{
   const email = String(b.email||'').trim().toLowerCase();
   if (!emailRe.test(email)) return res.status(400).json({ error:'email' });
   if (!storeAuthOk(req, email)) return res.status(401).json({ error:'auth' });
+  /* la PROVA non salva progressi: vede tutto ma non scrive */
+  const _s = sessionFromReq(req);
+  if (_s) { const _x = readSess(sessFile(_s.email)); if (_x && _x.tier === 'trial') return res.status(403).json({ error:'trial' }); }
   const data = b.data, meta = b.meta;
   if (typeof data!=='object' || !data || typeof meta!=='object' || !meta)
     return res.status(400).json({ error:'body' });
@@ -858,9 +861,13 @@ function isReserved(p) {
   if (p.indexOf('/app/install') === 0) return false;   /* installazione PWA: pubblica */
   return p.slice('/app/'.length).indexOf('/') >= 0;    /* /app/<cartella>/... = riservato */
 }
-/* il livello "prova" può accedere SOLO all'Introduzione/Frequenza (percorso) e alle musiche */
+/* il livello "prova" può ENTRARE in tutte le sezioni (vetrina/showroom), ma:
+   - capitolo2/bambino sono serviti STRIPATI (niente ID video reali — vedi sotto);
+   - il Giornaliero non ha video premium e i salvataggi sono bloccati per la prova;
+   - dentro le sezioni le azioni (play/scrittura) aprono il pop-up community (lato pagina). */
 function trialAllowedPath(p){
-  return p.indexOf('/app/percorso') === 0 || p.indexOf('/app/music/') === 0;
+  return p.indexOf('/app/percorso') === 0 || p.indexOf('/app/music/') === 0
+      || p.indexOf('/app/capitolo2') === 0 || p.indexOf('/app/bambino') === 0 || p.indexOf('/app/day') === 0;
 }
 app.use((req, res, next) => {
   if (req.method !== 'GET' && req.method !== 'HEAD') return next();
@@ -900,7 +907,7 @@ app.use((req, res, next) => {
   const m = req.path.match(/^\/app\/(capitolo2|bambino)\/(?:index\.html)?$/);
   if (!m) return next();
   tierForReq(req, (err, tier) => {
-    if (err || tier !== 'monthly') return next();   /* pieni (o fogli giù) → versione completa */
+    if (err || (tier !== 'monthly' && tier !== 'trial')) return next();   /* pieni → versione completa; mensili e prova → trailer stripato */
     const html = monthlyHtml(path.join(__dirname, 'app', m[1], 'index.html'));
     if (html == null) return next();
     res.set('Cache-Control', 'no-store');

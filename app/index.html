@@ -1377,7 +1377,11 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
         el=document.createElement('a');
         el.href=ex.route;
         el.addEventListener('click',function(e){
-          if(!unlockOk(ex)){ e.preventDefault(); openLock(ex, el); return; }
+          if(!unlockOk(ex)){
+            /* prova: le tappe bloccate si APRONO comunque (vedono tutto); il blocco è sulle AZIONI dentro la sezione */
+            if(plan==='trial' && ex.shell && window.openFrame){ e.preventDefault(); window.openFrame(ex.route); return; }
+            e.preventDefault(); openLock(ex, el); return;
+          }
           if(ex.shell && window.openFrame){ e.preventDefault(); window.openFrame(ex.route); }
         });
       } else {
