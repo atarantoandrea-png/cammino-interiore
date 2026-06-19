@@ -655,7 +655,8 @@ app.post('/api/auth/logout', (req, res) => {
    reindirizza all'immagine: così l'anteprima si vede SENZA esporre l'ID del video. */
 const COVER_IDS = {
   capitolo2: {mondo:'1200559554',bambino:'1200559555',adulto:'1200563875',ombra:'1200561278',padremadre:'1200563735',mf:'1200561010',adolescente:'1200559557',osservatore:'1200559556'},
-  bambino:   {teoria:'1200559555',foglio:'1201477236',medit:'1201478348'}
+  bambino:   {teoria:'1200559555',foglio:'1201477236',medit:'1201478348'},
+  day:       {s1:'1184907857',s2:'1184907860'}   /* Spazio Emotivo / Osservatore: copertina per la prova */
 };
 const coverCache = {};
 app.get('/api/cover', (req, res) => {
