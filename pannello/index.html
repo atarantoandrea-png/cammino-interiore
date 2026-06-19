@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Pannello · Cammino Interiore</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --glic:#b9a3e3; --glic-hi:#dccdf6; --gold:#c9a84c; --gold-pale:#e8d9ae; --cele:#b9ddf6;
+  --green:#8fd6a8; --rose:#e3a3c0;
+  --txt:#e9e4f0; --txt-soft:#bcb3c9; --txt-dim:#8d8499;
+  --card:rgba(28,23,38,.72); --card-line:rgba(185,163,227,.18);
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Cormorant Garamond',Georgia,serif; color:var(--txt); min-height:100dvh;
+  background:radial-gradient(120% 80% at 50% -10%, rgba(185,163,227,.14), transparent 60%),
+    radial-gradient(100% 70% at 50% 110%, rgba(201,168,76,.08), transparent 60%),
+    linear-gradient(180deg,#120e1b 0%,#0c0913 100%);
+  background-attachment:fixed; padding:22px 16px calc(40px + env(safe-area-inset-bottom));
+}
+.wrap{max-width:1040px;margin:0 auto}
+h1{font-family:'Cinzel',serif;font-weight:600;font-size:24px;color:var(--glic-hi);letter-spacing:.02em}
+.sub{color:var(--txt-dim);font-size:15px;font-style:italic;margin-top:2px}
+
+/* ── Login ── */
+.login{max-width:380px;margin:8vh auto 0;background:var(--card);border:1px solid var(--card-line);
+  border-radius:22px;padding:30px 26px;backdrop-filter:blur(14px);box-shadow:0 24px 70px rgba(0,0,0,.5)}
+.login h1{text-align:center;margin-bottom:4px}
+.login .sub{text-align:center;margin-bottom:22px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:14px;color:var(--txt-soft);letter-spacing:.04em;margin:0 0 6px 4px}
+.field input{width:100%;font-family:'Cormorant Garamond',serif;font-size:17px;color:var(--txt);
+  background:rgba(185,163,227,.06);border:1px solid var(--card-line);border-radius:12px;padding:13px 14px;outline:none}
+.field input:focus{border-color:var(--glic)}
+.btn{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;border:none;cursor:pointer;
+  font-family:'Cinzel',serif;font-weight:600;font-size:15px;letter-spacing:.03em;border-radius:13px;padding:14px;
+  background:linear-gradient(135deg,#c9b3ef,#a98fd6);color:#1c1428;box-shadow:0 8px 24px rgba(185,163,227,.35);transition:transform .15s}
+.btn:active{transform:scale(.98)}
+.btn.ghost{background:transparent;color:var(--glic-hi);border:1.5px solid var(--card-line);box-shadow:none;font-size:13px;padding:9px 14px;width:auto}
+.err{color:#f0a8a8;font-size:14.5px;text-align:center;min-height:20px;margin-top:8px}
+
+/* ── Dashboard ── */
+.top{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:20px;flex-wrap:wrap}
+.top .actions{display:flex;gap:8px;align-items:center}
+.muted{color:var(--txt-dim);font-size:13px}
+.grid{display:grid;gap:14px}
+.kpis{grid-template-columns:repeat(auto-fit,minmax(150px,1fr));margin-bottom:16px}
+.kpi{background:var(--card);border:1px solid var(--card-line);border-radius:16px;padding:16px 16px 14px}
+.kpi .lbl{font-size:13px;color:var(--txt-soft);letter-spacing:.06em;text-transform:uppercase;font-family:'Cinzel',serif}
+.kpi .val{font-size:30px;color:var(--glic-hi);font-weight:700;line-height:1.15;margin-top:6px}
+.kpi .val small{font-size:15px;color:var(--txt-dim);font-weight:500}
+.kpi .note{font-size:13.5px;color:var(--txt-dim);margin-top:3px}
+.panel{background:var(--card);border:1px solid var(--card-line);border-radius:18px;padding:18px 18px 16px;margin-bottom:16px}
+.panel h2{font-family:'Cinzel',serif;font-size:15px;font-weight:600;letter-spacing:.06em;color:var(--gold-pale);margin-bottom:14px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:760px){.two{grid-template-columns:1fr}}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:13.5px;color:var(--txt-soft);margin-top:8px}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+
+/* barre orizzontali */
+.barrow{display:grid;grid-template-columns:130px 1fr 56px;align-items:center;gap:10px;margin-bottom:9px;font-size:15px}
+.barrow .bar{height:14px;border-radius:7px;background:linear-gradient(90deg,#a98fd6,#c9b3ef);min-width:2px}
+.barrow .num{text-align:right;color:var(--txt-soft);font-variant-numeric:tabular-nums}
+.barrow .cap{color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* freq chips */
+.freq{display:flex;gap:10px;flex-wrap:wrap}
+.chip{flex:1;min-width:90px;background:rgba(185,163,227,.07);border:1px solid var(--card-line);border-radius:13px;padding:12px;text-align:center}
+.chip .n{font-size:26px;font-weight:700;color:var(--glic-hi)}
+.chip .t{font-size:13px;color:var(--txt-soft);margin-top:2px}
+
+/* tabella persone */
+.toolbar{display:flex;gap:10px;align-items:center;margin-bottom:12px;flex-wrap:wrap}
+.toolbar input{flex:1;min-width:180px;font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--txt);
+  background:rgba(185,163,227,.06);border:1px solid var(--card-line);border-radius:11px;padding:10px 13px;outline:none}
+.tblwrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:14.5px}
+th,td{text-align:left;padding:10px 10px;border-bottom:1px solid rgba(185,163,227,.10);white-space:nowrap}
+th{font-family:'Cinzel',serif;font-size:12px;letter-spacing:.04em;color:var(--txt-soft);text-transform:uppercase;cursor:pointer;user-select:none}
+th:hover{color:var(--glic-hi)}
+td.em{white-space:normal;color:var(--txt);max-width:240px;word-break:break-all}
+td .tier{font-size:12px;padding:2px 8px;border-radius:20px;border:1px solid var(--card-line)}
+.tier.full{color:var(--gold-pale);border-color:rgba(201,168,76,.4)}
+.tier.monthly{color:var(--cele);border-color:rgba(185,221,246,.4)}
+.num{font-variant-numeric:tabular-nums}
+.dim{color:var(--txt-dim)}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%}
+.dot.on{background:var(--green)} .dot.off{background:rgba(255,255,255,.15)}
+.hide{display:none!important}
+.loading{text-align:center;color:var(--txt-dim);padding:40px;font-size:17px}
+a.lk{color:var(--glic);text-decoration:none}
+.dorm{font-size:14.5px;color:var(--txt-soft);margin-bottom:7px}
+.dorm b{color:var(--txt);font-weight:600}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- LOGIN -->
+  <div id="loginView" class="login hide">
+    <h1>Pannello</h1>
+    <p class="sub">Il Cammino Interiore · solo amministratore</p>
+    <div class="field"><label>Email</label><input id="li-email" type="email" autocomplete="username" placeholder="la tua email"></div>
+    <div class="field"><label>Password</label><input id="li-key" type="password" autocomplete="current-password" placeholder="password"></div>
+    <button class="btn" id="li-btn">Entra</button>
+    <p class="err" id="li-err"></p>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="dashView" class="hide">
+    <div class="top">
+      <div>
+        <h1>Panoramica</h1>
+        <p class="sub" id="genAt">—</p>
+      </div>
+      <div class="actions">
+        <button class="btn ghost" id="refreshBtn">↻ Aggiorna</button>
+        <button class="btn ghost" id="logoutBtn">Esci</button>
+      </div>
+    </div>
+    <div id="dashBody"><div class="loading">Carico i dati…</div></div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var loginView = $('loginView'), dashView = $('dashView');
+
+  function show(which){
+    loginView.classList.toggle('hide', which!=='login');
+    dashView.classList.toggle('hide', which!=='dash');
+  }
+
+  /* ---------- LOGIN ---------- */
+  function doLogin(){
+    var email = $('li-email').value.trim().toLowerCase();
+    var key = $('li-key').value;
+    $('li-err').textContent = '';
+    if(!email || !key){ $('li-err').textContent = 'Inserisci email e password.'; return; }
+    fetch('/api/admin/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,key:key})})
+      .then(function(r){ return r.json().then(function(j){ return {s:r.status,j:j}; }); })
+      .then(function(o){
+        if(o.j && o.j.ok){ $('li-key').value=''; show('dash'); load(); }
+        else if(o.j && o.j.reason==='config'){ $('li-err').textContent = 'Password admin non ancora impostata sul server (ADMIN_KEY).'; }
+        else { $('li-err').textContent = 'Email o password non corretti.'; }
+      })
+      .catch(function(){ $('li-err').textContent = 'Errore di rete. Riprova.'; });
+  }
+  $('li-btn').addEventListener('click', doLogin);
+  $('li-key').addEventListener('keydown', function(e){ if(e.key==='Enter') doLogin(); });
+  $('li-email').addEventListener('keydown', function(e){ if(e.key==='Enter') $('li-key').focus(); });
+
+  $('logoutBtn').addEventListener('click', function(){
+    fetch('/api/admin/logout',{method:'POST'}).then(function(){ show('login'); });
+  });
+  $('refreshBtn').addEventListener('click', function(){ load(true); });
+
+  /* ---------- HELPER FORMATTAZIONE ---------- */
+  function fmtMin(m){ m=Math.round(m||0); if(m<60) return m+' min'; var h=Math.floor(m/60), r=m%60; return h+'h'+(r?' '+r+'m':''); }
+  function fmtDateShort(iso){ if(!iso) return '—'; var p=iso.split('-'); return p[2]+'/'+p[1]; }
+  function ago(ts){
+    if(!ts) return 'mai';
+    var d = Math.floor((Date.now()-ts)/86400000);
+    if(d<=0) return 'oggi'; if(d===1) return 'ieri'; if(d<30) return d+' gg fa';
+    var mo=Math.floor(d/30); return mo+(mo===1?' mese fa':' mesi fa');
+  }
+  function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+  function pct(a,b){ return b? Math.round(a/b*100):0; }
+
+  /* SVG: grafico ad area dei valori (visite giornaliere) */
+  function lineChart(series, key, color){
+    var W=900, H=180, pad=24, n=series.length;
+    var max=1; series.forEach(function(s){ if(s[key]>max) max=s[key]; });
+    var step=(W-pad*2)/(n-1);
+    function x(i){ return pad+step*i; } function y(v){ return H-pad-(v/max)*(H-pad*2); }
+    var pts=series.map(function(s,i){ return x(i)+','+y(s[key]); });
+    var area='M'+x(0)+','+(H-pad)+' L'+pts.join(' L')+' L'+x(n-1)+','+(H-pad)+' Z';
+    var line='M'+pts.join(' L');
+    var ticks='';
+    series.forEach(function(s,i){ if(i%5===0||i===n-1){ ticks+='<text x="'+x(i)+'" y="'+(H-6)+'" fill="#8d8499" font-size="11" text-anchor="middle">'+fmtDateShort(s.date)+'</text>'; } });
+    var dots=series.map(function(s,i){ return '<circle cx="'+x(i)+'" cy="'+y(s[key])+'" r="2.5" fill="'+color+'"/>'; }).join('');
+    return '<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto;display:block">'+
+      '<defs><linearGradient id="g1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+color+'" stop-opacity=".35"/><stop offset="1" stop-color="'+color+'" stop-opacity="0"/></linearGradient></defs>'+
+      '<text x="'+pad+'" y="16" fill="#8d8499" font-size="11">max '+max+'</text>'+
+      '<path d="'+area+'" fill="url(#g1)"/><path d="'+line+'" fill="none" stroke="'+color+'" stroke-width="2"/>'+dots+ticks+'</svg>';
+  }
+
+  /* barre orizzontali generiche */
+  function bars(items, labelKey, valKey, fmt){
+    var max=1; items.forEach(function(it){ if(it[valKey]>max) max=it[valKey]; });
+    return items.map(function(it){
+      var w=Math.max(2, Math.round(it[valKey]/max*100));
+      return '<div class="barrow"><span class="cap">'+esc(it[labelKey])+'</span>'+
+        '<span class="bar" style="width:'+w+'%"></span>'+
+        '<span class="num">'+(fmt?fmt(it[valKey]):it[valKey])+'</span></div>';
+    }).join('') || '<p class="muted">Nessun dato ancora.</p>';
+  }
+
+  var AREA_NAMES={giornaliero:'Giornaliero',mondo:'Mondo Interiore (Cap.2)',bambino:'Bambino Interiore',home:'Home / Sentiero',install:'Installazione',app:'App'};
+
+  /* ---------- RENDER ---------- */
+  var DATA=null, sortKey='lastActive', sortDir=-1;
+
+  function render(d){
+    DATA=d;
+    $('genAt').textContent = 'aggiornato ' + new Date(d.generatedAt).toLocaleString('it-IT');
+    var s=d.subscribers, a=d.active, t=d.time, fq=d.frequency, bt=d.byTier;
+
+    var html='';
+    /* KPI */
+    html+='<div class="grid kpis">';
+    html+=kpi('Iscritti totali', s.total, s.full+' annuali · '+s.monthly+' mensili');
+    html+=kpi('Attivati', d.activated+' <small>/ '+s.total+'</small>', pct(d.activated,s.total)+'% è entrato almeno una volta');
+    html+=kpi('Attivi oggi', a.today, 'sugli '+s.total+' iscritti');
+    html+=kpi('Attivi 7 giorni', a.d7, pct(a.d7,s.total)+'% degli iscritti');
+    html+=kpi('Attivi 30 giorni', a.d30, pct(a.d30,s.total)+'% degli iscritti');
+    html+=kpi('Tempo medio', fmtMin(t.avgSessionMin), 'per sessione (30 gg)');
+    html+=kpi('Tempo totale', fmtMin(t.totalMin30), 'ultimi 30 giorni');
+    html+='</div>';
+
+    /* visite giornaliere */
+    html+='<div class="panel"><h2>Visite giornaliere · ultimi 30 giorni</h2>'+
+      lineChart(d.dailySeries,'users','#c9b3ef')+
+      '<div class="legend"><span><i style="background:#c9b3ef"></i>Persone attive al giorno</span></div></div>';
+
+    /* tempo per giorno */
+    html+='<div class="panel"><h2>Minuti totali al giorno · ultimi 30 giorni</h2>'+
+      lineChart(d.dailySeries,'min','#e8d9ae')+
+      '<div class="legend"><span><i style="background:#e8d9ae"></i>Minuti di permanenza totali</span></div></div>';
+
+    /* due colonne: frequenza + fasce orarie */
+    html+='<div class="two">';
+    html+='<div class="panel"><h2>Frequenza (30 giorni)</h2><div class="freq">'+
+      chip(fq.fedeli,'Fedeli','≥12 giorni')+chip(fq.costanti,'Costanti','4–11 giorni')+chip(fq.occasionali,'Occasionali','1–3 giorni')+
+      '</div><p class="muted" style="margin-top:10px">"Fedeli" = entrano ~3+ volte a settimana.</p></div>';
+
+    var hoursArr=[]; for(var h=0;h<24;h++){ hoursArr.push({h:h, min:Math.round((d.hours[String(h)]||0)/60)}); }
+    html+='<div class="panel"><h2>Fascia oraria più attiva</h2>'+hourBars(hoursArr)+'</div>';
+    html+='</div>';
+
+    /* aree + livelli */
+    html+='<div class="two">';
+    html+='<div class="panel"><h2>Aree più usate</h2>'+
+      bars(d.topAreas.map(function(x){return {n:AREA_NAMES[x.area]||x.area, v:x.min};}),'n','v',fmtMin)+'</div>';
+    html+='<div class="panel"><h2>Annuali vs Mensili</h2>'+
+      '<div class="barrow"><span class="cap">Annuali attivi 30g</span><span class="bar" style="width:'+pct(bt.full.attivi30,Math.max(1,bt.full.tot))+'%"></span><span class="num">'+bt.full.attivi30+'/'+bt.full.tot+'</span></div>'+
+      '<div class="barrow"><span class="cap">Mensili attivi 30g</span><span class="bar" style="width:'+pct(bt.monthly.attivi30,Math.max(1,bt.monthly.tot))+'%;background:linear-gradient(90deg,#7fb6e0,#b9ddf6)"></span><span class="num">'+bt.monthly.attivi30+'/'+bt.monthly.tot+'</span></div>'+
+      '<p class="muted" style="margin-top:8px">Tempo medio: annuali '+fmtMin(bt.full.attivi30?bt.full.min30/bt.full.attivi30:0)+' · mensili '+fmtMin(bt.monthly.attivi30?bt.monthly.min30/bt.monthly.attivi30:0)+' (a testa, 30 gg).</p>'+
+      '</div>';
+    html+='</div>';
+
+    /* dormienti */
+    html+='<div class="panel"><h2>Dormienti · non entrano da oltre 14 giorni ('+d.dormienti.length+')</h2>';
+    if(!d.dormienti.length) html+='<p class="muted">Nessuno: bel segno 💓</p>';
+    else html+=d.dormienti.map(function(u){ return '<p class="dorm"><b>'+esc(u.email)+'</b> <span class="dim">· '+ (u.tier==='monthly'?'mensile':'annuale') +' · ultimo accesso '+ago(u.lastActive)+' · '+u.giorniPratica+' gg di pratica</span></p>'; }).join('');
+    html+='</div>';
+
+    /* tabella persone */
+    html+='<div class="panel"><h2>Persone ('+d.users.length+')</h2>'+
+      '<div class="toolbar"><input id="srch" placeholder="Cerca email…"><span class="muted" id="cnt"></span></div>'+
+      '<div class="tblwrap"><table><thead><tr>'+
+      th('Email','email')+th('Liv.','tier')+th('Ultimo accesso','lastActive')+th('Giorni pratica','giorniPratica')+
+      th('Attivo 30g','days30')+th('Tempo 30g','min30')+th('Cap.2','cap2')+th('Bambino','bambino')+
+      '</tr></thead><tbody id="tbody"></tbody></table></div></div>';
+
+    $('dashBody').innerHTML=html;
+    $('srch').addEventListener('input', renderRows);
+    var ths=$('dashBody').querySelectorAll('th[data-k]');
+    ths.forEach(function(el){ el.addEventListener('click', function(){ var k=el.getAttribute('data-k'); if(sortKey===k) sortDir*=-1; else { sortKey=k; sortDir=(k==='email'||k==='tier')?1:-1; } renderRows(); }); });
+    renderRows();
+  }
+
+  function kpi(lbl,val,note){ return '<div class="kpi"><div class="lbl">'+lbl+'</div><div class="val">'+val+'</div>'+(note?'<div class="note">'+note+'</div>':'')+'</div>'; }
+  function chip(n,t,sub){ return '<div class="chip"><div class="n">'+n+'</div><div class="t">'+t+'<br><span class="dim">'+sub+'</span></div></div>'; }
+  function th(lbl,k){ return '<th data-k="'+k+'">'+lbl+'</th>'; }
+  function hourBars(arr){
+    var max=1; arr.forEach(function(x){ if(x.min>max)max=x.min; });
+    return '<div style="display:flex;align-items:flex-end;gap:3px;height:120px">'+arr.map(function(x){
+      var hpx=Math.round(x.min/max*108);
+      return '<div title="'+x.h+':00 · '+fmtMin(x.min)+'" style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%">'+
+        '<div style="width:100%;height:'+hpx+'px;border-radius:3px 3px 0 0;background:linear-gradient(180deg,#c9b3ef,#7a5fb0);min-height:2px"></div></div>';
+    }).join('')+'</div>'+
+    '<div style="display:flex;justify-content:space-between;color:#8d8499;font-size:11px;margin-top:5px"><span>0</span><span>6</span><span>12</span><span>18</span><span>23</span></div>';
+  }
+
+  function renderRows(){
+    if(!DATA) return;
+    var q=(($('srch')||{}).value||'').trim().toLowerCase();
+    var rows=DATA.users.slice();
+    rows.sort(function(a,b){
+      var x=a[sortKey], y=b[sortKey];
+      if(typeof x==='string'){ x=x||''; y=y||''; return x<y?-sortDir:x>y?sortDir:0; }
+      return ((x||0)-(y||0))*sortDir;
+    });
+    if(q) rows=rows.filter(function(u){ return u.email.indexOf(q)>=0; });
+    var html=rows.map(function(u){
+      return '<tr><td class="em">'+esc(u.email)+'</td>'+
+        '<td><span class="tier '+u.tier+'">'+(u.tier==='monthly'?'mensile':'annuale')+'</span></td>'+
+        '<td>'+ago(u.lastActive)+'</td>'+
+        '<td class="num">'+u.giorniPratica+'</td>'+
+        '<td class="num">'+u.days30+'</td>'+
+        '<td class="num">'+fmtMin(u.min30)+'</td>'+
+        '<td class="num">'+(u.cap2||0)+'</td>'+
+        '<td><span class="dot '+(u.bambino?'on':'off')+'"></span></td></tr>';
+    }).join('');
+    $('tbody').innerHTML = html || '<tr><td colspan="8" class="muted" style="padding:18px">Nessun risultato.</td></tr>';
+    if($('cnt')) $('cnt').textContent = rows.length+' persone';
+  }
+
+  /* ---------- LOAD ---------- */
+  function load(fresh){
+    $('dashBody').innerHTML='<div class="loading">Carico i dati…</div>';
+    fetch('/api/admin/overview'+(fresh?'?fresh=1':''))
+      .then(function(r){ if(r.status===403){ show('login'); throw 0; } return r.json(); })
+      .then(function(j){ if(j && j.ok) render(j.data); else $('dashBody').innerHTML='<div class="loading">Errore nel caricamento dei dati.</div>'; })
+      .catch(function(){});
+  }
+
+  /* all'avvio: sono già loggato? */
+  fetch('/api/admin/me').then(function(r){return r.json();}).then(function(j){
+    if(j && j.ok){ show('dash'); load(); }
+    else { show('login'); if(j && !j.configured) $('li-err').textContent='⚠ Imposta prima la password ADMIN_KEY su Coolify.'; }
+  }).catch(function(){ show('login'); });
+})();
+</script>
+</body>
+</html>

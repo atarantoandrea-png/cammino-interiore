@@ -11,6 +11,9 @@ const app = express();
 app.use(compression());
 const DATA = process.env.DATA_DIR || '/data';
 fs.mkdirSync(DATA, { recursive: true });
+const ANALYTICS = path.join(DATA, 'analytics');
+fs.mkdirSync(ANALYTICS, { recursive: true });
+function readJsonFile(f){ try{ if(fs.existsSync(f)) return JSON.parse(fs.readFileSync(f,'utf8')); }catch(e){} return null; }
 
 app.use(express.json({ limit: '2mb' }));
 
@@ -71,6 +74,42 @@ const saveStore = (req,res)=>{
 app.put('/api/store', saveStore);
 app.post('/api/store', saveStore);   /* per sendBeacon all'uscita dalla pagina */
 
+/* ── TRACCIAMENTO uso (per la dashboard): aperture + tempo di permanenza per area ──
+   Le pagine dell'app mandano un "battito" mentre sono aperte e attive. Aggrego per
+   giorno/email/area in file giornalieri sotto /data/analytics. Richiede sessione valida
+   (niente dati di estranei). I secondi di ogni battito sono limitati per evitare gonfiaggi. */
+function isoOf(ts){ const d = new Date(ts); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+app.post('/api/track', (req, res) => {
+  const b = req.body || {};
+  const email = String(b.email || '').trim().toLowerCase();
+  if (!emailRe.test(email)) return res.status(400).json({ ok:false });
+  if (!storeAuthOk(req, email)) return res.status(401).json({ ok:false });
+  const area = (String(b.area || 'app').toLowerCase().replace(/[^a-z0-9_-]/g,'').slice(0,24)) || 'app';
+  const ev = String(b.ev || 'beat');
+  const sec = Math.max(0, Math.min(120, parseInt(b.sec, 10) || 0));   /* cap a 120s per battito */
+  const now = Date.now();
+  /* data/ora locali del client (Italia) se valide, altrimenti ora server */
+  const lday = /^\d{4}-\d{2}-\d{2}$/.test(String(b.lday || '')) ? b.lday : isoOf(now);
+  let lhour = parseInt(b.lhour, 10); if (!(lhour >= 0 && lhour <= 23)) lhour = new Date(now).getHours();
+  try {
+    const f = path.join(ANALYTICS, lday + '.json');
+    const cur = readJsonFile(f) || { users:{} };
+    if (!cur.users) cur.users = {};
+    const u = cur.users[email] || (cur.users[email] = { sec:0, opens:0, areas:{}, hours:{}, first:now, last:now });
+    if (ev === 'open') u.opens = (u.opens || 0) + 1;
+    if (sec) {
+      u.sec = (u.sec || 0) + sec;
+      u.areas[area] = (u.areas[area] || 0) + sec;
+      u.hours[String(lhour)] = (u.hours[String(lhour)] || 0) + sec;
+    }
+    u.last = now; if (!u.first) u.first = now;
+    const tmp = f + '.tmp';
+    fs.writeFileSync(tmp, JSON.stringify(cur));
+    fs.renameSync(tmp, f);
+    res.json({ ok:true });
+  } catch(e) { console.error('track:', e); res.status(500).json({ ok:false }); }
+});
+
 /* ── AUTH: verifica email su Google Sheet + sessione singola ── */
 
 const SHEETS_ID  = process.env.SHEETS_ID  || '';
@@ -96,6 +135,13 @@ const TIER_RANK = TIER_GROUPS.reduce((m, g) => { m[g.tier] = g.rank; return m; }
 const SHEETS_TABS = TIER_GROUPS.reduce((a, g) => a.concat(g.tabs), []);
 const SESSION_TTL = 30 * 24 * 60 * 60 * 1000; /* 30 giorni */
 const EMAIL_CACHE_TTL = 5 * 60 * 1000;  /* 5 min */
+
+/* ── PANNELLO ADMIN: solo per Andrea. La password (ADMIN_KEY) NON sta nel codice
+   (il repo è pubblico): si imposta come variabile d'ambiente su Coolify. L'email admin
+   non è segreta, quindi ha un default. Accesso = email admin + password. ── */
+const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || 'ataranto.andrea@gmail.com')
+  .split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
+const ADMIN_KEY = process.env.ADMIN_KEY || '';
 
 let saKey = null;
 try { saKey = JSON.parse(process.env.GOOGLE_SA_KEY || ''); } catch(e) {}
@@ -279,6 +325,27 @@ function storeAuthOk(req, email) {
   return sessionOk(email, token);
 }
 
+/* ── sessione ADMIN (pannello): cookie firmato HMAC con ADMIN_KEY → non falsificabile ── */
+const ADMIN_COOKIE = 'ovl_admin';
+function safeEq(a, b) {
+  const ba = Buffer.from(String(a)), bb = Buffer.from(String(b));
+  return ba.length === bb.length && crypto.timingSafeEqual(ba, bb);
+}
+function adminToken(email) {
+  return crypto.createHmac('sha256', ADMIN_KEY).update('admin:' + email).digest('hex');
+}
+function adminFromReq(req) {
+  if (!ADMIN_KEY) return null;
+  const raw = parseCookies(req)[ADMIN_COOKIE];
+  if (!raw) return null;
+  const dot = raw.indexOf('.');
+  if (dot < 0) return null;
+  let email;
+  try { email = Buffer.from(raw.slice(0, dot), 'base64url').toString('utf8'); } catch(e) { return null; }
+  if (ADMIN_EMAILS.indexOf(email) < 0) return null;
+  return safeEq(raw.slice(dot + 1), adminToken(email)) ? { email } : null;
+}
+
 /* GET /api/auth/check?email=X — email autorizzata nel foglio? */
 app.get('/api/auth/check', (req, res) => {
   const email = String(req.query.email || '').trim().toLowerCase();
@@ -378,6 +445,181 @@ app.get('/api/cover', (req, res) => {
       res.status(404).end();
     });
   }).on('error', () => res.status(404).end());
+});
+
+/* ════════════════ PANNELLO ADMIN ════════════════ */
+
+/* login: email admin + password (ADMIN_KEY). Setta un cookie firmato. */
+app.post('/api/admin/login', (req, res) => {
+  const b = req.body || {};
+  const email = String(b.email || '').trim().toLowerCase();
+  const key = String(b.key || '');
+  if (!ADMIN_KEY) return res.status(500).json({ ok:false, reason:'config' });   /* password non impostata su Coolify */
+  if (ADMIN_EMAILS.indexOf(email) < 0 || !safeEq(key, ADMIN_KEY))
+    return res.status(403).json({ ok:false, reason:'denied' });
+  const val = Buffer.from(email).toString('base64url') + '.' + adminToken(email);
+  res.append('Set-Cookie', ADMIN_COOKIE + '=' + val + '; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=' + (30*24*3600));
+  res.json({ ok:true });
+});
+app.post('/api/admin/logout', (req, res) => {
+  res.append('Set-Cookie', ADMIN_COOKIE + '=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0');
+  res.json({ ok:true });
+});
+app.get('/api/admin/me', (req, res) => {
+  const a = adminFromReq(req);
+  res.json({ ok: !!a, email: a ? a.email : null, configured: !!ADMIN_KEY });
+});
+
+/* aggregazione completa per la dashboard (cache 60s, è pesante: legge i file di tutti) */
+let ovCache = null, ovCacheAt = 0;
+function isoNDaysAgo(n){ return isoOf(Date.now() - n*86400000); }
+function maxIso(set){ let m = ''; set.forEach(d => { if (d > m) m = d; }); return m || null; }
+function computeOverview(cb){
+  if (ovCache && Date.now() - ovCacheAt < 60000) return cb(null, ovCache);
+  getTierMap((err, map) => {
+    if (err) return cb(err);
+    const subs = [...map.entries()].map(([email, tier]) => ({ email, tier }));
+    const today = isoOf(Date.now()), d7 = isoNDaysAgo(7), d30 = isoNDaysAgo(30);
+
+    /* 1) leggo i file giornalieri di analytics */
+    let files = [];
+    try { files = fs.readdirSync(ANALYTICS).filter(f => /^\d{4}-\d{2}-\d{2}\.json$/.test(f)); } catch(e) {}
+    files.sort();
+    const byUser = {};          /* email -> {dates:Set, sec30, secAll, opens30} */
+    const dateSec = {}, dateOpens = {}, hours = {}, areasGlobal = {};
+    files.forEach(f => {
+      const date = f.slice(0, 10);
+      const j = readJsonFile(path.join(ANALYTICS, f));
+      if (!j || !j.users) return;
+      for (const email in j.users) {
+        const u = j.users[email];
+        const au = byUser[email] || (byUser[email] = { dates:new Set(), sec30:0, secAll:0, opens30:0 });
+        au.dates.add(date); au.secAll += u.sec || 0;
+        if (date >= d30) {
+          au.sec30 += u.sec || 0; au.opens30 += u.opens || 0;
+          dateSec[date] = (dateSec[date] || 0) + (u.sec || 0);
+          dateOpens[date] = (dateOpens[date] || 0) + (u.opens || 0);
+          for (const h in (u.hours || {})) hours[h] = (hours[h] || 0) + u.hours[h];
+          for (const a in (u.areas || {})) areasGlobal[a] = (areasGlobal[a] || 0) + u.areas[a];
+        }
+      }
+    });
+
+    /* 2) un giro su ogni iscritto: progressi (storico) + sessione + analytics */
+    const users = [];
+    let activated = 0, totalMin30 = 0, totalMinAll = 0, totalOpens30 = 0;
+    const seriesUsers = {};   /* date -> Set(email) */
+    subs.forEach(s => {
+      const email = s.email, tier = s.tier;
+      const g = readStore(fileFor(email));
+      const gdays = new Set();
+      for (const k in g.data) { const m = /^s[12]:(\d{4}-\d{2}-\d{2})\b/.exec(k); if (m) gdays.add(m[1]); }
+      const c2 = readStore(fileFor(email, 'cap2'));
+      const cap2n = Object.keys(c2.data).filter(k => c2.data[k]).length;
+      const bp = readStore(fileFor(email, 'bprog'));
+      const bambino = Object.keys(bp.data).length > 0;
+      const sess = readSess(sessFile(email));
+      const lastLogin = (sess && sess.at) || 0;
+      const au = byUser[email];
+
+      /* insieme dei giorni attivi: pratica (storico) ∪ analytics ∪ giorno dell'ultimo login */
+      const active = new Set(gdays);
+      if (au) au.dates.forEach(d => active.add(d));
+      if (lastLogin) active.add(isoOf(lastLogin));
+
+      let lastActive = lastLogin;
+      active.forEach(d => { const t = Date.parse(d + 'T12:00:00'); if (t > lastActive) lastActive = t; });
+
+      const min30 = Math.round(((au && au.sec30) || 0) / 60);
+      const minAll = Math.round(((au && au.secAll) || 0) / 60);
+      const opens30 = (au && au.opens30) || 0;
+      totalMin30 += min30; totalMinAll += minAll; totalOpens30 += opens30;
+
+      let days30 = 0, dau = false, wau = false, mau = false;
+      active.forEach(d => {
+        if (d === today) dau = true;
+        if (d >= d7) wau = true;
+        if (d >= d30) { mau = true; days30++; (seriesUsers[d] || (seriesUsers[d] = new Set())).add(email); }
+      });
+
+      const hasAny = active.size > 0 || cap2n > 0 || bambino;
+      if (hasAny) activated++;
+
+      users.push({
+        email, tier,
+        lastActive: lastActive || null,
+        giorniPratica: gdays.size,
+        ultimaPratica: maxIso(gdays),
+        days30, min30, minAll, opens30,
+        cap2: cap2n, bambino,
+        dau, wau, mau, attivato: hasAny
+      });
+    });
+
+    /* 3) serie giornaliera ultimi 30 giorni */
+    const dailySeries = [];
+    for (let i = 29; i >= 0; i--) {
+      const date = isoOf(Date.now() - i*86400000);
+      dailySeries.push({
+        date,
+        users: (seriesUsers[date] ? seriesUsers[date].size : 0),
+        min: Math.round((dateSec[date] || 0) / 60),
+        opens: dateOpens[date] || 0
+      });
+    }
+
+    /* 4) frequenza (sui 30 giorni): fedeli ≥12 gg, costanti 4-11, occasionali 1-3 */
+    let fedeli = 0, costanti = 0, occasionali = 0;
+    users.forEach(u => { if (u.days30 >= 12) fedeli++; else if (u.days30 >= 4) costanti++; else if (u.days30 >= 1) occasionali++; });
+
+    /* 5) dormienti: attivati che non entrano da >14 giorni */
+    const limite = Date.now() - 14*86400000;
+    const dormienti = users.filter(u => u.attivato && u.lastActive && u.lastActive < limite)
+      .sort((a, b) => a.lastActive - b.lastActive)
+      .slice(0, 60)
+      .map(u => ({ email:u.email, tier:u.tier, lastActive:u.lastActive, giorniPratica:u.giorniPratica }));
+
+    /* 6) confronto livelli */
+    const tierAgg = { full:{ tot:0, attivi30:0, min30:0 }, monthly:{ tot:0, attivi30:0, min30:0 } };
+    users.forEach(u => { const t = tierAgg[u.tier] || tierAgg.full; t.tot++; if (u.mau) t.attivi30++; t.min30 += u.min30; });
+
+    const topAreas = Object.keys(areasGlobal)
+      .map(a => ({ area:a, min: Math.round(areasGlobal[a] / 60) }))
+      .sort((a, b) => b.min - a.min);
+
+    const out = {
+      generatedAt: Date.now(),
+      subscribers: {
+        total: subs.length,
+        full: subs.filter(s => s.tier === 'full').length,
+        monthly: subs.filter(s => s.tier === 'monthly').length
+      },
+      activated,
+      active: {
+        today: users.filter(u => u.dau).length,
+        d7: users.filter(u => u.wau).length,
+        d30: users.filter(u => u.mau).length
+      },
+      time: {
+        avgSessionMin: totalOpens30 ? Math.round((totalMin30 / totalOpens30) * 10) / 10 : 0,
+        totalMin30, totalMinAll, opens30: totalOpens30
+      },
+      frequency: { fedeli, costanti, occasionali },
+      hours, topAreas, dailySeries, dormienti,
+      byTier: tierAgg,
+      users: users.sort((a, b) => (b.lastActive || 0) - (a.lastActive || 0))
+    };
+    ovCache = out; ovCacheAt = Date.now();
+    cb(null, out);
+  });
+}
+app.get('/api/admin/overview', (req, res) => {
+  if (!adminFromReq(req)) return res.status(403).json({ ok:false });
+  if (String(req.query.fresh || '') === '1') { ovCache = null; }
+  computeOverview((err, data) => {
+    if (err) { console.error('overview:', err); return res.status(500).json({ ok:false, reason:'sheets' }); }
+    res.json({ ok:true, data });
+  });
 });
 
 /* ── GATING: TUTTO ciò che sta in una sotto-cartella di /app è riservato ──

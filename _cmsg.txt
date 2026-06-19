@@ -1,0 +1,17 @@
+Pannello admin + tracciamento uso (dashboard analytics)
+
+Backend (server.js):
+- /api/track: aperture + tempo di permanenza per area, aggregati per giorno in /data/analytics.
+- Admin: /api/admin/login (email admin + ADMIN_KEY via env Coolify, cookie HMAC firmato),
+  /logout, /me, /overview (aggregazione completa con cache 60s).
+- Metriche: iscritti full/mensili, attivati, DAU/WAU/MAU, tempo medio/totale, serie
+  giornaliera 30gg, frequenza (fedeli/costanti/occasionali), fasce orarie, aree piu' usate,
+  dormienti (>14gg), confronto annuali vs mensili, scheda per persona.
+
+Frontend:
+- app/track.js incluso in tutte le pagine /app (home, giornaliero, mondo, bambino, percorso).
+- pannello/index.html: login + dashboard con grafici (SVG), tabella persone con ricerca/ordina.
+
+NB: il pannello richiede la variabile ADMIN_KEY impostata su Coolify (password fuori dal repo pubblico).
+
+Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
