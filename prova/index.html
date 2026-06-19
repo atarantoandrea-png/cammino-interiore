@@ -87,8 +87,9 @@ footer{text-align:center;padding:22px 14px;font-size:16px;color:var(--txt-dim)}
   $('f-btn').addEventListener('click',register);
   $('f-phone').addEventListener('keydown',function(e){ if(e.key==='Enter') register(); });
 
-  /* già iscritto alla prova? entra dritto nell'app */
-  fetch('/api/trial/me').then(function(r){return r.json();}).then(function(d){ if(d&&d.ok) goApp(); }).catch(function(){});
+  /* entra dritto nell'app SOLO se ha già la sessione salvata su questo dispositivo;
+     altrimenti mostra sempre la registrazione (niente rimbalzo a un login che non passerebbe) */
+  try{ if(localStorage.getItem('ovl-user') && localStorage.getItem('ovl-session')) goApp(); }catch(e){}
 })();
 </script>
 </body>
