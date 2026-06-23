@@ -333,6 +333,26 @@ input:focus,textarea:focus{border-color:rgba(205,178,242,.85);box-shadow:0 0 14p
 .gp-ctx p{font-family:'Cormorant Garamond',Georgia,serif;font-size:18px;line-height:1.55;color:#e6e0ec;margin:0 0 8px}
 .gp-ctx p:last-child{margin-bottom:0}
 .gp-ctx b{color:#e8d9ae}.gp-ctx i{color:var(--glic-hi);font-style:italic}
+/* guida APPROFONDITA della pratica (Osservatore / Spazio Emotivo) dentro la Luce */
+.gp-guida{display:none;margin:0 0 18px}
+.gp-guida.on{display:block}
+.gp-guida .gpg-h{font-family:'Cinzel',serif;font-size:22px;font-weight:600;color:#f0eaf6;line-height:1.2;margin-bottom:8px}
+.gp-guida .gpg-quando{display:inline-block;font-family:'Cinzel',serif;font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;color:#e8d9ae;border:1px solid rgba(201,168,76,.4);background:rgba(201,168,76,.08);border-radius:20px;padding:5px 12px;margin-bottom:18px}
+.gp-guida .gpg-sec{margin:0 0 16px}
+.gp-guida .gpg-st{font-family:'Cinzel',serif;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:#c9a84c;margin-bottom:7px}
+.gp-guida p{font-family:'Cormorant Garamond',Georgia,serif;font-size:18.5px;line-height:1.6;color:#e6e0ec;margin:0 0 9px}
+.gp-guida p:last-child{margin-bottom:0}
+.gp-guida b{color:#e8d9ae}
+.gp-guida .gpg-step{display:flex;gap:12px;align-items:flex-start;margin-bottom:12px}
+.gp-guida .gpg-n{flex-shrink:0;width:28px;height:28px;border-radius:50%;border:1.5px solid var(--glic);background:rgba(185,163,227,.08);color:var(--glic-hi);font-family:'Cinzel',serif;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:2px}
+.gp-guida .gpg-b{font-family:'Cormorant Garamond',Georgia,serif;font-size:18px;line-height:1.55;color:#e6e0ec}
+.gp-guida .gpg-b b{color:#f0eaf6}
+.gp-guida .gpg-ex{border:1px solid rgba(185,163,227,.22);border-radius:12px;background:rgba(185,163,227,.06);padding:14px 16px;margin-top:6px}
+/* «?» accanto a ogni passo della pratica: apre la guida nella Luce */
+.phq{margin-left:auto;flex-shrink:0;width:26px;height:26px;border-radius:50%;border:1px solid rgba(201,168,76,.5);background:rgba(201,168,76,.1);color:#e8d9ae;font-family:'Cinzel',serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;padding:0}
+.phq:hover{border-color:#c9a84c;box-shadow:0 0 10px rgba(201,168,76,.3)}
+.ghint{font-family:'Cormorant Garamond',Georgia,serif;font-size:16px;font-style:italic;color:#c9a84c;margin:-6px 2px 16px}
+.ghint b{font-style:normal;color:#e8d9ae}
 /* mini-guida "quando farlo" (Osservatore) */
 .exguide{border:1px solid rgba(201,168,76,.32);border-left:3px solid #c9a84c;border-radius:12px;
   background:linear-gradient(180deg, rgba(40,33,22,.5), rgba(22,17,28,.62));
@@ -571,6 +591,7 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
       <div class="qg" data-ctx="oss-osserva">
         <div class="blk"><p class="qt">Che tono sto usando verso me stesso? Sono aggressivo, freddo, duro?</p><textarea rows="2" placeholder="La tua risposta…" data-f="q1"></textarea></div>
         <div class="blk"><p class="qt">Questa voce e queste sensazioni mi appartengono davvero?</p><textarea rows="2" placeholder="La tua risposta…" data-f="q2"></textarea></div>
+        <div class="blk"><p class="qt">Che emozione mi lascia questo giudizio? (rabbia, freddezza, durezza…)</p><textarea rows="2" placeholder="La tua risposta…" data-f="emoz"></textarea></div>
       </div>
       <div class="phase"><div class="pnum">2</div><div class="ptxt">Risali alla fonte</div></div>
       <div class="qg" data-ctx="oss-fonte">
@@ -640,6 +661,9 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
     <div class="blk" data-ctx="se-blocco"><textarea rows="2" placeholder="Petto, stomaco, gola, gambe…" data-f="body"></textarea></div>
     <div class="phase"><div class="pnum">3</div><div class="ptxt">L'emozione</div></div>
     <div class="blk" data-ctx="se-emozione"><textarea rows="2" placeholder="Rabbia, tristezza, frustrazione, dolore… come la senti?" data-f="emo"></textarea></div>
+    <div class="blk"><p class="qt">Questa frase viene da me, o l'ho sentita da qualcun altro? (famiglia, scuola, società)</p><textarea rows="2" placeholder="La tua risposta…" data-f="origine"></textarea></div>
+    <div class="phase"><div class="pnum">4</div><div class="ptxt">Comprendere, non ferire</div></div>
+    <div class="blk" data-ctx="se-emozione"><p class="qt">Questa voce che mi giudica mi vuole comprendere o ferire?</p><textarea rows="2" placeholder="La tua risposta…" data-f="cf"></textarea></div>
     <div class="mantra" data-ctx="mantra"><div class="ml">Il mantra — 3 volte ad alta voce</div><p class="mt">"Io posso vedermi senza ferirmi. Posso sentirmi amato senza sentirmi sbagliato.<br>Posso riconoscere ciò che provo, senza giudicarlo, senza condannarlo."</p></div>
     <div class="blk"><span class="blab">Come mi sento ora →</span><textarea rows="2" placeholder="Dopo la pratica…" data-f="after"></textarea></div>
 
@@ -706,6 +730,7 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
       </div>
       <div class="mm-bar" id="mm-bar"><div class="mm-fill" id="mm-fill"></div></div>
     </div>
+    <div class="gp-guida" id="gpGuida"></div>
     <div class="gp-ctx" id="gpCtx"></div>
     <div class="lvl"><div class="lvl-n">La tua costanza</div><div class="lvl-t" id="lvlT">0 giorni di pratica</div><div class="lvl-d" id="lvlD"></div><div class="lvl-bar"><div class="lvl-fill" id="lvlFill"></div></div><div class="lvl-next" id="lvlNext"></div></div>
     <div class="scala" id="scala"></div>
@@ -805,7 +830,7 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
 
   /* ============ SCHEDE DATATE ============ */
   var sheetDay={s1:todayIso(), s2:todayIso()};
-  var FIELDS={ s1:['think','q1','q2','q3','q4','body','emo','after'], s2:['j','q1','q2','q3','q4','neg','pos','song','after','pgood','pword','psong'] };
+  var FIELDS={ s1:['think','q1','q2','q3','q4','body','emo','origine','cf','after'], s2:['j','q1','q2','emoz','q3','q4','neg','pos','song','after','pgood','pword','psong'] };
   var MONTHS_S=['Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov','Dic'];
   function isoAdd(iso,days){ var p=iso.split('-'); var d=new Date(+p[0],+p[1]-1,+p[2]); d.setDate(d.getDate()+days); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
   function labelFor(iso){ var t=todayIso(); if(iso===t)return 'Oggi'; if(iso===isoAdd(t,-1))return 'Ieri'; var p=iso.split('-'); return (+p[2])+' '+MONTHS_S[+p[1]-1]+' '+p[0]; }
@@ -876,6 +901,48 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
     'diario-stat':{t:'Il tuo andamento', h:'<p>Giorni di pratica, sessioni, giorni di fila. <b>Non è una gara</b>: servono solo a farti vedere, con dolcezza, quanta strada stai facendo.</p>'},
     'diario-umore':{t:'La tua linea dell\'anima', h:'<p>La linea segue gli umori che scegli giorno per giorno. Col tempo vedrai come <b>si solleva</b>: è il tuo sentire che cambia.</p>'},
     'diario-rifl':{t:'Le tue riflessioni', h:'<p>Qui raccogli ciò che riconosci di te, i progressi che noti e le tue intenzioni. Scrivile in positivo: sono semi che ritroverai più avanti.</p>'}
+  };
+
+  /* Guida APPROFONDITA della pratica: compare nella Luce SOLO quando sei in Osservatore o
+     Spazio Emotivo. Tono caldo, nei toni di Elisa. Basata sui concetti delle lezioni. */
+  var PRATICA_GUIDA={
+    oss:{
+      titolo:'L’Osservatore', quando:'Ogni giorno · 15–20 minuti',
+      sezioni:[
+        {h:'Che cos’è l’Osservatore (e cos’è un giudizio)', html:`<p>È la pratica con cui impari a riconoscere un giudizio nell’istante in cui nasce, e a guardarlo da fuori invece di crederci subito. Un giudizio è la frase rapida e automatica che ti dici su di te, quasi sempre in negativo: «non sono abbastanza», «ho sbagliato tutto», «sono sempre la solita», «dovevo fare di più». Arriva in un attimo, senza che tu lo decida, e sembra una verità — ma è solo la <b>prima scintilla</b> di un pensiero. Da lì parte tutto il resto: come ti senti, come pensi, come agisci. Imparare a fermarti su quella scintilla cambia l’intera catena.</p>`},
+        {h:'Perché si fa ogni giorno (e come trovarci il tempo)', html:`<p>Questi giudizi non sono episodi isolati: sono un’<b>abitudine</b>, uno schema che hai costruito ripetendoti le stesse frasi per anni, finché è diventato automatico. E un’abitudine non si cambia in un colpo solo: si scioglie allenandosi un po’ ogni giorno, come un muscolo. Per questo bastano 15–20 minuti, ma quotidiani: è la <b>costanza</b> che cambia lo schema, non l’intensità di un singolo giorno.</p><p>Nel concreto: durante la giornata, quando ti accorgi di un pensiero che ti ferisce, non serve fermare tutto — notalo e, se vuoi, segnatelo. Poi, in un momento di calma, lo riprendi e ci lavori con i passi, magari con una musica di sottofondo.</p>`},
+        {h:'Su cosa lavorare', html:`<p>Puoi partire dal giudizio di oggi, ma il lavoro più importante è su quello <b>radicato</b> — la frase che ti porti dietro da sempre («non valgo», «devo fare di più per essere accettata»). Non aspettarti di scioglierlo in una volta: è normale tornarci per giorni, anche settimane. Ogni volta che lo osservi, perde un po’ di forza.</p>`}
+      ],
+      passi:[
+        {h:'Accorgiti del giudizio.', b:`Quando arriva «non sono abbastanza», fermati e di’ a te stesso: «non sto facendo un pensiero qualunque, mi sto giudicando». Già nominarlo ti stacca un po’. Fai uno o due respiri lenti.`},
+        {h:'Scrivi la frase e ascolta il tono.', b:`Metti nero su bianco il giudizio com’è. Poi chiediti: con che tono me lo dico? Duro, freddo, sprezzante? Il tono ti dice da dove arriva quella voce. E ancora: questa voce mi appartiene davvero, o l’ho assorbita?`},
+        {h:'Risali alla fonte.', b:`Chi o cosa mi ha fatto pensare di essere così? Spesso il giudizio nasce fuori di noi — confronti, esperienze, frasi sentite in famiglia, a scuola, al lavoro — e poi l’abbiamo fatto nostro. Chiediti anche: cosa ho vissuto per giudicarmi così oggi?`},
+        {h:'Parleresti così a chi ami?', b:`Immagina che al tuo posto ci sia una persona che ami, e che si dica quella frase. Le parleresti in quel modo? Quasi sempre no: la abbracceresti, la consoleresti. Quelle parole spettano anche a te — anzi, prima a te.`},
+        {h:'Trasforma il giudizio.', b:`Riscrivilo visto dall’esterno: da «sono sbagliata» a «c’è una parte di me che oggi si sente sbagliata». Non sei tu a essere sbagliata: è una parte, in un momento. Chiudi sempre con una frase positiva verso di te.`}
+      ],
+      mantra:'«Io posso guardarmi, posso amarmi, posso riconoscermi e abbracciarmi davvero. Io non sono sbagliata.»',
+      musica:`Chiudi con una canzone che ti carica di emozioni positive — vanno benissimo quelle che ti riportano a un momento bello, anche dell’infanzia. Puoi cambiarla ogni giorno: serve a portarti in una frequenza di amore e rispetto verso di te.`,
+      esempio:`<p>Il giudizio può arrivare in tanti momenti, e non solo «al lavoro»: dopo una riunione in cui pensi di non aver detto la cosa giusta; davanti alle altre mamme all’uscita da scuola, sentendoti «meno brava»; scorrendo i social e confrontandoti con gli altri; dopo una parola di un familiare; o semplicemente guardandoti allo specchio.</p><p>Prendiamone uno. Oggi ti è arrivato «non sono abbastanza»: la scrivi; ti accorgi del tono, severo, di rimprovero; ti chiedi da dove nasce e riconosci che è la stessa frase che ti sentivi dire da piccola; ti chiedi se la diresti a un’amica nella tua stessa situazione — no, le diresti che ha fatto del suo meglio; la trasformi in «una parte di me oggi si è sentita non all’altezza, ma non sono io a essere sbagliata»; chiudi con il mantra e una canzone che ami. Domani, se torna, ci rilavori: così, giorno dopo giorno, lo schema si scioglie.</p>`
+    },
+    se:{
+      titolo:'Lo Spazio Emotivo', quando:'3 volte a settimana · circa 20 minuti',
+      sezioni:[
+        {h:'Che cos’è lo Spazio Emotivo (e cos’è un blocco)', html:`<p>Se l’Osservatore lavora sul pensiero, lo Spazio Emotivo lavora sul <b>corpo e sul sentire</b>. Quando un giudizio o un dolore non viene ascoltato, l’emozione non sparisce: resta «ferma» dentro e diventa un blocco. Lo riconosci come un peso, una tensione, un nodo — spesso al petto, allo stomaco o alla gola. Si riaccende davanti a una frase che colpisce, a un ricordo, a una situazione che si ripete. Qui non si capisce con la testa: si <b>sente</b> l’emozione nel corpo, la si ascolta e la si lascia andare. E si fa <b>per iscritto</b>, perché scrivere fissa ciò che provi e te lo rende qualcosa a cui tornare.</p>`},
+        {h:'Perché tre volte a settimana (e come prepararti)', html:`<p>È più lunga e profonda dell’Osservatore: chiede raccoglimento e un po’ di tempo per te, circa 20 minuti. Per questo bastano tre volte a settimana. Prima di iniziare prepara lo spazio: un posto tranquillo dove non sarai interrotta, una musica rilassante (il pianoforte è perfetto, o un brano delle meditazioni), e carta e penna. Scegli un momento senza fretta.</p>`},
+        {h:'Su cosa lavorare', html:`<p>Porta una frase con cui ti sei giudicata di recente, o un’emozione che senti tornare spesso. Come per l’Osservatore, il valore è nel tempo: tornando sullo stesso blocco, sessione dopo sessione, il peso si alleggerisce e impari a riconoscerlo prima.</p>`}
+      ],
+      passi:[
+        {h:'Prepara lo spazio e il pensiero.', b:`Mettiti comoda, avvia la musica, prendi carta e penna. Porta alla mente il pensiero o la frase che ti fa stare male, o che ti porti dietro da tempo.`},
+        {h:'Le quattro domande (per iscritto).', b:`Rispondi con la prima cosa che senti: (1) sono reali, vengono da me o sono automatici? (2) nascono dal presente o dal mio passato? (3) mi aiutano o mi tolgono la possibilità di fare ciò che sento? (4) se al mio posto ci fosse chi amo, agirei così? Scriverle aiuta a vederle da fuori.`},
+        {h:'Da’ un nome all’emozione.', b:`Senti che emozione accende quella frase: rabbia, tristezza, frustrazione, dolore, vuoto. Chiediti: viene da me o l’ho sentita da altri — in famiglia, a scuola, nella società? Non combatterla e non etichettarti: vivila, sentila, attraversala. È così che si scioglie.`},
+        {h:'Il respiro e il blocco.', b:`Tre minuti di respirazione continua, senza fermarti. Mentre respiri, ascolta il corpo: dove senti che l’energia si blocca? Petto, stomaco, gola… Scrivi cosa senti e dov’è.`},
+        {h:'Comprendere, non ferire.', b:`Chiediti, e mettilo per iscritto: questa voce che mi giudica mi vuole comprendere o ferire? Poi ripeti, dentro e sul foglio: «io non posso e non voglio ferirmi». È un patto di gentilezza con te.`},
+        {h:'Il mantra e la luce.', b:`Ripeti tre volte il mantra qui sotto. Mentre lo dici, immagina una luce che parte dal punto del blocco e accompagnala fuori — dalla bocca o dai piedi — finché il peso se ne va. Quando è uscita, pensa che quelle sensazioni se ne sono andate con lei: stai imparando a lasciare andare.`}
+      ],
+      mantra:'«Io posso vedermi senza ferirmi. Posso sentirmi amato senza sentirmi sbagliato. Posso riconoscere ciò che provo, senza giudicarlo, senza condannarlo.»',
+      musica:`Tieni per tutta la pratica una musica che ti porta serenità — il pianoforte, o un brano delle meditazioni. Non è un sottofondo qualunque: aiuta il rilascio e ti accompagna nel sentire.`,
+      esempio:`<p>Il blocco può accendersi in tanti modi diversi: dopo una discussione in famiglia che ti lascia un peso sul petto; quando ti senti esclusa da un gruppo; dopo esserti confrontata con un’altra mamma e aver pensato di non essere all’altezza; davanti a un ricordo che torna; o quando la stessa situazione si ripete e ti fa sentire sempre uguale.</p><p>Prendiamone uno. Senti tornare «non sono abbastanza»: metti un brano al pianoforte e prendi il foglio. Rispondi alle quattro domande e ti accorgi che nasce dal passato, non da oggi; gli dai un nome — tristezza, con un po’ di vuoto; fai tre minuti di respiro e senti che si blocca al petto; ti chiedi se quella voce vuole comprenderti o ferirti e scrivi «non voglio ferirmi»; poi ripeti il mantra immaginando una luce che parte dal petto ed esce, portando via il peso. Alla fine scrivi come ti senti: spesso, più leggera.</p>`
+    }
   };
   function isNarrow(){ return innerWidth < 760; }   /* sotto questa soglia la colonna riempie lo schermo: niente margine laterale */
   function lumeHome(){
@@ -1230,8 +1297,25 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
   /* ============ GUIDA ============ */
   var veil=document.getElementById('veil'), gpan=document.getElementById('gpan');
   function renderGuida(){
-    var gc=document.getElementById('gpCtx'), d=DCTX[curCtx];
-    if(gc){ if(d){ gc.innerHTML='<div class="gc-t">'+d.t+'</div>'+d.h; gc.classList.add('on'); } else { gc.innerHTML=''; gc.classList.remove('on'); } }
+    /* in Osservatore/Spazio Emotivo mostro la guida APPROFONDITA; altrove la nota contestuale */
+    var fam=document.getElementById('p2').classList.contains('on')?'oss':(document.getElementById('p1').classList.contains('on')?'se':null);
+    var pg=document.getElementById('gpGuida'), gc=document.getElementById('gpCtx'), G=fam?PRATICA_GUIDA[fam]:null;
+    if(G && pg){
+      var html='<div class="gpg-h">'+G.titolo+'</div><div class="gpg-quando">'+G.quando+'</div>';
+      G.sezioni.forEach(function(s){ html+='<div class="gpg-sec"><div class="gpg-st">'+s.h+'</div>'+s.html+'</div>'; });
+      html+='<div class="gpg-sec"><div class="gpg-st">Come si fa, passo per passo</div>';
+      G.passi.forEach(function(p,k){ html+='<div class="gpg-step"><div class="gpg-n">'+(k+1)+'</div><div class="gpg-b"><b>'+p.h+'</b> '+p.b+'</div></div>'; });
+      html+='</div>';
+      html+='<div class="mantra" style="margin:14px 0"><div class="ml">Il mantra</div><p class="mt">'+G.mantra+'</p></div>';
+      html+='<div class="gpg-sec"><div class="gpg-st">La musica</div><p>'+G.musica+'</p></div>';
+      html+='<div class="gpg-ex"><div class="gpg-st">Un esempio</div>'+G.esempio+'</div>';
+      pg.innerHTML=html; pg.classList.add('on');
+      if(gc){ gc.innerHTML=''; gc.classList.remove('on'); }
+    } else {
+      if(pg){ pg.innerHTML=''; pg.classList.remove('on'); }
+      var d=DCTX[curCtx];
+      if(gc){ if(d){ gc.innerHTML='<div class="gc-t">'+d.t+'</div>'+d.h; gc.classList.add('on'); } else { gc.innerHTML=''; gc.classList.remove('on'); } }
+    }
     var days=allActiveDays().length, i=applyTier(), t=TIERS[i];
     document.getElementById('lvlT').textContent=days+(days===1?' giorno':' giorni')+' di pratica';
     document.getElementById('lvlD').textContent='La tua luce è '+t.art+t.nome.toLowerCase()+': cresce con la costanza, non con la fretta.';
@@ -1250,6 +1334,20 @@ details.gd[open] summary .arr{transform:rotate(90deg)}
   window.apriGuida=function(){ renderGuida(); veil.classList.add('on'); gpan.classList.add('on'); document.querySelector('#gpan .gp-bd').scrollTop=0; };
   window.chiudiGuida=function(){ veil.classList.remove('on'); gpan.classList.remove('on'); };
   lume.addEventListener('click',function(e){ e.stopPropagation(); apriGuida(); });
+  /* «?» accanto a ogni passo delle pratiche: apre la Luce sulla guida completa */
+  [].forEach.call(document.querySelectorAll('#p1 .phase, #p2 .phase'), function(ph){
+    if(ph.querySelector('.phq')) return;
+    var b=document.createElement('button'); b.type='button'; b.className='phq'; b.setAttribute('aria-label','Apri la guida della pratica'); b.textContent='?';
+    b.addEventListener('click', function(e){ e.stopPropagation(); apriGuida(); });
+    ph.appendChild(b);
+  });
+  /* invito alla guida sotto l'intro di Osservatore e Spazio Emotivo */
+  ['p1','p2'].forEach(function(pid){
+    if(document.querySelector('#'+pid+' .ghint')) return;
+    var intro=document.querySelector('#'+pid+' .intro'); if(!intro) return;
+    var h=document.createElement('p'); h.className='ghint'; h.innerHTML='✦ Tocca la <b>luce</b> (o il <b>?</b> accanto ai passi) per la guida completa.';
+    intro.parentNode.insertBefore(h, intro.nextSibling);
+  });
   document.addEventListener('keydown',function(e){ if(e.key==='Escape'){ chiudiGuida(); chiudiVS(); } });
 
   /* ===== ponte musica: la musica suona nel contenitore /app/, qui solo i comandi ===== */
