@@ -163,6 +163,60 @@ app.post('/api/admin/suggestions/delete', (req, res) => {
   } catch(e) { res.status(500).json({ ok:false }); }
 });
 
+/* ── CHAT CON LA LUCE (log domande/risposte) ──
+   Ogni risposta della chat "Scrivi a Elisa" viene registrata: il client manda solo
+   {q,a,mode,vid,label,tema}; l'email e il LIVELLO li ricava il SERVER dalla sessione
+   (non falsificabili). Serve al pannello per la lista e per la classifica degli interessi
+   distinta per livello. Archivio: /data/chatlog.json (fuori dal repo pubblico). */
+const CHATLOG_FILE = path.join(DATA, 'chatlog.json');
+function readChatLog(){ const j = readJsonFile(CHATLOG_FILE); return (j && Array.isArray(j.items)) ? j : { items:[] }; }
+function writeChatLog(obj){ const tmp = CHATLOG_FILE + '.tmp'; fs.writeFileSync(tmp, JSON.stringify(obj)); fs.renameSync(tmp, CHATLOG_FILE); }
+
+app.post('/api/chat-log', (req, res) => {
+  const b = req.body || {};
+  const q = String(b.q || '').trim().slice(0, 600);
+  const s = sessionFromReq(req);
+  if (!q || !s) return res.json({ ok:true });   /* solo sessioni valide, niente log pubblico */
+  const a = String(b.a || '').trim().slice(0, 2000);
+  const mode = String(b.mode || '').slice(0, 20);
+  const vid = String(b.vid || '').slice(0, 60);
+  const label = String(b.label || '').slice(0, 140);
+  const tema = String(b.tema || '').slice(0, 140);
+  tierForReq(req, (err, tier) => {
+    try {
+      const store = readChatLog();
+      store.items.push({ id: crypto.randomBytes(6).toString('hex'), ts: Date.now(),
+        email: s.email, tier: tier || '', q, a, mode, vid, label, tema });
+      if (store.items.length > 20000) store.items = store.items.slice(-20000);
+      writeChatLog(store);
+    } catch(e) { console.error('chat-log:', e); }
+    res.json({ ok:true });
+  });
+});
+
+/* admin: chat con la Luce — lista recente + classifica dei temi per livello (finestra 7/30/tutto) */
+app.get('/api/admin/chats', (req, res) => {
+  if (!adminFromReq(req)) return res.status(403).json({ ok:false });
+  const win = String((req.query && req.query.win) || '30');
+  const now = Date.now();
+  const from = win === 'all' ? 0 : (win === '7' ? now - 7*864e5 : now - 30*864e5);
+  const store = readChatLog();
+  const all = store.items || [];
+  const rank = {};
+  const totals = { full:0, monthly:0, trial:0, tot:0 };
+  all.forEach(it => {
+    if (it.ts < from) return;
+    const key = it.label || it.tema || 'Domande a mano libera';
+    const r = rank[key] || (rank[key] = { label:key, full:0, monthly:0, trial:0, tot:0 });
+    const t = (it.tier === 'full' || it.tier === 'monthly' || it.tier === 'trial') ? it.tier : null;
+    if (t) { r[t]++; totals[t]++; }
+    r.tot++; totals.tot++;
+  });
+  const rankArr = Object.keys(rank).map(k => rank[k]).sort((a, b) => b.tot - a.tot).slice(0, 14);
+  const items = all.slice().sort((a, b) => b.ts - a.ts).slice(0, 400);
+  res.json({ ok:true, items, rank: rankArr, totals, total: all.length, win });
+});
+
 /* ════════════════ PROVA / TRIAL (lead-gen, area separata e blindata) ════════════════
    La pagina /prova (sul NOSTRO dominio) raccoglie nome/email/telefono e crea il contatto
    su systeme.io con il tag "App - Prova". La sessione trial usa un cookie SEPARATO

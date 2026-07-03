@@ -1743,9 +1743,22 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     s.onerror=function(){ deepLoading=false; cb(false); };
     document.body.appendChild(s);
   }
+  /* registra la domanda+risposta per il pannello (email e livello li mette il server dalla sessione) */
+  function logChat(r){
+    try{
+      if(!r||r.mode==='safety'||r.mode==='empty')return;   /* non registro crisi/vuoto */
+      var q=''; for(var i=chatHist.length-1;i>=0;i--){ if(chatHist[i].role==='user'){ q=chatHist[i].text; break; } }
+      if(!q)return;
+      var vid=r.id||'';
+      var label=(vid&&window.OVL_ELISA&&OVL_ELISA.byId(vid))?(OVL_ELISA.byId(vid).label||''):'';
+      fetch('/api/chat-log',{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({q:q,a:r.answer||'',mode:r.mode||'',vid:vid,label:label,tema:r.tema||''}),keepalive:true})['catch'](function(){});
+    }catch(e){}
+  }
   function chatReply(r){
     var d=chatBubble('bot',r.answer,{mode:r.mode,avviso:r.avviso,fonte:r.fonte});
     chatHist.push({role:'bot',text:r.answer});
+    logChat(r);
     if(r.suggerimenti && r.suggerimenti.length){
       var sg=document.createElement('div'); sg.className='suggs';
       r.suggerimenti.forEach(function(s){

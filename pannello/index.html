@@ -121,6 +121,32 @@ a.lk{color:var(--glic);text-decoration:none}
 .scard .stext{font-size:16px;color:var(--txt);line-height:1.5;white-space:pre-wrap;word-break:break-word}
 .scard .sdel{position:absolute;top:9px;right:10px;cursor:pointer;background:none;border:none;color:var(--txt-dim);font-size:17px;line-height:1}
 .scard .sdel:hover{color:#f0a8a8}
+/* chat con la luce */
+.cwin{float:right;display:flex;gap:5px}
+.cwin .wbtn{cursor:pointer;font-family:'Cinzel',serif;font-size:12px;letter-spacing:.03em;border:1px solid var(--card-line);border-radius:16px;padding:4px 11px;color:var(--txt-soft);background:transparent}
+.cwin .wbtn:hover{color:var(--glic-hi);border-color:var(--glic)}
+.cwin .wbtn.on{color:#1c1428;background:linear-gradient(135deg,#c9b3ef,#a98fd6);border-color:transparent}
+.legend.clg{display:flex;gap:16px;margin:2px 0 14px;font-size:13px;color:var(--txt-soft)}
+.legend.clg i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:middle}
+.crow{display:grid;grid-template-columns:150px 1fr 42px;align-items:center;gap:10px;margin-bottom:9px;font-size:14.5px}
+.crow .cap{color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.crow .cbar{display:flex;height:15px;border-radius:8px;overflow:hidden;background:rgba(185,163,227,.08)}
+.crow .cbar span{height:100%;display:block}
+.crow .num{text-align:right;color:var(--txt-soft);font-variant-numeric:tabular-nums}
+.cfilter{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.cchip{cursor:pointer;font-size:13.5px;font-family:'Cinzel',serif;border:1px solid var(--card-line);border-radius:20px;padding:7px 13px;color:var(--txt-soft);background:transparent;display:inline-flex;align-items:center;gap:7px}
+.cchip:hover{color:var(--glic-hi);border-color:var(--glic)}
+.cchip.on{color:#1c1428;background:linear-gradient(135deg,#c9b3ef,#a98fd6);border-color:transparent}
+.cchip i{display:inline-block;width:10px;height:10px;border-radius:3px}
+.ccard{background:rgba(185,163,227,.05);border:1px solid var(--card-line);border-radius:14px;padding:12px 14px;margin-bottom:10px}
+.ccard .cmeta{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-bottom:8px;font-size:12.5px;color:var(--txt-dim)}
+.ccard .ctag{font-size:12px;padding:2px 9px;border-radius:20px;border:1px solid}
+.ccard .cmail{color:var(--txt-soft);font-family:'Cormorant Garamond',serif;font-size:14px}
+.ccard .ctopic{color:var(--gold-pale)}
+.ccard .cdate{margin-left:auto}
+.ccard .cq{font-size:16px;color:var(--txt);line-height:1.45;font-weight:600;word-break:break-word}
+.ccard .ca{font-size:14.5px;color:var(--txt-soft);line-height:1.5;margin-top:6px;white-space:pre-wrap;word-break:break-word;border-top:1px dashed var(--card-line);padding-top:7px}
+@media(max-width:560px){.crow{grid-template-columns:110px 1fr 34px;font-size:13px}.cwin{float:none;margin-top:8px}}
 </style>
 </head>
 <body>
@@ -252,6 +278,7 @@ a.lk{color:var(--glic);text-decoration:none}
     /* ===== barra schede ===== */
     html+='<div class="tabs">'+
       '<button class="tab on" data-t="pano">Panoramica</button>'+
+      '<button class="tab" data-t="chat">Chat con la Luce<span class="b" id="chatBadge">0</span></button>'+
       '<button class="tab" data-t="sugg">Suggerimenti<span class="b" id="suggBadge">0</span></button>'+
       '</div>';
 
@@ -329,6 +356,23 @@ a.lk{color:var(--glic);text-decoration:none}
 
     html+='</div>';   /* /tabPano */
 
+    /* ============ SCHEDA: CHAT CON LA LUCE ============ */
+    html+='<div id="tabChat" class="hide">'+
+      '<div class="panel"><h2>Temi più richiesti alla Luce '+
+        '<span class="cwin" id="cwin">'+
+          '<button class="wbtn" data-w="7">7 giorni</button>'+
+          '<button class="wbtn on" data-w="30">30 giorni</button>'+
+          '<button class="wbtn" data-w="all">Sempre</button>'+
+        '</span></h2>'+
+        '<div class="legend clg"><span><i style="background:#a98fd6"></i>Annuali</span>'+
+          '<span><i style="background:#7fb6e0"></i>Mensili</span>'+
+          '<span><i style="background:#c9a84c"></i>Gratuiti</span></div>'+
+        '<div id="chatRank"><p class="muted">Carico…</p></div></div>'+
+      '<div class="panel"><h2>Tutte le domande (<span id="chatTot">…</span>)</h2>'+
+        '<div class="cfilter" id="cfilter"></div>'+
+        '<div id="chatList"><p class="muted">Carico…</p></div></div>'+
+      '</div>';
+
     /* ============ SCHEDA: SUGGERIMENTI ============ */
     html+='<div id="tabSugg" class="hide">'+
       '<div class="panel"><h2>Suggerimenti delle persone (<span id="suggTot">…</span>)</h2>'+
@@ -344,7 +388,15 @@ a.lk{color:var(--glic);text-decoration:none}
       var which=el.getAttribute('data-t');
       tabs.forEach(function(tt){ tt.classList.toggle('on', tt===el); });
       $('tabPano').classList.toggle('hide', which!=='pano');
+      $('tabChat').classList.toggle('hide', which!=='chat');
       $('tabSugg').classList.toggle('hide', which!=='sugg');
+    }); });
+
+    /* finestra temporale della classifica chat */
+    $('cwin').querySelectorAll('.wbtn').forEach(function(el){ el.addEventListener('click', function(){
+      chatWin=el.getAttribute('data-w');
+      $('cwin').querySelectorAll('.wbtn').forEach(function(b){ b.classList.toggle('on', b===el); });
+      loadChats();
     }); });
 
     $('srch').addEventListener('input', renderRows);
@@ -352,6 +404,7 @@ a.lk{color:var(--glic);text-decoration:none}
     ths.forEach(function(el){ el.addEventListener('click', function(){ var k=el.getAttribute('data-k'); if(sortKey===k) sortDir*=-1; else { sortKey=k; sortDir=(k==='email'||k==='tier')?1:-1; } renderRows(); }); });
     renderRows();
     loadSuggestions();
+    loadChats();
   }
   function kgroup(title, cards){ return '<div class="kpi-group"><div class="kgt">'+title+'</div><div class="kpi-grid">'+cards.join('')+'</div></div>'; }
 
@@ -391,6 +444,55 @@ a.lk{color:var(--glic);text-decoration:none}
     if(!id) return;
     fetch('/api/admin/suggestions/delete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id})})
       .then(function(r){ return r.json(); }).then(function(){ loadSuggestions(); }).catch(function(){});
+  }
+
+  /* ---------- CHAT CON LA LUCE ---------- */
+  var CHAT=null, chatWin='30', chatFilter='all';
+  var TIERLAB={full:{n:'Annuali',c:'#a98fd6'},monthly:{n:'Mensili',c:'#7fb6e0'},trial:{n:'Gratuiti',c:'#c9a84c'},'':{n:'—',c:'#6d6480'}};
+  function loadChats(){
+    fetch('/api/admin/chats?win='+encodeURIComponent(chatWin)).then(function(r){ if(r.status===403){ show('login'); throw 0; } return r.json(); })
+      .then(function(j){ if(j&&j.ok){ CHAT=j; renderChat(); } })
+      .catch(function(){});
+  }
+  /* barra a tre segmenti (annuali/mensili/gratuiti) per un tema */
+  function stackRow(it,max){
+    function seg(v,c){ if(!v)return ''; return '<span style="width:'+Math.max(1,Math.round(v/max*100))+'%;background:'+c+'"></span>'; }
+    var tip=it.full+' annuali · '+it.monthly+' mensili · '+it.trial+' gratuiti';
+    return '<div class="crow"><span class="cap" title="'+esc(it.label)+'">'+esc(it.label)+'</span>'+
+      '<span class="cbar" title="'+tip+'">'+seg(it.full,'#a98fd6')+seg(it.monthly,'#7fb6e0')+seg(it.trial,'#c9a84c')+'</span>'+
+      '<span class="num">'+it.tot+'</span></div>';
+  }
+  function renderChat(){
+    if(!CHAT)return;
+    if($('chatBadge')) $('chatBadge').textContent=CHAT.total;
+    if($('chatTot')) $('chatTot').textContent=CHAT.total;
+    /* classifica temi */
+    var rank=CHAT.rank||[]; var max=1; rank.forEach(function(it){ if(it.tot>max)max=it.tot; });
+    $('chatRank').innerHTML = rank.length ? rank.map(function(it){ return stackRow(it,max); }).join('')
+      : '<p class="muted">Ancora nessuna domanda in questa finestra.</p>';
+    /* chip filtro per livello */
+    var tt=CHAT.totals||{full:0,monthly:0,trial:0,tot:0};
+    var chips='<button class="cchip'+(chatFilter==='all'?' on':'')+'" data-f="all">Tutti ('+CHAT.total+')</button>'+
+      '<button class="cchip'+(chatFilter==='full'?' on':'')+'" data-f="full"><i style="background:#a98fd6"></i>Annuali ('+tt.full+')</button>'+
+      '<button class="cchip'+(chatFilter==='monthly'?' on':'')+'" data-f="monthly"><i style="background:#7fb6e0"></i>Mensili ('+tt.monthly+')</button>'+
+      '<button class="cchip'+(chatFilter==='trial'?' on':'')+'" data-f="trial"><i style="background:#c9a84c"></i>Gratuiti ('+tt.trial+')</button>';
+    $('cfilter').innerHTML=chips;
+    $('cfilter').querySelectorAll('.cchip').forEach(function(el){ el.addEventListener('click',function(){ chatFilter=el.getAttribute('data-f'); renderChat(); }); });
+    /* lista domande+risposte */
+    var items=(CHAT.items||[]).filter(function(it){ return chatFilter==='all'||it.tier===chatFilter; });
+    if(!items.length){ $('chatList').innerHTML='<p class="muted">Nessuna domanda'+(chatFilter==='all'?' ancora.':' da questo livello.')+'</p>'; return; }
+    $('chatList').innerHTML=items.map(function(it){
+      var tl=TIERLAB[it.tier]||TIERLAB[''];
+      var tag=it.label||it.tema;
+      return '<div class="ccard">'+
+        '<div class="cmeta"><span class="ctag" style="background:'+tl.c+'22;color:'+tl.c+';border-color:'+tl.c+'55">'+tl.n+'</span>'+
+          '<span class="cmail">'+esc(it.email||'—')+'</span>'+
+          (tag?'<span class="ctopic">'+esc(tag)+'</span>':'')+
+          '<span class="cdate">'+fmtDateTime(it.ts)+'</span></div>'+
+        '<div class="cq">'+esc(it.q)+'</div>'+
+        (it.a?'<div class="ca">'+esc(it.a)+'</div>':'')+
+        '</div>';
+    }).join('');
   }
 
   function kpi(lbl,val,note){ return '<div class="kpi"><div class="lbl">'+lbl+'</div><div class="val">'+val+'</div>'+(note?'<div class="note">'+note+'</div>':'')+'</div>'; }
