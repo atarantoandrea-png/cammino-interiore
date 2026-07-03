@@ -146,7 +146,23 @@ a.lk{color:var(--glic);text-decoration:none}
 .ccard .cdate{margin-left:auto}
 .ccard .cq{font-size:16px;color:var(--txt);line-height:1.45;font-weight:600;word-break:break-word}
 .ccard .ca{font-size:14.5px;color:var(--txt-soft);line-height:1.5;margin-top:6px;white-space:pre-wrap;word-break:break-word;border-top:1px dashed var(--card-line);padding-top:7px}
-@media(max-width:560px){.crow{grid-template-columns:110px 1fr 34px;font-size:13px}.cwin{float:none;margin-top:8px}}
+@media(max-width:560px){
+  .tabs{gap:2px}
+  .tab{padding:10px 12px;font-size:13.5px;letter-spacing:.02em}
+  .cwin{float:none;margin-top:10px;display:flex}
+  .cwin .wbtn{flex:1;text-align:center;font-size:11.5px;padding:5px 6px}
+  .legend.clg{gap:12px;font-size:12px;flex-wrap:wrap}
+  .crow{grid-template-columns:1fr 40px;grid-template-areas:"cap num" "bar bar";gap:4px 8px;margin-bottom:12px;font-size:13.5px}
+  .crow .cap{grid-area:cap;white-space:normal}
+  .crow .num{grid-area:num}
+  .crow .cbar{grid-area:bar;height:13px}
+  .ccard{padding:11px 12px}
+  .ccard .cmeta{gap:6px 8px;font-size:12px}
+  .ccard .cdate{margin-left:0;width:100%;order:9;color:var(--txt-dim)}
+  .ccard .cmail{word-break:break-all}
+  .ccard .cq{font-size:15px}
+  .ccard .ca{font-size:13.5px}
+}
 </style>
 </head>
 <body>
@@ -278,7 +294,7 @@ a.lk{color:var(--glic);text-decoration:none}
     /* ===== barra schede ===== */
     html+='<div class="tabs">'+
       '<button class="tab on" data-t="pano">Panoramica</button>'+
-      '<button class="tab" data-t="chat">Chat con la Luce<span class="b" id="chatBadge">0</span></button>'+
+      '<button class="tab" data-t="chat">Chat<span class="b" id="chatBadge">0</span></button>'+
       '<button class="tab" data-t="sugg">Suggerimenti<span class="b" id="suggBadge">0</span></button>'+
       '</div>';
 
