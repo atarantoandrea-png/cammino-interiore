@@ -38,6 +38,8 @@ header.hd{padding:46px 0 6px;text-align:center}
 .consent a{color:var(--glic-hi)}
 .btn{display:flex;align-items:center;justify-content:center;width:100%;border:none;cursor:pointer;font-family:'Cinzel',serif;font-weight:600;font-size:16px;letter-spacing:.03em;border-radius:15px;padding:16px;color:#1c1428;background:linear-gradient(135deg,#c9b3ef,#a98fd6);box-shadow:0 8px 26px rgba(185,163,227,.4);transition:transform .15s,opacity .2s}
 .btn:active{transform:scale(.98)} .btn[disabled]{opacity:.55;cursor:default}
+.btn-back{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:12px;text-decoration:none;cursor:pointer;font-family:'Cinzel',serif;font-weight:600;font-size:15px;letter-spacing:.03em;border-radius:15px;padding:14px;color:var(--glic-hi);background:transparent;border:1.5px solid var(--card-line);transition:border-color .15s,color .15s}
+.btn-back:hover{border-color:var(--glic);color:#fff}
 .err{color:#f0a8a8;font-size:15px;text-align:center;min-height:20px;margin-top:10px}
 .prova-img{display:block;width:100%;max-width:400px;margin:18px auto 0;border-radius:16px;border:1px solid var(--card-line);box-shadow:0 10px 30px rgba(0,0,0,.4)}
 footer{text-align:center;padding:22px 14px;font-size:16px;color:var(--txt-dim)}
@@ -58,7 +60,8 @@ footer{text-align:center;padding:22px 14px;font-size:16px;color:var(--txt-dim)}
     <div class="field"><label>Il tuo numero di telefono</label><input id="f-phone" type="tel" autocomplete="tel" placeholder="+39 …"></div>
     <label class="consent"><input id="f-consent" type="checkbox">
       <span>Acconsento al trattamento dei miei dati per ricevere l'accesso alla prova e comunicazioni sul Cammino Interiore e la community Oltre il Velo, come da <a href="/prova/privacy" target="_blank" rel="noopener">informativa privacy</a>.</span></label>
-    <button class="btn" id="f-btn">Inizia la prova gratuita</button>
+    <button class="btn" id="f-btn">Prova il Cammino Interiore</button>
+    <a class="btn-back" href="https://www.elisasoulmedium.com/oltreilvelo">← Torna indietro</a>
     <p class="err" id="f-err"></p>
     <img class="prova-img" src="https://d1yei2z3i6k35z.cloudfront.net/7767646/69e79910b65564.60721058_CamminoInterioreELisaSoulMediumCommunity.png" alt="Il Cammino Interiore — Elisa Soul Medium" loading="lazy">
   </div>
@@ -81,8 +84,8 @@ footer{text-align:center;padding:22px 14px;font-size:16px;color:var(--txt-dim)}
     var btn=$('f-btn'); btn.disabled=true; btn.textContent='Un attimo…';
     fetch('/api/trial/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:name,email:email,phone:phone,consent:true})})
       .then(function(r){return r.json();})
-      .then(function(d){ if(d&&d.ok){ try{ if(d.email){ localStorage.setItem('ovl-user',d.email); localStorage.setItem('ovl-session',d.token||''); localStorage.setItem('ovl-plan:'+d.email, d.tier||'trial'); } }catch(e){} goApp(); } else { err.textContent=(d&&d.reason==='consent')?'Per procedere serve il consenso.':'Qualcosa non ha funzionato. Riprova.'; btn.disabled=false; btn.textContent='Inizia la prova gratuita'; } })
-      .catch(function(){ err.textContent='Errore di rete. Riprova.'; btn.disabled=false; btn.textContent='Inizia la prova gratuita'; });
+      .then(function(d){ if(d&&d.ok){ try{ if(d.email){ localStorage.setItem('ovl-user',d.email); localStorage.setItem('ovl-session',d.token||''); localStorage.setItem('ovl-plan:'+d.email, d.tier||'trial'); } }catch(e){} goApp(); } else { err.textContent=(d&&d.reason==='consent')?'Per procedere serve il consenso.':'Qualcosa non ha funzionato. Riprova.'; btn.disabled=false; btn.textContent='Prova il Cammino Interiore'; } })
+      .catch(function(){ err.textContent='Errore di rete. Riprova.'; btn.disabled=false; btn.textContent='Prova il Cammino Interiore'; });
   }
   $('f-btn').addEventListener('click',register);
   $('f-phone').addEventListener('keydown',function(e){ if(e.key==='Enter') register(); });
