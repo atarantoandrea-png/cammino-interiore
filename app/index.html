@@ -752,6 +752,10 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
       </div>
     </div>
 
+    <a id="installCta" href="https://pwa.elisasoulmedium.com/cammino-interiore/install" style="display:none;align-items:center;justify-content:center;gap:10px;margin:0 0 18px;padding:16px 18px;border-radius:15px;text-decoration:none;font-family:'Cinzel',serif;font-weight:600;font-size:15px;letter-spacing:.03em;color:#1c1428;background:linear-gradient(135deg,#e8d9ae,#c9a84c);box-shadow:0 8px 24px rgba(201,168,76,.35)">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"/></svg>
+      Scarica l'app da qui</a>
+
     <div class="dlbl">Il tuo sentiero</div>
 
     <ol id="sentiero" class="path" aria-label="Le tappe del tuo cammino">
@@ -1144,6 +1148,8 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
       if(showFab){ var tr=(plan==='trial'); fab.setAttribute('title', tr?'Entra in Oltre il Velo':"Passa all'annuale"); fab.setAttribute('aria-label', tr?'Entra in Oltre il Velo':"Passa all'annuale"); } }
     /* il box «Il tuo pensiero conta» (suggerimenti) NON va mostrato a chi è in prova */
     var sc=document.querySelector('.sugg-cta'); if(sc) sc.style.display=(plan==='trial')?'none':'';
+    /* «Scarica l'app da qui»: SOLO nella versione gratuita (prova), sopra il sentiero */
+    var ic=document.getElementById('installCta'); if(ic) ic.style.display=(plan==='trial')?'flex':'none';
     /* nella vista suggerimenti la luce del sentiero si nasconde: lì c'è la sua piccola luce "?" dedicata */
     var lm=document.getElementById('lume'); if(lm) lm.style.display=(view==='suggest')?'none':'';
     if(view==='suggest'){ resetSuggest(); window.scrollTo(0,0); }
