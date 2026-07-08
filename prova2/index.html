@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Il Cammino Interiore · Prova gratuita — Elisa Soul Medium</title>
+<link rel="icon" type="image/png" href="/src/favicon-32.png" sizes="32x32">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{--glic:#b9a3e3;--glic-hi:#dccdf6;--gold:#c9a84c;--gold-pale:#e8d9ae;--txt:#e9e4f0;--txt-soft:#bcb3c9;--txt-dim:#8d8499;--card-line:rgba(185,163,227,.18)}
+html{scroll-behavior:smooth}
+body{font-family:'Cormorant Garamond',Georgia,serif;color:var(--txt);min-height:100dvh;display:flex;flex-direction:column;
+  background:linear-gradient(180deg,rgba(8,7,11,.95) 0%,rgba(10,9,13,.92) 8%,rgba(11,10,14,.91) 100%),url('/src/pagina.jpg') center top/100% auto repeat;
+  background-attachment:fixed;padding:0 18px calc(40px + env(safe-area-inset-bottom))}
+.wrap{width:100%;max-width:520px;margin:0 auto;flex:1}
+header.hd{padding:46px 0 6px;text-align:center}
+.hd .orn{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:12px}
+.hd .orn .l{width:80px;height:1px;background:linear-gradient(90deg,transparent,rgba(185,163,227,.6),transparent)}
+.hd .orn .d{width:6px;height:6px;border:1px solid var(--glic);transform:rotate(45deg)}
+.hd h1{font-family:'Cinzel',serif;font-weight:600;font-size:clamp(22px,5.6vw,30px);letter-spacing:.08em;color:#f0eaf6;text-shadow:0 0 30px rgba(185,163,227,.35)}
+.hd p{font-size:18px;color:var(--txt-soft);margin-top:8px;line-height:1.5}
+.glass{position:relative;overflow:hidden;background:linear-gradient(135deg,rgba(190,165,235,.13),rgba(150,120,210,.06) 48%,rgba(255,255,255,.04));
+  border:1px solid rgba(205,180,245,.30);border-radius:22px;padding:24px 22px;margin-top:20px;
+  -webkit-backdrop-filter:blur(16px) saturate(140%);backdrop-filter:blur(16px) saturate(140%);
+  box-shadow:0 14px 40px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.14)}
+.glass::before{content:"";position:absolute;top:-40%;left:-12%;width:55%;height:180%;pointer-events:none;background:linear-gradient(115deg,rgba(255,255,255,.12),rgba(255,255,255,0) 60%);transform:rotate(8deg)}
+.glass>*{position:relative;z-index:1}
+.sect-t{font-family:'Cinzel',serif;font-size:14px;letter-spacing:.07em;text-transform:uppercase;color:var(--gold-pale);text-align:center;margin:0 0 14px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:15px;color:var(--txt-soft);margin:0 0 6px 4px}
+.field input{width:100%;font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--txt);background:rgba(185,163,227,.07);border:1px solid var(--card-line);border-radius:13px;padding:14px 15px;outline:none}
+.field input:focus{border-color:var(--glic)}
+.consent{display:flex;gap:10px;align-items:flex-start;margin:6px 2px 16px;font-size:15px;color:var(--txt-soft);line-height:1.4}
+.consent input{width:20px;height:20px;flex-shrink:0;margin-top:2px;accent-color:#a98fd6}
+.consent a{color:var(--glic-hi)}
+.btn{display:flex;align-items:center;justify-content:center;width:100%;border:none;cursor:pointer;font-family:'Cinzel',serif;font-weight:600;font-size:16px;letter-spacing:.03em;border-radius:15px;padding:16px;color:#1c1428;background:linear-gradient(135deg,#c9b3ef,#a98fd6);box-shadow:0 8px 26px rgba(185,163,227,.4);transition:transform .15s,opacity .2s}
+.btn:active{transform:scale(.98)} .btn[disabled]{opacity:.55;cursor:default}
+.btn-back{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:12px;text-decoration:none;cursor:pointer;font-family:'Cinzel',serif;font-weight:600;font-size:15px;letter-spacing:.03em;border-radius:15px;padding:14px;color:var(--glic-hi);background:transparent;border:1.5px solid var(--card-line);transition:border-color .15s,color .15s}
+.btn-back:hover{border-color:var(--glic);color:#fff}
+.err{color:#f0a8a8;font-size:15px;text-align:center;min-height:20px;margin-top:10px}
+.prova-img{display:block;width:100%;max-width:400px;margin:18px auto 0;border-radius:16px;border:1px solid var(--card-line);box-shadow:0 10px 30px rgba(0,0,0,.4)}
+footer{text-align:center;padding:22px 14px;font-size:16px;color:var(--txt-dim)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hd">
+    <div class="orn"><span class="l"></span><span class="d"></span><span class="l"></span></div>
+    <h1>Il Cammino Interiore</h1>
+    <p>La community di Elisa Soul Medium.</p>
+  </header>
+
+  <div id="formView" class="glass">
+    <p class="sect-t">Inizia la tua prova gratuita</p>
+    <div class="field"><label>Come ti chiami?</label><input id="f-name" type="text" autocomplete="name" placeholder="Nome e cognome"></div>
+    <div class="field"><label>La tua email</label><input id="f-email" type="email" autocomplete="email" placeholder="latua@email.it"></div>
+    <div class="field"><label>Il tuo numero di telefono</label><input id="f-phone" type="tel" autocomplete="tel" placeholder="+39 …"></div>
+    <label class="consent"><input id="f-consent" type="checkbox">
+      <span>Acconsento al trattamento dei miei dati per ricevere l'accesso alla prova e comunicazioni sul Cammino Interiore e la community Oltre il Velo, come da <a href="/prova/privacy" target="_blank" rel="noopener">informativa privacy</a>.</span></label>
+    <button class="btn" id="f-btn">Prova il Cammino Interiore</button>
+    <a class="btn-back" href="https://www.elisasoulmedium.com/community-libro">← Torna indietro</a>
+    <p class="err" id="f-err"></p>
+    <img class="prova-img" src="https://d1yei2z3i6k35z.cloudfront.net/7767646/69e79910b65564.60721058_CamminoInterioreELisaSoulMediumCommunity.png" alt="Il Cammino Interiore — Elisa Soul Medium" loading="lazy">
+  </div>
+
+  <footer>Il Cammino Interiore · Elisa Soul Medium</footer>
+</div>
+
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id);};
+  function goApp(){ location.href='/app'; }
+
+  function register(){
+    var name=$('f-name').value.trim(), email=$('f-email').value.trim().toLowerCase(), phone=$('f-phone').value.trim();
+    var err=$('f-err'); err.textContent='';
+    if(!name){ err.textContent='Scrivi il tuo nome.'; return; }
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)){ err.textContent='Scrivi una email valida.'; return; }
+    if(phone.replace(/\D/g,'').length<6){ err.textContent='Scrivi un numero di telefono valido.'; return; }
+    if(!$('f-consent').checked){ err.textContent='Per procedere serve il consenso alla privacy.'; return; }
+    var btn=$('f-btn'); btn.disabled=true; btn.textContent='Un attimo…';
+    fetch('/api/trial/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:name,email:email,phone:phone,consent:true})})
+      .then(function(r){return r.json();})
+      .then(function(d){ if(d&&d.ok){ try{ if(d.email){ localStorage.setItem('ovl-user',d.email); localStorage.setItem('ovl-session',d.token||''); localStorage.setItem('ovl-plan:'+d.email, d.tier||'trial'); } }catch(e){} goApp(); } else { err.textContent=(d&&d.reason==='consent')?'Per procedere serve il consenso.':'Qualcosa non ha funzionato. Riprova.'; btn.disabled=false; btn.textContent='Prova il Cammino Interiore'; } })
+      .catch(function(){ err.textContent='Errore di rete. Riprova.'; btn.disabled=false; btn.textContent='Prova il Cammino Interiore'; });
+  }
+  $('f-btn').addEventListener('click',register);
+  $('f-phone').addEventListener('keydown',function(e){ if(e.key==='Enter') register(); });
+
+  /* entra dritto nell'app SOLO se ha già la sessione salvata su questo dispositivo;
+     altrimenti mostra sempre la registrazione (niente rimbalzo a un login che non passerebbe) */
+  try{ if(localStorage.getItem('ovl-user') && localStorage.getItem('ovl-session')) goApp(); }catch(e){}
+})();
+</script>
+</body>
+</html>
