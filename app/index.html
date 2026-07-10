@@ -2000,6 +2000,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     setText('mu-cat', tr.cat);
     setText('mu-title', tr.t);
     setText('mm-title', tr.t);
+    muMediaMeta();                    /* schermata di blocco: titolo + copertina */
     document.querySelectorAll('.mu-row').forEach(function(r,i){
       r.classList.toggle('on', i===idx);
     });
@@ -2070,15 +2071,55 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     else if(m.cmd==='vol'){ if(window.muSetVol) window.muSetVol(+m.v); }
   });
 
-  au.addEventListener('play',  function(){ setPlayBtn(true); startBar(); });
-  au.addEventListener('pause', function(){ setPlayBtn(false); stopBar(); });
+  au.addEventListener('play',  function(){ setPlayBtn(true); startBar(); muMediaState('playing'); muMediaMeta(); muMediaPos(); });
+  au.addEventListener('pause', function(){ setPlayBtn(false); stopBar(); muMediaState('paused'); });
   au.addEventListener('ended', function(){ stopBar(); window.muNext(); });
+
+  /* ---- Media Session API: comandi sulla schermata di blocco + riproduzione in background/standby
+     (come Spotify). Senza questo, iOS a schermo spento può sospendere l'audio e non mostra i comandi. ---- */
+  function muMediaState(s){ if('mediaSession' in navigator){ try{ navigator.mediaSession.playbackState=s; }catch(e){} } }
+  function muMediaMeta(){
+    if(!('mediaSession' in navigator)) return;
+    var tr=muIdx>=0?TRACKS[muIdx]:null; if(!tr) return;
+    try{
+      navigator.mediaSession.metadata=new MediaMetadata({
+        title: tr.t,
+        artist: 'Il Cammino Interiore',
+        album: tr.cat+' · Elisa Soul Medium',
+        artwork: [
+          {src:'/src/icon-192.png?v=4', sizes:'192x192', type:'image/png'},
+          {src:'/src/icon-512.png?v=4', sizes:'512x512', type:'image/png'}
+        ]
+      });
+    }catch(e){}
+  }
+  function muMediaPos(){
+    if(!('mediaSession' in navigator) || !navigator.mediaSession.setPositionState) return;
+    try{
+      if(au.duration && isFinite(au.duration)){
+        navigator.mediaSession.setPositionState({ duration:au.duration, position:Math.min(au.currentTime,au.duration), playbackRate:au.playbackRate||1 });
+      }
+    }catch(e){}
+  }
+  (function(){
+    if(!('mediaSession' in navigator)) return;
+    var ms=navigator.mediaSession;
+    function set(a,h){ try{ ms.setActionHandler(a,h); }catch(e){} }
+    set('play',          function(){ au.play()['catch'](function(){}); });
+    set('pause',         function(){ au.pause(); });
+    set('previoustrack', function(){ window.muPrev(); });
+    set('nexttrack',     function(){ window.muNext(); });
+    set('seekto',        function(d){ if(d && d.seekTime!=null && au.duration){ au.currentTime=Math.max(0,Math.min(d.seekTime,au.duration)); muMediaPos(); } });
+    set('seekbackward',  function(d){ var o=(d&&d.seekOffset)||10; au.currentTime=Math.max(0,au.currentTime-o); muMediaPos(); });
+    set('seekforward',   function(d){ var o=(d&&d.seekOffset)||10; if(au.duration) au.currentTime=Math.min(au.duration,au.currentTime+o); muMediaPos(); });
+  })();
 
   au.addEventListener('loadedmetadata', function(){
     muDur=au.duration;
     setText('mu-dur',  mmss(au.duration));
     setText('mu-dur2', mmss(au.duration));
     postState();
+    muMediaPos();
   });
 
   /* La barra: 'timeupdate' scatta solo ~4 volte/sec → movimento a scatti. Dipingo invece a
