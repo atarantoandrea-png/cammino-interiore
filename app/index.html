@@ -2178,27 +2178,18 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
   attachSeek(document.getElementById('mu-bar'),'mu-fill','mu-knob');
   attachSeek(document.getElementById('mm-bar'),'mm-fill',null);
 
-  /* volume regolabile e ricordato. NB: iOS Safari ignora au.volume, quindi uso un
-     GainNode Web Audio (l'unico modo per regolare il volume via codice su iPhone),
-     sbloccato al primo gesto dell'utente. Fallback ad au.volume dove Web Audio manca. */
+  /* volume regolabile e ricordato.
+     IMPORTANTE — riproduzione in background: NON instradiamo l'audio in Web Audio
+     (createMediaElementSource/GainNode). Su iOS un <audio> che passa dentro un
+     AudioContext viene SOSPESO a schermo bloccato / in background, e non riceve né la
+     riproduzione in standby né i comandi sul lock screen. La priorità è che la musica
+     continui a telefono chiuso, quindi usiamo direttamente au.volume: funziona su
+     desktop e Android; su iOS il volume software è ignorato (si regola coi tasti fisici
+     del telefono) — ma in cambio la riproduzione in background torna a funzionare. */
   (function(){
     var vEl=document.getElementById('mu-vol'), vIc=document.getElementById('mu-vol-ic');
     try{ var sv=parseFloat(localStorage.getItem('ovl-mu-vol')); if(!isNaN(sv)) muVol=Math.max(0,Math.min(1,sv)); }catch(e){}
-    var actx=null, gainNode=null;
-    function applyVol(){ if(gainNode){ try{ gainNode.gain.value=muVol; }catch(e){} au.volume=1; } else { au.volume=muVol; } }
-    function ensureGraph(){
-      if(actx) return;
-      try{
-        var AC=window.AudioContext||window.webkitAudioContext; if(!AC) return;
-        actx=new AC();
-        var src=actx.createMediaElementSource(au);
-        gainNode=actx.createGain();
-        src.connect(gainNode); gainNode.connect(actx.destination);
-        applyVol();
-      }catch(e){ actx=null; gainNode=null; }
-    }
-    function unlock(){ ensureGraph(); if(actx && actx.state==='suspended'){ try{ actx.resume(); }catch(e){} } }
-    ['pointerdown','touchend','click','keydown'].forEach(function(ev){ document.addEventListener(ev, unlock, true); });
+    function applyVol(){ try{ au.volume=muVol; }catch(e){} }
     function paint(x){ if(vEl && Math.round(+vEl.value)!==Math.round(x*100)) vEl.value=Math.round(x*100); if(vIc) vIc.textContent = x===0?'🔇':(x<0.5?'🔉':'🔊'); }
     window.muSetVol=function(x){ muVol=Math.max(0,Math.min(1,x)); applyVol(); try{ localStorage.setItem('ovl-mu-vol', String(muVol)); }catch(e){} paint(muVol); postState(); };
     applyVol(); paint(muVol);
