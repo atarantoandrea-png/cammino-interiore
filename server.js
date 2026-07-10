@@ -214,7 +214,13 @@ app.get('/api/admin/chats', (req, res) => {
   });
   const rankArr = Object.keys(rank).map(k => rank[k]).sort((a, b) => b.tot - a.tot).slice(0, 14);
   const items = all.slice().sort((a, b) => b.ts - a.ts).slice(0, 400);
-  res.json({ ok:true, items, rank: rankArr, totals, total: all.length, win });
+  /* domande SENZA risposta = la chat non ha trovato una voce ('empty' = nessuna risposta,
+     'suggest' = ha solo proposto temi affini). Sono il backlog per arricchire la conoscenza. */
+  const isUnanswered = it => it.mode === 'empty' || it.mode === 'suggest';
+  const unansweredAll = all.filter(isUnanswered);
+  const unanswered = unansweredAll.slice().sort((a, b) => b.ts - a.ts).slice(0, 300);
+  res.json({ ok:true, items, rank: rankArr, totals, total: all.length,
+    unanswered, unansweredCount: unansweredAll.length, win });
 });
 
 /* ════════════════ PROVA / TRIAL (lead-gen, area separata e blindata) ════════════════

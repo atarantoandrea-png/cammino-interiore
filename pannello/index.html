@@ -384,6 +384,9 @@ a.lk{color:var(--glic);text-decoration:none}
           '<span><i style="background:#7fb6e0"></i>Mensili</span>'+
           '<span><i style="background:#c9a84c"></i>Gratuiti</span></div>'+
         '<div id="chatRank"><p class="muted">Carico…</p></div></div>'+
+      '<div class="panel"><h2>Domande senza risposta<span class="b" id="chatUnansBadge">0</span></h2>'+
+        '<p class="muted" style="margin:-6px 0 14px">Domande a cui la chat non ha saputo rispondere (o ha solo proposto temi affini). Rispondendo tu qui, arricchisci la conoscenza di Elisa.</p>'+
+        '<div id="chatUnans"><p class="muted">Carico…</p></div></div>'+
       '<div class="panel"><h2>Tutte le domande (<span id="chatTot">…</span>)</h2>'+
         '<div class="cfilter" id="cfilter"></div>'+
         '<div id="chatList"><p class="muted">Carico…</p></div></div>'+
@@ -486,6 +489,19 @@ a.lk{color:var(--glic);text-decoration:none}
     var rank=CHAT.rank||[]; var max=1; rank.forEach(function(it){ if(it.tot>max)max=it.tot; });
     $('chatRank').innerHTML = rank.length ? rank.map(function(it){ return stackRow(it,max); }).join('')
       : '<p class="muted">Ancora nessuna domanda in questa finestra.</p>';
+    /* domande senza risposta (da arricchire) */
+    var un=CHAT.unanswered||[]; var unC=(CHAT.unansweredCount!=null)?CHAT.unansweredCount:un.length;
+    if($('chatUnansBadge')) $('chatUnansBadge').textContent=unC;
+    if($('chatUnans')) $('chatUnans').innerHTML = un.length ? un.map(function(it){
+      var tl=TIERLAB[it.tier]||TIERLAB[''];
+      var why=(it.mode==='suggest')?'solo temi affini':'nessuna risposta';
+      return '<div class="ccard">'+
+        '<div class="cmeta"><span class="ctag" style="background:'+tl.c+'22;color:'+tl.c+';border-color:'+tl.c+'55">'+tl.n+'</span>'+
+          '<span class="cmail">'+esc(it.email||'—')+'</span>'+
+          '<span class="ctopic" style="color:#e0a86a">'+why+'</span>'+
+          '<span class="cdate">'+fmtDateTime(it.ts)+'</span></div>'+
+        '<div class="cq">'+esc(it.q)+'</div></div>';
+    }).join('') : '<p class="muted">Nessuna: per ora la chat ha risposto a tutto 💓</p>';
     /* chip filtro per livello */
     var tt=CHAT.totals||{full:0,monthly:0,trial:0,tot:0};
     var chips='<button class="cchip'+(chatFilter==='all'?' on':'')+'" data-f="all">Tutti ('+CHAT.total+')</button>'+
