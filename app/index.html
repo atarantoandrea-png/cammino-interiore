@@ -2054,7 +2054,11 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
   };
   window.openDay=function(){ window.openFrame('/app/day/'); };
   function closeDay(){ dayFrame.style.display='none'; document.documentElement.style.overflow='';
-    if(window.OVL_refresh) window.OVL_refresh();   /* tornando dai video, ricalcola gli sblocchi (altra IIFE) */ }
+    if(window.OVL_refresh) window.OVL_refresh();   /* tornando dai video, ricalcola gli sblocchi (altra IIFE) */
+    /* SCARICO la sezione poco dopo la chiusura: libera la memoria (i player video Vimeo) e
+       garantisce che alla RIAPERTURA la pagina sia sempre fresca/aggiornata (niente versioni
+       vecchie tenute in memoria). Guardia: se nel frattempo l'hai riaperta, non la tocco. */
+    setTimeout(function(){ try{ if(dayFrame.style.display==='none'){ dayFrame.removeAttribute('data-route'); dayFrame.src='about:blank'; } }catch(e){} }, 350); }
   window.closeDay=closeDay;
   window.addEventListener('message', function(e){
     if(e.origin!==location.origin) return;
