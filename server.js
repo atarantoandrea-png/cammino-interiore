@@ -944,7 +944,8 @@ function isReserved(p) {
    - dentro le sezioni le azioni (play/scrittura) aprono il pop-up community (lato pagina). */
 function trialAllowedPath(p){
   return p.indexOf('/app/percorso') === 0 || p.indexOf('/app/music/') === 0
-      || p.indexOf('/app/capitolo2') === 0 || p.indexOf('/app/bambino') === 0 || p.indexOf('/app/day') === 0;
+      || p.indexOf('/app/capitolo2') === 0 || p.indexOf('/app/bambino') === 0
+      || p.indexOf('/app/adulto') === 0 || p.indexOf('/app/day') === 0;
 }
 app.use((req, res, next) => {
   if (req.method !== 'GET' && req.method !== 'HEAD') return next();

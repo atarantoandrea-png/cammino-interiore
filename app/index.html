@@ -2,17 +2,6 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<script>
-/* DIAGNOSTICA temporanea: registra eventi/errori in localStorage. Si vede toccando il numero
-   di versione in basso a destra. Aiuta a capire la natura del bug "ritorno a home". */
-(function(){function L(m){try{var a=JSON.parse(localStorage.getItem('ovl-errlog')||'[]');a.push((new Date().toLocaleTimeString())+' '+m);while(a.length>40)a.shift();localStorage.setItem('ovl-errlog',JSON.stringify(a));}catch(e){}}
-window.__ovlLog=L;
-window.addEventListener('error',function(e){L('ERR '+((e&&e.message)||'')+' @'+(((e&&e.filename)||'').split('/').pop())+':'+((e&&e.lineno)||''));});
-window.addEventListener('unhandledrejection',function(e){L('REJ '+(((e&&e.reason&&e.reason.message))||(e&&e.reason)||''));});
-window.addEventListener('pagehide',function(e){L('pagehide persisted='+(e&&e.persisted)+' '+location.pathname);});
-window.addEventListener('pageshow',function(e){L('pageshow persisted='+(e&&e.persisted)+' '+location.pathname);});
-L('== SHELL load '+location.pathname);})();
-</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>I miei Esercizi · Il Cammino Interiore</title>
 <link rel="manifest" href="/manifest.json">
@@ -2235,14 +2224,6 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
 try{ if('serviceWorker' in navigator){ navigator.serviceWorker.getRegistration().then(function(r){ if(r && r.update){ try{ r.update(); }catch(e){} } }).catch(function(){}); } }catch(e){}
 </script>
 <!-- marcatore di versione (diagnostica temporanea: dimmi che numero vedi sulla schermata principale) -->
-<div id="appver" style="position:fixed;bottom:8px;right:9px;font-size:13px;letter-spacing:.08em;color:#cdb2f2;background:rgba(20,15,30,.72);border:1px solid rgba(185,163,227,.4);border-radius:11px;padding:3px 10px;z-index:9;cursor:pointer;font-family:'Cinzel',serif;box-shadow:0 2px 8px rgba(0,0,0,.4)">v23</div>
-<script>
-(function(){var v=document.getElementById('appver');if(!v)return;
-  v.addEventListener('click',function(){ try{ var l=localStorage.getItem('ovl-errlog')||'(nessun evento)'; alert('DIAGNOSTICA (dal più vecchio al più recente):\n\n'+(JSON.parse(l).join('\n'))); }catch(e){ try{alert(localStorage.getItem('ovl-errlog')||'(vuoto)');}catch(x){} } });
-  /* doppio-tap: azzera il log */
-  var t=0; v.addEventListener('dblclick',function(){ try{localStorage.removeItem('ovl-errlog');alert('log azzerato');}catch(e){} });
-})();
-</script>
 
 <!-- ─── Invito attivazione notifiche (compare dentro l'app) ─────────────── -->
 <style>

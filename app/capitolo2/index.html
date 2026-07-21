@@ -3,13 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <script>
-/* DIAGNOSTICA temporanea (registra in localStorage; si vede toccando il numero versione nella home) */
-(function(){function L(m){try{var a=JSON.parse(localStorage.getItem('ovl-errlog')||'[]');a.push((new Date().toLocaleTimeString())+' '+m);while(a.length>40)a.shift();localStorage.setItem('ovl-errlog',JSON.stringify(a));}catch(e){}}
-window.addEventListener('error',function(e){L('ERR(mondo) '+((e&&e.message)||'')+' @'+(((e&&e.filename)||'').split('/').pop())+':'+((e&&e.lineno)||''));});
-window.addEventListener('unhandledrejection',function(e){L('REJ(mondo) '+(((e&&e.reason&&e.reason.message))||(e&&e.reason)||''));});
-window.addEventListener('pagehide',function(e){L('pagehide(mondo) persisted='+(e&&e.persisted));});
-window.__ovlTog=function(id,op){L('toggle mondo '+(op?'apri':'chiudi')+' '+id);};
-L('> load mondo');})();
 /* accesso controllato da /app/ — qui si verifica solo la sessione, senza form */
 (function(){
   var embedded=false; try{ embedded=window.parent && window.parent!==window; }catch(e){ embedded=true; }
@@ -583,7 +576,6 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
 
   function toggle(L, li, head){
     var opening = !li.classList.contains('open');
-    try{ if(window.__ovlTog) __ovlTog(L.id, opening); }catch(e){}
     var otherOpen=false;   /* un altro riquadro si sta chiudendo? allora il layout si muove */
     LESSONS.forEach(function(O){
       var n=nodes[O.id];
