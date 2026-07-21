@@ -5,17 +5,15 @@
 <script>
 /* accesso controllato da /app/ — qui si verifica solo la sessione, senza form */
 (function(){
-  var email, token;
   var embedded=false; try{ embedded=window.parent && window.parent!==window; }catch(e){ embedded=true; }
-  function bail(){ if(!embedded) location.replace('/app/'); }   /* dentro la shell (iframe) NON rimbalzo mai: se la pagina è stata servita, il server ha già autenticato */
+  if(embedded) return;   /* dentro la shell (iframe): l'accesso è già garantito da shell + server. Nessuna verifica né redirect qui → elimina alla radice ogni "ritorno a home". */
+  var email, token;
   try{ email=(localStorage.getItem('ovl-user')||'').trim().toLowerCase(); token=localStorage.getItem('ovl-session')||''; }
-  catch(e){ bail(); return; }
-  if(!email||!token){ bail(); return; }
-  /* Dentro la shell (iframe) l'accesso è già protetto dalla shell e dal server: NON rimbalzo
-     su un verify 'ok:false' transitorio (evita il "ritorno a home" alla prima apertura). */
+  catch(e){ location.replace('/app/'); return; }
+  if(!email||!token){ location.replace('/app/'); return; }
   fetch('/api/auth/verify',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,token:token})})
     .then(function(r){return r.json();})
-    .then(function(d){ if(!d.ok && !embedded) location.replace('/app/'); })
+    .then(function(d){ if(!d.ok) location.replace('/app/'); })
     .catch(function(){}); /* offline: entra */
 })();
 </script>
