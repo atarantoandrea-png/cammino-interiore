@@ -2216,6 +2216,13 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
 })();
 </script>
 <script src="https://pwa.elisasoulmedium.com/cammino-interiore/init.js"></script>
+<script>
+/* Aggiornamento automatico SENZA reinstallare: a ogni apertura chiedo al browser di
+   controllare se c'è una versione nuova del service worker. Se c'è, si attiva e (dal suo
+   'activate') ricarica l'app col codice aggiornato. Così l'app già installata si allinea
+   da sola, senza doverla riscaricare. */
+try{ if('serviceWorker' in navigator){ navigator.serviceWorker.getRegistration().then(function(r){ if(r && r.update){ try{ r.update(); }catch(e){} } }).catch(function(){}); } }catch(e){}
+</script>
 
 <!-- ─── Invito attivazione notifiche (compare dentro l'app) ─────────────── -->
 <style>

@@ -4,7 +4,7 @@ importScripts('https://pwa.elisasoulmedium.com/cammino-interiore/sw-core.js');
 // ─── Aggiornamento automatico: strategia "network-first" ────────────────────
 // Quando sei ONLINE l'app carica SEMPRE l'ultima versione dalla rete.
 // Quando sei OFFLINE usa l'ultima versione salvata in cache.
-const CACHE = 'cammino-v15';
+const CACHE = 'cammino-v16';
 
 // la nuova versione si attiva SUBITO, senza aspettare la chiusura di tutte le schede
 self.addEventListener('install', function(){ self.skipWaiting(); });
@@ -53,8 +53,10 @@ self.addEventListener('fetch', function(event) {
   );
 });
 
-// Pulisci le cache vecchie quando cambia la versione + prendi il controllo
-// delle pagine già aperte, così l'aggiornamento si vede senza riaprire l'app
+// Pulisci le cache vecchie quando cambia la versione + prendi il controllo delle pagine
+// già aperte. AGGIORNAMENTO AUTOMATICO SENZA REINSTALLARE: appena la nuova versione del
+// service worker si attiva, RICARICO le finestre aperte così prendono subito il codice
+// nuovo (l'app installata si aggiorna da sola alla prima apertura online, senza riscaricarla).
 self.addEventListener('activate', function(event) {
   event.waitUntil(
     caches.keys().then(function(keys) {
@@ -62,6 +64,9 @@ self.addEventListener('activate', function(event) {
         keys.filter(function(k) { return k !== CACHE; })
             .map(function(k) { return caches.delete(k); })
       );
-    }).then(function(){ return self.clients.claim(); })
+    })
+    .then(function(){ return self.clients.claim(); })
+    .then(function(){ return self.clients.matchAll({ type: 'window' }); })
+    .then(function(cl){ cl.forEach(function(c){ try { c.navigate(c.url); } catch(e) {} }); })
   );
 });
