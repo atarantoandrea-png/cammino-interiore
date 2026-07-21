@@ -183,6 +183,13 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
 .lframe{position:relative;padding-top:56.25%;height:0;overflow:hidden;background:#000;margin:10px 0;
   border-top:1px solid rgba(185,163,227,.12);border-bottom:1px solid rgba(185,163,227,.12)}
 .lframe iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
+/* copertina leggera del video (facade): il player Vimeo si carica SOLO al tocco → niente crash memoria iOS */
+.vfacade{position:absolute;inset:0;width:100%;height:100%;border:0;cursor:pointer;background:#0c0a12 center/cover no-repeat;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px}
+.vfacade::before{content:'';position:absolute;inset:0;background:linear-gradient(rgba(12,9,19,.35),rgba(12,9,19,.62))}
+.vfacade>*{position:relative;z-index:1}
+.vfacade-play{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#f0eaf6;background:radial-gradient(circle at 38% 32%,rgba(220,205,250,.45),rgba(120,90,180,.5));border:1px solid rgba(220,205,250,.6);box-shadow:0 6px 22px rgba(0,0,0,.5),0 0 22px rgba(185,163,227,.35)}
+.vfacade-play svg{width:28px;height:28px;margin-left:3px}
+.vfacade-t{font-family:'Cinzel',serif;font-size:14px;letter-spacing:.06em;color:#f0eaf6;text-shadow:0 1px 6px rgba(0,0,0,.8)}
 .lframe .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
   font-family:'Cinzel',serif;font-size:14.5px;letter-spacing:.12em;color:var(--txt-dim)}
 
@@ -576,11 +583,13 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
         otherOpen=true;
         n.li.classList.remove('open');
         n.head.setAttribute('aria-expanded','false');
-        if(players[O.id] && players[O.id].pause) try{ players[O.id].pause(); }catch(e){}
+        var fr=n.li.querySelector('.lframe'); if(fr) fr.innerHTML='';   /* smonto il player chiuso → libero memoria */
+        delete players[O.id];
       }
     });
     li.classList.toggle('open', opening);
     head.setAttribute('aria-expanded', opening?'true':'false');
+    if(!opening){ var frC=li.querySelector('.lframe'); if(frC) frC.innerHTML=''; delete players[L.id]; }   /* chiudo questa lezione → smonto */
     /* la luce si posa su questa sezione (resta lì anche chiudendo) */
     curId=L.id;
     if(opening){ ensurePlayer(L, li); setTimeout(function(){ head.scrollIntoView({behavior:'smooth', block:'start'}); }, 60); }
@@ -604,8 +613,18 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
       var pb=frame.querySelector('.llock-play'); if(pb) pb.addEventListener('click', showUpsell);
       players[L.id]=true; return;
     }
+    /* FACADE: copertina + play. Il player Vimeo (pesante) si crea SOLO al tocco → l'apertura
+       della lezione non satura la memoria di iPhone, e non si accumulano 8 player vivi. */
+    players[L.id]='facade';
+    frame.innerHTML='<button class="vfacade" type="button" style="background-image:url(\'/api/cover?s=capitolo2&k='+encodeURIComponent(L.id)+'\')" aria-label="Riproduci il video">'
+      +'<span class="vfacade-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>'
+      +'<span class="vfacade-t">Tocca per guardare</span></button>';
+    var fb=frame.querySelector('.vfacade');
+    if(fb) fb.addEventListener('click', function(){ loadRealLesson(L, frame, vid); });
+  }
+  function loadRealLesson(L, frame, vid){   /* crea il vero player Vimeo (solo al tocco del play) */
     var ifr=document.createElement('iframe');
-    ifr.src='https://player.vimeo.com/video/'+vid+'?title=0&byline=0&portrait=0&badge=0';
+    ifr.src='https://player.vimeo.com/video/'+vid+'?title=0&byline=0&portrait=0&badge=0&autoplay=1';
     ifr.setAttribute('allow','autoplay; fullscreen; picture-in-picture');
     ifr.setAttribute('allowfullscreen','');
     frame.innerHTML=''; frame.appendChild(ifr);
