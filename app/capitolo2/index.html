@@ -567,15 +567,6 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
   }
   addEventListener('resize', function(){ if(curId){ lightUp(nodes[curId].li); } else lumeHome(); });
 
-  /* Libera la memoria del video chiuso: distrugge il player e toglie l'iframe Vimeo.
-     Su iPhone tenere più player Vimeo caricati insieme fa crashare la pagina (schermo
-     bianco → ritorno a home): così ne resta al massimo UNO in memoria alla volta. */
-  function unloadPlayer(id){
-    var pl=players[id];
-    if(pl && typeof pl.destroy==='function'){ try{ pl.destroy(); }catch(e){} }
-    var nd=nodes[id]; if(nd){ var fr=nd.li.querySelector('.lframe'); if(fr) fr.innerHTML=''; }
-    delete players[id];
-  }
   function toggle(L, li, head){
     var opening = !li.classList.contains('open');
     var otherOpen=false;   /* un altro riquadro si sta chiudendo? allora il layout si muove */
@@ -585,11 +576,9 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
         otherOpen=true;
         n.li.classList.remove('open');
         n.head.setAttribute('aria-expanded','false');
-        unloadPlayer(O.id);   /* scarico il video che sto chiudendo → libero memoria */
+        if(players[O.id] && players[O.id].pause) try{ players[O.id].pause(); }catch(e){}
       }
     });
-    /* se sto CHIUDENDO questo riquadro, scarico anche il suo video */
-    if(!opening) unloadPlayer(L.id);
     li.classList.toggle('open', opening);
     head.setAttribute('aria-expanded', opening?'true':'false');
     /* la luce si posa su questa sezione (resta lì anche chiudendo) */
