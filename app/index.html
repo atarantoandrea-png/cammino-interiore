@@ -1059,7 +1059,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
   var plan='full';
   function savePlan(email, t){ try{ if(email) localStorage.setItem('ovl-plan:'+String(email).trim().toLowerCase(), t||'full'); }catch(e){} }
   function loadPlan(){ try{ var e=(localStorage.getItem(KEY)||'').trim().toLowerCase(); plan=localStorage.getItem('ovl-plan:'+e)||'full'; }catch(e){ plan='full'; } window.OVL_PLAN=plan; return plan; }
-  function isTrailerSection(ex){ return ex && (ex.id==='capitolo2' || ex.id==='bambino'); }   /* sezioni "anteprima" per i mensili */
+  function isTrailerSection(ex){ return ex && (ex.id==='capitolo2' || ex.id==='bambino' || ex.id==='adulto'); }   /* sezioni "anteprima" per i mensili */
 
   /* ============ IL REGISTRO DEGLI ESERCIZI ============
      ogni nuovo esercizio = una riga qui (la tappa nasce da sola).
@@ -1080,9 +1080,9 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     {id:'bambino', title:'Il Bambino Interiore', badge:'Esercizi · 1ª parte', sym:'🌱', route:'/app/bambino/', shell:true,
      desc:'La prima parte da incontrare: la più emotiva e vulnerabile di te. Due passi — il foglio delle tre domande e la meditazione.',
      requires:{days:10}, partVideo:true},
-    {id:'adulto', title:'L\'Adulto Interiore', badge:'Esercizi · 2ª parte', sym:'🌳', route:null,
-     desc:'La parte presente e stabile, che contiene ed equilibra. Gli esercizi stanno prendendo forma.',
-     requires:{days:10}, soon:true, partVideo:true},
+    {id:'adulto', title:'L\'Adulto Interiore', badge:'Esercizi · 2ª parte', sym:'🌳', route:'/app/adulto/', shell:true,
+     desc:'La parte presente e stabile, che contiene ed equilibra. Due passi: la visualizzazione guidata e il foglio delle emozioni e dell\'ancoraggio.',
+     requires:{days:10}, partVideo:true},
     {id:'ombra', title:'L\'Ombra Interiore', badge:'Esercizi · 3ª parte', sym:'🌑', route:null,
      desc:'La parte rifiutata, da conoscere e integrare senza paura. Gli esercizi stanno prendendo forma.',
      requires:{days:10}, soon:true, partVideo:true},
@@ -1114,8 +1114,10 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
       h:'<p>Il secondo capitolo: otto video in cui ti presento le parti che ti compongono. Si apre dopo <b>10 giorni</b> di Giornaliero — il tempo di prendere l\'abitudine di osservarti. Guardali liberamente, nell\'ordine che senti.</p>'},
     bambino:{t:'Il Bambino Interiore',
       h:'<p>La prima parte da incontrare. Si apre quando avrai <b>completato le otto lezioni</b> del Mondo Interiore. Dentro trovi due esercizi: il <b>foglio delle tre domande</b>, per ascoltare la tua emozione e da dove nasce, e la <b>meditazione</b>, per dare un volto al tuo bambino interiore.</p>'},
+    adulto:{t:'L\'Adulto Interiore',
+      h:'<p>La <b>seconda parte</b>: la tua parte presente e stabile, quella che ascolta ed equilibra. Si apre dopo aver visto il video <b>«L\'Adulto Interiore»</b> del Mondo Interiore e aver completato il <b>Bambino</b>. Dentro trovi due esercizi: la <b>visualizzazione</b>, per far incontrare adulto e bambino, e il <b>foglio</b> delle emozioni e dell\'<b>ancoraggio</b>.</p>'},
     ex2:{t:'Le tappe più avanti',
-      h:'<p>Dopo il Bambino arriveranno l\'Adulto, l\'Ombra e le altre parti, una a una. Non c\'è fretta — il sentiero non scappa.</p>'},
+      h:'<p>Dopo l\'Adulto arriveranno l\'Ombra e le altre parti, una a una. Non c\'è fretta — il sentiero non scappa.</p>'},
     suggest:{t:'I suggerimenti',
       h:'<p>Qui ci lasci un <b>pensiero</b>, in modo <b>anonimo</b>: non sappiamo chi scrive. Prima scegli il <b>tema</b>, così sappiamo di cosa parli; poi scrivi liberamente quello che senti. Ecco a cosa serve ogni tema:</p>'+
         '<p><b>🛠 Tecnico</b> — qualcosa non funziona, un errore o un problema dell\'app.<br>'+
@@ -1289,6 +1291,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
   /* una parte è "completata" quando hai finito tutti i suoi esercizi */
   function partDone(id){
     if(id==='bambino'){ try{ var p=JSON.parse(localStorage.getItem('ovl-bambino-prog:'+EMAIL)||'{}'); return !!(p&&p.foglio); }catch(e){ return false; } }
+    if(id==='adulto'){ try{ var pa=JSON.parse(localStorage.getItem('ovl-adulto-prog:'+EMAIL)||'{}'); return !!(pa&&pa.foglio); }catch(e){ return false; } }
     return false;   /* le altre parti non hanno ancora esercizi: non completabili finché non esistono */
   }
   function prevPartsDone(id){

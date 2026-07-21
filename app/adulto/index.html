@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<script>
+/* accesso controllato da /app/ — qui si verifica solo la sessione, senza form */
+(function(){
+  var email, token;
+  try{ email=(localStorage.getItem('ovl-user')||'').trim().toLowerCase(); token=localStorage.getItem('ovl-session')||''; }
+  catch(e){ location.replace('/app/'); return; }
+  if(!email||!token){ location.replace('/app/'); return; }
+  fetch('/api/auth/verify',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,token:token})})
+    .then(function(r){return r.json();})
+    .then(function(d){ if(!d.ok) location.replace('/app/'); })
+    .catch(function(){});
+})();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>L'Adulto Interiore · Esercizi · Elisa Soul Medium</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:rgba(0,0,0,0)}
+:root{
+  --glic:#b9a3e3; --glic-hi:#dccdf6; --glic-deep:#8a6fc0;
+  --gold:#c9a84c; --gold-pale:#e8d9ae;
+  --txt:#e6e0ec; --txt-soft:#b7aec4; --txt-dim:#8d8499;
+  --card:rgba(22,18,29,.72); --card-line:rgba(185,163,227,.16);
+  --field:rgba(10,8,14,.55); --field-line:rgba(185,163,227,.3);
+  --seen:#7fd6a0; --seen-glow:rgba(127,214,160,.5);
+}
+html{scroll-behavior:smooth}
+body{
+  background:
+    linear-gradient(180deg, rgba(8,7,11,.95) 0%, rgba(10,9,13,.92) 8%, rgba(11,10,14,.91) 100%),
+    url('/src/pagina.jpg') center top/100% auto repeat;
+  background-attachment:fixed;
+  font-family:'Cormorant Garamond',Georgia,serif;color:var(--txt);min-height:100vh;
+  --lm-c1:#fff4ea;--lm-mid:#dca06b;--lm-g1:rgba(235,186,138,.7);--lm-g2:rgba(205,148,96,.46);--lm-g3:rgba(176,112,64,.24);
+}
+body.lt1{--lm-c1:#eef4f8;--lm-mid:#a8c8e0;--lm-g1:rgba(190,218,240,.88);--lm-g2:rgba(148,188,218,.54);--lm-g3:rgba(108,158,196,.27)}
+body.lt2{--lm-c1:#ffffff;--lm-mid:#c6cbd2;--lm-g1:rgba(214,220,228,.85);--lm-g2:rgba(172,182,194,.5);--lm-g3:rgba(132,144,158,.27)}
+body.lt3{--lm-c1:#ffffff;--lm-mid:#b9ddf6;--lm-g1:rgba(190,225,252,.9);--lm-g2:rgba(126,190,242,.52);--lm-g3:rgba(88,160,228,.26)}
+body.lt4{--lm-c1:#ffffff;--lm-mid:#a7b6ef;--lm-g1:rgba(180,194,252,.9);--lm-g2:rgba(128,148,238,.52);--lm-g3:rgba(98,118,222,.26)}
+body.lt5{--lm-c1:#ffffff;--lm-mid:#ad7ff0;--lm-g1:rgba(206,170,255,.9);--lm-g2:rgba(164,112,246,.5);--lm-g3:rgba(128,76,226,.26)}
+body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:rgba(186,150,240,.56);--lm-g3:rgba(150,110,215,.3)}
+
+/* ===== luce guida ===== */
+#lume{position:absolute;left:0;top:0;z-index:40;width:56px;height:56px;margin:-28px 0 0 -28px;
+  pointer-events:auto;cursor:pointer;transition:transform 1.4s cubic-bezier(.45,.05,.25,1), opacity .8s ease;
+  animation:lflick 3.1s ease-in-out infinite}
+@keyframes lflick{0%,100%{filter:brightness(1)}50%{filter:brightness(1.28)}}
+#lume::after{content:'';position:absolute;inset:19px;border-radius:50%;
+  background:radial-gradient(circle at 38% 34%, var(--lm-c1) 0%, var(--lm-c1) 28%, var(--lm-mid) 58%, transparent 78%);
+  box-shadow:0 0 12px 4px var(--lm-g1),0 0 38px 16px var(--lm-g2),0 0 95px 44px var(--lm-g3),inset 0 0 4px rgba(220,215,245,.5)}
+#lume::before{content:'';position:absolute;inset:-6px;border-radius:50%;animation:lpulse 2.6s ease-in-out infinite}
+@keyframes lpulse{0%,100%{box-shadow:0 0 0 0 var(--lm-g2)}50%{box-shadow:0 0 0 7px transparent}}
+@media(max-width:760px){
+  #lume{width:42px;height:42px;margin:-21px 0 0 -21px}
+  #lume::after{inset:13px;box-shadow:0 0 8px 3px var(--lm-g1),0 0 24px 9px var(--lm-g2),0 0 54px 22px var(--lm-g3),inset 0 0 4px rgba(220,215,245,.5)}
+}
+
+/* ===== freccetta indietro fissa ===== */
+.back-fab{position:fixed;z-index:50;
+  top:calc(12px + env(safe-area-inset-top,0px));
+  left:calc(12px + env(safe-area-inset-left,0px));
+  width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:var(--glic-hi);
+  background:rgba(16,12,24,.42);border:1px solid rgba(205,178,242,.32);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  box-shadow:0 4px 14px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.08);
+  transition:background .2s,border-color .2s,transform .2s,box-shadow .2s}
+.back-fab:hover{background:rgba(40,30,60,.62);border-color:rgba(220,205,250,.7);transform:translateY(-1px);
+  box-shadow:0 6px 18px rgba(120,80,200,.35), inset 0 1px 0 rgba(255,255,255,.12)}
+.back-fab svg{width:18px;height:18px;display:block;filter:drop-shadow(0 0 4px rgba(185,163,227,.4))}
+@media(max-width:520px){.back-fab{width:38px;height:38px}}
+
+/* ===== colonna ===== */
+.page{max-width:760px;margin:0 auto;padding:calc(env(safe-area-inset-top,0px) + 8px) 0 48px;position:relative}
+@media(min-width:920px){.page{padding-top:calc(env(safe-area-inset-top,0px) + 14px)}}
+
+/* ===== header ===== */
+.hd{padding:26px 22px 16px;text-align:center}
+.hd .orn{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:12px}
+.hd .orn .l{width:80px;height:1px;background:linear-gradient(90deg,transparent,rgba(185,163,227,.6),transparent)}
+.hd .orn .d{width:6px;height:6px;border:1px solid var(--glic);transform:rotate(45deg)}
+.hd .cap{font-family:'Cinzel',serif;font-size:14.5px;font-weight:600;letter-spacing:.3em;color:var(--gold);text-shadow:0 0 14px rgba(201,168,76,.4);margin-bottom:8px}
+.hd h1{font-family:'Cinzel',serif;font-weight:600;font-size:clamp(23px,5.4vw,32px);letter-spacing:.07em;color:#f0eaf6;text-shadow:0 0 30px rgba(185,163,227,.35)}
+.hd .lead{font-size:20px;color:var(--txt-soft);margin:13px auto 0;max-width:560px;line-height:1.55}
+.hd .lead b{color:var(--gold-pale);font-weight:600}
+
+/* ===== HUB: le due icone/esercizi ===== */
+.exwrap{padding:8px 18px 0;display:flex;flex-direction:column;gap:14px}
+.exitem{display:flex;align-items:center;gap:15px;width:100%;text-align:left;cursor:pointer;
+  border:1px solid var(--card-line);border-radius:18px;padding:17px 18px;color:inherit;font-family:inherit;
+  background:linear-gradient(180deg, rgba(26,21,36,.8), rgba(16,13,23,.86));
+  box-shadow:0 6px 20px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.05);
+  transition:box-shadow .3s, border-color .3s, transform .3s}
+.exitem:hover{transform:translateY(-2px);border-color:rgba(205,178,242,.55);box-shadow:0 12px 30px rgba(120,80,200,.3)}
+.exitem.locked{opacity:.78}
+.exitem.seen{border-color:rgba(127,214,160,.42)}
+.exic{flex:none;width:54px;height:54px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;
+  background:radial-gradient(circle at 38% 30%, rgba(120,95,184,.5), rgba(40,30,62,.7));
+  border:1px solid rgba(185,163,227,.3);box-shadow:inset 0 1px 2px rgba(255,255,255,.12), 0 3px 10px rgba(0,0,0,.4)}
+.exitem.seen .exic{background:radial-gradient(circle at 38% 30%, rgba(127,214,160,.4), rgba(30,52,40,.7));border-color:rgba(127,214,160,.45)}
+.exmeta{flex:1;min-width:0}
+.extag{font-family:'Cinzel',serif;font-size:13px;letter-spacing:.16em;color:var(--gold);opacity:.85;margin-bottom:3px}
+.exitem h3{font-family:'Cinzel',serif;font-weight:600;font-size:21px;color:#f0eaf6;line-height:1.25;margin-bottom:5px}
+.exitem p{font-size:18.5px;color:var(--txt-soft);line-height:1.45}
+.exarrow{flex:none;color:var(--glic);font-size:22px;opacity:.7}
+.exstate{flex:none;font-family:'Cinzel',serif;font-size:13px;letter-spacing:.08em;color:var(--txt-dim);white-space:nowrap}
+.exitem.seen .exstate{color:var(--seen);text-shadow:0 0 8px var(--seen-glow)}
+.exitem.locked .exarrow{color:var(--gold-pale)}
+
+.hubnote{margin:18px 18px 0;text-align:center;font-size:18px;color:var(--txt-dim);line-height:1.55}
+.hubnote b{color:var(--gold-pale);font-weight:600}
+
+/* ===== vista esercizio (foglio) ===== */
+.view{display:none}
+.view.on{display:block}
+.fbox{margin:0 18px;border:1px solid var(--card-line);border-radius:18px;padding:20px 18px 22px;
+  background:linear-gradient(180deg, rgba(26,21,36,.78), rgba(16,13,23,.85));box-shadow:0 6px 20px rgba(0,0,0,.4)}
+.fintro{font-size:17.5px;color:var(--txt-soft);line-height:1.6;margin-bottom:8px}
+.fintro b{color:var(--gold-pale);font-weight:600}
+.fld label{display:block;font-family:'Cinzel',serif;font-size:13.5px;letter-spacing:.1em;color:var(--txt-dim);margin:12px 0 5px}
+textarea{width:100%;font-family:'Cormorant Garamond',serif;color:var(--txt);
+  background:var(--field);border:1px solid var(--field-line);border-radius:10px;padding:11px 13px;font-size:20px;line-height:1.5;
+  resize:none;overflow:hidden;min-height:70px}
+textarea:focus{outline:none;border-color:var(--glic-hi);box-shadow:0 0 0 1px rgba(220,205,250,.4), 0 0 16px rgba(150,110,215,.2)}
+
+.factions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:26px 18px 0}
+.fbtn{font-family:'Cinzel',serif;font-size:15px;letter-spacing:.05em;cursor:pointer;min-height:64px;padding:12px 14px;border-radius:16px;
+  display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.35;
+  border:1px solid rgba(185,163,227,.5);color:var(--glic-hi);background:linear-gradient(180deg, rgba(60,46,92,.6), rgba(34,26,52,.7));
+  box-shadow:0 3px 10px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.1);transition:all .2s}
+.fbtn:hover{border-color:rgba(205,178,242,.8);color:#fff;transform:translateY(-1px);box-shadow:0 6px 18px rgba(120,80,200,.4)}
+.fbtn.gold{color:#2a2208;border-color:rgba(201,168,76,.8);background:linear-gradient(180deg, #e8d9ae, var(--gold));text-shadow:none}
+.fbtn.done{color:#0e2a1b;border-color:rgba(127,214,160,.8);background:linear-gradient(180deg, #9fe6bd, var(--seen))}
+.fbtn.done::before{content:'✓ '}
+.fhint{grid-column:1 / -1;text-align:center;font-size:15px;color:var(--txt-dim);font-style:italic;margin-top:2px}
+
+.lframe{position:relative;padding-top:56.25%;height:0;overflow:hidden;background:#000;border-radius:14px;border:1px solid rgba(185,163,227,.2)}
+.lframe iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
+.lframe .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif;font-size:14.5px;letter-spacing:.12em;color:var(--txt-dim)}
+
+/* zone del foglio (ogni domanda = una zona per la luce) */
+.fzone{position:relative;padding:18px 4px 16px;border-top:1px solid rgba(185,163,227,.12);scroll-margin-top:70px;transition:background .3s}
+.fzone:first-of-type{border-top:none}
+.fzone.lit{background:linear-gradient(90deg, rgba(185,163,227,.07), transparent 70%)}
+.fq-n{font-family:'Cinzel',serif;font-size:13.5px;letter-spacing:.2em;color:var(--gold);margin-bottom:6px}
+.fq-q{font-size:21px;color:#f0eaf6;line-height:1.4;margin-bottom:10px;font-weight:600}
+.fq-help{font-size:18.5px;color:var(--txt-soft);line-height:1.55;margin:8px 0 6px}
+.fq-help b{color:var(--gold-pale);font-weight:600}
+.fclose{font-size:19px;color:var(--txt-soft);line-height:1.6;margin-top:20px;padding-top:16px;border-top:1px solid rgba(185,163,227,.14)}
+.fclose b{color:var(--gold-pale);font-weight:600}
+/* box Palo Santo (facoltativo) */
+.palo{margin:18px 0 2px;border:1px solid rgba(201,168,76,.3);border-radius:14px;padding:15px 16px;background:radial-gradient(120% 100% at 50% 0%, rgba(60,50,28,.4), rgba(20,16,10,.45))}
+.palo .pl-t{font-family:'Cinzel',serif;font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-pale);margin-bottom:8px}
+.palo p{font-size:18px;color:var(--txt-soft);line-height:1.55}
+.palo p b{color:var(--gold-pale);font-weight:600}
+
+/* ===== Esercizio · visualizzazione guidata ===== */
+.medwrap{margin:0 18px}
+.medintro{font-size:18.5px;color:var(--txt-soft);line-height:1.65;margin-bottom:18px}
+.medintro b{color:var(--gold-pale);font-weight:600}
+.medcard{border:1px solid var(--card-line);border-radius:18px;padding:18px 18px 20px;margin-bottom:16px;
+  background:linear-gradient(180deg, rgba(26,21,36,.78), rgba(16,13,23,.85));box-shadow:0 6px 20px rgba(0,0,0,.4)}
+.medlbl{font-family:'Cinzel',serif;font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:var(--glic);margin-bottom:12px}
+.medprep{list-style:none;margin:0;padding:0}
+.medprep li{display:flex;gap:12px;align-items:flex-start;font-size:18px;color:var(--txt-soft);line-height:1.5;margin-bottom:12px}
+.medprep li:last-child{margin-bottom:0}
+.medprep .pi{flex:none;width:7px;height:7px;border-radius:50%;background:var(--gold);margin-top:9px;box-shadow:0 0 8px var(--lm-g2)}
+.medprep b{color:var(--gold-pale);font-weight:600}
+/* lettore musica consigliata */
+.medmus{border:1px solid rgba(185,163,227,.4);border-radius:18px;padding:16px 16px 18px;margin-bottom:18px;
+  background:radial-gradient(120% 100% at 50% 0%, rgba(60,46,92,.5), rgba(18,14,28,.65));box-shadow:0 6px 22px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.05)}
+.medmus .mtitle{font-family:'Cinzel',serif;font-size:16px;font-weight:600;color:#f0eaf6;text-align:center;letter-spacing:.02em}
+.medmus .mnote{font-size:16px;color:var(--txt-soft);line-height:1.5;text-align:center;margin:7px 0 14px}
+.medmus .mnote b{color:var(--gold-pale)}
+.medpanel{margin-top:14px;border:1px solid rgba(185,163,227,.3);border-radius:14px;padding:14px 14px 16px;background:rgba(10,8,16,.4)}
+.medp-title{font-family:'Cinzel',serif;font-size:15px;letter-spacing:.06em;color:var(--glic-hi);text-align:center;margin-bottom:11px}
+.medp-seek{position:relative;height:8px;border-radius:8px;background:rgba(10,8,16,.75);cursor:pointer;touch-action:none;box-shadow:inset 0 2px 5px rgba(0,0,0,.6)}
+.medp-seek::before{content:'';position:absolute;left:0;right:0;top:-11px;bottom:-11px}
+.medp-fill{height:100%;border-radius:8px;background:linear-gradient(180deg,var(--glic-hi),var(--glic) 55%,#9070c8);width:0%;pointer-events:none;box-shadow:0 0 10px rgba(185,163,227,.55)}
+.medp-knob{position:absolute;top:50%;width:16px;height:16px;border-radius:50%;transform:translate(-8px,-50%);left:0;pointer-events:none;background:radial-gradient(circle at 36% 30%,#fff,#c4aae8 80%);box-shadow:0 3px 10px rgba(0,0,0,.55),0 0 12px rgba(185,163,227,.5)}
+.medp-times{display:flex;justify-content:space-between;font-size:15px;color:var(--txt-dim);font-variant-numeric:tabular-nums;margin-top:6px}
+.medp-main{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:12px 0 10px}
+.medp-tracks{display:flex;flex-direction:column;gap:7px;flex:1;min-width:0}
+.medp-trk{font-family:'Cinzel',serif;font-size:15px;letter-spacing:.04em;text-align:left;color:var(--txt-soft);cursor:pointer;
+  border:1px solid rgba(185,163,227,.28);border-radius:10px;padding:10px 13px;background:rgba(185,163,227,.06);transition:all .15s}
+.medp-trk:hover{border-color:rgba(205,178,242,.6);color:#fff}
+.medp-trk.on{color:#fff;border-color:rgba(205,178,242,.8);background:rgba(150,110,215,.28);box-shadow:0 0 14px rgba(150,110,215,.3)}
+.medp-btn{width:54px;height:54px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--glic-hi);
+  background:radial-gradient(circle at 38% 32%,rgba(220,205,250,.3),rgba(185,163,227,.18) 45%,rgba(80,50,120,.4));border:1px solid rgba(185,163,227,.55);box-shadow:0 6px 22px rgba(0,0,0,.5),0 0 22px rgba(185,163,227,.25);transition:all .18s}
+.medp-btn:hover{border-color:rgba(220,205,250,.9)}
+.medp-btn.on{background:radial-gradient(circle at 38% 32%,rgba(127,214,160,.4),rgba(30,60,45,.5));border-color:rgba(127,214,160,.6)}
+.medp-btn svg{width:24px;height:24px;display:block}
+.medp-vol-row{display:flex;align-items:center;gap:11px;margin-top:4px}
+.medp-vol-ic{font-size:21px;flex:none;width:24px;text-align:center}
+.medp-vol{-webkit-appearance:none;appearance:none;flex:1;height:7px;border-radius:7px;background:rgba(10,8,16,.75);box-shadow:inset 0 2px 5px rgba(0,0,0,.6);outline:none;cursor:pointer}
+.medp-vol::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:18px;height:18px;border-radius:50%;background:radial-gradient(circle at 36% 30%,#fff,#c4aae8 80%);box-shadow:0 3px 10px rgba(0,0,0,.55),0 0 12px rgba(185,163,227,.5);cursor:pointer}
+.medp-vol::-moz-range-thumb{width:18px;height:18px;border:none;border-radius:50%;background:radial-gradient(circle at 36% 30%,#fff,#c4aae8);box-shadow:0 3px 10px rgba(0,0,0,.55);cursor:pointer}
+.mhint{font-size:15.5px;color:var(--txt-dim);text-align:center;font-style:italic;line-height:1.5;margin-top:10px}
+.mhint b{color:var(--glic-hi);font-style:normal}
+.medvideo{margin:10px 0 20px}
+.medvintro{font-size:17px;color:var(--txt-soft);line-height:1.55;margin-bottom:10px;text-align:center}
+.medvintro b{color:var(--gold-pale);font-weight:600}
+/* i passi della visualizzazione */
+.medstep{padding:16px 0;border-top:1px solid rgba(185,163,227,.12)}
+.medstep:first-of-type{border-top:none;padding-top:2px}
+.medstep .sn{font-family:'Cinzel',serif;font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+.medstep p{font-size:18.5px;color:var(--txt);line-height:1.72;margin:0}
+.medstep p+p{margin-top:10px}
+.medstep p b{color:var(--gold-pale);font-weight:600}
+.medstep .say{color:var(--glic-hi);font-style:italic}
+.medaffirm{border:1px solid rgba(201,168,76,.35);border-radius:16px;padding:16px 18px;margin:16px 0 2px;
+  background:radial-gradient(120% 100% at 50% 0%, rgba(60,50,28,.5), rgba(20,16,10,.5))}
+.medaffirm .sn{color:var(--gold-pale)}
+.medaffirm ul{list-style:none;margin:0;padding:0}
+.medaffirm li{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:600;color:var(--gold-pale);line-height:1.5;margin-bottom:9px;text-align:center}
+.medaffirm li:last-child{margin-bottom:0}
+.medaffirm li::before{content:'« ';opacity:.45}
+.medaffirm li::after{content:' »';opacity:.45}
+.medclose{font-size:18px;color:var(--txt-soft);line-height:1.65;margin-top:18px}
+.medclose b{color:var(--gold-pale);font-weight:600}
+.medactions{display:flex;justify-content:center;margin-top:24px}
+.medactions .fbtn{flex:0 1 340px;min-width:240px}
+
+/* ===== pannello GUIDA (luce) ===== */
+#veil{position:fixed;inset:0;z-index:60;background:rgba(4,3,8,.72);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);opacity:0;pointer-events:none;transition:opacity .45s ease}
+#veil.on{opacity:1;pointer-events:auto}
+#gpan{position:fixed;z-index:61;left:50%;top:50%;transform:translate(-50%,-50%) scale(.96);width:min(720px,94vw);height:min(86vh,820px);
+  display:flex;flex-direction:column;border:1px solid rgba(185,163,227,.35);border-radius:18px;
+  background:linear-gradient(180deg, rgba(13,10,18,.97), rgba(10,8,14,.97)), url('/src/pagina.jpg') center/cover;
+  box-shadow:0 0 60px rgba(150,110,215,.25), 0 30px 80px rgba(0,0,0,.7);opacity:0;pointer-events:none;transition:opacity .45s ease, transform .45s ease}
+#gpan.on{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1)}
+.gp-hd{display:flex;align-items:center;gap:12px;padding:18px 20px 14px;border-bottom:1px solid rgba(185,163,227,.2)}
+.gp-orb{width:34px;height:34px;border-radius:50%;flex-shrink:0;background:radial-gradient(circle at 38% 34%, #fff 0%, #fff 30%, var(--lm-mid) 60%, transparent 80%);box-shadow:0 0 10px 3px var(--lm-g1), 0 0 26px 10px var(--lm-g2);animation:lflick 3.1s ease-in-out infinite}
+.gp-hd h2{font-family:'Cinzel',serif;font-size:21px;font-weight:600;color:#f0eaf6;flex:1}
+.gp-x{background:none;border:1px solid rgba(185,163,227,.4);color:var(--txt-soft);width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:19px}
+.gp-x:hover{color:#fff;border-color:var(--glic-hi)}
+.gp-bd{flex:1;overflow-y:auto;padding:18px 20px 26px;-webkit-overflow-scrolling:touch}
+.gp-bd p{font-size:20px;line-height:1.62;color:var(--txt-soft);margin-bottom:12px}
+.gp-bd p b{color:var(--gold-pale);font-weight:600}
+.gp-giorn{margin-top:18px;padding:14px 16px;border:1px solid rgba(201,168,76,.3);border-radius:14px;background:rgba(40,33,22,.45)}
+.gp-giorn p{margin:0;font-size:19px;color:var(--txt-soft)}
+#mu-mini{margin-bottom:14px}
+.mm-label{font-family:'Cinzel',serif;font-size:12.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--glic);margin-bottom:5px}
+.mm-title{font-size:18px;color:#f0eaf6;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:8px}
+.mm-ctrls{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:8px}
+.mm-btn{background:linear-gradient(180deg,rgba(42,30,62,.82) 0%,rgba(22,14,36,.92) 100%);border:1px solid rgba(185,163,227,.22);border-top-color:rgba(220,205,250,.32);cursor:pointer;color:var(--glic-hi);padding:4px;border-radius:50%;transition:all .18s;width:34px;height:34px;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 8px rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.06)}
+.mm-btn:hover{background:linear-gradient(180deg,rgba(62,44,90,.88) 0%,rgba(38,24,58,.94) 100%)}
+.mm-btn.mm-play{background:radial-gradient(circle at 38% 32%,rgba(220,205,250,.24) 0%,rgba(185,163,227,.16) 45%,rgba(80,50,120,.3) 100%);border:1px solid rgba(185,163,227,.4);border-top-color:rgba(236,223,248,.5);width:38px;height:38px;box-shadow:0 4px 14px rgba(0,0,0,.42),0 0 16px rgba(185,163,227,.18),inset 0 1px 0 rgba(255,255,255,.08)}
+.mm-btn svg{width:16px;height:16px;display:block}
+.mm-btn.mm-play svg{width:18px;height:18px}
+.mm-bar{position:relative;height:5px;border-radius:5px;background:rgba(10,8,16,.75);margin:0 4px;cursor:pointer;touch-action:none;box-shadow:inset 0 2px 4px rgba(0,0,0,.55),0 1px 0 rgba(255,255,255,.04)}
+.mm-bar::before{content:'';position:absolute;left:0;right:0;top:-11px;bottom:-11px}
+.mm-fill{height:100%;border-radius:5px;background:linear-gradient(180deg,var(--glic-hi) 0%,var(--glic) 55%,#9070c8 100%);width:0%;pointer-events:none;box-shadow:0 0 8px rgba(185,163,227,.5),inset 0 1px 0 rgba(255,255,255,.18)}
+
+#saved{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(60px);background:rgba(22,17,28,.96);color:var(--glic-hi);border:1px solid rgba(185,163,227,.5);border-radius:30px;padding:9px 20px;font-family:'Cinzel',serif;font-size:14.5px;letter-spacing:.1em;z-index:70;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none}
+#saved.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media(max-width:520px){
+  .exwrap{padding:6px 13px 0}
+  .fbox{margin:0 13px}.factions{margin-left:13px;margin-right:13px}.medwrap{margin:0 13px}
+  .exic{width:48px;height:48px;font-size:25px}
+}
+
+/* copertina bloccata (Mensili) + popup "passa all'annuale" */
+.llock{position:absolute;inset:0;border-radius:12px;overflow:hidden;background-color:#15101e;background-size:cover;background-position:center;background-repeat:no-repeat}
+.llock::before{content:'';position:absolute;inset:0;background:radial-gradient(120% 120% at 50% 34%,rgba(20,16,30,.5),rgba(8,6,12,.84))}
+.llock-inner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;z-index:1}
+.llock-ic{font-size:22px;opacity:.92;filter:drop-shadow(0 1px 5px rgba(0,0,0,.7))}
+.llock-play{width:58px;height:58px;border-radius:50%;cursor:pointer;border:1px solid rgba(220,205,250,.5);
+  background:radial-gradient(circle at 38% 32%,rgba(220,205,250,.34),rgba(120,90,180,.36));color:#f0eaf6;
+  display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,.5),0 0 18px rgba(185,163,227,.3)}
+.llock-play svg{width:24px;height:24px;margin-left:3px}
+.llock-play:hover{border-color:#dccdf6;transform:scale(1.05)}
+.llock-t{font-family:'Cormorant Garamond',Georgia,serif;font-size:17px;color:#f3eefb;text-align:center;padding:0 22px;text-shadow:0 1px 6px rgba(0,0,0,.8)}
+.flock{margin:0 18px 22px;border:1px solid rgba(201,168,76,.34);border-radius:18px;padding:26px 20px;text-align:center;
+  background:linear-gradient(180deg,rgba(30,24,42,.7),rgba(16,12,22,.8))}
+.flock-ic{font-size:26px;margin-bottom:8px}
+.flock-h{font-family:'Cinzel',serif;font-weight:600;font-size:18px;color:#f0eaf6;margin-bottom:10px}
+.flock-p{font-family:'Cormorant Garamond',Georgia,serif;font-size:18px;line-height:1.5;color:#d7cfe4;margin:0 0 16px}
+.flock-p b{color:#e8d9ae}
+.flock-btn{font-family:'Cinzel',serif;font-size:14px;letter-spacing:.05em;cursor:pointer;color:#0e0b14;border:none;border-radius:22px;
+  padding:11px 22px;background:linear-gradient(180deg,#e8d9ae,#c9a84c)}
+.flock-btn:hover{filter:brightness(1.06)}
+.ups-veil{position:fixed;inset:0;z-index:120;display:none;align-items:center;justify-content:center;padding:22px;background:rgba(8,6,12,.72)}
+.ups-veil.on{display:flex}
+.ups-card{position:relative;max-width:400px;width:100%;max-height:92vh;overflow-y:auto;border:1px solid rgba(201,168,76,.4);border-radius:20px;padding:30px 22px 22px;text-align:center;
+  background:linear-gradient(180deg,rgba(28,22,40,.98),rgba(14,11,20,.98));box-shadow:0 18px 60px rgba(0,0,0,.6)}
+.ups-x{position:absolute;top:10px;right:12px;width:32px;height:32px;border-radius:50%;border:none;background:rgba(255,255,255,.08);
+  color:#fff;font-size:16px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s}
+.ups-x:hover{background:rgba(255,255,255,.2)}
+.ups-ic{font-size:30px;margin-bottom:8px}
+.ups-h{font-family:'Cinzel',serif;font-weight:600;font-size:20px;color:#f0eaf6;line-height:1.3;margin:0 0 12px}
+.ups-p{font-family:'Cormorant Garamond',Georgia,serif;font-size:18px;line-height:1.55;color:#d7cfe4;margin:0 0 14px}
+.ups-p b{color:#e8d9ae}
+.ups-video{margin:2px auto 16px;max-width:215px}
+.ups-vframe{position:relative;width:100%;padding-top:177.78%;border-radius:12px;overflow:hidden;background:#0c0a12;border:1px solid rgba(185,163,227,.2)}
+.ups-vframe iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.ups-vph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#8d8499;font-family:'Cinzel',serif;font-size:13px}
+.ups-btn{display:inline-block;text-decoration:none;font-family:'Cinzel',serif;font-size:16px;letter-spacing:.06em;cursor:pointer;color:#0e0b14;border:none;border-radius:24px;padding:13px 30px;background:linear-gradient(180deg,#e8d9ae,#c9a84c)}
+.ups-btn:hover{filter:brightness(1.06)}
+.ups-info{font-family:'Cormorant Garamond',Georgia,serif;font-size:15px;color:#b7aec4;margin:12px 0 0}
+.ups-info b{color:#e8d9ae}
+</style>
+</head>
+<body>
+
+<button id="back-fab" class="back-fab" type="button" aria-label="Indietro" title="Indietro">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+</button>
+
+<div id="lume" title="Tocca la luce per saperne di più"></div>
+
+<div class="page">
+
+  <header class="hd">
+    <div class="orn"><div class="l"></div><div class="d"></div><div class="l"></div></div>
+    <div class="cap">Esercizi · Mondo Interiore</div>
+    <h1>L'Adulto Interiore</h1>
+    <p class="lead">La parte <b>presente e stabile</b> di te, quella che contiene ed equilibra. Qui la incontri in <b>due passi</b>: prima la vivi nella visualizzazione, poi ne scrivi le emozioni e impari l'ancoraggio.</p>
+  </header>
+
+  <!-- ===== HUB: le due icone ===== -->
+  <section id="hub" class="view on">
+    <div class="exwrap">
+      <button class="exitem" id="ex-visio" type="button">
+        <span class="exic">🧘</span>
+        <span class="exmeta">
+          <span class="extag">Esercizio 1 · La visualizzazione</span>
+          <h3>Integra l'adulto e il bambino</h3>
+          <p>Una visualizzazione guidata, con la musica, per far <b>incontrare</b> il tuo adulto e il tuo bambino interiore.</p>
+        </span>
+        <span class="exstate" id="st-visio">Da fare</span>
+        <span class="exarrow">→</span>
+      </button>
+
+      <button class="exitem" id="ex-foglio" type="button">
+        <span class="exic">📝</span>
+        <span class="exmeta">
+          <span class="extag">Esercizio 2 · Il foglio</span>
+          <h3>Le emozioni e l'ancoraggio</h3>
+          <p>Dopo la visualizzazione, scrivi cosa hai provato e impara a <b>richiamare</b> il tuo adulto interiore nella vita di ogni giorno.</p>
+        </span>
+        <span class="exstate" id="st-foglio">Da fare</span>
+        <span class="exarrow">→</span>
+      </button>
+    </div>
+    <div class="hubnote"><b>Un passo alla volta.</b> Fai questo esercizio una volta, con calma. E continua ogni giorno il Giornaliero: è ciò che integra tutto il cammino.</div>
+  </section>
+
+  <!-- ===== ESERCIZIO 1 · LA VISUALIZZAZIONE ===== -->
+  <section id="visio" class="view">
+    <div class="medwrap">
+      <p class="medintro">L'<b>Adulto Interiore</b> è la parte di te legata al <b>presente</b>: quella che ascolta ed equilibra le emozioni, e che non vuole identificarsi con il dolore. In questa visualizzazione lo <b>incontri</b> e lo integri con il tuo bambino interiore. Non c'è nulla da scrivere: solo da <b>sentire</b>.</p>
+
+      <div class="medcard">
+        <div class="medlbl">Prima di iniziare</div>
+        <ul class="medprep">
+          <li><span class="pi"></span><span>Trova un <b>posto silenzioso</b> e tranquillo, dove nessuno ti interrompe. Mettiti comoda/o, con le <b>cuffie</b> se puoi.</span></li>
+          <li><span class="pi"></span><span>Se ti va, accendi una <b>candela</b>: aiuta a creare uno spazio di calma.</span></li>
+          <li><span class="pi"></span><span>Avvia una <b>musica rilassante</b> qui sotto e tienila a volume basso, così accompagna la mia voce senza coprirla.</span></li>
+          <li><span class="pi"></span><span>Avvia il <b>mio video</b> e lasciati guidare. Comincia da <b>due o tre minuti di respiro</b> — inspira ed espira, 15–20 volte — per lasciare andare la giornata.</span></li>
+        </ul>
+      </div>
+
+      <div class="medvideo">
+        <p class="medvintro"><b>La mia visualizzazione guidata</b> — lasciati accompagnare per far incontrare il tuo adulto e il tuo bambino interiore.</p>
+        <div class="lframe" id="visframe"><div class="ph">Carico il video…</div></div>
+      </div>
+
+      <div class="medmus">
+        <div class="mtitle">Musica per la visualizzazione</div>
+        <div class="mnote">Scegli un brano <b>rilassante</b> e lascialo suonare <b>insieme</b> alla mia voce, a volume basso.</div>
+        <div class="medpanel">
+          <div class="medp-title" id="medpTitle">Heteryc</div>
+          <div class="medp-seek" id="medpSeek"><div class="medp-fill" id="medpFill"></div><div class="medp-knob" id="medpKnob"></div></div>
+          <div class="medp-times"><span id="medpCur">0:00</span><span id="medpDur">--:--</span></div>
+          <div class="medp-main">
+            <div class="medp-tracks">
+              <button class="medp-trk on" type="button" data-f="heteryc-1.mp3">Heteryc I</button>
+              <button class="medp-trk" type="button" data-f="celtica-1.mp3">Celtica I</button>
+              <button class="medp-trk" type="button" data-f="natura.mp3">Natura</button>
+            </div>
+            <button class="medp-btn" id="medpPlay" type="button" aria-label="Play/Pausa"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
+          </div>
+          <div class="medp-vol-row"><span class="medp-vol-ic" id="medpVolIc">🔊</span><input class="medp-vol" id="medpVol" type="range" min="0" max="100" value="100" aria-label="Volume musica"></div>
+        </div>
+        <div class="mhint">Suona <b>insieme</b> al video; puoi gestirla anche dalla <b>luce</b>.</div>
+      </div>
+
+      <div class="medcard">
+        <div class="medlbl">I passi della visualizzazione</div>
+        <div class="medstep"><div class="sn">1 · Lo spazio e il respiro</div><p>Comoda/o, senti il tuo corpo: le gambe, le braccia. Fai <b>due o tre minuti di respiro continuo</b> — inspira ed espira, 15–20 volte — e lascia andare tutte le sensazioni della giornata.</p></div>
+        <div class="medstep"><div class="sn">2 · La stanza vuota</div><p>Immagina di essere sulla porta di una <b>stanza vuota</b>. Aprila, entra, e arredala con ciò che ami: un divano, un tavolo, cinque o sei <b>oggetti tuoi</b>. Poi scegli dove <b>sederti</b>.</p></div>
+        <div class="medstep"><div class="sn">3 · La versione stabile di te</div><p>Immagina una versione di te <b>calma, sicura, stabile, presente</b>: è il tuo adulto interiore. Fatti dire da lui: <span class="say">«Sono qui, adesso sono sicuro. Non devo affrontare tutto da solo: voglio capirmi, sostenermi, amarmi.»</span></p></div>
+        <div class="medstep"><div class="sn">4 · Entra il bambino</div><p>Dalla porta entra il tuo <b>bambino interiore</b>, quello che hai già conosciuto. Guardalo con calma — il viso, gli occhi, il sorriso — accoglilo e <b>avvicinalo</b> a te.</p></div>
+        <div class="medstep"><div class="sn">5 · La mano sulla spalla</div><p>Il tuo adulto — che sei tu — mette una <b>mano sulla spalla</b> del bambino e gli parla con dolcezza. È il cuore dell'incontro.</p>
+          <div class="medaffirm"><div class="sn">Le parole che gli dici</div><ul>
+            <li>Adesso non devi più affrontare tutto da solo: ci sono io con te</li>
+            <li>Sono la parte di te che resta presente anche quando hai paura</li>
+            <li>Ci sarò sempre, tutte le volte che ne avrai bisogno</li>
+          </ul></div>
+        </div>
+        <div class="medstep"><div class="sn">6 · L'abbraccio e la luce</div><p>Immagina che i due si <b>abbraccino</b>, e un'<b>energia di luce</b> li racchiuda entrambi. Un cerchio di amore, pace e integrazione che passa dal cuore del bambino all'adulto, e ritorna. È la base di un <b>nuovo te</b>.</p></div>
+        <div class="medstep"><div class="sn">7 · Le due strade</div><p>Poi si distaccano e prendono due strade: il <b>bambino a destra</b>, l'<b>adulto a sinistra</b>. Ma ogni volta che si gireranno, si <b>ritroveranno</b>: il bambino sa che l'adulto ci sarà ogni volta che si sentirà solo, non capito, in difficoltà.</p></div>
+        <div class="medstep"><div class="sn">8 · Il ritorno</div><p>Quando ti senti pronta/o, torna piano: tocca le <b>mani</b>, le braccia, accarezzati. Se senti dei <b>formicolii</b> è normale. Poi ringrazia le tue due parti: <span class="say">«Da oggi sono sia l'adulto interiore sia il bambino: e da oggi siamo insieme.»</span> Se hai acceso la candela, spegnila con calma.</p></div>
+      </div>
+
+      <p class="medclose">Hai incontrato e integrato le tue due parti: da oggi <b>fanno parte di te</b>. Nel secondo esercizio scriverai le emozioni che hai provato. E continua il <b>Giornaliero</b> — è ciò che radica tutto il cammino.</p>
+
+      <div class="medactions">
+        <button class="fbtn gold" type="button" id="btnVisio">Segna come completato</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ESERCIZIO 2 · IL FOGLIO (emozioni + ancoraggio) ===== -->
+  <section id="foglio" class="view">
+
+<!--MONTHLY
+    <div class="flock">
+      <div class="flock-ic">💓</div>
+      <div class="flock-h">Questo esercizio ti aspetta nel Cammino annuale</div>
+      <p class="flock-p">La visualizzazione dell'Adulto Interiore e il suo foglio fanno parte del <b>Cammino annuale</b> della community. Quando senti che è il tuo momento, li percorriamo insieme.</p>
+      <button class="flock-btn" type="button" onclick="showUpsell()">Scopri come proseguire 💓</button>
+    </div>
+MONTHLY-->
+<!--FULL-->
+    <div class="fbox">
+      <p class="fintro">Appena finita la visualizzazione, prenditi un momento per <b>scrivere cosa hai provato</b>. Non è un esercizio di testa: rispondi <b>di getto</b>, senza giudicarti. Rileggerlo nei giorni successivi ti farà vedere quanto cambi.</p>
+
+      <div class="fzone" data-zone="emozioni">
+        <div class="fq-n">1 · Le emozioni</div>
+        <div class="fq-q">Che emozioni hai sentito durante la visualizzazione?</div>
+        <p class="fq-help">Sollievo, tristezza, amore, gioia, allegria, un po' di vuoto… <b>Tutto quello che hai provato va bene.</b> Scrivilo così com'è, senza spiegarlo.</p>
+        <div class="fld"><label>Ho sentito…</label><textarea data-k="emozioni" placeholder="Le emozioni che hai provato durante la visualizzazione…"></textarea></div>
+      </div>
+
+      <div class="fzone" data-zone="incontro">
+        <div class="fq-n">2 · L'incontro</div>
+        <div class="fq-q">Com'è stato l'incontro tra il tuo adulto e il tuo bambino?</div>
+        <p class="fq-help">Quando l'adulto ha messo la mano sulla spalla del bambino, e nell'abbraccio: <b>cosa hai sentito?</b> Il bambino si è sentito al sicuro? Scrivi la prima cosa che ti arriva.</p>
+        <div class="fld"><label>Nell'incontro ho sentito…</label><textarea data-k="incontro" placeholder="Cosa hai provato nell'incontro tra le tue due parti…"></textarea></div>
+      </div>
+
+      <div class="fzone" data-zone="ancoraggio">
+        <div class="fq-n">3 · L'ancoraggio</div>
+        <div class="fq-q">Come richiamerai il tuo adulto interiore, da oggi?</div>
+        <p class="fq-help">È la parte più importante. Da ora, ogni volta che senti una <b>paura</b>, un'<b>insicurezza</b> o un'emozione che ti destabilizza, «<b>chiama</b>» il tuo adulto interiore: ti basta <b>pensarci</b>, arrivarci con il pensiero, e sentire cosa ti arriva. Ripetuto ogni volta, questo ti dà una base di <b>equilibrio</b>.</p>
+        <div class="fld"><label>La prossima volta che sentirò paura, il mio adulto interiore mi dirà…</label><textarea data-k="ancoraggio" placeholder="Cosa senti che ti direbbe la tua parte stabile e presente…"></textarea></div>
+      </div>
+
+      <div class="palo">
+        <div class="pl-t">Facoltativo · per chiudere</div>
+        <p>Se vuoi, puoi <b>accendere del Palo Santo</b> per chiudere e purificare la pratica. Mentre si consuma, ascolta i suoni intorno a te, senti il suo profumo e resta con le emozioni che provi. È solo un gesto in più, se ti fa piacere.</p>
+      </div>
+
+      <p class="fclose">Questo foglio resta salvato nel tuo account: potrai <b>rileggerlo</b> tra qualche giorno o tra qualche mese e vedere come sei cambiata/o. E ricorda: continua ogni giorno il Giornaliero — è ciò che integra tutto il cammino.</p>
+    </div>
+
+    <div class="factions">
+      <button class="fbtn" type="button" id="btnSave">Salva</button>
+      <button class="fbtn gold" type="button" id="btnDone">Segna come completato</button>
+      <div class="fhint">Puoi scrivere qui in libertà — resta salvato nel tuo account, e potrai rileggerlo quando vuoi.</div>
+    </div>
+<!--/FULL-->
+  </section>
+
+</div>
+
+<!-- pannello GUIDA -->
+<div id="veil"></div>
+<aside id="gpan" role="dialog" aria-label="La voce della Guida">
+  <div class="gp-hd"><div class="gp-orb"></div><h2 id="gpTitle">La Guida del Cammino</h2><button class="gp-x" id="gpX" aria-label="Chiudi">✕</button></div>
+  <div class="gp-bd">
+    <div id="mu-mini" style="display:none">
+      <div class="mm-label">In riproduzione</div>
+      <div class="mm-title" id="mm-title">—</div>
+      <div class="mm-ctrls">
+        <button class="mm-btn" id="mm-prev" aria-label="Precedente"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="5" width="2.5" height="14" rx="1.2"/><path d="M8 12 19 5v14z"/></svg></button>
+        <button class="mm-btn mm-play" id="mm-play" aria-label="Play/Pausa"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
+        <button class="mm-btn" id="mm-next" aria-label="Successiva"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="17.5" y="5" width="2.5" height="14" rx="1.2"/><path d="M16 12 5 5v14z"/></svg></button>
+      </div>
+      <div class="mm-bar" id="mm-bar"><div class="mm-fill" id="mm-fill"></div></div>
+    </div>
+    <div id="gpBody"></div>
+  </div>
+</aside>
+
+<div id="saved"></div>
+
+<div id="upsell" class="ups-veil" role="dialog" aria-modal="true" aria-label="Passa all'annuale">
+  <div class="ups-card">
+    <button class="ups-x" id="upsX" type="button" aria-label="Chiudi">✕</button>
+    <div class="ups-ic">💓</div>
+    <h3 class="ups-h">Questo fa parte del Cammino annuale</h3>
+    <p class="ups-p">La visualizzazione dell'Adulto Interiore e gli esercizi ti aspettano qui, nel <b>Cammino annuale</b>. Non c'è fretta — quando senti che è il tuo momento, lo proseguiamo insieme. Nel video ti spiego come passare dal mensile all'annuale.</p>
+    <div class="ups-video"><div class="ups-vframe" id="upsVframe"><div class="ups-vph">Carico il video…</div></div></div>
+    <a class="ups-btn" id="upsGo" href="https://www.elisasoulmedium.com/oltreilvelo" target="_blank" rel="noopener">Passa all'annuale →</a>
+    <p class="ups-info">Per info scrivimi a <b>oltreilvelo.elisa@gmail.com</b></p>
+  </div>
+</div>
+
+<script src="https://player.vimeo.com/api/player.js"></script>
+<script src="/app/lume.js?v=4"></script>
+<script src="/app/ovl-cloud.js?v=2"></script>
+<script>
+(function(){
+  var who='';
+  try{ who=(localStorage.getItem('ovl-user')||'').trim().toLowerCase(); }catch(e){}
+  /* colore della luce = livello della persona */
+  try{ if(window.OVL_LUME){ var _S=OVL_LUME.loadLocal(who); var _md=false; try{_md=localStorage.getItem('ovl-mondo:'+who)==='1';}catch(_e){} OVL_LUME.applyTier(OVL_LUME.allActiveDays(_S.store).length, _md); } }catch(e){}
+
+  var inShell=false; try{ inShell=window.parent && window.parent!==window; }catch(e){}
+
+  /* L'ID del video sta SOLO qui: per i Mensili il server rimuove questo blocco (trailer). */
+<!--FULL-->
+  var VID={video:'1201481001'};
+<!--/FULL-->
+<!--MONTHLY var VID={}; window.TRAILER=true; MONTHLY-->
+  var TRAILER=!!window.TRAILER;
+
+  /* popup "passa all'annuale" (Mensili) */
+  function upsLoadVideo(){
+    var f=document.getElementById('upsVframe'); if(!f || f.getAttribute('data-loaded')==='1') return;
+    f.setAttribute('data-loaded','1');
+    var ifr=document.createElement('iframe');
+    ifr.src='https://player.vimeo.com/video/1202457317?title=0&byline=0&portrait=0&badge=0';
+    ifr.setAttribute('allow','autoplay; fullscreen; picture-in-picture'); ifr.setAttribute('allowfullscreen','');
+    f.innerHTML=''; f.appendChild(ifr);
+  }
+  function showUpsell(){ var u=document.getElementById('upsell'); if(u) u.classList.add('on'); upsLoadVideo(); }
+  function closeUpsell(){ var u=document.getElementById('upsell'); if(u) u.classList.remove('on');
+    var f=document.getElementById('upsVframe'); if(f){ f.innerHTML='<div class="ups-vph">Carico il video…</div>'; f.removeAttribute('data-loaded'); } }
+  window.showUpsell=showUpsell;
+  (function(){ var u=document.getElementById('upsell'), x=document.getElementById('upsX');
+    if(x) x.addEventListener('click', closeUpsell);
+    if(u) u.addEventListener('click', function(e){ if(e.target===u) closeUpsell(); });
+    document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeUpsell(); });
+    if(TRAILER){ var bv=document.getElementById('btnVisio'); if(bv) bv.style.display='none'; }
+  })();
+
+  /* ===== viste ===== */
+  var hub=document.getElementById('hub'), visio=document.getElementById('visio'), foglio=document.getElementById('foglio');
+  var view='hub';
+  function showView(v){
+    view=v;
+    hub.classList.toggle('on', v==='hub');
+    visio.classList.toggle('on', v==='visio');
+    foglio.classList.toggle('on', v==='foglio');
+    window.scrollTo({top:0,behavior:'smooth'});
+    if(v==='visio'){ loadVisioVideo(); muSend('state'); }
+    else if(window.__visioVideoPause){ window.__visioVideoPause(); }   /* fuori dalla visualizzazione: fermo il video (la musica resta gestibile dalla luce) */
+    if(v==='foglio'){
+      setTimeout(growAll, 30);
+      var z0=foglio.querySelector('.fzone');
+      if(z0){ setTimeout(function(){ lightUp(z0); }, 420); } else lumeHome();
+    } else { lumeHome(); }
+  }
+  window.goHub=function(){ showView('hub'); };
+  document.getElementById('ex-visio').addEventListener('click', function(){ showView('visio'); });
+  document.getElementById('ex-foglio').addEventListener('click', function(){ showView('foglio'); });
+
+  /* ===== freccetta: dalla vista torna all'hub; dall'hub torna al Cammino ===== */
+  function goBack(){
+    if(view!=='hub'){ showView('hub'); return; }
+    if(inShell){ window.parent.postMessage({t:'day:back'}, location.origin); }
+    else { history.back(); }
+  }
+  document.getElementById('back-fab').addEventListener('click', goBack);
+
+  /* ===== il foglio: salvataggio nell'account ===== */
+  var FKEY='ovl-adulto-foglio:'+who;
+  var PKEY='ovl-adulto-prog:'+who;     /* { visio:true, foglio:true } */
+  var fields=[].slice.call(document.querySelectorAll('#foglio [data-k]'));
+  var data={};
+  try{ data=JSON.parse(localStorage.getItem(FKEY)||'{}')||{}; }catch(e){ data={}; }
+  var TOKEN=''; try{ TOKEN=localStorage.getItem('ovl-session')||''; }catch(e){}
+  function mkBucket(lk,ns){ return window.OVL_CLOUD ? OVL_CLOUD.bucket({ email:who, token:TOKEN, localKey:lk, ns:ns, seed:true }) : null; }
+  var cloudF=mkBucket(FKEY,'afoglio'), cloudP=mkBucket(PKEY,'aprog');
+  function fillFields(){ fields.forEach(function(el){
+    var k=el.getAttribute('data-k'); if(data[k]==null) return; el.value=data[k];
+  }); }
+  fillFields();
+  if(cloudF) cloudF.pull(function(ch){ if(!ch) return;
+    try{ data=JSON.parse(localStorage.getItem(FKEY)||'{}')||{}; }catch(e){}
+    fillFields(); try{ growAll(); }catch(e){}
+  });
+  function collect(){ var o={}; fields.forEach(function(el){ o[el.getAttribute('data-k')]=el.value; }); return o; }
+  function saveForm(silent){
+    data=collect();
+    try{ localStorage.setItem(FKEY, JSON.stringify(data)); }catch(e){}
+    if(cloudF) cloudF.push();
+    if(!silent) toast('Salvato nel tuo account');
+  }
+  function autogrow(el){ if(!el||el.tagName!=='TEXTAREA')return; el.style.height='auto'; el.style.height=(el.scrollHeight+2)+'px'; }
+  function growAll(){ fields.forEach(autogrow); }
+  var autoT=null;
+  fields.forEach(function(el){
+    el.addEventListener('input', function(){ autogrow(el); clearTimeout(autoT); autoT=setTimeout(function(){ saveForm(true); }, 600); });
+  });
+  (function(){ var b=document.getElementById('btnSave'); if(b) b.addEventListener('click', function(){ saveForm(false); }); })();
+
+  /* progresso esercizio */
+  var prog={}; try{ prog=JSON.parse(localStorage.getItem(PKEY)||'{}')||{}; }catch(e){ prog={}; }
+  function saveProg(){ try{ localStorage.setItem(PKEY, JSON.stringify(prog)); }catch(e){} if(cloudP) cloudP.push(); }
+  if(cloudP) cloudP.pull(function(ch){ if(!ch) return;
+    try{ prog=JSON.parse(localStorage.getItem(PKEY)||'{}')||{}; }catch(e){}
+    refreshProg();
+  });
+  function refreshProg(){
+    var bV=document.getElementById('btnVisio'), iv=document.getElementById('ex-visio'), sv=document.getElementById('st-visio');
+    if(bV){
+      if(prog.visio){ bV.classList.add('done'); bV.textContent='Completato'; if(iv)iv.classList.add('seen'); if(sv)sv.textContent='✓ Fatto'; }
+      else { bV.classList.remove('done'); bV.textContent='Segna come completato'; if(iv)iv.classList.remove('seen'); if(sv)sv.textContent='Da fare'; }
+    }
+    var bF=document.getElementById('btnDone'), it=document.getElementById('ex-foglio'), st=document.getElementById('st-foglio');
+    if(bF){
+      if(prog.foglio){ bF.classList.add('done'); bF.textContent='Completato'; if(it)it.classList.add('seen'); if(st)st.textContent='✓ Fatto'; }
+      else { bF.classList.remove('done'); bF.textContent='Segna come completato'; if(it)it.classList.remove('seen'); if(st)st.textContent='Da fare'; }
+    }
+  }
+  (function(){ var b=document.getElementById('btnDone'); if(b) b.addEventListener('click', function(){
+    saveForm(true);
+    prog.foglio = !prog.foglio; saveProg(); refreshProg();
+    toast(prog.foglio?'Esercizio completato':'Segno rimosso');
+  }); })();
+  (function(){ var b=document.getElementById('btnVisio'); if(b) b.addEventListener('click', function(){
+    prog.visio = !prog.visio; saveProg(); refreshProg();
+    toast(prog.visio?'Visualizzazione completata':'Segno rimosso');
+  }); })();
+
+  /* ===== video della visualizzazione (caricato alla prima apertura) ===== */
+  function lockFrame(f, coverUrl){
+    f.setAttribute('data-loaded','1');
+    f.innerHTML='<div class="llock"'+(coverUrl?(' style="background-image:url(\''+coverUrl+'\')"'):'')+'>'+
+      '<div class="llock-inner"><div class="llock-ic">🔒</div>'+
+      '<button class="llock-play" type="button" aria-label="Guarda il video"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>'+
+      '<div class="llock-t">Con il Cammino annuale possiamo guardarlo insieme 💓</div></div></div>';
+    var pb=f.querySelector('.llock-play'); if(pb) pb.addEventListener('click', showUpsell);
+  }
+  var visPlayer=null, visLoaded=false;
+  function loadVisioVideo(){
+    if(visLoaded) return; visLoaded=true;
+    var f=document.getElementById('visframe'); if(!f) return;
+    if(!VID.video){ lockFrame(f, '/api/cover?s=adulto&k=video'); return; }   /* Mensile: video bloccato */
+    var ifr=document.createElement('iframe');
+    ifr.src='https://player.vimeo.com/video/'+VID.video+'?title=0&byline=0&portrait=0&badge=0';
+    ifr.setAttribute('allow','autoplay; fullscreen; picture-in-picture');
+    ifr.setAttribute('allowfullscreen','');
+    f.innerHTML=''; f.appendChild(ifr);
+    if(window.Vimeo && Vimeo.Player){ try{ visPlayer=new Vimeo.Player(ifr); }catch(e){} }
+  }
+  window.__visioVideoPause=function(){ if(visPlayer){ try{ visPlayer.pause(); }catch(e){} } };
+
+  /* copertina delle card (thumbnail del video da Vimeo) */
+  (function(){
+    if(!VID.video) return;
+    var ic=document.querySelector('#ex-visio .exic'); if(!ic) return;
+    fetch('https://vimeo.com/api/oembed.json?url=https://vimeo.com/'+VID.video)
+      .then(function(r){ return r.json(); })
+      .then(function(d){ if(d&&d.thumbnail_url){ ic.textContent=''; ic.style.backgroundImage='url('+d.thumbnail_url+')'; ic.style.backgroundSize='cover'; ic.style.backgroundPosition='center'; } })
+      .catch(function(){});
+  })();
+
+  /* ===== musica: comanda la musica della shell — suona INSIEME al video ed è gestibile dalla luce ===== */
+  (function(){
+    var play=document.getElementById('medpPlay'); if(!play) return;
+    var title=document.getElementById('medpTitle'), fill=document.getElementById('medpFill'), knob=document.getElementById('medpKnob'),
+        seek=document.getElementById('medpSeek'), curEl=document.getElementById('medpCur'), durEl=document.getElementById('medpDur'),
+        vol=document.getElementById('medpVol'), volIc=document.getElementById('medpVolIc');
+    var active=false, dragS=false;
+    var SVG_PLAY='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
+    var SVG_PAUSE='<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>';
+    var trks=[].slice.call(document.querySelectorAll('.medp-trk')), selF='heteryc-1.mp3';
+    trks.forEach(function(c){ c.addEventListener('click', function(){ selF=c.getAttribute('data-f'); muSend('playf', selF); }); });
+    play.addEventListener('click', function(){ if(active) muSend('toggle'); else muSend('playf', selF); });
+    if(seek){ var sfrac=function(e){ var r=seek.getBoundingClientRect(); return Math.max(0,Math.min(1,(e.clientX-r.left)/r.width)); };
+      var paintF=function(f){ var pct=(f*100).toFixed(2)+'%'; if(fill)fill.style.width=pct; if(knob)knob.style.left=pct; };
+      seek.addEventListener('pointerdown', function(e){ if(!active)return; e.preventDefault();
+        var f=sfrac(e), st=null; dragS=true; paintF(f);
+        var mv=function(ev){ f=sfrac(ev); paintF(f); if(st===null){ st=setTimeout(function(){ st=null; muSend('seek',f); }, 80); } };
+        var up=function(){ if(st!==null){ clearTimeout(st); st=null; } muSend('seek',f); dragS=false; document.removeEventListener('pointermove',mv); document.removeEventListener('pointerup',up); document.removeEventListener('pointercancel',up); };
+        document.addEventListener('pointermove',mv); document.addEventListener('pointerup',up); document.addEventListener('pointercancel',up);
+      }); }
+    var volBusy=false;
+    function paintVol(x){ if(volIc) volIc.textContent = x===0?'🔇':(x<0.5?'🔉':'🔊'); }
+    if(vol){
+      var clrBusy=function(){ volBusy=false; };
+      vol.addEventListener('pointerdown', function(){ volBusy=true; });
+      vol.addEventListener('input', function(){ volBusy=true; muSend('vol', vol.value/100); paintVol(vol.value/100); });
+      vol.addEventListener('pointerup', clrBusy); vol.addEventListener('pointercancel', clrBusy);
+      vol.addEventListener('change', clrBusy); vol.addEventListener('blur', clrBusy);
+    }
+    window.addEventListener('message', function(e){ if(e.origin!==location.origin)return; var m=e.data||{}; if(m.t!=='mu:state')return;
+      active=!!m.active;
+      var pl=!!(m.active&&m.playing);
+      play.innerHTML=pl?SVG_PAUSE:SVG_PLAY; play.classList.toggle('on', pl);
+      if(title) title.textContent=m.title||'Musica';
+      if(m.f){ selF=m.f; trks.forEach(function(c){ c.classList.toggle('on', c.getAttribute('data-f')===m.f); }); }
+      if(!dragS){ var pct=((m.frac||0)*100).toFixed(2)+'%'; if(fill)fill.style.width=pct; if(knob)knob.style.left=pct; }
+      if(curEl)curEl.textContent=m.cur||'0:00'; if(durEl)durEl.textContent=m.dur||'--:--';
+      if(typeof m.vol==='number' && vol && !volBusy){ vol.value=Math.round(m.vol*100); paintVol(m.vol); }
+    });
+  })();
+
+  refreshProg();
+  addEventListener('pagehide', function(){ try{ if(cloudF)cloudF.beacon(); if(cloudP)cloudP.beacon(); }catch(e){} });
+
+  function toast(m){ var t=document.getElementById('saved'); t.textContent=m; t.classList.add('show'); clearTimeout(toast._t); toast._t=setTimeout(function(){ t.classList.remove('show'); }, 1800); }
+
+  /* ===== luce guida: per-zona nel foglio, per-vista altrove ===== */
+  var lume=document.getElementById('lume');
+  var litZone=null, curZone=null;
+  function isNarrow(){ return innerWidth<760; }
+  function moveLume(x,y){ lume.style.transform='translate3d('+(x|0)+'px,'+(y|0)+'px,0)'; }
+  function docPos(el){ var x=0,y=0; while(el){ x+=el.offsetLeft; y+=el.offsetTop; el=el.offsetParent; } return {x:x,y:y}; }
+  function lumeHome(){ if(litZone)litZone.classList.remove('lit'); litZone=null; curZone=null;
+    var hd=document.querySelector('.hd'); var x=isNarrow()?34:Math.max(34, innerWidth/2-400); moveLume(x, (hd?hd.offsetTop:20)+64); }
+  function lightUp(zone){
+    if(!zone){ lumeHome(); return; }
+    if(litZone && litZone!==zone) litZone.classList.remove('lit');
+    litZone=zone; curZone=zone.getAttribute('data-zone'); zone.classList.add('lit');
+    var p=docPos(zone), w=zone.offsetWidth;
+    if(isNarrow()){
+      var y=p.y-16; if(y<6)y=6;
+      moveLume(p.x + w - 18, y);
+    } else {
+      var lx=p.x-34;
+      if(lx<28){ moveLume(p.x + w - 18, Math.max(6, p.y-16)); }
+      else { moveLume(lx, p.y + 22); }
+    }
+  }
+  document.addEventListener('focusin', function(e){ if(view!=='foglio')return; var z=e.target.closest('.fzone'); if(z)lightUp(z); });
+  document.addEventListener('click', function(e){ if(view!=='foglio'||e.target.closest('#lume'))return; var z=e.target.closest('.fzone'); if(z)lightUp(z); });
+  addEventListener('resize', function(){ if(view==='foglio' && litZone) lightUp(litZone); else lumeHome(); });
+
+  var INFO={
+    hub:{t:'L\'Adulto Interiore', h:'<p>L\'adulto interiore è la parte di te legata al <b>presente</b>: un «contenitore» che <b>ascolta e filtra</b> le emozioni del bambino, cerca sempre l\'<b>equilibrio</b> e non vuole identificarsi con il dolore.</p><p>Se è fragile, le emozioni lo invadono: diventa instabile e <b>assorbe troppo dagli altri</b>. Allenandolo impara a restare attento, a mettere una <b>barriera</b> alle influenze esterne e a integrarsi con il bambino. Qui lo incontri in due passi: la <b>visualizzazione</b> e poi il <b>foglio</b>.</p>'},
+    visio:{t:'La visualizzazione', h:'<p>È il cuore di questa parte: <b>far incontrare</b> il tuo adulto e il tuo bambino interiore. Preparati con calma — un posto silenzioso, una musica rilassante, qualche minuto di respiro — poi lasciati guidare dalla mia voce.</p><p>Nell\'incontro, l\'adulto (che sei tu) accoglie il bambino, gli mette una mano sulla spalla e gli dice che <b>non è più solo</b>. Poi la luce li unisce e ognuno prende la sua strada, sapendo che si ritroveranno sempre. Non c\'è nulla da fare con la testa: solo <b>sentire</b>.</p>'},
+    emozioni:{t:'Le emozioni', h:'<p>Appena finita la visualizzazione, <b>scrivi ciò che hai provato</b> — di getto, senza giudicarti. Sollievo, tristezza, amore, gioia, vuoto: <b>tutto va bene</b>. Metterlo per iscritto ti aiuta a vederlo da fuori e, rileggendolo nei giorni successivi, a capire quanto cambi.</p>'},
+    incontro:{t:'L\'incontro', h:'<p>Ferma ciò che hai sentito nel momento in cui l\'adulto ha messo la mano sulla spalla del bambino, e nell\'<b>abbraccio</b>. Il bambino si è sentito al sicuro? Aspetta di sentire un <b>senso di sicurezza</b> da parte sua, e scrivilo: è il segno che l\'integrazione sta avvenendo.</p>'},
+    ancoraggio:{t:'L\'ancoraggio', h:'<p>È la pratica che rende tutto vivo nella vita di ogni giorno. Ogni volta che senti una <b>paura</b>, un\'<b>insicurezza</b>, un\'emozione che ti destabilizza, «<b>chiama</b>» il tuo adulto interiore: ti basta <b>pensarci</b>, arrivarci con il pensiero, e sentire cosa ti arriva.</p><p>Deve essere una cosa quasi <b>irrazionale</b>: non un ragionamento, ma un ritorno a quella parte stabile e presente. Ripetuto tutte le volte, questo àncora l\'equilibrio dentro di te.</p>'}
+  };
+  var GIORN='<div class="gp-giorn"><p><b>Mentre fai questo lavoro, non smettere il Giornaliero.</b> La pratica di ogni giorno radica e integra tutto il cammino.</p></div>';
+  var veil=document.getElementById('veil'), gpan=document.getElementById('gpan');
+  function openGuide(){
+    var key=(view==='foglio' && curZone) ? curZone : view;
+    var info=INFO[key]||INFO.hub;
+    document.getElementById('gpTitle').textContent=info.t;
+    document.getElementById('gpBody').innerHTML=info.h+GIORN;
+    var bd=gpan.querySelector('.gp-bd'); if(bd)bd.scrollTop=0;
+    muSend('state');
+    veil.classList.add('on'); gpan.classList.add('on');
+  }
+  function closeGuide(){ veil.classList.remove('on'); gpan.classList.remove('on'); }
+  lume.addEventListener('click', function(e){ e.stopPropagation(); openGuide(); });
+  veil.addEventListener('click', closeGuide);
+  document.getElementById('gpX').addEventListener('click', closeGuide);
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ if(gpan.classList.contains('on'))closeGuide(); else goBack(); } });
+
+  /* ===== barra audio dentro la luce: comanda la musica della shell ===== */
+  function muSend(cmd,v){ try{ if(window.parent&&window.parent!==window) window.parent.postMessage({t:'mu:cmd',cmd:cmd,v:v}, location.origin); }catch(e){} }
+  (function(){
+    var mini=document.getElementById('mu-mini'); if(!mini) return;
+    var embedded=false; try{ embedded=!!(window.parent&&window.parent!==window); }catch(e){}
+    if(!embedded){ mini.style.display='none'; return; }
+    var bP=document.getElementById('mm-prev'), bT=document.getElementById('mm-play'), bN=document.getElementById('mm-next'), bar=document.getElementById('mm-bar');
+    if(bP) bP.addEventListener('click', function(){ muSend('prev'); });
+    if(bT) bT.addEventListener('click', function(){ muSend('toggle'); });
+    if(bN) bN.addEventListener('click', function(){ muSend('next'); });
+    var dragS=false;
+    if(bar){
+      var frac=function(e){ var r=bar.getBoundingClientRect(); return Math.max(0,Math.min(1,(e.clientX-r.left)/r.width)); };
+      var paintF=function(f){ var fl=document.getElementById('mm-fill'); if(fl) fl.style.width=(f*100).toFixed(2)+'%'; };
+      bar.addEventListener('pointerdown', function(e){ e.preventDefault();
+        var f=frac(e), st=null; dragS=true; paintF(f);
+        var mv=function(ev){ f=frac(ev); paintF(f); if(st===null){ st=setTimeout(function(){ st=null; muSend('seek',f); }, 80); } };
+        var up=function(){ if(st!==null){ clearTimeout(st); st=null; } muSend('seek',f); dragS=false; document.removeEventListener('pointermove',mv); document.removeEventListener('pointerup',up); document.removeEventListener('pointercancel',up); };
+        document.addEventListener('pointermove',mv); document.addEventListener('pointerup',up); document.addEventListener('pointercancel',up);
+      });
+    }
+    var SVG_PLAY='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
+    var SVG_PAUSE='<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>';
+    window.addEventListener('message', function(e){
+      if(e.origin!==location.origin) return;
+      var m=e.data||{}; if(m.t!=='mu:state') return;
+      mini.style.display = m.active ? 'block' : 'none';
+      var tt=document.getElementById('mm-title'); if(tt) tt.textContent=m.title||'—';
+      if(bT) bT.innerHTML = m.playing ? SVG_PAUSE : SVG_PLAY;
+      if(!dragS){ var fl=document.getElementById('mm-fill'); if(fl) fl.style.width=((m.frac||0)*100).toFixed(2)+'%'; }
+    });
+    muSend('state');
+  })();
+
+  lumeHome();
+})();
+</script>
+<script src="/app/track.js"></script>
+<script src="/app/trial-gate.js?v=5"></script>
+<script src="/app/wake-lock.js?v=1"></script>
+</body>
+</html>

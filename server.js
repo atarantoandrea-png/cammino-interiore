@@ -721,6 +721,7 @@ app.post('/api/auth/logout', (req, res) => {
 const COVER_IDS = {
   capitolo2: {mondo:'1200559554',bambino:'1200559555',adulto:'1200563875',ombra:'1200561278',padremadre:'1200563735',mf:'1200561010',adolescente:'1200559557',osservatore:'1200559556'},
   bambino:   {teoria:'1200559555',foglio:'1201477236',medit:'1201478348'},
+  adulto:    {video:'1201481001'},   /* la visualizzazione dell'Adulto Interiore: copertina bloccata per i mensili */
   day:       {s1:'1184907857',s2:'1184907860'}   /* Spazio Emotivo / Osservatore: copertina per la prova */
 };
 const coverCache = {};
@@ -970,7 +971,7 @@ function monthlyHtml(file) {
 }
 app.use((req, res, next) => {
   if (req.method !== 'GET' && req.method !== 'HEAD') return next();
-  const m = req.path.match(/^\/app\/(capitolo2|bambino)\/(?:index\.html)?$/);
+  const m = req.path.match(/^\/app\/(capitolo2|bambino|adulto)\/(?:index\.html)?$/);
   if (!m) return next();
   tierForReq(req, (err, tier) => {
     if (err || (tier !== 'monthly' && tier !== 'trial')) return next();   /* pieni → versione completa; mensili e prova → trailer stripato */
