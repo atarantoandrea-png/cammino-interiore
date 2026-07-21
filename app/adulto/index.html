@@ -3,6 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <script>
+/* DIAGNOSTICA temporanea (registra in localStorage; si vede toccando il numero versione nella home) */
+(function(){function L(m){try{var a=JSON.parse(localStorage.getItem('ovl-errlog')||'[]');a.push((new Date().toLocaleTimeString())+' '+m);while(a.length>40)a.shift();localStorage.setItem('ovl-errlog',JSON.stringify(a));}catch(e){}}
+window.addEventListener('error',function(e){L('ERR(adulto) '+((e&&e.message)||'')+' @'+(((e&&e.filename)||'').split('/').pop())+':'+((e&&e.lineno)||''));});
+window.addEventListener('unhandledrejection',function(e){L('REJ(adulto) '+(((e&&e.reason&&e.reason.message))||(e&&e.reason)||''));});
+window.addEventListener('pagehide',function(e){L('pagehide(adulto) persisted='+(e&&e.persisted));});
+window.__ovlSV=function(v){L('showView adulto -> '+v);};
+L('> load adulto');})();
 /* accesso controllato da /app/ — qui si verifica solo la sessione, senza form */
 (function(){
   var embedded=false; try{ embedded=window.parent && window.parent!==window; }catch(e){ embedded=true; }
@@ -553,6 +560,7 @@ MONTHLY-->
   var hub=document.getElementById('hub'), visio=document.getElementById('visio'), foglio=document.getElementById('foglio');
   var view='hub';
   function showView(v){
+    try{ if(window.__ovlSV) __ovlSV(v); }catch(e){}
     view=v;
     hub.classList.toggle('on', v==='hub');
     visio.classList.toggle('on', v==='visio');
