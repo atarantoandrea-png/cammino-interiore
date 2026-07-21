@@ -226,6 +226,17 @@ textarea:focus{outline:none;border-color:var(--glic-hi);box-shadow:0 0 0 1px rgb
 .medclose b{color:var(--gold-pale);font-weight:600}
 .medactions{display:flex;justify-content:center;margin-top:24px}
 .medactions .fbtn{flex:0 1 340px;min-width:240px}
+/* freccia interattiva "verso l'esercizio" */
+.med-arrow{display:flex;flex-direction:column;align-items:center;gap:2px;margin:4px auto 16px;background:none;border:none;cursor:pointer;color:var(--gold-pale);font-family:'Cinzel',serif;font-size:12.5px;letter-spacing:.16em;text-transform:uppercase}
+.med-arrow svg{width:30px;height:30px;stroke:var(--gold);fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 8px rgba(201,168,76,.55));animation:maBounce 1.6s ease-in-out infinite}
+@keyframes maBounce{0%,100%{transform:translateY(0);opacity:.7}50%{transform:translateY(7px);opacity:1}}
+.med-arrow:hover svg{stroke:var(--gold-pale)}
+/* esercizio della purificazione (Palo Santo) */
+.palo-ex .palo-warn{font-size:16px;color:var(--gold-pale);line-height:1.5;background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.35);border-radius:12px;padding:11px 14px;margin-bottom:15px}
+.palo-ex .palo-warn b{color:#fff}
+.palo-p{font-size:18.5px;color:var(--txt);line-height:1.7;margin-bottom:12px}
+.palo-p:last-child{margin-bottom:0}
+.palo-p b{color:var(--gold-pale);font-weight:600}
 
 /* ===== pannello GUIDA (luce) ===== */
 #veil{position:fixed;inset:0;z-index:60;background:rgba(4,3,8,.72);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);opacity:0;pointer-events:none;transition:opacity .45s ease}
@@ -393,25 +404,20 @@ textarea:focus{outline:none;border-color:var(--glic-hi);box-shadow:0 0 0 1px rgb
         <div class="mhint">Suona <b>insieme</b> al video; puoi gestirla anche dalla <b>luce</b>.</div>
       </div>
 
-      <div class="medcard">
-        <div class="medlbl">I passi della visualizzazione</div>
-        <div class="medstep"><div class="sn">1 · Lo spazio e il respiro</div><p>Comoda/o, senti il tuo corpo: le gambe, le braccia. Fai <b>due o tre minuti di respiro continuo</b> — inspira ed espira, 15–20 volte — e lascia andare tutte le sensazioni della giornata.</p></div>
-        <div class="medstep"><div class="sn">2 · La stanza vuota</div><p>Immagina di essere sulla porta di una <b>stanza vuota</b>. Aprila, entra, e arredala con ciò che ami: un divano, un tavolo, cinque o sei <b>oggetti tuoi</b>. Poi scegli dove <b>sederti</b>.</p></div>
-        <div class="medstep"><div class="sn">3 · La versione stabile di te</div><p>Immagina una versione di te <b>calma, sicura, stabile, presente</b>: è il tuo adulto interiore. Fatti dire da lui: <span class="say">«Sono qui, adesso sono sicuro. Non devo affrontare tutto da solo: voglio capirmi, sostenermi, amarmi.»</span></p></div>
-        <div class="medstep"><div class="sn">4 · Entra il bambino</div><p>Dalla porta entra il tuo <b>bambino interiore</b>, quello che hai già conosciuto. Guardalo con calma — il viso, gli occhi, il sorriso — accoglilo e <b>avvicinalo</b> a te.</p></div>
-        <div class="medstep"><div class="sn">5 · La mano sulla spalla</div><p>Il tuo adulto — che sei tu — mette una <b>mano sulla spalla</b> del bambino e gli parla con dolcezza. È il cuore dell'incontro.</p>
-          <div class="medaffirm"><div class="sn">Le parole che gli dici</div><ul>
-            <li>Adesso non devi più affrontare tutto da solo: ci sono io con te</li>
-            <li>Sono la parte di te che resta presente anche quando hai paura</li>
-            <li>Ci sarò sempre, tutte le volte che ne avrai bisogno</li>
-          </ul></div>
-        </div>
-        <div class="medstep"><div class="sn">6 · L'abbraccio e la luce</div><p>Immagina che i due si <b>abbraccino</b>, e un'<b>energia di luce</b> li racchiuda entrambi. Un cerchio di amore, pace e integrazione che passa dal cuore del bambino all'adulto, e ritorna. È la base di un <b>nuovo te</b>.</p></div>
-        <div class="medstep"><div class="sn">7 · Le due strade</div><p>Poi si distaccano e prendono due strade: il <b>bambino a destra</b>, l'<b>adulto a sinistra</b>. Ma ogni volta che si gireranno, si <b>ritroveranno</b>: il bambino sa che l'adulto ci sarà ogni volta che si sentirà solo, non capito, in difficoltà.</p></div>
-        <div class="medstep"><div class="sn">8 · Il ritorno</div><p>Quando ti senti pronta/o, torna piano: tocca le <b>mani</b>, le braccia, accarezzati. Se senti dei <b>formicolii</b> è normale. Poi ringrazia le tue due parti: <span class="say">«Da oggi sono sia l'adulto interiore sia il bambino: e da oggi siamo insieme.»</span> Se hai acceso la candela, spegnila con calma.</p></div>
+      <button class="med-arrow" type="button" id="toPalo" aria-label="Vai all'esercizio della purificazione">
+        <span class="ma-txt">L'esercizio</span>
+        <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+
+      <div class="medcard palo-ex" id="paloEx">
+        <div class="medlbl">L'esercizio · La purificazione</div>
+        <div class="palo-warn">Fai questo esercizio <b>solo dopo</b> aver completato la <b>visualizzazione</b> dell'Adulto Interiore qui sopra.</div>
+        <p class="palo-p"><b>Perché si fa.</b> La visualizzazione ha <b>smosso e integrato</b> due parti profonde di te, e ha mosso molta energia. La purificazione serve a <b>chiudere quel lavoro e a renderlo definitivo</b>: ripulisce lo spazio intorno a te e l'energia che hai risvegliato, così che ciò che hai vissuto <b>resti dentro di te</b> e non si disperda. È il gesto con cui dici a te stessa/o che la pratica è compiuta.</p>
+        <p class="palo-p"><b>Come si fa.</b> Accendi un legnetto di <b>Palo Santo</b> in casa. Mentre si consuma e si trasforma con il fuoco, non fare altro: <b>torna ai tuoi sensi</b> e stai nel momento. Ascolta i <b>rumori</b> intorno a te, senti il <b>profumo</b> che emana, e resta con le <b>emozioni</b> che affiorano — lasciale arrivare, senza giudicarle e senza allontanarle.</p>
+        <p class="palo-p">È proprio ora, mentre il Palo Santo brucia, che cominci a sentire davvero ciò che la visualizzazione ha risvegliato in te. <b>Tieni con te quelle emozioni</b>: nel <b>foglio</b> (Esercizio 2) le metterai per iscritto, per poterle rileggere nei giorni che verranno.</p>
       </div>
 
-      <p class="medclose">Hai incontrato e integrato le tue due parti: da oggi <b>fanno parte di te</b>. Nel secondo esercizio scriverai le emozioni che hai provato. E continua il <b>Giornaliero</b> — è ciò che radica tutto il cammino.</p>
+      <p class="medclose">Hai incontrato e integrato le tue due parti, e hai chiuso il lavoro: da oggi <b>fanno parte di te</b>. Poi, nel secondo esercizio, scriverai le emozioni che hai provato. E continua il <b>Giornaliero</b> — è ciò che radica tutto il cammino.</p>
 
       <div class="medactions">
         <button class="fbtn gold" type="button" id="btnVisio">Segna come completato</button>
@@ -453,11 +459,6 @@ MONTHLY-->
         <div class="fq-q">Come richiamerai il tuo adulto interiore, da oggi?</div>
         <p class="fq-help">È la parte più importante. Da ora, ogni volta che senti una <b>paura</b>, un'<b>insicurezza</b> o un'emozione che ti destabilizza, «<b>chiama</b>» il tuo adulto interiore: ti basta <b>pensarci</b>, arrivarci con il pensiero, e sentire cosa ti arriva. Ripetuto ogni volta, questo ti dà una base di <b>equilibrio</b>.</p>
         <div class="fld"><label>La prossima volta che sentirò paura, il mio adulto interiore mi dirà…</label><textarea data-k="ancoraggio" placeholder="Cosa senti che ti direbbe la tua parte stabile e presente…"></textarea></div>
-      </div>
-
-      <div class="palo">
-        <div class="pl-t">Facoltativo · per chiudere</div>
-        <p>Se vuoi, puoi <b>accendere del Palo Santo</b> per chiudere e purificare la pratica. Mentre si consuma, ascolta i suoni intorno a te, senti il suo profumo e resta con le emozioni che provi. È solo un gesto in più, se ti fa piacere.</p>
       </div>
 
       <p class="fclose">Questo foglio resta salvato nel tuo account: potrai <b>rileggerlo</b> tra qualche giorno o tra qualche mese e vedere come sei cambiata/o. E ricorda: continua ogni giorno il Giornaliero — è ciò che integra tutto il cammino.</p>
@@ -657,6 +658,9 @@ MONTHLY-->
     if(window.Vimeo && Vimeo.Player){ try{ visPlayer=new Vimeo.Player(ifr); }catch(e){} }
   }
   window.__visioVideoPause=function(){ if(visPlayer){ try{ visPlayer.pause(); }catch(e){} } };
+
+  /* freccia interattiva sotto la musica → scorre dolcemente all'esercizio della purificazione */
+  (function(){ var a=document.getElementById('toPalo'); if(a) a.addEventListener('click', function(){ var t=document.getElementById('paloEx'); if(t) t.scrollIntoView({behavior:'smooth',block:'start'}); }); })();
 
   /* copertina delle card (thumbnail del video da Vimeo) */
   (function(){
