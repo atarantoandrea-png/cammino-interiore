@@ -308,7 +308,7 @@ app.post('/api/trial/register', (req, res) => {
     const sess = { token, at: Date.now() };
     const tier = sheetTier || 'trial';
     if (!sheetTier) sess.tier = 'trial';                         /* marcatore di sessione-prova */
-    try { fs.writeFileSync(sessFile(email), JSON.stringify(sess)); } catch(e){}
+    try { writeSess(email, sess); } catch(e){}
     setSessionCookie(res, email, token);   /* cookie ovl_sess: entra nell'app */
     setTrialCookie(res, id);               /* cookie ovl_trial: per la chat 3/giorno */
     res.json({ ok:true, email, token, tier });   /* il front di /prova li salva in localStorage per entrare in /app */
@@ -566,6 +566,16 @@ function readSess(f) {
   try { if (fs.existsSync(f)) return JSON.parse(fs.readFileSync(f, 'utf8')); } catch(e) {}
   return null;
 }
+/* scrittura ATOMICA del file di sessione (temp + rename): la shell e le sezioni chiamano
+   /api/auth/verify quasi insieme all'apertura; senza atomicità una lettura concorrente
+   poteva leggere un file mezzo-scritto → JSON.parse fallisce → verify 'ok:false' → la
+   pagina rimbalzava a /app/. Il rename è atomico: chi legge vede sempre un file completo. */
+function writeSess(email, obj) {
+  const f = sessFile(email);
+  const tmp = f + '.' + process.pid + '.tmp';
+  fs.writeFileSync(tmp, JSON.stringify(obj));
+  fs.renameSync(tmp, f);
+}
 
 /* ── cookie di sessione (HttpOnly): serve al gating delle pagine riservate ── */
 const COOKIE = 'ovl_sess';
@@ -666,7 +676,7 @@ app.post('/api/auth/session', (req, res) => {
     if (sess && sess.token && (Date.now() - sess.at) < SESSION_TTL) {
       if (existingToken && existingToken === sess.token) {
         /* stesso dispositivo: rinnova timestamp */
-        fs.writeFileSync(f, JSON.stringify(rec(sess.token)));
+        writeSess(email, rec(sess.token));
         setSessionCookie(res, email, sess.token);
         return res.json({ok: true, token: sess.token, tier});
       }
@@ -674,7 +684,7 @@ app.post('/api/auth/session', (req, res) => {
       /* force=true: scaccia l'altra sessione */
     }
     const token = crypto.randomBytes(32).toString('hex');
-    fs.writeFileSync(f, JSON.stringify(rec(token)));
+    writeSess(email, rec(token));
     setSessionCookie(res, email, token);
     res.json({ok: true, token, tier});
   });
@@ -689,7 +699,7 @@ app.post('/api/auth/verify', (req, res) => {
   const sess = readSess(sessFile(email));
   if (sess && sess.token === token && (Date.now() - sess.at) < SESSION_TTL) {
     sess.at = Date.now();
-    fs.writeFileSync(sessFile(email), JSON.stringify(sess));   /* PRESERVA 'tier' (es. la prova): non declassare/elevare */
+    writeSess(email, sess);   /* atomico · PRESERVA 'tier' (es. la prova): non declassare/elevare */
     setSessionCookie(res, email, token);   /* installa/aggiorna il cookie: upgrade trasparente */
     /* livello reale: foglio se pagante, altrimenti 'trial' se è una sessione di prova */
     getTierMap((err, map) => {

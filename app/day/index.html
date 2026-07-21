@@ -6,12 +6,16 @@
 /* accesso controllato da /app/ — qui si verifica solo la sessione, senza form */
 (function(){
   var email, token;
+  var embedded=false; try{ embedded=window.parent && window.parent!==window; }catch(e){ embedded=true; }
+  function bail(){ if(embedded){ try{ window.parent.postMessage({t:'day:back'}, location.origin); }catch(e){} } else { location.replace('/app/'); } }
   try{ email=(localStorage.getItem('ovl-user')||'').trim().toLowerCase(); token=localStorage.getItem('ovl-session')||''; }
-  catch(e){ location.replace('/app/'); return; }
-  if(!email||!token){ location.replace('/app/'); return; }
+  catch(e){ bail(); return; }
+  if(!email||!token){ bail(); return; }
+  /* Dentro la shell (iframe) l'accesso è già protetto dalla shell e dal server: NON rimbalzo
+     su un verify 'ok:false' transitorio (evita il "ritorno a home" alla prima apertura). */
   fetch('/api/auth/verify',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,token:token})})
     .then(function(r){return r.json();})
-    .then(function(d){ if(!d.ok) location.replace('/app/'); })
+    .then(function(d){ if(!d.ok && !embedded) location.replace('/app/'); })
     .catch(function(){}); /* offline: entra */
 })();
 </script>

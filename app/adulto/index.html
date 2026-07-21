@@ -6,12 +6,16 @@
 /* accesso controllato da /app/ — qui si verifica solo la sessione, senza form */
 (function(){
   var email, token;
+  var embedded=false; try{ embedded=window.parent && window.parent!==window; }catch(e){ embedded=true; }
+  function bail(){ if(embedded){ try{ window.parent.postMessage({t:'day:back'}, location.origin); }catch(e){} } else { location.replace('/app/'); } }
   try{ email=(localStorage.getItem('ovl-user')||'').trim().toLowerCase(); token=localStorage.getItem('ovl-session')||''; }
-  catch(e){ location.replace('/app/'); return; }
-  if(!email||!token){ location.replace('/app/'); return; }
+  catch(e){ bail(); return; }
+  if(!email||!token){ bail(); return; }
+  /* Dentro la shell (iframe) l'accesso è già protetto dalla shell e dal server: NON rimbalzo
+     su un verify 'ok:false' transitorio (evita il "ritorno a home" alla prima apertura). */
   fetch('/api/auth/verify',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,token:token})})
     .then(function(r){return r.json();})
-    .then(function(d){ if(!d.ok) location.replace('/app/'); })
+    .then(function(d){ if(!d.ok && !embedded) location.replace('/app/'); })
     .catch(function(){});
 })();
 </script>
@@ -336,38 +340,38 @@ textarea:focus{outline:none;border-color:var(--glic-hi);box-shadow:0 0 0 1px rgb
     <p class="lead">La parte <b>presente e stabile</b> di te, quella che contiene ed equilibra. Qui la incontri in <b>due passi</b>: prima la vivi nella visualizzazione, poi ne scrivi le emozioni e impari l'ancoraggio.</p>
   </header>
 
-  <!-- ===== HUB: le due icone ===== -->
+  <!-- ===== HUB: l'esercizio + la purificazione ===== -->
   <section id="hub" class="view on">
     <div class="exwrap">
       <button class="exitem" id="ex-visio" type="button">
         <span class="exic">🧘</span>
         <span class="exmeta">
-          <span class="extag">Esercizio 1 · La visualizzazione</span>
+          <span class="extag">L'esercizio</span>
           <h3>Integra l'adulto e il bambino</h3>
-          <p>Una visualizzazione guidata, con la musica, per far <b>incontrare</b> il tuo adulto e il tuo bambino interiore.</p>
+          <p>La visualizzazione guidata con la musica e, subito dopo, le <b>emozioni</b> e l'<b>ancoraggio</b> da scrivere. Tutto in un unico esercizio.</p>
         </span>
         <span class="exstate" id="st-visio">Da fare</span>
         <span class="exarrow">→</span>
       </button>
 
       <button class="exitem" id="ex-foglio" type="button">
-        <span class="exic">📝</span>
+        <span class="exic">🌿</span>
         <span class="exmeta">
-          <span class="extag">Esercizio 2 · Il foglio</span>
-          <h3>Le emozioni e l'ancoraggio</h3>
-          <p>Dopo la visualizzazione, scrivi cosa hai provato e impara a <b>richiamare</b> il tuo adulto interiore nella vita di ogni giorno.</p>
+          <span class="extag">Per chiudere</span>
+          <h3>La purificazione</h3>
+          <p>Come <b>chiudere e purificare</b> il lavoro con il Palo Santo. Da fare solo dopo la visualizzazione.</p>
         </span>
-        <span class="exstate" id="st-foglio">Da fare</span>
+        <span class="exstate">Approfondimento</span>
         <span class="exarrow">→</span>
       </button>
     </div>
-    <div class="hubnote"><b>Un passo alla volta.</b> Fai questo esercizio una volta, con calma. E continua ogni giorno il Giornaliero: è ciò che integra tutto il cammino.</div>
+    <div class="hubnote"><b>Un passo alla volta.</b> Fai l'esercizio una volta, con calma. E continua ogni giorno il Giornaliero: è ciò che integra tutto il cammino.</div>
   </section>
 
-  <!-- ===== ESERCIZIO 1 · LA VISUALIZZAZIONE ===== -->
+  <!-- ===== L'ESERCIZIO · integra (visualizzazione + emozioni + ancoraggio) ===== -->
   <section id="visio" class="view">
     <div class="medwrap">
-      <p class="medintro">L'<b>Adulto Interiore</b> è la parte di te legata al <b>presente</b>: quella che ascolta ed equilibra le emozioni, e che non vuole identificarsi con il dolore. In questa visualizzazione lo <b>incontri</b> e lo integri con il tuo bambino interiore. Non c'è nulla da scrivere: solo da <b>sentire</b>.</p>
+      <p class="medintro">L'<b>Adulto Interiore</b> è la parte di te legata al <b>presente</b>: quella che ascolta ed equilibra le emozioni, e che non vuole identificarsi con il dolore. In questo esercizio prima lo <b>incontri</b> e lo integri con il tuo bambino interiore nella visualizzazione, poi <b>scrivi</b> ciò che hai provato.</p>
 
       <div class="medcard">
         <div class="medlbl">Prima di iniziare</div>
@@ -404,72 +408,68 @@ textarea:focus{outline:none;border-color:var(--glic-hi);box-shadow:0 0 0 1px rgb
         <div class="mhint">Suona <b>insieme</b> al video; puoi gestirla anche dalla <b>luce</b>.</div>
       </div>
 
-      <button class="med-arrow" type="button" id="toPalo" aria-label="Vai all'esercizio della purificazione">
-        <span class="ma-txt">L'esercizio</span>
+      <button class="med-arrow" type="button" id="toWrite" aria-label="Vai alla parte da scrivere">
+        <span class="ma-txt">Ora scrivi</span>
         <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
       </button>
 
-      <div class="medcard palo-ex" id="paloEx">
-        <div class="medlbl">L'esercizio · La purificazione</div>
-        <div class="palo-warn">Fai questo esercizio <b>solo dopo</b> aver completato la <b>visualizzazione</b> dell'Adulto Interiore qui sopra.</div>
-        <p class="palo-p"><b>Perché si fa.</b> La visualizzazione ha <b>smosso e integrato</b> due parti profonde di te, e ha mosso molta energia. La purificazione serve a <b>chiudere quel lavoro e a renderlo definitivo</b>: ripulisce lo spazio intorno a te e l'energia che hai risvegliato, così che ciò che hai vissuto <b>resti dentro di te</b> e non si disperda. È il gesto con cui dici a te stessa/o che la pratica è compiuta.</p>
-        <p class="palo-p"><b>Come si fa.</b> Accendi un legnetto di <b>Palo Santo</b> in casa. Mentre si consuma e si trasforma con il fuoco, non fare altro: <b>torna ai tuoi sensi</b> e stai nel momento. Ascolta i <b>rumori</b> intorno a te, senti il <b>profumo</b> che emana, e resta con le <b>emozioni</b> che affiorano — lasciale arrivare, senza giudicarle e senza allontanarle.</p>
-        <p class="palo-p">È proprio ora, mentre il Palo Santo brucia, che cominci a sentire davvero ciò che la visualizzazione ha risvegliato in te. <b>Tieni con te quelle emozioni</b>: nel <b>foglio</b> (Esercizio 2) le metterai per iscritto, per poterle rileggere nei giorni che verranno.</p>
+<!--MONTHLY
+      <div class="flock">
+        <div class="flock-ic">💓</div>
+        <div class="flock-h">Questo esercizio ti aspetta nel Cammino annuale</div>
+        <p class="flock-p">La visualizzazione dell'Adulto Interiore e la parte da scrivere fanno parte del <b>Cammino annuale</b> della community. Quando senti che è il tuo momento, li percorriamo insieme.</p>
+        <button class="flock-btn" type="button" onclick="showUpsell()">Scopri come proseguire 💓</button>
+      </div>
+MONTHLY-->
+<!--FULL-->
+      <div class="fbox" id="writeStart">
+        <p class="fintro">Appena finita la visualizzazione, prenditi un momento per <b>scrivere cosa hai provato</b>. Non è un esercizio di testa: rispondi <b>di getto</b>, senza giudicarti. Rileggerlo nei giorni successivi ti farà vedere quanto cambi.</p>
+
+        <div class="fzone" data-zone="emozioni">
+          <div class="fq-n">1 · Le emozioni</div>
+          <div class="fq-q">Che emozioni hai sentito durante la visualizzazione?</div>
+          <p class="fq-help">Sollievo, tristezza, amore, gioia, allegria, un po' di vuoto… <b>Tutto quello che hai provato va bene.</b> Scrivilo così com'è, senza spiegarlo.</p>
+          <div class="fld"><label>Ho sentito…</label><textarea data-k="emozioni" placeholder="Le emozioni che hai provato durante la visualizzazione…"></textarea></div>
+        </div>
+
+        <div class="fzone" data-zone="incontro">
+          <div class="fq-n">2 · L'incontro</div>
+          <div class="fq-q">Com'è stato l'incontro tra il tuo adulto e il tuo bambino?</div>
+          <p class="fq-help">Quando l'adulto ha messo la mano sulla spalla del bambino, e nell'abbraccio: <b>cosa hai sentito?</b> Il bambino si è sentito al sicuro? Scrivi la prima cosa che ti arriva.</p>
+          <div class="fld"><label>Nell'incontro ho sentito…</label><textarea data-k="incontro" placeholder="Cosa hai provato nell'incontro tra le tue due parti…"></textarea></div>
+        </div>
+
+        <div class="fzone" data-zone="ancoraggio">
+          <div class="fq-n">3 · L'ancoraggio</div>
+          <div class="fq-q">Come richiamerai il tuo adulto interiore, da oggi?</div>
+          <p class="fq-help">È la parte più importante. Da ora, ogni volta che senti una <b>paura</b>, un'<b>insicurezza</b> o un'emozione che ti destabilizza, «<b>chiama</b>» il tuo adulto interiore: ti basta <b>pensarci</b>, arrivarci con il pensiero, e sentire cosa ti arriva. Ripetuto ogni volta, questo ti dà una base di <b>equilibrio</b>.</p>
+          <div class="fld"><label>La prossima volta che sentirò paura, il mio adulto interiore mi dirà…</label><textarea data-k="ancoraggio" placeholder="Cosa senti che ti direbbe la tua parte stabile e presente…"></textarea></div>
+        </div>
+
+        <p class="fclose">Hai incontrato e integrato le tue due parti, e hai scritto ciò che hai sentito: da oggi <b>fanno parte di te</b>. Questo foglio resta salvato nel tuo account — potrai <b>rileggerlo</b> tra qualche mese e vedere come sei cambiata/o. Quando vuoi chiudere del tutto la pratica, apri <b>«La purificazione»</b>. E continua il Giornaliero — è ciò che radica tutto il cammino.</p>
       </div>
 
-      <p class="medclose">Hai incontrato e integrato le tue due parti, e hai chiuso il lavoro: da oggi <b>fanno parte di te</b>. Poi, nel secondo esercizio, scriverai le emozioni che hai provato. E continua il <b>Giornaliero</b> — è ciò che radica tutto il cammino.</p>
-
-      <div class="medactions">
-        <button class="fbtn gold" type="button" id="btnVisio">Segna come completato</button>
+      <div class="factions">
+        <button class="fbtn" type="button" id="btnSave">Salva</button>
+        <button class="fbtn gold" type="button" id="btnDone">Segna come completato</button>
+        <div class="fhint">Puoi scrivere qui in libertà — resta salvato nel tuo account, e potrai rileggerlo quando vuoi.</div>
       </div>
+<!--/FULL-->
     </div>
   </section>
 
-  <!-- ===== ESERCIZIO 2 · IL FOGLIO (emozioni + ancoraggio) ===== -->
+  <!-- ===== LA PURIFICAZIONE (Palo Santo — non è un esercizio) ===== -->
   <section id="foglio" class="view">
-
-<!--MONTHLY
-    <div class="flock">
-      <div class="flock-ic">💓</div>
-      <div class="flock-h">Questo esercizio ti aspetta nel Cammino annuale</div>
-      <p class="flock-p">La visualizzazione dell'Adulto Interiore e il suo foglio fanno parte del <b>Cammino annuale</b> della community. Quando senti che è il tuo momento, li percorriamo insieme.</p>
-      <button class="flock-btn" type="button" onclick="showUpsell()">Scopri come proseguire 💓</button>
-    </div>
-MONTHLY-->
-<!--FULL-->
-    <div class="fbox">
-      <p class="fintro">Appena finita la visualizzazione, prenditi un momento per <b>scrivere cosa hai provato</b>. Non è un esercizio di testa: rispondi <b>di getto</b>, senza giudicarti. Rileggerlo nei giorni successivi ti farà vedere quanto cambi.</p>
-
-      <div class="fzone" data-zone="emozioni">
-        <div class="fq-n">1 · Le emozioni</div>
-        <div class="fq-q">Che emozioni hai sentito durante la visualizzazione?</div>
-        <p class="fq-help">Sollievo, tristezza, amore, gioia, allegria, un po' di vuoto… <b>Tutto quello che hai provato va bene.</b> Scrivilo così com'è, senza spiegarlo.</p>
-        <div class="fld"><label>Ho sentito…</label><textarea data-k="emozioni" placeholder="Le emozioni che hai provato durante la visualizzazione…"></textarea></div>
+    <div class="medwrap">
+      <div class="medcard palo-ex" id="paloEx">
+        <div class="medlbl">Per chiudere · La purificazione</div>
+        <div class="palo-warn">Fai questo <b>solo dopo</b> aver completato la <b>visualizzazione</b> dell'Adulto Interiore (l'esercizio).</div>
+        <p class="palo-p"><b>Perché si fa.</b> La visualizzazione ha <b>smosso e integrato</b> due parti profonde di te, e ha mosso molta energia. La purificazione serve a <b>chiudere quel lavoro e a renderlo definitivo</b>: ripulisce lo spazio intorno a te e l'energia che hai risvegliato, così che ciò che hai vissuto <b>resti dentro di te</b> e non si disperda. È il gesto con cui dici a te stessa/o che la pratica è compiuta.</p>
+        <p class="palo-p"><b>Come si fa.</b> Accendi un legnetto di <b>Palo Santo</b> in casa. Mentre si consuma e si trasforma con il fuoco, non fare altro: <b>torna ai tuoi sensi</b> e stai nel momento. Ascolta i <b>rumori</b> intorno a te, senti il <b>profumo</b> che emana, e resta con le <b>emozioni</b> che affiorano — lasciale arrivare, senza giudicarle e senza allontanarle.</p>
+        <p class="palo-p">È proprio ora, mentre il Palo Santo brucia, che senti davvero ciò che la visualizzazione ha risvegliato in te. Sono le stesse emozioni che, nell'esercizio, hai messo per iscritto: lascia che il fuoco e il profumo le accompagnino, e chiudi così, con dolcezza, il tuo lavoro di oggi.</p>
       </div>
-
-      <div class="fzone" data-zone="incontro">
-        <div class="fq-n">2 · L'incontro</div>
-        <div class="fq-q">Com'è stato l'incontro tra il tuo adulto e il tuo bambino?</div>
-        <p class="fq-help">Quando l'adulto ha messo la mano sulla spalla del bambino, e nell'abbraccio: <b>cosa hai sentito?</b> Il bambino si è sentito al sicuro? Scrivi la prima cosa che ti arriva.</p>
-        <div class="fld"><label>Nell'incontro ho sentito…</label><textarea data-k="incontro" placeholder="Cosa hai provato nell'incontro tra le tue due parti…"></textarea></div>
-      </div>
-
-      <div class="fzone" data-zone="ancoraggio">
-        <div class="fq-n">3 · L'ancoraggio</div>
-        <div class="fq-q">Come richiamerai il tuo adulto interiore, da oggi?</div>
-        <p class="fq-help">È la parte più importante. Da ora, ogni volta che senti una <b>paura</b>, un'<b>insicurezza</b> o un'emozione che ti destabilizza, «<b>chiama</b>» il tuo adulto interiore: ti basta <b>pensarci</b>, arrivarci con il pensiero, e sentire cosa ti arriva. Ripetuto ogni volta, questo ti dà una base di <b>equilibrio</b>.</p>
-        <div class="fld"><label>La prossima volta che sentirò paura, il mio adulto interiore mi dirà…</label><textarea data-k="ancoraggio" placeholder="Cosa senti che ti direbbe la tua parte stabile e presente…"></textarea></div>
-      </div>
-
-      <p class="fclose">Questo foglio resta salvato nel tuo account: potrai <b>rileggerlo</b> tra qualche giorno o tra qualche mese e vedere come sei cambiata/o. E ricorda: continua ogni giorno il Giornaliero — è ciò che integra tutto il cammino.</p>
+      <p class="medclose">Non è un compito: è un piccolo <b>rito di chiusura</b>, se ti fa piacere. E ricorda — continua il <b>Giornaliero</b>: è ciò che radica tutto il cammino.</p>
     </div>
-
-    <div class="factions">
-      <button class="fbtn" type="button" id="btnSave">Salva</button>
-      <button class="fbtn gold" type="button" id="btnDone">Segna come completato</button>
-      <div class="fhint">Puoi scrivere qui in libertà — resta salvato nel tuo account, e potrai rileggerlo quando vuoi.</div>
-    </div>
-<!--/FULL-->
   </section>
 
 </div>
@@ -543,7 +543,6 @@ MONTHLY-->
     if(x) x.addEventListener('click', closeUpsell);
     if(u) u.addEventListener('click', function(e){ if(e.target===u) closeUpsell(); });
     document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeUpsell(); });
-    if(TRAILER){ var bv=document.getElementById('btnVisio'); if(bv) bv.style.display='none'; }
   })();
 
   /* ===== viste ===== */
@@ -555,11 +554,11 @@ MONTHLY-->
     visio.classList.toggle('on', v==='visio');
     foglio.classList.toggle('on', v==='foglio');
     window.scrollTo({top:0,behavior:'smooth'});
-    if(v==='visio'){ loadVisioVideo(); muSend('state'); }
-    else if(window.__visioVideoPause){ window.__visioVideoPause(); }   /* fuori dalla visualizzazione: fermo il video (la musica resta gestibile dalla luce) */
-    if(v==='foglio'){
+    if(v!=='visio' && window.__visioVideoPause){ window.__visioVideoPause(); }   /* fuori dall'esercizio: fermo il video (la musica resta gestibile dalla luce) */
+    if(v==='visio'){
+      loadVisioVideo(); muSend('state');
       setTimeout(growAll, 30);
-      var z0=foglio.querySelector('.fzone');
+      var z0=visio.querySelector('.fzone');
       if(z0){ setTimeout(function(){ lightUp(z0); }, 420); } else lumeHome();
     } else { lumeHome(); }
   }
@@ -578,7 +577,7 @@ MONTHLY-->
   /* ===== il foglio: salvataggio nell'account ===== */
   var FKEY='ovl-adulto-foglio:'+who;
   var PKEY='ovl-adulto-prog:'+who;     /* { visio:true, foglio:true } */
-  var fields=[].slice.call(document.querySelectorAll('#foglio [data-k]'));
+  var fields=[].slice.call(document.querySelectorAll('#visio [data-k]'));
   var data={};
   try{ data=JSON.parse(localStorage.getItem(FKEY)||'{}')||{}; }catch(e){ data={}; }
   var TOKEN=''; try{ TOKEN=localStorage.getItem('ovl-session')||''; }catch(e){}
@@ -615,25 +614,18 @@ MONTHLY-->
     refreshProg();
   });
   function refreshProg(){
-    var bV=document.getElementById('btnVisio'), iv=document.getElementById('ex-visio'), sv=document.getElementById('st-visio');
-    if(bV){
-      if(prog.visio){ bV.classList.add('done'); bV.textContent='Completato'; if(iv)iv.classList.add('seen'); if(sv)sv.textContent='✓ Fatto'; }
-      else { bV.classList.remove('done'); bV.textContent='Segna come completato'; if(iv)iv.classList.remove('seen'); if(sv)sv.textContent='Da fare'; }
-    }
-    var bF=document.getElementById('btnDone'), it=document.getElementById('ex-foglio'), st=document.getElementById('st-foglio');
-    if(bF){
-      if(prog.foglio){ bF.classList.add('done'); bF.textContent='Completato'; if(it)it.classList.add('seen'); if(st)st.textContent='✓ Fatto'; }
-      else { bF.classList.remove('done'); bF.textContent='Segna come completato'; if(it)it.classList.remove('seen'); if(st)st.textContent='Da fare'; }
-    }
+    /* un'unica completezza: l'esercizio (visualizzazione + scrittura) → prog.foglio;
+       guida lo stato della card 1. La purificazione è informativa, non si "completa". */
+    var bF=document.getElementById('btnDone'), iv=document.getElementById('ex-visio'), sv=document.getElementById('st-visio');
+    var done=!!prog.foglio;
+    if(bF){ bF.classList.toggle('done',done); bF.textContent=done?'Completato':'Segna come completato'; }
+    if(iv) iv.classList.toggle('seen',done);
+    if(sv) sv.textContent=done?'✓ Fatto':'Da fare';
   }
   (function(){ var b=document.getElementById('btnDone'); if(b) b.addEventListener('click', function(){
     saveForm(true);
     prog.foglio = !prog.foglio; saveProg(); refreshProg();
     toast(prog.foglio?'Esercizio completato':'Segno rimosso');
-  }); })();
-  (function(){ var b=document.getElementById('btnVisio'); if(b) b.addEventListener('click', function(){
-    prog.visio = !prog.visio; saveProg(); refreshProg();
-    toast(prog.visio?'Visualizzazione completata':'Segno rimosso');
   }); })();
 
   /* ===== video della visualizzazione (caricato alla prima apertura) ===== */
@@ -659,8 +651,8 @@ MONTHLY-->
   }
   window.__visioVideoPause=function(){ if(visPlayer){ try{ visPlayer.pause(); }catch(e){} } };
 
-  /* freccia interattiva sotto la musica → scorre dolcemente all'esercizio della purificazione */
-  (function(){ var a=document.getElementById('toPalo'); if(a) a.addEventListener('click', function(){ var t=document.getElementById('paloEx'); if(t) t.scrollIntoView({behavior:'smooth',block:'start'}); }); })();
+  /* freccia interattiva sotto la musica → scorre dolcemente alla parte da scrivere */
+  (function(){ var a=document.getElementById('toWrite'); if(a) a.addEventListener('click', function(){ var t=document.getElementById('writeStart')||document.querySelector('#visio .flock'); if(t) t.scrollIntoView({behavior:'smooth',block:'start'}); }); })();
 
   /* copertina delle card (thumbnail del video da Vimeo) */
   (function(){
@@ -740,13 +732,14 @@ MONTHLY-->
       else { moveLume(lx, p.y + 22); }
     }
   }
-  document.addEventListener('focusin', function(e){ if(view!=='foglio')return; var z=e.target.closest('.fzone'); if(z)lightUp(z); });
-  document.addEventListener('click', function(e){ if(view!=='foglio'||e.target.closest('#lume'))return; var z=e.target.closest('.fzone'); if(z)lightUp(z); });
-  addEventListener('resize', function(){ if(view==='foglio' && litZone) lightUp(litZone); else lumeHome(); });
+  document.addEventListener('focusin', function(e){ if(view!=='visio')return; var z=e.target.closest('.fzone'); if(z)lightUp(z); });
+  document.addEventListener('click', function(e){ if(view!=='visio'||e.target.closest('#lume'))return; var z=e.target.closest('.fzone'); if(z)lightUp(z); });
+  addEventListener('resize', function(){ if(view==='visio' && litZone) lightUp(litZone); else lumeHome(); });
 
   var INFO={
-    hub:{t:'L\'Adulto Interiore', h:'<p>L\'adulto interiore è la parte di te legata al <b>presente</b>: un «contenitore» che <b>ascolta e filtra</b> le emozioni del bambino, cerca sempre l\'<b>equilibrio</b> e non vuole identificarsi con il dolore.</p><p>Se è fragile, le emozioni lo invadono: diventa instabile e <b>assorbe troppo dagli altri</b>. Allenandolo impara a restare attento, a mettere una <b>barriera</b> alle influenze esterne e a integrarsi con il bambino. Qui lo incontri in due passi: la <b>visualizzazione</b> e poi il <b>foglio</b>.</p>'},
-    visio:{t:'La visualizzazione', h:'<p>È il cuore di questa parte: <b>far incontrare</b> il tuo adulto e il tuo bambino interiore. Preparati con calma — un posto silenzioso, una musica rilassante, qualche minuto di respiro — poi lasciati guidare dalla mia voce.</p><p>Nell\'incontro, l\'adulto (che sei tu) accoglie il bambino, gli mette una mano sulla spalla e gli dice che <b>non è più solo</b>. Poi la luce li unisce e ognuno prende la sua strada, sapendo che si ritroveranno sempre. Non c\'è nulla da fare con la testa: solo <b>sentire</b>.</p>'},
+    hub:{t:'L\'Adulto Interiore', h:'<p>L\'adulto interiore è la parte di te legata al <b>presente</b>: un «contenitore» che <b>ascolta e filtra</b> le emozioni del bambino, cerca sempre l\'<b>equilibrio</b> e non vuole identificarsi con il dolore.</p><p>Se è fragile, le emozioni lo invadono: diventa instabile e <b>assorbe troppo dagli altri</b>. Allenandolo impara a restare attento, a mettere una <b>barriera</b> alle influenze esterne e a integrarsi con il bambino. Qui c\'è un <b>unico esercizio</b> — la visualizzazione con, subito dopo, le emozioni e l\'ancoraggio da scrivere — e poi, se vuoi, <b>la purificazione</b> per chiudere.</p>'},
+    visio:{t:'L\'esercizio', h:'<p>È il cuore di questa parte: <b>far incontrare</b> il tuo adulto e il tuo bambino interiore, e poi <b>scrivere</b> ciò che hai sentito. Preparati con calma — un posto silenzioso, una musica rilassante, qualche minuto di respiro — poi lasciati guidare dalla mia voce.</p><p>Nell\'incontro, l\'adulto (che sei tu) accoglie il bambino, gli mette una mano sulla spalla e gli dice che <b>non è più solo</b>. Poi la luce li unisce e ognuno prende la sua strada, sapendo che si ritroveranno sempre. Finita la visualizzazione, scendi con la <b>freccia</b> e scrivi le emozioni e l\'ancoraggio.</p>'},
+    foglio:{t:'La purificazione', h:'<p>È un <b>rito di chiusura</b>, da fare <b>solo dopo</b> la visualizzazione. Serve a chiudere il lavoro e a renderlo definitivo: purifica lo spazio e l\'energia che hai mosso, così che ciò che hai vissuto resti dentro di te.</p><p>Accendi un <b>Palo Santo</b>; mentre si consuma, torna ai sensi — i rumori, il profumo — e resta con le emozioni che affiorano. Non è un compito: è un gesto in più, se ti fa piacere.</p>'},
     emozioni:{t:'Le emozioni', h:'<p>Appena finita la visualizzazione, <b>scrivi ciò che hai provato</b> — di getto, senza giudicarti. Sollievo, tristezza, amore, gioia, vuoto: <b>tutto va bene</b>. Metterlo per iscritto ti aiuta a vederlo da fuori e, rileggendolo nei giorni successivi, a capire quanto cambi.</p>'},
     incontro:{t:'L\'incontro', h:'<p>Ferma ciò che hai sentito nel momento in cui l\'adulto ha messo la mano sulla spalla del bambino, e nell\'<b>abbraccio</b>. Il bambino si è sentito al sicuro? Aspetta di sentire un <b>senso di sicurezza</b> da parte sua, e scrivilo: è il segno che l\'integrazione sta avvenendo.</p>'},
     ancoraggio:{t:'L\'ancoraggio', h:'<p>È la pratica che rende tutto vivo nella vita di ogni giorno. Ogni volta che senti una <b>paura</b>, un\'<b>insicurezza</b>, un\'emozione che ti destabilizza, «<b>chiama</b>» il tuo adulto interiore: ti basta <b>pensarci</b>, arrivarci con il pensiero, e sentire cosa ti arriva.</p><p>Deve essere una cosa quasi <b>irrazionale</b>: non un ragionamento, ma un ritorno a quella parte stabile e presente. Ripetuto tutte le volte, questo àncora l\'equilibrio dentro di te.</p>'}
@@ -754,7 +747,7 @@ MONTHLY-->
   var GIORN='<div class="gp-giorn"><p><b>Mentre fai questo lavoro, non smettere il Giornaliero.</b> La pratica di ogni giorno radica e integra tutto il cammino.</p></div>';
   var veil=document.getElementById('veil'), gpan=document.getElementById('gpan');
   function openGuide(){
-    var key=(view==='foglio' && curZone) ? curZone : view;
+    var key=(view==='visio' && curZone) ? curZone : view;
     var info=INFO[key]||INFO.hub;
     document.getElementById('gpTitle').textContent=info.t;
     document.getElementById('gpBody').innerHTML=info.h+GIORN;
