@@ -1,0 +1,23 @@
+# Dipendenze (Coolify fa npm install in fase di deploy)
+node_modules/
+
+# Segreti e ambiente (mai in git)
+.env
+.env.*
+*.key
+*.secret
+
+# Backup e file di scarto (esclusi dall'auto-sync /vps)
+*.bak
+*.pre-*
+*.PRIMA-*
+*.orig
+_cmsg.txt
+*~
+
+# Log e temporanei
+*.log
+*.tmp
+*.tmp.*
+.DS_Store
+Thumbs.db
