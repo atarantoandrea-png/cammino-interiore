@@ -118,6 +118,20 @@ h1{
 }
 .btn-ghost:hover{border-color:var(--glic);background:rgba(185,163,227,.07)}
 
+/* Pulsante "entra senza installare" (apre il Cammino nel browser) */
+.btn-open{
+  text-decoration:none;
+  background:linear-gradient(135deg,rgba(201,168,76,.26),rgba(232,217,174,.10));
+  color:var(--gold-pale);
+  border:1.5px solid rgba(201,168,76,.45);
+  box-shadow:0 8px 26px rgba(201,168,76,.16), inset 0 1px 0 rgba(255,255,255,.06);
+}
+.btn-open:hover{
+  border-color:var(--gold);
+  background:linear-gradient(135deg,rgba(201,168,76,.36),rgba(232,217,174,.16));
+  box-shadow:0 10px 32px rgba(201,168,76,.3);
+}
+
 /* indirizzo da copiare + separatore "oppure" (Android) */
 .addr{display:inline-block;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:16px;color:var(--glic-hi);
   background:rgba(185,163,227,.08);border:1px solid var(--card-line);border-radius:10px;padding:8px 12px;margin-top:6px;word-break:break-all}
@@ -261,6 +275,11 @@ footer{
   </div>
 
   <div class="success" id="installedMsg">✦ App installata!</div>
+
+  <!-- ACCESSO SENZA APP: apre direttamente il Cammino Interiore nel browser -->
+  <div class="or-sep">oppure</div>
+  <a class="btn btn-open" href="/app/">✦ Entra senza installare</a>
+  <p class="hint">Apri subito il <strong>Cammino Interiore</strong> qui, nel browser, senza scaricare l'app.</p>
   <!-- Le notifiche NON si chiedono qui: si attivano dentro l'app, dopo l'installazione -->
 </div>
 
