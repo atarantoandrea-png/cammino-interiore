@@ -308,6 +308,7 @@ app.post('/api/trial/register', (req, res) => {
     const sess = { token, at: Date.now() };
     const tier = sheetTier || 'trial';
     if (!sheetTier) sess.tier = 'trial';                         /* marcatore di sessione-prova */
+    else sess.lastTier = sheetTier;                               /* livello confermato dal foglio */
     try { writeSess(email, sess); } catch(e){}
     setSessionCookie(res, email, token);   /* cookie ovl_sess: entra nell'app */
     setTrialCookie(res, id);               /* cookie ovl_trial: per la chat 3/giorno */
@@ -401,6 +402,7 @@ const TIER_RANK = TIER_GROUPS.reduce((m, g) => { m[g.tier] = g.rank; return m; }
 const SHEETS_TABS = TIER_GROUPS.reduce((a, g) => a.concat(g.tabs), []);
 const SESSION_TTL = 30 * 24 * 60 * 60 * 1000; /* 30 giorni */
 const EMAIL_CACHE_TTL = 5 * 60 * 1000;  /* 5 min */
+const GOOGLE_TIMEOUT = 10 * 1000;       /* una chiamata a Google appesa non deve bloccare l'app */
 
 /* ── PANNELLO ADMIN: solo per Andrea. La password (ADMIN_KEY) NON sta nel codice
    (il repo è pubblico): si imposta come variabile d'ambiente su Coolify. L'email admin
@@ -447,17 +449,19 @@ function getGToken(cb) {
     hostname: 'oauth2.googleapis.com', path: '/token', method: 'POST',
     headers: {'Content-Type':'application/x-www-form-urlencoded','Content-Length':Buffer.byteLength(body)}
   };
+  let fatto = false; const una = (e, t) => { if (fatto) return; fatto = true; cb(e, t); };
   const req = https.request(opts, res => {
     let d = ''; res.on('data', c => d += c);
     res.on('end', () => {
       try {
         const j = JSON.parse(d);
-        if (j.access_token) { gsToken = j.access_token; gsTokenExp = Date.now() + (j.expires_in||3600)*1000; cb(null, gsToken); }
-        else cb('token error: ' + d);
-      } catch(e) { cb(e); }
+        if (j.access_token) { gsToken = j.access_token; gsTokenExp = Date.now() + (j.expires_in||3600)*1000; una(null, gsToken); }
+        else una('token error: ' + d);
+      } catch(e) { una(e); }
     });
   });
-  req.on('error', cb); req.write(body); req.end();
+  req.setTimeout(GOOGLE_TIMEOUT, () => req.destroy(new Error('timeout token Google')));
+  req.on('error', e => una(e)); req.write(body); req.end();
 }
 
 /* dalle righe di una scheda: prende la colonna con intestazione "email"
@@ -480,81 +484,170 @@ function emailsFromRows(rows) {
   return out;
 }
 
-/* legge una scheda; in caso di errore (es. scheda inesistente) ritorna []
-   così una scheda con nome sbagliato non blocca le altre (niente lockout) */
+/* legge una scheda: cb(err, emails). Un errore NON diventa «scheda vuota»: vuol dire
+   «non lo so» (Google giù, quota, rete) e chi chiama decide (vedi LIVELLI: si tiene
+   l'ultima lettura buona). Scheda inesistente = errore INVALID_ARGUMENT. */
 function fetchTabRows(token, tab, cb) {
+  let fatto = false; const una = (e, v) => { if (fatto) return; fatto = true; cb(e, v); };
   const opts = {
     hostname: 'sheets.googleapis.com',
     path: '/v4/spreadsheets/' + SHEETS_ID + '/values/' + encodeURIComponent(tab) + '?majorDimension=ROWS',
     headers: {'Authorization': 'Bearer ' + token}
   };
-  https.get(opts, res => {
+  const req = https.get(opts, res => {
     let d = ''; res.on('data', c => d += c);
     res.on('end', () => {
-      try { const j = JSON.parse(d); cb(j.error ? [] : emailsFromRows(j.values)); }
-      catch(e) { cb([]); }
+      try { const j = JSON.parse(d); if (j.error) una(j.error); else una(null, emailsFromRows(j.values)); }
+      catch(e) { una(e); }
     });
-  }).on('error', () => cb([]));
+  });
+  req.setTimeout(GOOGLE_TIMEOUT, () => req.destroy(new Error('timeout scheda ' + tab)));
+  req.on('error', e => una(e));
 }
 
-/* titoli reali delle schede del foglio (per risolvere i nomi configurati senza badare a maiuscole/spazi) */
+/* titoli reali delle schede del foglio (per risolvere i nomi configurati senza badare a maiuscole/spazi).
+   [] se non si riescono a leggere: allora non si può dire che una scheda manca. */
 function fetchSheetTitles(token, cb) {
+  let fatto = false; const una = v => { if (fatto) return; fatto = true; cb(v); };
   const opts = {
     hostname: 'sheets.googleapis.com',
     path: '/v4/spreadsheets/' + SHEETS_ID + '?fields=' + encodeURIComponent('sheets.properties.title'),
     headers: {'Authorization': 'Bearer ' + token}
   };
-  https.get(opts, res => {
+  const req = https.get(opts, res => {
     let d = ''; res.on('data', c => d += c);
     res.on('end', () => {
-      try { const j = JSON.parse(d); cb((j.sheets || []).map(s => s.properties && s.properties.title).filter(Boolean)); }
-      catch(e) { cb([]); }
+      try { const j = JSON.parse(d); una((j.sheets || []).map(s => s.properties && s.properties.title).filter(Boolean)); }
+      catch(e) { una([]); }
     });
-  }).on('error', () => cb([]));
+  });
+  req.setTimeout(GOOGLE_TIMEOUT, () => req.destroy(new Error('timeout titoli')));
+  req.on('error', () => una([]));
 }
 
-/* cache: mappa email -> livello (es. 'full' | 'monthly'). Sui DOPPIONI (stessa mail in
-   più schede/livelli) vince SEMPRE il livello con più accesso (rank più alto), qualunque
-   sia l'ordine di lettura dei fogli — regola valida anche per i livelli futuri.
-   L'allowlist è l'insieme delle chiavi. I nomi dei fogli sono risolti ai titoli reali. */
-let tierCache = null, tierCacheAt = 0;
-function getTierMap(cb) {
-  if (tierCache && Date.now() - tierCacheAt < EMAIL_CACHE_TTL) return cb(null, tierCache);
+/* ── LIVELLI DAL FOGLIO CRM, A PROVA DI GUASTO ─────────────────────────────────
+   Mappa email -> livello ('full' | 'monthly'). Sui DOPPIONI (stessa mail in più schede)
+   vince SEMPRE il rank più alto, qualunque sia l'ordine di lettura.
+   Dal 15/9/26 il foglio si RICONTROLLA a ogni riapertura dell'app (verify), sulle pagine
+   riservate e sulle lezioni piene: chi viene tolto dal CRM (disdetta) perde l'accesso.
+   Perché un guasto non butti MAI fuori chi paga:
+   - una sola lettura alla volta (chi arriva aspetta quella) e timeout sulle chiamate;
+   - scheda che dà ERRORE = «non lo so»: si usa l'ultima lettura buona di quella scheda;
+     se non c'è, la mappa è «non sicura» e nessuno viene tolto;
+   - scheda che all'improvviso risulta VUOTA, SPARITA (rinominata, cancellata) o con più del
+     30% di righe in meno: per 72 ore è un incidente e si tengono le righe di prima;
+   - l'ultima mappa buona si salva su disco (DATA/tier-cache.json) e vale anche dopo un riavvio;
+   - le verifiche d'accesso non aspettano Google: usano la mappa che c'è e la rinfrescano
+     dietro. Il login invece aspetta la lettura fresca, così un nuovo iscritto entra subito. */
+const TIER_CACHE_FILE = path.join(DATA, 'tier-cache.json');
+const SCHEDA_GRAZIA = 72 * 60 * 60 * 1000;
+const SCHEDA_CALO = 0.3;
+const LIVELLI_RIPROVA = 60 * 1000;   /* dopo un guasto totale non si ritenta prima di un minuto */
+const normScheda = t => String(t).trim().toLowerCase();
+let schedeBuone = {};      /* scheda -> { emails, at }: ultima lettura buona NON vuota */
+let statoLivelli = null;   /* { map: Map, at, sicura } */
+let letturaInCorso = null, ultimoGuasto = 0;
+try {
+  const c = JSON.parse(fs.readFileSync(TIER_CACHE_FILE, 'utf8'));
+  if (c && c.schede) schedeBuone = c.schede;
+  if (c && c.map) statoLivelli = { map: new Map(Object.entries(c.map)), at: 0, sicura: !!c.sicura };   /* at 0: si rinfresca appena possibile */
+} catch(e) { /* primo avvio: nessuna copia salvata */ }
+function salvaLivelli() {
+  try {
+    const tmp = TIER_CACHE_FILE + '.' + process.pid + '.tmp';
+    fs.writeFileSync(tmp, JSON.stringify({ salvato: Date.now(), sicura: statoLivelli.sicura, map: Object.fromEntries(statoLivelli.map), schede: schedeBuone }));
+    fs.renameSync(tmp, TIER_CACHE_FILE);
+  } catch(e) { console.error('livelli: copia su disco non salvata:', e.message); }
+}
+function leggiLivelli(fine) {
+  if (letturaInCorso) { letturaInCorso.push(fine); return; }
+  letturaInCorso = [fine];
+  const chiudi = () => {
+    const attesa = letturaInCorso; letturaInCorso = null;
+    attesa.forEach(f => { try { f(); } catch(e) { console.error('livelli:', e); } });
+  };
   getGToken((err, token) => {
-    if (err) return cb(err);
+    if (err) {
+      ultimoGuasto = Date.now();
+      console.error('livelli: Google non risponde (' + String(err.message || err).slice(0, 120) + '): uso l\'ultima mappa buona');
+      if (!statoLivelli) statoLivelli = { map: new Map(), at: 0, sicura: false };
+      return chiudi();
+    }
     fetchSheetTitles(token, titles => {
-      const norm = s => String(s).trim().toLowerCase();
-      const resolve = want => { const hit = titles.find(t => norm(t) === norm(want)); return hit || want; };
+      const titoli = titles.map(normScheda);
+      const resolve = want => { const hit = titles.find(t => normScheda(t) === normScheda(want)); return hit || want; };
       const jobs = [];
-      TIER_GROUPS.forEach(g => [...new Set(g.tabs.map(resolve))].forEach(tab => jobs.push({tab, tier: g.tier})));
-      let pending = jobs.length; const map = new Map();
-      if (!pending) { tierCache = map; tierCacheAt = Date.now(); return cb(null, map); }
-      jobs.forEach(job => fetchTabRows(token, job.tab, emails => {
-        const r = TIER_RANK[job.tier] || 0;
-        emails.forEach(e => { const cur = map.get(e); if (!cur || r > (TIER_RANK[cur] || 0)) map.set(e, job.tier); });
-        if (--pending === 0) { tierCache = map; tierCacheAt = Date.now(); cb(null, map); }
-      }));
+      TIER_GROUPS.forEach(g => [...new Set(g.tabs.map(resolve))].forEach(tab => jobs.push({ tab, tier: g.tier })));
+      const ora = Date.now(); const map = new Map();
+      let sicura = true, pending = jobs.length;
+      const finito = () => { statoLivelli = { map, at: ora, sicura }; salvaLivelli(); chiudi(); };
+      if (!pending) return finito();
+      jobs.forEach(job => {
+        const chiave = normScheda(job.tab);
+        const prima = schedeBuone[chiave];
+        const usa = emails => {
+          const r = TIER_RANK[job.tier] || 0;
+          emails.forEach(e => { const cur = map.get(e); if (!cur || r > (TIER_RANK[cur] || 0)) map.set(e, job.tier); });
+          if (--pending === 0) finito();
+        };
+        const incidente = quante => !!(prima && prima.emails.length && (ora - prima.at) < SCHEDA_GRAZIA &&
+          (quante === 0 || (prima.emails.length >= 10 && quante < prima.emails.length * (1 - SCHEDA_CALO))));
+        const letta = emails => {   /* il foglio ha risposto davvero */
+          if (incidente(emails.length)) {
+            console.error('livelli: scheda «' + job.tab + '» da ' + prima.emails.length + ' a ' + emails.length + ' righe: incidente, tengo l\'ultima lettura buona');
+            return usa(prima.emails);
+          }
+          if (emails.length) schedeBuone[chiave] = { emails, at: ora };
+          usa(emails);
+        };
+        if (titoli.length && titoli.indexOf(chiave) < 0) return letta([]);   /* la scheda non esiste (più) */
+        fetchTabRows(token, job.tab, (errTab, emails) => {
+          if (!errTab) return letta(emails);
+          const manca = errTab.status === 'INVALID_ARGUMENT' || /parse range/i.test(String(errTab.message || ''));
+          if (manca) return letta([]);
+          if (prima) { console.error('livelli: scheda «' + job.tab + '» non letta: uso l\'ultima lettura buona'); return usa(prima.emails); }
+          sicura = false;   /* nessuna copia buona: finché non si legge, nessuno viene tolto */
+          usa([]);
+        });
+      });
     });
   });
 }
-/* allowlist (compat): l'insieme delle email autorizzate, di qualunque livello */
-function getAllowedEmails(cb) {
-  getTierMap((err, map) => err ? cb(err) : cb(null, new Set(map.keys())));
+/* la mappa dei livelli: cb(stato). aspetta=true (login): se è scaduta aspetta la lettura fresca.
+   Senza aspetta (verifiche d'accesso): risponde subito con quella che c'è e la rinfresca dietro. */
+function livelli(cb, aspetta) {
+  const ora = Date.now();
+  const fresca = statoLivelli && ora - statoLivelli.at < EMAIL_CACHE_TTL;
+  if (fresca || (statoLivelli && ora - ultimoGuasto < LIVELLI_RIPROVA)) return cb(statoLivelli);
+  if (statoLivelli && !aspetta) { leggiLivelli(() => {}); return cb(statoLivelli); }
+  leggiLivelli(() => cb(statoLivelli));
 }
-/* livello dell'utente della richiesta (dal cookie di sessione): 'full' | 'monthly' | 'trial' | null.
-   FAIL-CLOSED: chi non è nel foglio NON diventa 'full'. Se la sessione è marcata 'trial' → 'trial';
-   altrimenti, email sconosciuta → null (nessun accesso). I paganti restano decisi dal foglio. */
+/* compatibilità (login, pannello, prova): la mappa aggiornata; errore solo se non c'è nessun dato affidabile */
+function getTierMap(cb) {
+  livelli(stato => {
+    if (!stato || (!stato.sicura && !stato.map.size)) return cb('livelli non disponibili');
+    cb(null, stato.map);
+  }, true);
+}
+/* livello di una sessione valida, RICONTROLLATO sul foglio: cb(tier, sicuro)
+   'full' | 'monthly' | 'trial' | null (non è più nel foglio: fuori).
+   Foglio non sicuro: nessuno viene tolto; vale il livello confermato l'ultima volta
+   (sess.lastTier), altrimenti il mensile (dentro, ma senza le lezioni piene). */
+function livelloDiSessione(email, sess, cb) {
+  livelli(stato => {
+    const dalFoglio = stato && stato.map.get(email);
+    if (dalFoglio) return cb(dalFoglio, true);
+    if (sess && sess.tier === 'trial') return cb('trial', true);
+    if (stato && stato.sicura) return cb(null, true);
+    return cb((sess && sess.lastTier) || 'monthly', false);
+  });
+}
+/* livello dell'utente della richiesta (dal cookie di sessione): cb(null, tier, sicuro).
+   FAIL-CLOSED: chi non è nel foglio NON diventa 'full'. */
 function tierForReq(req, cb) {
   const s = sessionFromReq(req);
-  if (!s) return cb(null, null);
-  const sess = readSess(sessFile(s.email));
-  const sessTier = sess && sess.tier;   /* 'trial' per le sessioni di prova */
-  getTierMap((err, map) => {
-    if (err) return cb(err, sessTier === 'trial' ? 'trial' : null);
-    const sheetTier = map.get(s.email);
-    if (sheetTier) return cb(null, sheetTier);
-    return cb(null, sessTier === 'trial' ? 'trial' : null);
-  });
+  if (!s) return cb(null, null, true);
+  livelloDiSessione(s.email, readSess(sessFile(s.email)), (tier, sicuro) => cb(null, tier, sicuro));
 }
 
 /* file di sessione per email */
@@ -670,7 +763,7 @@ app.post('/api/auth/session', (req, res) => {
     if (isTrial && !isTrialLead(email)) return res.status(403).json({ok: false, reason: 'unauthorized'});
     const tier = isTrial ? 'trial' : (map.get(email) || 'full');
     /* record di sessione: i "prova" portano il marcatore tier:'trial' (gating fail-closed) */
-    const rec = (tok) => isTrial ? {token: tok, at: Date.now(), tier: 'trial'} : {token: tok, at: Date.now()};
+    const rec = (tok) => isTrial ? {token: tok, at: Date.now(), tier: 'trial'} : {token: tok, at: Date.now(), lastTier: tier};
     const f = sessFile(email);
     const sess = readSess(f);
     if (sess && sess.token && (Date.now() - sess.at) < SESSION_TTL) {
@@ -690,25 +783,34 @@ app.post('/api/auth/session', (req, res) => {
   });
 });
 
-/* POST /api/auth/verify — verifica che la sessione sia ancora valida (keep-alive) */
+/* POST /api/auth/verify — verifica che la sessione sia ancora valida (keep-alive).
+   Dal 15/9/26 RICONTROLLA IL CRM a ogni riapertura dell'app: chi è stato tolto dal foglio
+   (disdetta) perde la sessione e torna al login, dove il controllo incrociato lo lascia fuori.
+   Se il foglio non è affidabile nessuno viene tolto (vedi LIVELLI). */
 app.post('/api/auth/verify', (req, res) => {
   const b = req.body || {};
   const email = String(b.email || '').trim().toLowerCase();
   const token = String(b.token || '');
   if (!emailRe.test(email) || !token) return res.status(400).json({ok: false});
   const sess = readSess(sessFile(email));
-  if (sess && sess.token === token && (Date.now() - sess.at) < SESSION_TTL) {
-    sess.at = Date.now();
-    writeSess(email, sess);   /* atomico · PRESERVA 'tier' (es. la prova): non declassare/elevare */
-    setSessionCookie(res, email, token);   /* installa/aggiorna il cookie: upgrade trasparente */
-    /* livello reale: foglio se pagante, altrimenti 'trial' se è una sessione di prova */
-    getTierMap((err, map) => {
-      const tier = (!err && map.get(email)) || sess.tier || (err ? undefined : 'full');
-      res.json(tier ? {ok: true, tier} : {ok: true});
-    });
-  } else {
-    res.json({ok: false, reason: sess ? 'expired' : 'not_found'});
+  if (!(sess && sess.token === token && (Date.now() - sess.at) < SESSION_TTL)) {
+    return res.json({ok: false, reason: sess ? 'expired' : 'not_found'});
   }
+  livelloDiSessione(email, sess, (tier, sicuro) => {
+    const attuale = readSess(sessFile(email));   /* riletta: nel frattempo può essere cambiata (uscita, altro dispositivo) */
+    if (!(attuale && attuale.token === token)) return res.json({ok: false, reason: attuale ? 'expired' : 'not_found'});
+    if (!tier) {
+      try { fs.unlinkSync(sessFile(email)); } catch(e) {}
+      clearSessionCookie(res);
+      console.log('accesso chiuso alla riapertura: email non più nel foglio CRM');
+      return res.json({ok: false, reason: 'unauthorized'});
+    }
+    attuale.at = Date.now();
+    if (sicuro && tier !== 'trial') attuale.lastTier = tier;   /* livello confermato: serve se un giorno Google non risponde */
+    writeSess(email, attuale);   /* atomico · PRESERVA 'tier' (es. la prova) */
+    setSessionCookie(res, email, token);   /* installa/aggiorna il cookie: upgrade trasparente */
+    res.json(sicuro || attuale.lastTier ? {ok: true, tier} : {ok: true});
+  });
 });
 
 /* POST /api/auth/logout */
@@ -941,11 +1043,11 @@ app.get(['/app/community', '/app/community/'], (req, res) => {
 /* la barra della community SOLO per annuali e mensili: MAI alla prova gratuita, mai a chi
    non ha fatto l'accesso (Andrea, 15/9/26: dalla prova non si deve poter entrare nella
    community). Decide il server: cookie di sessione + foglio CRM (tierForReq, fail-closed:
-   foglio non raggiungibile = niente barra). */
+   senza una conferma sicura dal foglio niente barra). */
 app.get('/api/community/menu', (req, res) => {
   res.set('Cache-Control', 'no-store');
-  tierForReq(req, (err, tier) => {
-    res.json({ ok: true, menu: !err && (tier === 'full' || tier === 'monthly') });
+  tierForReq(req, (err, tier, sicuro) => {
+    res.json({ ok: true, menu: !err && sicuro === true && (tier === 'full' || tier === 'monthly') });
   });
 });
 
@@ -971,25 +1073,30 @@ function trialAllowedPath(p){
 app.use((req, res, next) => {
   if (req.method !== 'GET' && req.method !== 'HEAD') return next();
   if (!isReserved(req.path)) return next();
+  const nega = () => {
+    res.set('Cache-Control', 'no-store');
+    const isDoc = req.path.charAt(req.path.length - 1) === '/' || /\.html?$/.test(req.path);
+    if (isDoc) return res.redirect(302, '/app/');         /* pagina riservata non concessa → home (sentiero coi lucchetti) */
+    return res.status(403).end();                          /* media/asset riservato → negato */
+  };
   const s = sessionFromReq(req);
-  let allowed = false;
-  if (s) {
-    const sess = readSess(sessFile(s.email));
-    if (sess && sess.tier === 'trial') allowed = trialAllowedPath(req.path);   /* prova: solo percorso + musiche */
-    else allowed = true;                                                       /* sessione normale = pagante */
-  }
-  if (allowed) return next();
-  res.set('Cache-Control', 'no-store');
-  const isDoc = req.path.charAt(req.path.length - 1) === '/' || /\.html?$/.test(req.path);
-  if (isDoc) return res.redirect(302, '/app/');         /* pagina riservata non concessa → home (sentiero coi lucchetti) */
-  return res.status(403).end();                          /* media/asset riservato → negato */
+  if (!s) return nega();
+  /* sessione valida: il livello si RICONTROLLA sul foglio (chi è stato tolto dal CRM non passa più).
+     La mappa sta in memoria: audio e video non rallentano. */
+  livelloDiSessione(s.email, readSess(sessFile(s.email)), tier => {
+    if (tier === 'trial') return trialAllowedPath(req.path) ? next() : nega();   /* prova: solo la vetrina */
+    if (tier === 'full' || tier === 'monthly') return next();                   /* paganti */
+    return nega();                                                               /* non più nel foglio */
+  });
 });
 
 /* ── ACCESSO MENSILE ("trailer"): per le sezioni oltre il Giornaliero (Mondo Interiore,
    Bambino) il server serve una versione DEPURATA dell'HTML: rimuove i blocchi
    <!--FULL-->…<!--/FULL--> (ID video, testi degli esercizi) e ATTIVA i blocchi
    <!--MONTHLY …MONTHLY--> (copertine bloccate + invito a passare all'annuale).
-   Così i contenuti pieni non vengono proprio inviati a chi è "mensile". */
+   Così i contenuti pieni non vengono proprio inviati a chi è "mensile".
+   Dal 15/9/26 è al contrario, FAIL-CLOSED: le pagine piene vanno SOLO a chi risulta annuale;
+   mensili, prova e qualunque dubbio (per esempio chi non è più nel foglio) ricevono il trailer. */
 const monthlyHtmlCache = {};
 function monthlyHtml(file) {
   let st; try { st = fs.statSync(file); } catch(e) { return null; }
@@ -1006,9 +1113,9 @@ app.use((req, res, next) => {
   const m = req.path.match(/^\/app\/(capitolo2|bambino|adulto)\/(?:index\.html)?$/);
   if (!m) return next();
   tierForReq(req, (err, tier) => {
-    if (err || (tier !== 'monthly' && tier !== 'trial')) return next();   /* pieni → versione completa; mensili e prova → trailer stripato */
-    const html = monthlyHtml(path.join(__dirname, 'app', m[1], 'index.html'));
-    if (html == null) return next();
+    if (!err && tier === 'full') return next();   /* annuali → versione completa */
+    const html = monthlyHtml(path.join(__dirname, 'app', m[1], 'index.html'));   /* tutti gli altri → trailer stripato */
+    if (html == null) return res.status(404).end();
     res.set('Cache-Control', 'no-store');
     res.type('html').send(html);
   });
