@@ -928,6 +928,16 @@ app.get('/api/admin/overview', (req, res) => {
   });
 });
 
+/* ── ENTRATA DALLA COMMUNITY: /app/community ──
+   È la stessa identica app di /app/, ma con sotto il menu della community «Oltre il Velo».
+   Rimando alla shell con ?community=1: app/community-menu.js se lo ricorda per quella
+   scheda e mostra la barra. Chi apre /app/ normale non vede nessun menu.
+   Sta PRIMA del gating: /app/community/ (con la barra) finirebbe tra le cartelle riservate. */
+app.get(['/app/community', '/app/community/'], (req, res) => {
+  res.set('Cache-Control', 'no-store');
+  res.redirect(302, '/app/?community=1');
+});
+
 /* ── GATING: TUTTO ciò che sta in una sotto-cartella di /app è riservato ──
    Video, esercizi, audio, musica e qualunque contenuto futuro: servito SOLO con
    sessione valida. Così ogni nuova area creata sotto /app è protetta in automatico.
