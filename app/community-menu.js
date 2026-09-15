@@ -4,6 +4,10 @@
    al Cammino compare la stessa barra della community, per tornare di là in un tocco.
    Chi apre /app/ normale (o l'app installata) non vede nessun menu.
    ?community=0 lo toglie.
+   - SOLO ANNUALI E MENSILI: la barra compare solo se il server risponde menu:true a
+     /api/community/menu (cookie di sessione + foglio CRM). Prova gratuita, accesso non
+     fatto, errore o rete assente = niente barra (Andrea: dalla prova non si entra in community).
+     Si ricontrolla a ogni cambio di vista (accesso, uscita) della shell.
    - La classe sta su <html>: la shell riscrive body.className quando cambia vista.
    - Le sezioni (iframe #dayframe) finiscono sopra la barra: niente resta coperto.
    - Con la guida, la chat o il consiglio della luce aperti la barra si fa da parte. */
@@ -26,7 +30,6 @@
   if (!attivo) return;
 
   var root = document.documentElement;
-  root.classList.add('ovl-community');
 
   var css =
     'html.ovl-community{--ovl-cn-h:74px;--ovl-cn-tot:calc(var(--ovl-cn-h) + 1px + env(safe-area-inset-bottom, 0px))}' +   /* 1px = il filo sopra la barra */
@@ -76,10 +79,14 @@
     'html.ovl-community #ci-notif-ask.show{transform:translateY(0)}' +
     'html.ovl-community #pwa-notif-sheet{bottom:var(--ovl-cn-tot) !important;padding-bottom:12px !important}';
 
-  var st = document.createElement('style');
-  st.id = 'ovl-community-css';
-  st.textContent = css;
-  (document.head || root).appendChild(st);
+  var st = null;
+  function stile() {
+    if (st) return;
+    st = document.createElement('style');
+    st.id = 'ovl-community-css';
+    st.textContent = css;
+    (document.head || root).appendChild(st);
+  }
 
   var C = 'https://community.elisasoulmedium.com/';
   var ATTR = 'viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"';
@@ -107,21 +114,22 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  function osservaFinestre() {
-    var ids = ['veil', 'gpan', 'chatpan', 'lkpop'];
-    var aggiorna = function () {
-      var aperta = ids.some(function (id) { var el = document.getElementById(id); return el && el.classList.contains('on'); });
-      root.classList.toggle('ovl-cn-via', aperta);
-    };
+  function osserva(ids, fn) {
     if (!('MutationObserver' in window)) return;
-    var mo = new MutationObserver(aggiorna);
+    var mo = new MutationObserver(fn);
     ids.forEach(function (id) { var el = document.getElementById(id); if (el) mo.observe(el, { attributes: true, attributeFilter: ['class'] }); });
-    aggiorna();
+  }
+  var FINESTRE = ['veil', 'gpan', 'chatpan', 'lkpop'];
+  function finestre() {
+    var aperta = FINESTRE.some(function (id) { var el = document.getElementById(id); return el && el.classList.contains('on'); });
+    root.classList.toggle('ovl-cn-via', aperta);
   }
 
+  var nav = null;
   function monta() {
-    if (document.getElementById('ovl-cnav')) return;
-    var nav = document.createElement('nav');
+    if (nav) return;
+    stile();
+    nav = document.createElement('nav');
     nav.id = 'ovl-cnav';
     nav.setAttribute('aria-label', 'Menu della community');
     nav.innerHTML = VOCI.map(function (v) {
@@ -132,8 +140,36 @@
     }).join('');
     document.body.appendChild(nav);
     nav.querySelector('[data-ovl-cammino]').addEventListener('click', tornaAlCammino);
-    osservaFinestre();
+    root.classList.add('ovl-community');
+    finestre();
   }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', monta);
-  else monta();
+  function smonta() {
+    root.classList.remove('ovl-community');
+    if (!nav) return;
+    if (nav.parentNode) nav.parentNode.removeChild(nav);
+    nav = null;
+  }
+
+  /* il permesso lo da' il server, mai il telefono: si chiede a ogni cambio di vista */
+  function inAccesso() { var l = document.getElementById('login'); return !!(l && l.classList.contains('on')); }
+  var giro = 0, attesa = null;
+  function verifica() {
+    clearTimeout(attesa);
+    attesa = setTimeout(function () {
+      if (inAccesso()) { giro++; smonta(); return; }   /* schermata di accesso (o uscita): niente barra */
+      var n = ++giro;
+      fetch('/api/community/menu', { credentials: 'same-origin', cache: 'no-store' })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (d) { if (n !== giro) return; if (d && d.menu === true && !inAccesso()) monta(); else smonta(); })
+        .catch(function () { if (n === giro) smonta(); });
+    }, 60);
+  }
+
+  function avvia() {
+    osserva(FINESTRE, finestre);
+    osserva(['login', 'dash'], verifica);
+    verifica();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', avvia);
+  else avvia();
 })();

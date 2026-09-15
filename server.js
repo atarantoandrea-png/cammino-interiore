@@ -931,11 +931,22 @@ app.get('/api/admin/overview', (req, res) => {
 /* ── ENTRATA DALLA COMMUNITY: /app/community ──
    È la stessa identica app di /app/, ma con sotto il menu della community «Oltre il Velo».
    Rimando alla shell con ?community=1: app/community-menu.js se lo ricorda per quella
-   scheda e mostra la barra. Chi apre /app/ normale non vede nessun menu.
+   scheda e chiede a /api/community/menu se la barra si può mostrare. Chi apre /app/
+   normale non vede nessun menu.
    Sta PRIMA del gating: /app/community/ (con la barra) finirebbe tra le cartelle riservate. */
 app.get(['/app/community', '/app/community/'], (req, res) => {
   res.set('Cache-Control', 'no-store');
   res.redirect(302, '/app/?community=1');
+});
+/* la barra della community SOLO per annuali e mensili: MAI alla prova gratuita, mai a chi
+   non ha fatto l'accesso (Andrea, 15/9/26: dalla prova non si deve poter entrare nella
+   community). Decide il server: cookie di sessione + foglio CRM (tierForReq, fail-closed:
+   foglio non raggiungibile = niente barra). */
+app.get('/api/community/menu', (req, res) => {
+  res.set('Cache-Control', 'no-store');
+  tierForReq(req, (err, tier) => {
+    res.json({ ok: true, menu: !err && (tier === 'full' || tier === 'monthly') });
+  });
 });
 
 /* ── GATING: TUTTO ciò che sta in una sotto-cartella di /app è riservato ──
