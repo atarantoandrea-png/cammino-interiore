@@ -68,6 +68,7 @@
     '@media (max-width:460px){' +
       '#ovl-cnav .ovl-cn-lab{font-size:0}' +
       '#ovl-cnav .ovl-cn-lab::after{content:attr(data-corto);font-size:8px;letter-spacing:.05em}}' +
+    '@media (max-width:380px){#ovl-cnav .ovl-cn-lab::after{letter-spacing:0}}' +   /* 360 px: sei voci senza toccarsi */
     /* guida, chat e consiglio della luce aperti: la barra scende e lascia tutto lo spazio */
     'html.ovl-cn-via #ovl-cnav{transform:translateY(160%);pointer-events:none}' +
     /* le sezioni si aprono sopra la barra, gli avvisi in basso salgono sopra di lei */
@@ -99,6 +100,8 @@
       svg: '<path d="M12 20c-2.2-2.4-3.3-6.2-2.2-10.4 1 1.4 1.7 3 2.2 4.6.5-1.6 1.2-3.2 2.2-4.6 1.1 4.2 0 8-2.2 10.4Z"/><path d="M12 20c-1.6-3.8-4.6-7-8.2-8 .8 3.6 3.2 6.8 6.4 8.2M12 20c1.6-3.8 4.6-7 8.2-8-.8 3.6-3.2 6.8-6.4 8.2"/><path d="M12 20c-3.4 0-6.6-1.4-8.6-3.6 3-.6 6 .2 8.6 2M12 20c3.4 0 6.6-1.4 8.6-3.6-3-.6-6 .2-8.6 2"/>' },
     { href: C + '?apri=biblioteca', lab: 'Biblioteca', corto: 'Biblioteca',
       svg: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>' },
+    { href: C + '?apri=personale', lab: 'Personale', corto: 'Personale',   /* 16/9/26: playlist e appunti di ognuno */
+      svg: '<path d="M6.5 3.5h11a1 1 0 0 1 1 1v16l-6.5-4.2-6.5 4.2v-16a1 1 0 0 1 1-1z"/><path d="M9.5 9.5h5"/>' },
     { href: '/app/', lab: 'Cammino', corto: 'Cammino', qui: true,
       svg: '<circle cx="12" cy="6.5" r="3.5"/><path d="M5 21c0-5 3.1-8.5 7-8.5s7 3.5 7 8.5"/>' }
   ];
