@@ -1035,19 +1035,79 @@ app.get('/api/admin/overview', (req, res) => {
    Rimando alla shell con ?community=1: app/community-menu.js se lo ricorda per quella
    scheda e chiede a /api/community/menu se la barra si può mostrare. Chi apre /app/
    normale non vede nessun menu.
-   Sta PRIMA del gating: /app/community/ (con la barra) finirebbe tra le cartelle riservate. */
+   Sta PRIMA del gating: /app/community/ (con la barra) finirebbe tra le cartelle riservate.
+
+   IL PONTE (Andrea, 16/9/26: sulla schermata di accesso «ci deve essere! ma solo se accedo
+   da community.elisasoulmedium.com»). La community manda qui con ?pass=<codice usa-e-getta>
+   (2 minuti, niente mail nell'indirizzo); il server chiede alla community se il codice è vero
+   (GET COMMUNITY_URL/api/ponte/cammino/:codice). Se lo è e la persona è annuale o mensile, un
+   cookie firmato «arriva dalla community» (12 ore) fa vedere la barra anche prima dell'accesso.
+   Niente segreti condivisi: la chiave della firma sta solo qui, in /data. */
+const COMMUNITY_URL = (process.env.COMMUNITY_URL || 'https://community.elisasoulmedium.com').replace(/\/+$/, '');
+const VIA_COMM = 'ovl_via_comm';
+const VIA_COMM_ORE = 12;
+const chiavePonte = (() => {
+  const f = path.join(DATA, 'ponte-community.key');
+  try { const k = fs.readFileSync(f); if (k.length >= 32) return k; } catch (e) { /* la creo */ }
+  const k = crypto.randomBytes(32);
+  try { fs.writeFileSync(f, k, { mode: 0o600 }); } catch (e) { /* senza volume vale fino al riavvio */ }
+  return k;
+})();
+const firmaPonte = s => crypto.createHmac('sha256', chiavePonte).update('via-community:' + s).digest('base64url');
+function viaCommunityOk(req) {
+  const v = parseCookies(req)[VIA_COMM];
+  if (!v) return false;
+  const i = v.indexOf('.');
+  if (i < 0) return false;
+  const scade = v.slice(0, i), firma = Buffer.from(v.slice(i + 1)), attesa = Buffer.from(firmaPonte(scade));
+  if (firma.length !== attesa.length || !crypto.timingSafeEqual(firma, attesa)) return false;
+  return Number(scade) > Date.now();
+}
+function verificaPonte(codice, cb) {
+  let fatto = false;
+  const fine = t => { if (!fatto) { fatto = true; cb(t); } };
+  let url;
+  try { url = new URL(COMMUNITY_URL + '/api/ponte/cammino/' + encodeURIComponent(codice)); } catch (e) { return fine(null); }
+  const mod = url.protocol === 'http:' ? require('http') : https;
+  const r = mod.get(url, { timeout: 4000, headers: { accept: 'application/json' } }, risp => {
+    let corpo = '';
+    risp.setEncoding('utf8');
+    risp.on('data', d => { if (corpo.length < 2000) corpo += d; });
+    risp.on('end', () => {
+      if (risp.statusCode !== 200) return fine(null);
+      try { const j = JSON.parse(corpo); fine(j && j.ok === true ? String(j.tier || '') : null); } catch (e) { fine(null); }
+    });
+  });
+  r.on('timeout', () => { r.destroy(); fine(null); });
+  r.on('error', () => fine(null));
+}
 app.get(['/app/community', '/app/community/'], (req, res) => {
   res.set('Cache-Control', 'no-store');
-  res.redirect(302, '/app/?community=1');
+  const pass = String(req.query.pass || '');
+  if (!/^[A-Za-z0-9_-]{20,80}$/.test(pass)) return res.redirect(302, '/app/?community=1');
+  verificaPonte(pass, tier => {
+    if (tier === 'full' || tier === 'monthly') {
+      const scade = String(Date.now() + VIA_COMM_ORE * 3600 * 1000);
+      res.append('Set-Cookie', VIA_COMM + '=' + scade + '.' + firmaPonte(scade) + '; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=' + VIA_COMM_ORE * 3600);
+    }
+    res.redirect(302, '/app/?community=1');
+  });
 });
-/* la barra della community SOLO per annuali e mensili: MAI alla prova gratuita, mai a chi
-   non ha fatto l'accesso (Andrea, 15/9/26: dalla prova non si deve poter entrare nella
-   community). Decide il server: cookie di sessione + foglio CRM (tierForReq, fail-closed:
-   senza una conferma sicura dal foglio niente barra). */
+/* la barra della community SOLO per annuali e mensili: MAI alla prova gratuita (Andrea, 15/9/26:
+   dalla prova non si deve poter entrare nella community). Decide il server:
+   - con una sessione: cookie di sessione + foglio CRM (tierForReq, fail-closed: senza una
+     conferma sicura dal foglio niente barra; la prova e gli ex iscritti mai);
+   - SENZA sessione (schermata di accesso): solo col cookie firmato del ponte, cioè a chi è
+     appena arrivato dalla community con un codice verificato (16/9/26). */
 app.get('/api/community/menu', (req, res) => {
   res.set('Cache-Control', 'no-store');
+  const conSessione = !!sessionFromReq(req);
   tierForReq(req, (err, tier, sicuro) => {
-    res.json({ ok: true, menu: !err && sicuro === true && (tier === 'full' || tier === 'monthly') });
+    const socio = !err && sicuro === true && (tier === 'full' || tier === 'monthly');
+    const daCommunity = !conSessione && viaCommunityOk(req);
+    /* chi entra con la prova non si porta dietro il permesso del ponte */
+    if (conSessione && tier === 'trial' && parseCookies(req)[VIA_COMM]) res.append('Set-Cookie', VIA_COMM + '=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0');
+    res.json({ ok: true, menu: socio || daCommunity });
   });
 });
 

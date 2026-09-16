@@ -5,8 +5,10 @@
    Chi apre /app/ normale (o l'app installata) non vede nessun menu.
    ?community=0 lo toglie.
    - SOLO ANNUALI E MENSILI: la barra compare solo se il server risponde menu:true a
-     /api/community/menu (cookie di sessione + foglio CRM). Prova gratuita, accesso non
-     fatto, errore o rete assente = niente barra (Andrea: dalla prova non si entra in community).
+     /api/community/menu (cookie di sessione + foglio CRM). Prova gratuita, errore o rete
+     assente = niente barra (Andrea: dalla prova non si entra in community).
+   - SULLA SCHERMATA DI ACCESSO (16/9/26) la barra c'è solo per chi è arrivato davvero dalla
+     community: lo sa il server (cookie firmato del ponte, vedi server.js), non il telefono.
      Si ricontrolla a ogni cambio di vista (accesso, uscita) della shell.
    - La classe sta su <html>: la shell riscrive body.className quando cambia vista.
    - Le sezioni (iframe #dayframe) finiscono sopra la barra: niente resta coperto.
@@ -153,17 +155,16 @@
     nav = null;
   }
 
-  /* il permesso lo da' il server, mai il telefono: si chiede a ogni cambio di vista */
-  function inAccesso() { var l = document.getElementById('login'); return !!(l && l.classList.contains('on')); }
+  /* il permesso lo da' il server, mai il telefono: si chiede a ogni cambio di vista,
+     anche sulla schermata di accesso (lì vale solo il ponte dalla community) */
   var giro = 0, attesa = null;
   function verifica() {
     clearTimeout(attesa);
     attesa = setTimeout(function () {
-      if (inAccesso()) { giro++; smonta(); return; }   /* schermata di accesso (o uscita): niente barra */
       var n = ++giro;
       fetch('/api/community/menu', { credentials: 'same-origin', cache: 'no-store' })
         .then(function (r) { return r.ok ? r.json() : null; })
-        .then(function (d) { if (n !== giro) return; if (d && d.menu === true && !inAccesso()) monta(); else smonta(); })
+        .then(function (d) { if (n !== giro) return; if (d && d.menu === true) monta(); else smonta(); })
         .catch(function () { if (n === giro) smonta(); });
     }, 60);
   }
