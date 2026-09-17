@@ -723,7 +723,29 @@ function safeEq(a, b) {
 function adminToken(email) {
   return crypto.createHmac('sha256', adminKey()).update('admin:' + email).digest('hex');
 }
+/* ── LETTURA DAL PANNELLO DELLA COMMUNITY (17/9/26) ──
+   Andrea vuole questi dati anche nel Pannello di controllo della community «così ho tutto insieme».
+   Il server della community chiede SOLO queste tre GET con un gettone (Authorization: Bearer …)
+   salvato in /data/community-stats.token (fuori dal repo pubblico, almeno 32 caratteri).
+   Nessuna scrittura: le POST (es. eliminare un suggerimento) restano a chi entra con la password. */
+const STATS_TOKEN_FILE = path.join(DATA, 'community-stats.token');
+const STATS_PATHS = ['/api/admin/overview', '/api/admin/chats', '/api/admin/suggestions'];
+let _stCache = null, _stAt = 0;
+function statsToken() {
+  if (_stCache !== null && Date.now() - _stAt < 60000) return _stCache;
+  try { _stCache = fs.readFileSync(STATS_TOKEN_FILE, 'utf8').trim(); } catch(e) { _stCache = ''; }
+  _stAt = Date.now();
+  return _stCache;
+}
+function statsFromReq(req) {
+  if (req.method !== 'GET' || STATS_PATHS.indexOf(req.path) < 0) return false;
+  const h = String(req.headers.authorization || '');
+  if (h.slice(0, 7) !== 'Bearer ') return false;
+  const t = statsToken();
+  return t.length >= 32 && safeEq(h.slice(7).trim(), t);
+}
 function adminFromReq(req) {
+  if (statsFromReq(req)) return { email: 'pannello-community', solaLettura: true };
   if (!adminKey()) return null;
   const raw = parseCookies(req)[ADMIN_COOKIE];
   if (!raw) return null;
