@@ -394,6 +394,31 @@ const MONTHLY_TABS = (process.env.SHEETS_TABS_MONTHLY ? process.env.SHEETS_TABS_
    schede) vince SEMPRE il rank più alto, indipendentemente dall'ordine di lettura.
    Per un livello FUTURO (es. il "trailer" dell'app) basta aggiungere qui una riga con
    un rank più basso e le sue schede — la regola del "vince il più alto" vale da sola. */
+/* LA PROVA DI 15 GIORNI DELLA COMMUNITY (Andrea, 28/9/26). Chi fa un consulto entra nella
+   community per quindici giorni: in quei giorni il Cammino gli si apre come a un MENSILE
+   (prima parte + anteprima del resto). Quando la riga sparisce dal foglio — o quando sono
+   passati i quindici giorni — torna fuori da solo. Se poi si abbonerà davvero, avrà il
+   livello del suo abbonamento. */
+const SCHEDA_PROVA = 'Community Temporanea';
+const GIORNI_PROVA = 15;
+const comeScheda = s => String(s == null ? '' : s).trim().toLowerCase();
+if (!MONTHLY_TABS.some(t => comeScheda(t) === comeScheda(SCHEDA_PROVA))) MONTHLY_TABS.push(SCHEDA_PROVA);
+/* la data della riga: se non si legge, la riga vale (decide Zapier togliendola dal foglio) */
+function quandoDi(valore) {
+  const s = String(valore == null ? '' : valore).trim();
+  if (!s) return NaN;
+  let t = Date.parse(s.replace(' ', 'T'));
+  if (isNaN(t)) {
+    const m = s.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{4})/);   /* 25/09/2026 */
+    if (m) t = Date.parse(m[3] + '-' + ('0' + m[2]).slice(-2) + '-' + ('0' + m[1]).slice(-2));
+  }
+  return t;
+}
+function provaScaduta(valore) {
+  const t = quandoDi(valore);
+  return isNaN(t) ? false : Date.now() - t > GIORNI_PROVA * 24 * 60 * 60 * 1000;
+}
+
 const TIER_GROUPS = [
   { tier: 'full',    rank: 30, tabs: FULL_TABS },     /* annuali + Cammino Interiore Speciali: accesso completo */
   { tier: 'monthly', rank: 20, tabs: MONTHLY_TABS },  /* Mensili: anteprima/trailer fino al Giornaliero */
@@ -466,13 +491,15 @@ function getGToken(cb) {
 
 /* dalle righe di una scheda: prende la colonna con intestazione "email"
    (fallback: qualsiasi cella che contiene "@") */
-function emailsFromRows(rows) {
+function emailsFromRows(rows, conScadenza) {
   if (!rows || !rows.length) return [];
   const header = rows[0].map(h => String(h == null ? '' : h).trim().toLowerCase());
   const col = header.findIndex(h => /mail/.test(h));   /* "Email", "Mail", "E-mail"… */
+  const colData = header.findIndex(h => /data/.test(h));   /* «Data Iscrizione», per la prova */
   const out = [];
   if (col >= 0) {
     for (let i = 1; i < rows.length; i++) {
+      if (conScadenza && colData >= 0 && provaScaduta(rows[i][colData])) continue;   /* prova finita */
       const v = rows[i][col];
       if (v && String(v).includes('@')) out.push(String(v).trim().toLowerCase());
     }
@@ -497,7 +524,7 @@ function fetchTabRows(token, tab, cb) {
   const req = https.get(opts, res => {
     let d = ''; res.on('data', c => d += c);
     res.on('end', () => {
-      try { const j = JSON.parse(d); if (j.error) una(j.error); else una(null, emailsFromRows(j.values)); }
+      try { const j = JSON.parse(d); if (j.error) una(j.error); else una(null, emailsFromRows(j.values, comeScheda(tab) === comeScheda(SCHEDA_PROVA))); }
       catch(e) { una(e); }
     });
   });
@@ -590,14 +617,15 @@ function leggiLivelli(fine) {
           emails.forEach(e => { const cur = map.get(e); if (!cur || r > (TIER_RANK[cur] || 0)) map.set(e, job.tier); });
           if (--pending === 0) finito();
         };
-        const incidente = quante => !!(prima && prima.emails.length && (ora - prima.at) < SCHEDA_GRAZIA &&
+        const eProva = chiave === comeScheda(SCHEDA_PROVA);
+        const incidente = quante => !eProva && !!(prima && prima.emails.length && (ora - prima.at) < SCHEDA_GRAZIA &&
           (quante === 0 || (prima.emails.length >= 10 && quante < prima.emails.length * (1 - SCHEDA_CALO))));
         const letta = emails => {   /* il foglio ha risposto davvero */
           if (incidente(emails.length)) {
             console.error('livelli: scheda «' + job.tab + '» da ' + prima.emails.length + ' a ' + emails.length + ' righe: incidente, tengo l\'ultima lettura buona');
             return usa(prima.emails);
           }
-          if (emails.length) schedeBuone[chiave] = { emails, at: ora };
+          if (emails.length || eProva) schedeBuone[chiave] = { emails, at: ora };   /* la prova vale anche vuota */
           usa(emails);
         };
         if (titoli.length && titoli.indexOf(chiave) < 0) return letta([]);   /* la scheda non esiste (più) */
