@@ -119,6 +119,17 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
 .hubnote{margin:18px 18px 0;text-align:center;font-size:18px;color:var(--txt-dim);line-height:1.55}
 .hubnote b{color:var(--gold-pale);font-weight:600}
 
+/* ===== scheda con la COPERTINA GRANDE (come nell'Ombra) ===== */
+#hub .exitem{flex-direction:column;align-items:stretch;gap:0;padding:0;overflow:hidden}
+.pcop{display:block;width:100%;aspect-ratio:16/9;background:linear-gradient(180deg, rgba(60,45,92,.6), rgba(30,22,46,.8));position:relative}
+.pcop img{width:100%;height:100%;object-fit:cover;display:block;border:0}
+.pcop .pnum{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:40px;opacity:.9}
+.pcop.haspic .pnum{display:none}
+#hub .exmeta{padding:16px 18px 0}
+#hub .exitem h3{margin-bottom:6px}
+#hub .exstate{padding:8px 18px 16px;text-align:right;align-self:stretch}
+#hub .exarrow{display:none}
+
 /* ===== vista esercizio (foglio) ===== */
 .view{display:none}
 .view.on{display:block}
@@ -375,7 +386,7 @@ textarea:focus,.fperche:focus{outline:none;border-color:var(--glic-hi);box-shado
   <section id="hub" class="view on">
     <div class="exwrap">
       <button class="exitem" id="ex-foglio" type="button">
-        <span class="exic">📝</span>
+        <span class="pcop haspic"><span class="pnum">📝</span><img src="/app/bambino/cover/foglio.jpg?v=1" alt="" loading="lazy" onerror="this.style.display='none';this.parentNode.classList.remove('haspic')"></span>
         <span class="exmeta">
           <span class="extag">Esercizio 1 · Il foglio</span>
           <h3>Le tre domande</h3>
@@ -386,7 +397,7 @@ textarea:focus,.fperche:focus{outline:none;border-color:var(--glic-hi);box-shado
       </button>
 
       <button class="exitem" id="ex-medit" type="button">
-        <span class="exic">🧘</span>
+        <span class="pcop haspic"><span class="pnum">🧘</span><img src="/app/bambino/cover/medit.jpg?v=1" alt="" loading="lazy" onerror="this.style.display='none';this.parentNode.classList.remove('haspic')"></span>
         <span class="exmeta">
           <span class="extag">Esercizio 2 · La meditazione</span>
           <h3>Incontra il Bambino</h3>
@@ -916,8 +927,7 @@ MONTHLY-->
         .then(function(d){ if(d&&d.thumbnail_url){ ic.textContent=''; ic.style.backgroundImage='url('+d.thumbnail_url+')'; ic.style.backgroundSize='cover'; ic.style.backgroundPosition='center'; } })
         .catch(function(){});
     }
-    cover('#ex-foglio .exic', VID.foglio);   /* le tre domande */
-    cover('#ex-medit .exic',  VID.medit);    /* incontra il bambino (meditazione) */
+    /* le copertine adesso stanno gia' nell'HTML della scheda (immagini vere dal nostro server) */
   })();
 
   /* ===== luce guida: per-domanda, come nel Giornaliero ===== */

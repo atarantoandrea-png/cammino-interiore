@@ -118,6 +118,18 @@ body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:
 .hubnote{margin:18px 18px 0;text-align:center;font-size:18px;color:var(--txt-dim);line-height:1.55}
 .hubnote b{color:var(--gold-pale);font-weight:600}
 
+/* ===== scheda con la COPERTINA GRANDE (come nell'Ombra) ===== */
+#hub .exitem{flex-direction:column;align-items:stretch;gap:0;padding:0;overflow:hidden}
+.pcop{display:block;width:100%;aspect-ratio:16/9;background:linear-gradient(180deg, rgba(60,45,92,.6), rgba(30,22,46,.8));position:relative}
+.pcop img{width:100%;height:100%;object-fit:cover;display:block;border:0}
+.pcop .pnum{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:40px;opacity:.9}
+.pcop.haspic .pnum{display:none}
+.pcop.vuota{aspect-ratio:auto;height:96px}   /* la scheda senza video non fa un rettangolo vuoto grande */
+#hub .exmeta{padding:16px 18px 0}
+#hub .exitem h3{margin-bottom:6px}
+#hub .exstate{padding:8px 18px 16px;text-align:right;align-self:stretch}
+#hub .exarrow{display:none}
+
 /* ===== vista esercizio (foglio) ===== */
 .view{display:none}
 .view.on{display:block}
@@ -349,7 +361,7 @@ textarea:focus{outline:none;border-color:var(--glic-hi);box-shadow:0 0 0 1px rgb
   <section id="hub" class="view on">
     <div class="exwrap">
       <button class="exitem" id="ex-visio" type="button">
-        <span class="exic">🧘</span>
+        <span class="pcop haspic"><span class="pnum">🧘</span><img src="/app/adulto/cover/video.jpg?v=1" alt="" loading="lazy" onerror="this.style.display='none';this.parentNode.classList.remove('haspic')"></span>
         <span class="exmeta">
           <span class="extag">L'esercizio</span>
           <h3>Integra l'adulto e il bambino</h3>
@@ -360,7 +372,7 @@ textarea:focus{outline:none;border-color:var(--glic-hi);box-shadow:0 0 0 1px rgb
       </button>
 
       <button class="exitem" id="ex-foglio" type="button">
-        <span class="exic">🌿</span>
+        <span class="pcop vuota"><span class="pnum">🌿</span></span>
         <span class="exmeta">
           <span class="extag">Per chiudere</span>
           <h3>La purificazione</h3>
