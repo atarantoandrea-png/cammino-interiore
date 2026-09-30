@@ -374,6 +374,33 @@ textarea:focus{outline:none;border-color:var(--glic-hi);box-shadow:0 0 0 1px rgb
     <div class="hubnote"><b>Un passo alla volta.</b> Ogni passo si apre quando hai completato quello prima. Non è una gara: se un passaggio ti è costato, torna indietro e rifallo. E continua ogni giorno il Giornaliero — è ciò che radica tutto.</div>
   </section>
 
+  <!-- ===== LA SPIEGAZIONE (il video del Mondo Interiore) ===== -->
+  <section id="p0" class="view">
+    <div class="medwrap">
+      <p class="medintro">Prima di cominciare, <b>riguarda questo video</b>: è quello in cui ti spiego che cos’è l’ombra. I cinque passi che vengono dopo nascono tutti da qui.</p>
+
+      <div class="medvideo">
+        <p class="medvintro"><b>L’Ombra Interiore</b> — la spiegazione, dal Mondo Interiore.</p>
+        <div class="lframe" data-vid="v0"><div class="ph">Carico il video…</div></div>
+      </div>
+
+<!--MONTHLY
+      <div class="flock">
+        <div class="flock-ic">💓</div>
+        <div class="flock-h">Questo modulo ti aspetta nel Cammino annuale</div>
+        <p class="flock-p">Il lavoro con l’Ombra Interiore fa parte del <b>Cammino annuale</b> della community. Quando senti che è il tuo momento, lo percorriamo insieme.</p>
+        <button class="flock-btn" type="button" onclick="showUpsell()">Scopri come proseguire 💓</button>
+      </div>
+MONTHLY-->
+<!--FULL-->
+      <div class="fbox">
+        <p class="fintro">L’ombra è la <b>parte rifiutata</b>: quella che ha imparato a sopravvivere al male e che abbiamo nascosto agli altri e, soprattutto, a noi stessi. Non contiene solo rabbia, paura e gelosia — dentro ci sono anche <b>forza, creatività, verità</b> che abbiamo imparato a reprimere.</p>
+        <p class="fclose">Più la nascondiamo, più si radica; e prima o poi esce comunque, quando abbassiamo le difese — in un litigio, in un momento difficile. Per questo non si elimina: si <b>conosce</b>, e si integra con l’adulto e con il bambino. Ti dico già che avrai paura di guardarla: l’ho avuta anch’io. Ma è una parte <b>molto più piccola</b> della luce che porti dentro. Quando te la senti, comincia dal <button class="flink" data-go="p1">primo passo</button>.</p>
+      </div>
+<!--/FULL-->
+    </div>
+  </section>
+
   <!-- ===== PASSO 1 · L'incontro ===== -->
   <section id="p1" class="view">
     <div class="medwrap">
@@ -776,10 +803,14 @@ MONTHLY-->
 
   /* Gli ID dei video stanno SOLO qui: per i Mensili il server rimuove questo blocco (trailer). */
 <!--FULL-->
-  var VID={v1:'1201483669', v2:'1231633320', v3:'1231633316', v4:'1231633317', v5:'1231633318'};
+  var VID={v0:'1200561278', v1:'1201483669', v2:'1231633320', v3:'1231633316', v4:'1231633317', v5:'1231633318'};
 <!--/FULL-->
 <!--MONTHLY var VID={}; window.TRAILER=true; MONTHLY-->
   var TRAILER=!!window.TRAILER;
+
+  /* la spiegazione: sta sopra i cinque passi e è sempre aperta (non si completa) */
+  var SPIEG={id:'p0', vid:'v0', t:'La spiegazione', min:'6 min',
+    d:'Il video in cui ti spiego che cos\'è l\'ombra. È da qui che nascono i cinque passi.'};
 
   /* i cinque passi, in catena: ognuno si apre quando il precedente è completato */
   var PASSI=[
@@ -862,6 +893,19 @@ MONTHLY-->
   function disegnaHub(){
     var wrap=document.getElementById('passi'); if(!wrap) return;
     wrap.innerHTML='';
+    var sp=document.createElement('button');
+    sp.type='button'; sp.className='exitem pspieg'; sp.setAttribute('data-p', SPIEG.id);
+    sp.innerHTML='<span class="exic pnum">\u25b6</span>'+
+      '<span class="exmeta"><span class="extag">Prima di cominciare \u00b7 '+SPIEG.min+'</span>'+
+      '<h3>'+SPIEG.t+'</h3><p>'+SPIEG.d+'</p></span>'+
+      '<span class="exarrow">\u2192</span>';
+    wrap.appendChild(sp);
+    if(VID[SPIEG.vid]){
+      fetch('https://vimeo.com/api/oembed.json?url=https://vimeo.com/'+VID[SPIEG.vid])
+        .then(function(r){ return r.json(); })
+        .then(function(d){ if(d&&d.thumbnail_url){ var ic=sp.querySelector('.pnum'); if(ic){ ic.textContent=''; ic.classList.add('haspic'); ic.style.backgroundImage='url('+d.thumbnail_url+')'; } } })
+        .catch(function(){});
+    }
     PASSI.forEach(function(p, i){
       var fatto=!!prog[p.id], aperto=apertoIdx(i);
       var b=document.createElement('button');
@@ -892,7 +936,7 @@ MONTHLY-->
 
   /* ===== viste ===== */
   var view='hub';
-  function tutteLeViste(){ return ['hub'].concat(PASSI.map(function(p){ return p.id; })); }
+  function tutteLeViste(){ return ['hub','p0'].concat(PASSI.map(function(p){ return p.id; })); }
   function showView(v){
     var prima=view; view=v;
     tutteLeViste().forEach(function(id){ var el=document.getElementById(id); if(el) el.classList.toggle('on', id===v); });
@@ -911,7 +955,9 @@ MONTHLY-->
   document.addEventListener('click', function(e){
     var st=e.target.closest('[data-p]');
     if(st){
-      var id=st.getAttribute('data-p'), i=PASSI.map(function(p){return p.id;}).indexOf(id);
+      var id=st.getAttribute('data-p');
+      if(id==='p0'){ showView('p0'); return; }
+      var i=PASSI.map(function(p){return p.id;}).indexOf(id);
       if(i<0) return;
       if(!apertoIdx(i)){ toast('Prima completa il passo ' + PASSI[i-1].n); return; }
       showView(id); return;
@@ -933,7 +979,7 @@ MONTHLY-->
   });
 
   function refreshProg(){
-    if(view==='hub') return;
+    if(view==='hub'||view==='p0') return;
     var b=document.querySelector('#'+view+' [data-done]'); if(!b) return;
     var fatto=!!prog[view];
     b.classList.toggle('done', fatto);
@@ -1057,6 +1103,7 @@ MONTHLY-->
 
   var INFO={
     hub:{t:'L’Ombra Interiore', h:'<p>L’ombra è la parte <b>rifiutata</b>: quella che ha imparato a sopravvivere al male e che abbiamo nascosto agli altri e a noi stessi. Non contiene solo rabbia e paura — dentro ci sono anche <b>forza, creatività, verità</b> che abbiamo imparato a reprimere.</p><p>Più la nascondiamo, più si radica; e prima o poi esce comunque, quando abbassiamo le difese. Per questo non si elimina: si <b>conosce</b>. Qui lo facciamo in <b>cinque passi</b>, uno alla volta, lasciando passare qualche giorno fra l’uno e l’altro.</p>'},
+    p0:{t:'La spiegazione', h:'<p>È il video del <b>Mondo Interiore</b> in cui ti racconto che cos\'è l\'ombra: la parte rifiutata, istintiva, ferita, che non abbiamo mai integrato perché ci fa paura farla uscire.</p><p>Non contiene solo cose negative: ci sono anche <b>desideri, potere personale, creatività e verità</b> che abbiamo imparato a reprimere. Più la reprimiamo, più si radica — e prima o poi esce lo stesso, quando abbassiamo le difese. Riguardalo prima di cominciare: i cinque passi nascono da qui.</p>'},
     p1:{t:'Passo 1 · L’incontro', h:'<p>Il primo passo è solo <b>vederla</b>. Ti accompagno in una visualizzazione: un sentiero di notte, una porta, e lei seduta nell’angolo. Non entrare per combatterla — sei lì per farle conoscenza.</p><p>È normale avere paura: l’ho avuta anch’io. Se senti di voler uscire puoi farlo, ma quello che ti chiedo è di <b>restare e osservare</b>. Poi arriverà anima, e vi tenderà la mano. Se non riesci a prenderla, va bene: questa è l’unica visualizzazione che rifaremo <b>più volte</b> insieme.</p>'},
     p2:{t:'Passo 2 · La lettera', h:'<p>Adesso le diamo la <b>parola</b>. Non per darle ragione, ma per capire da dove nascono certi comportamenti: dietro la rabbia c’è spesso una richiesta di rispetto, dietro il controllo il bisogno di sentirsi al sicuro, dietro il perfezionismo il timore di non essere abbastanza.</p><p>Si scrive <b>a mano</b>, su un foglio bianco, con una candela bianca: serve un simbolo d’inizio. Prima scrive lei, poi rispondi tu. Alla fine la pieghi e la <b>custodisci</b> — non la butti. Può volerci più di un giorno: non forzare.</p>'},
     p3:{t:'Passo 3 · L’accettazione', h:'<p>Qui usciamo dallo spazio protetto: l’ombra entra nella <b>vita di tutti i giorni</b>. Quando arriva una reazione forte, fermati <b>prima</b> di chiederti cosa è giusto fare, e guardala.</p><p>La cosa più importante da capire: <b>il pensiero non è azione</b>. Non ti sto invitando ad agire d’impulso, ma a <b>pensare</b> d’impulso, a lasciar esistere quello che senti senza censurarti. Solo dopo scegli — e quella sì che è una scelta libera.</p>'},
