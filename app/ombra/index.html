@@ -1010,7 +1010,7 @@ MONTHLY-->
     var f=frameDi(v); if(!f || f.getAttribute('data-loaded')==='1') return;
     f.setAttribute('data-loaded','1');
     var key=f.getAttribute('data-vid'), id=VID[key];
-    if(!id){ lockFrame(f, '/api/cover?s=ombra&k='+key); return; }   /* Mensile: video bloccato */
+    if(!id){ lockFrame(f, urlCopertina(key)); return; }   /* Mensile: video bloccato, ma la copertina si vede */
     f.innerHTML='<button class="vfacade" type="button" aria-label="Riproduci il video" style="background-image:url('+urlCopertina(key)+')">'
       +'<span class="vfacade-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>'
       +'<span class="vfacade-t">Tocca per guardare</span></button>';
