@@ -883,7 +883,8 @@ app.post('/api/auth/logout', (req, res) => {
 const COVER_IDS = {
   capitolo2: {mondo:'1200559554',bambino:'1200559555',adulto:'1200563875',ombra:'1200561278',padremadre:'1200563735',mf:'1200561010',adolescente:'1200559557',osservatore:'1200559556'},
   bambino:   {teoria:'1200559555',foglio:'1201477236',medit:'1201478348'},
-  adulto:    {video:'1201481001'},   /* la visualizzazione dell'Adulto Interiore: copertina bloccata per i mensili */
+  adulto:    {video:'1201481001'},
+  ombra:     {v1:'1201483669',v2:'1231633320',v3:'1231633316',v4:'1231633317',v5:'1231633318'},   /* i cinque passi dell'Ombra */   /* la visualizzazione dell'Adulto Interiore: copertina bloccata per i mensili */
   day:       {s1:'1184907857',s2:'1184907860'}   /* Spazio Emotivo / Osservatore: copertina per la prova */
 };
 const coverCache = {};
@@ -1178,7 +1179,7 @@ function isReserved(p) {
 function trialAllowedPath(p){
   return p.indexOf('/app/percorso') === 0 || p.indexOf('/app/music/') === 0
       || p.indexOf('/app/capitolo2') === 0 || p.indexOf('/app/bambino') === 0
-      || p.indexOf('/app/adulto') === 0 || p.indexOf('/app/day') === 0;
+      || p.indexOf('/app/adulto') === 0 || p.indexOf('/app/ombra') === 0 || p.indexOf('/app/day') === 0;
 }
 app.use((req, res, next) => {
   if (req.method !== 'GET' && req.method !== 'HEAD') return next();
@@ -1220,7 +1221,7 @@ function monthlyHtml(file) {
 }
 app.use((req, res, next) => {
   if (req.method !== 'GET' && req.method !== 'HEAD') return next();
-  const m = req.path.match(/^\/app\/(capitolo2|bambino|adulto)\/(?:index\.html)?$/);
+  const m = req.path.match(/^\/app\/(capitolo2|bambino|adulto|ombra)\/(?:index\.html)?$/);
   if (!m) return next();
   tierForReq(req, (err, tier) => {
     if (!err && tier === 'full') return next();   /* annuali → versione completa */

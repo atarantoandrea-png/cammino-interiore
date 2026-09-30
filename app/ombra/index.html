@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<script>
+/* accesso controllato da /app/ — qui si verifica solo la sessione, senza form */
+(function(){
+  var embedded=false; try{ embedded=window.parent && window.parent!==window; }catch(e){ embedded=true; }
+  if(embedded) return;   /* dentro la shell (iframe): l'accesso è già garantito da shell + server. Nessuna verifica né redirect qui → elimina alla radice ogni "ritorno a home". */
+  var email, token;
+  try{ email=(localStorage.getItem('ovl-user')||'').trim().toLowerCase(); token=localStorage.getItem('ovl-session')||''; }
+  catch(e){ location.replace('/app/'); return; }
+  if(!email||!token){ location.replace('/app/'); return; }
+  fetch('/api/auth/verify',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,token:token})})
+    .then(function(r){return r.json();})
+    .then(function(d){ if(!d.ok) location.replace('/app/'); })
+    .catch(function(){});
+})();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>L'Ombra Interiore · Esercizi · Elisa Soul Medium</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:rgba(0,0,0,0)}
+:root{
+  --glic:#b9a3e3; --glic-hi:#dccdf6; --glic-deep:#8a6fc0;
+  --gold:#c9a84c; --gold-pale:#e8d9ae;
+  --txt:#e6e0ec; --txt-soft:#b7aec4; --txt-dim:#8d8499;
+  --card:rgba(22,18,29,.72); --card-line:rgba(185,163,227,.16);
+  --field:rgba(10,8,14,.55); --field-line:rgba(185,163,227,.3);
+  --seen:#7fd6a0; --seen-glow:rgba(127,214,160,.5);
+}
+html{scroll-behavior:smooth}
+body{
+  background:
+    linear-gradient(180deg, rgba(8,7,11,.95) 0%, rgba(10,9,13,.92) 8%, rgba(11,10,14,.91) 100%),
+    url('/src/pagina.jpg') center top/100% auto repeat;
+  background-attachment:fixed;
+  font-family:'Cormorant Garamond',Georgia,serif;color:var(--txt);min-height:100vh;
+  --lm-c1:#fff4ea;--lm-mid:#dca06b;--lm-g1:rgba(235,186,138,.7);--lm-g2:rgba(205,148,96,.46);--lm-g3:rgba(176,112,64,.24);
+}
+body.lt1{--lm-c1:#eef4f8;--lm-mid:#a8c8e0;--lm-g1:rgba(190,218,240,.88);--lm-g2:rgba(148,188,218,.54);--lm-g3:rgba(108,158,196,.27)}
+body.lt2{--lm-c1:#ffffff;--lm-mid:#c6cbd2;--lm-g1:rgba(214,220,228,.85);--lm-g2:rgba(172,182,194,.5);--lm-g3:rgba(132,144,158,.27)}
+body.lt3{--lm-c1:#ffffff;--lm-mid:#b9ddf6;--lm-g1:rgba(190,225,252,.9);--lm-g2:rgba(126,190,242,.52);--lm-g3:rgba(88,160,228,.26)}
+body.lt4{--lm-c1:#ffffff;--lm-mid:#a7b6ef;--lm-g1:rgba(180,194,252,.9);--lm-g2:rgba(128,148,238,.52);--lm-g3:rgba(98,118,222,.26)}
+body.lt5{--lm-c1:#ffffff;--lm-mid:#ad7ff0;--lm-g1:rgba(206,170,255,.9);--lm-g2:rgba(164,112,246,.5);--lm-g3:rgba(128,76,226,.26)}
+body.lt6{--lm-c1:#ffffff;--lm-mid:#cdb2f2;--lm-g1:rgba(225,205,255,.95);--lm-g2:rgba(186,150,240,.56);--lm-g3:rgba(150,110,215,.3)}
+
+/* ===== luce guida ===== */
+#lume{position:absolute;left:0;top:0;z-index:40;width:56px;height:56px;margin:-28px 0 0 -28px;
+  pointer-events:auto;cursor:pointer;transition:transform 1.4s cubic-bezier(.45,.05,.25,1), opacity .8s ease;
+  animation:lflick 3.1s ease-in-out infinite}
+@keyframes lflick{0%,100%{filter:brightness(1)}50%{filter:brightness(1.28)}}
+#lume::after{content:'';position:absolute;inset:19px;border-radius:50%;
+  background:radial-gradient(circle at 38% 34%, var(--lm-c1) 0%, var(--lm-c1) 28%, var(--lm-mid) 58%, transparent 78%);
+  box-shadow:0 0 12px 4px var(--lm-g1),0 0 38px 16px var(--lm-g2),0 0 95px 44px var(--lm-g3),inset 0 0 4px rgba(220,215,245,.5)}
+#lume::before{content:'';position:absolute;inset:-6px;border-radius:50%;animation:lpulse 2.6s ease-in-out infinite}
+@keyframes lpulse{0%,100%{box-shadow:0 0 0 0 var(--lm-g2)}50%{box-shadow:0 0 0 7px transparent}}
+@media(max-width:760px){
+  #lume{width:42px;height:42px;margin:-21px 0 0 -21px}
+  #lume::after{inset:13px;box-shadow:0 0 8px 3px var(--lm-g1),0 0 24px 9px var(--lm-g2),0 0 54px 22px var(--lm-g3),inset 0 0 4px rgba(220,215,245,.5)}
+}
+
+/* ===== freccetta indietro fissa ===== */
+.back-fab{position:fixed;z-index:50;
+  top:calc(12px + env(safe-area-inset-top,0px));
+  left:calc(12px + env(safe-area-inset-left,0px));
+  width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:var(--glic-hi);
+  background:rgba(16,12,24,.42);border:1px solid rgba(205,178,242,.32);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  box-shadow:0 4px 14px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.08);
+  transition:background .2s,border-color .2s,transform .2s,box-shadow .2s}
+.back-fab:hover{background:rgba(40,30,60,.62);border-color:rgba(220,205,250,.7);transform:translateY(-1px);
+  box-shadow:0 6px 18px rgba(120,80,200,.35), inset 0 1px 0 rgba(255,255,255,.12)}
+.back-fab svg{width:18px;height:18px;display:block;filter:drop-shadow(0 0 4px rgba(185,163,227,.4))}
+@media(max-width:520px){.back-fab{width:38px;height:38px}}
+
+/* ===== colonna ===== */
+.page{max-width:760px;margin:0 auto;padding:calc(env(safe-area-inset-top,0px) + 8px) 0 48px;position:relative}
+@media(min-width:920px){.page{padding-top:calc(env(safe-area-inset-top,0px) + 14px)}}
+
+/* ===== header ===== */
+.hd{padding:26px 22px 16px;text-align:center}
+.hd .orn{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:12px}
+.hd .orn .l{width:80px;height:1px;background:linear-gradient(90deg,transparent,rgba(185,163,227,.6),transparent)}
+.hd .orn .d{width:6px;height:6px;border:1px solid var(--glic);transform:rotate(45deg)}
+.hd .cap{font-family:'Cinzel',serif;font-size:14.5px;font-weight:600;letter-spacing:.3em;color:var(--gold);text-shadow:0 0 14px rgba(201,168,76,.4);margin-bottom:8px}
+.hd h1{font-family:'Cinzel',serif;font-weight:600;font-size:clamp(23px,5.4vw,32px);letter-spacing:.07em;color:#f0eaf6;text-shadow:0 0 30px rgba(185,163,227,.35)}
+.hd .lead{font-size:20px;color:var(--txt-soft);margin:13px auto 0;max-width:560px;line-height:1.55}
+.hd .lead b{color:var(--gold-pale);font-weight:600}
+
+/* ===== HUB: le due icone/esercizi ===== */
+.exwrap{padding:8px 18px 0;display:flex;flex-direction:column;gap:14px}
+.exitem{display:flex;align-items:center;gap:15px;width:100%;text-align:left;cursor:pointer;
+  border:1px solid var(--card-line);border-radius:18px;padding:17px 18px;color:inherit;font-family:inherit;
+  background:linear-gradient(180deg, rgba(26,21,36,.8), rgba(16,13,23,.86));
+  box-shadow:0 6px 20px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.05);
+  transition:box-shadow .3s, border-color .3s, transform .3s}
+.exitem:hover{transform:translateY(-2px);border-color:rgba(205,178,242,.55);box-shadow:0 12px 30px rgba(120,80,200,.3)}
+.exitem.locked{opacity:.78}
+.exitem.seen{border-color:rgba(127,214,160,.42)}
+.exic{flex:none;width:54px;height:54px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;
+  background:radial-gradient(circle at 38% 30%, rgba(120,95,184,.5), rgba(40,30,62,.7));
+  border:1px solid rgba(185,163,227,.3);box-shadow:inset 0 1px 2px rgba(255,255,255,.12), 0 3px 10px rgba(0,0,0,.4)}
+.exitem.seen .exic{background:radial-gradient(circle at 38% 30%, rgba(127,214,160,.4), rgba(30,52,40,.7));border-color:rgba(127,214,160,.45)}
+.exmeta{flex:1;min-width:0}
+.extag{font-family:'Cinzel',serif;font-size:13px;letter-spacing:.16em;color:var(--gold);opacity:.85;margin-bottom:3px}
+.exitem h3{font-family:'Cinzel',serif;font-weight:600;font-size:21px;color:#f0eaf6;line-height:1.25;margin-bottom:5px}
+.exitem p{font-size:18.5px;color:var(--txt-soft);line-height:1.45}
+.exarrow{flex:none;color:var(--glic);font-size:22px;opacity:.7}
+.exstate{flex:none;font-family:'Cinzel',serif;font-size:13px;letter-spacing:.08em;color:var(--txt-dim);white-space:nowrap}
+.exitem.seen .exstate{color:var(--seen);text-shadow:0 0 8px var(--seen-glow)}
+.exitem.locked .exarrow{color:var(--gold-pale)}
+
+.hubnote{margin:18px 18px 0;text-align:center;font-size:18px;color:var(--txt-dim);line-height:1.55}
+.hubnote b{color:var(--gold-pale);font-weight:600}
+
+/* ===== vista esercizio (foglio) ===== */
+.view{display:none}
+.view.on{display:block}
+.fbox{margin:0 18px;border:1px solid var(--card-line);border-radius:18px;padding:20px 18px 22px;
+  background:linear-gradient(180deg, rgba(26,21,36,.78), rgba(16,13,23,.85));box-shadow:0 6px 20px rgba(0,0,0,.4)}
+.fintro{font-size:17.5px;color:var(--txt-soft);line-height:1.6;margin-bottom:8px}
+.fintro b{color:var(--gold-pale);font-weight:600}
+.fld label{display:block;font-family:'Cinzel',serif;font-size:13.5px;letter-spacing:.1em;color:var(--txt-dim);margin:12px 0 5px}
+textarea{width:100%;font-family:'Cormorant Garamond',serif;color:var(--txt);
+  background:var(--field);border:1px solid var(--field-line);border-radius:10px;padding:11px 13px;font-size:20px;line-height:1.5;
+  resize:none;overflow:hidden;min-height:70px}
+textarea:focus{outline:none;border-color:var(--glic-hi);box-shadow:0 0 0 1px rgba(220,205,250,.4), 0 0 16px rgba(150,110,215,.2)}
+
+.factions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:26px 18px 0}
+.fbtn{font-family:'Cinzel',serif;font-size:15px;letter-spacing:.05em;cursor:pointer;min-height:64px;padding:12px 14px;border-radius:16px;
+  display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.35;
+  border:1px solid rgba(185,163,227,.5);color:var(--glic-hi);background:linear-gradient(180deg, rgba(60,46,92,.6), rgba(34,26,52,.7));
+  box-shadow:0 3px 10px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.1);transition:all .2s}
+.fbtn:hover{border-color:rgba(205,178,242,.8);color:#fff;transform:translateY(-1px);box-shadow:0 6px 18px rgba(120,80,200,.4)}
+.fbtn.gold{color:#2a2208;border-color:rgba(201,168,76,.8);background:linear-gradient(180deg, #e8d9ae, var(--gold));text-shadow:none}
+.fbtn.done{color:#0e2a1b;border-color:rgba(127,214,160,.8);background:linear-gradient(180deg, #9fe6bd, var(--seen))}
+.fbtn.done::before{content:'✓ '}
+.fhint{grid-column:1 / -1;text-align:center;font-size:15px;color:var(--txt-dim);font-style:italic;margin-top:2px}
+
+.lframe{position:relative;padding-top:56.25%;height:0;overflow:hidden;background:#000;border-radius:14px;border:1px solid rgba(185,163,227,.2)}
+.lframe iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
+/* copertina leggera del video (facade): il player Vimeo si carica SOLO al tocco → niente crash memoria iOS */
+.vfacade{position:absolute;inset:0;width:100%;height:100%;border:0;cursor:pointer;background:#0c0a12 center/cover no-repeat;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px}
+.vfacade::before{content:'';position:absolute;inset:0;background:linear-gradient(rgba(12,9,19,.35),rgba(12,9,19,.62))}
+.vfacade>*{position:relative;z-index:1}
+.vfacade-play{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#f0eaf6;background:radial-gradient(circle at 38% 32%,rgba(220,205,250,.45),rgba(120,90,180,.5));border:1px solid rgba(220,205,250,.6);box-shadow:0 6px 22px rgba(0,0,0,.5),0 0 22px rgba(185,163,227,.35)}
+.vfacade-play svg{width:28px;height:28px;margin-left:3px}
+.vfacade-t{font-family:'Cinzel',serif;font-size:14px;letter-spacing:.06em;color:#f0eaf6;text-shadow:0 1px 6px rgba(0,0,0,.8)}
+.lframe .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif;font-size:14.5px;letter-spacing:.12em;color:var(--txt-dim)}
+
+/* zone del foglio (ogni domanda = una zona per la luce) */
+.fzone{position:relative;padding:18px 4px 16px;border-top:1px solid rgba(185,163,227,.12);scroll-margin-top:70px;transition:background .3s}
+.fzone:first-of-type{border-top:none}
+.fzone.lit{background:linear-gradient(90deg, rgba(185,163,227,.07), transparent 70%)}
+.fq-n{font-family:'Cinzel',serif;font-size:13.5px;letter-spacing:.2em;color:var(--gold);margin-bottom:6px}
+.fq-q{font-size:21px;color:#f0eaf6;line-height:1.4;margin-bottom:10px;font-weight:600}
+.fq-help{font-size:18.5px;color:var(--txt-soft);line-height:1.55;margin:8px 0 6px}
+.fq-help b{color:var(--gold-pale);font-weight:600}
+.fclose{font-size:19px;color:var(--txt-soft);line-height:1.6;margin-top:20px;padding-top:16px;border-top:1px solid rgba(185,163,227,.14)}
+.fclose b{color:var(--gold-pale);font-weight:600}
+/* box Palo Santo (facoltativo) */
+.palo{margin:18px 0 2px;border:1px solid rgba(201,168,76,.3);border-radius:14px;padding:15px 16px;background:radial-gradient(120% 100% at 50% 0%, rgba(60,50,28,.4), rgba(20,16,10,.45))}
+.palo .pl-t{font-family:'Cinzel',serif;font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-pale);margin-bottom:8px}
+.palo p{font-size:18px;color:var(--txt-soft);line-height:1.55}
+.palo p b{color:var(--gold-pale);font-weight:600}
+
+/* ===== Esercizio · visualizzazione guidata ===== */
+.medwrap{margin:0 18px}
+.medintro{font-size:18.5px;color:var(--txt-soft);line-height:1.65;margin-bottom:18px}
+.medintro b{color:var(--gold-pale);font-weight:600}
+.medcard{border:1px solid var(--card-line);border-radius:18px;padding:18px 18px 20px;margin-bottom:16px;
+  background:linear-gradient(180deg, rgba(26,21,36,.78), rgba(16,13,23,.85));box-shadow:0 6px 20px rgba(0,0,0,.4)}
+.medlbl{font-family:'Cinzel',serif;font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:var(--glic);margin-bottom:12px}
+.medprep{list-style:none;margin:0;padding:0}
+.medprep li{display:flex;gap:12px;align-items:flex-start;font-size:18px;color:var(--txt-soft);line-height:1.5;margin-bottom:12px}
+.medprep li:last-child{margin-bottom:0}
+.medprep .pi{flex:none;width:7px;height:7px;border-radius:50%;background:var(--gold);margin-top:9px;box-shadow:0 0 8px var(--lm-g2)}
+.medprep b{color:var(--gold-pale);font-weight:600}
+/* lettore musica consigliata */
+.medmus{border:1px solid rgba(185,163,227,.4);border-radius:18px;padding:16px 16px 18px;margin-bottom:18px;
+  background:radial-gradient(120% 100% at 50% 0%, rgba(60,46,92,.5), rgba(18,14,28,.65));box-shadow:0 6px 22px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.05)}
+.medmus .mtitle{font-family:'Cinzel',serif;font-size:16px;font-weight:600;color:#f0eaf6;text-align:center;letter-spacing:.02em}
+.medmus .mnote{font-size:16px;color:var(--txt-soft);line-height:1.5;text-align:center;margin:7px 0 14px}
+.medmus .mnote b{color:var(--gold-pale)}
+.medpanel{margin-top:14px;border:1px solid rgba(185,163,227,.3);border-radius:14px;padding:14px 14px 16px;background:rgba(10,8,16,.4)}
+.medp-title{font-family:'Cinzel',serif;font-size:15px;letter-spacing:.06em;color:var(--glic-hi);text-align:center;margin-bottom:11px}
+.medp-seek{position:relative;height:8px;border-radius:8px;background:rgba(10,8,16,.75);cursor:pointer;touch-action:none;box-shadow:inset 0 2px 5px rgba(0,0,0,.6)}
+.medp-seek::before{content:'';position:absolute;left:0;right:0;top:-11px;bottom:-11px}
+.medp-fill{height:100%;border-radius:8px;background:linear-gradient(180deg,var(--glic-hi),var(--glic) 55%,#9070c8);width:0%;pointer-events:none;box-shadow:0 0 10px rgba(185,163,227,.55)}
+.medp-knob{position:absolute;top:50%;width:16px;height:16px;border-radius:50%;transform:translate(-8px,-50%);left:0;pointer-events:none;background:radial-gradient(circle at 36% 30%,#fff,#c4aae8 80%);box-shadow:0 3px 10px rgba(0,0,0,.55),0 0 12px rgba(185,163,227,.5)}
+.medp-times{display:flex;justify-content:space-between;font-size:15px;color:var(--txt-dim);font-variant-numeric:tabular-nums;margin-top:6px}
+.medp-main{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:12px 0 10px}
+.medp-tracks{display:flex;flex-direction:column;gap:7px;flex:1;min-width:0}
+.medp-trk{font-family:'Cinzel',serif;font-size:15px;letter-spacing:.04em;text-align:left;color:var(--txt-soft);cursor:pointer;
+  border:1px solid rgba(185,163,227,.28);border-radius:10px;padding:10px 13px;background:rgba(185,163,227,.06);transition:all .15s}
+.medp-trk:hover{border-color:rgba(205,178,242,.6);color:#fff}
+.medp-trk.on{color:#fff;border-color:rgba(205,178,242,.8);background:rgba(150,110,215,.28);box-shadow:0 0 14px rgba(150,110,215,.3)}
+.medp-btn{width:54px;height:54px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--glic-hi);
+  background:radial-gradient(circle at 38% 32%,rgba(220,205,250,.3),rgba(185,163,227,.18) 45%,rgba(80,50,120,.4));border:1px solid rgba(185,163,227,.55);box-shadow:0 6px 22px rgba(0,0,0,.5),0 0 22px rgba(185,163,227,.25);transition:all .18s}
+.medp-btn:hover{border-color:rgba(220,205,250,.9)}
+.medp-btn.on{background:radial-gradient(circle at 38% 32%,rgba(127,214,160,.4),rgba(30,60,45,.5));border-color:rgba(127,214,160,.6)}
+.medp-btn svg{width:24px;height:24px;display:block}
+.medp-vol-row{display:flex;align-items:center;gap:11px;margin-top:4px}
+.medp-vol-ic{font-size:21px;flex:none;width:24px;text-align:center}
+.medp-vol{-webkit-appearance:none;appearance:none;flex:1;height:7px;border-radius:7px;background:rgba(10,8,16,.75);box-shadow:inset 0 2px 5px rgba(0,0,0,.6);outline:none;cursor:pointer}
+.medp-vol::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:18px;height:18px;border-radius:50%;background:radial-gradient(circle at 36% 30%,#fff,#c4aae8 80%);box-shadow:0 3px 10px rgba(0,0,0,.55),0 0 12px rgba(185,163,227,.5);cursor:pointer}
+.medp-vol::-moz-range-thumb{width:18px;height:18px;border:none;border-radius:50%;background:radial-gradient(circle at 36% 30%,#fff,#c4aae8);box-shadow:0 3px 10px rgba(0,0,0,.55);cursor:pointer}
+.mhint{font-size:15.5px;color:var(--txt-dim);text-align:center;font-style:italic;line-height:1.5;margin-top:10px}
+.mhint b{color:var(--glic-hi);font-style:normal}
+.medvideo{margin:10px 0 20px}
+.medvintro{font-size:17px;color:var(--txt-soft);line-height:1.55;margin-bottom:10px;text-align:center}
+.medvintro b{color:var(--gold-pale);font-weight:600}
+/* i passi della visualizzazione */
+.medstep{padding:16px 0;border-top:1px solid rgba(185,163,227,.12)}
+.medstep:first-of-type{border-top:none;padding-top:2px}
+.medstep .sn{font-family:'Cinzel',serif;font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+.medstep p{font-size:18.5px;color:var(--txt);line-height:1.72;margin:0}
+.medstep p+p{margin-top:10px}
+.medstep p b{color:var(--gold-pale);font-weight:600}
+.medstep .say{color:var(--glic-hi);font-style:italic}
+.medaffirm{border:1px solid rgba(201,168,76,.35);border-radius:16px;padding:16px 18px;margin:16px 0 2px;
+  background:radial-gradient(120% 100% at 50% 0%, rgba(60,50,28,.5), rgba(20,16,10,.5))}
+.medaffirm .sn{color:var(--gold-pale)}
+.medaffirm ul{list-style:none;margin:0;padding:0}
+.medaffirm li{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:600;color:var(--gold-pale);line-height:1.5;margin-bottom:9px;text-align:center}
+.medaffirm li:last-child{margin-bottom:0}
+.medaffirm li::before{content:'« ';opacity:.45}
+.medaffirm li::after{content:' »';opacity:.45}
+.medclose{font-size:18px;color:var(--txt-soft);line-height:1.65;margin-top:18px}
+.medclose b{color:var(--gold-pale);font-weight:600}
+.medactions{display:flex;justify-content:center;margin-top:24px}
+.medactions .fbtn{flex:0 1 340px;min-width:240px}
+/* freccia interattiva "verso l'esercizio" */
+.med-arrow{display:flex;flex-direction:column;align-items:center;gap:2px;margin:4px auto 16px;background:none;border:none;cursor:pointer;color:var(--gold-pale);font-family:'Cinzel',serif;font-size:12.5px;letter-spacing:.16em;text-transform:uppercase}
+.med-arrow svg{width:30px;height:30px;stroke:var(--gold);fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 8px rgba(201,168,76,.55));animation:maBounce 1.6s ease-in-out infinite}
+@keyframes maBounce{0%,100%{transform:translateY(0);opacity:.7}50%{transform:translateY(7px);opacity:1}}
+.med-arrow:hover svg{stroke:var(--gold-pale)}
+/* esercizio della purificazione (Palo Santo) */
+.palo-ex .palo-warn{font-size:16px;color:var(--gold-pale);line-height:1.5;background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.35);border-radius:12px;padding:11px 14px;margin-bottom:15px}
+.palo-ex .palo-warn b{color:#fff}
+.palo-p{font-size:18.5px;color:var(--txt);line-height:1.7;margin-bottom:12px}
+.palo-p:last-child{margin-bottom:0}
+.palo-p b{color:var(--gold-pale);font-weight:600}
+
+/* ===== pannello GUIDA (luce) ===== */
+#veil{position:fixed;inset:0;z-index:60;background:rgba(4,3,8,.72);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);opacity:0;pointer-events:none;transition:opacity .45s ease}
+#veil.on{opacity:1;pointer-events:auto}
+#gpan{position:fixed;z-index:61;left:50%;top:50%;transform:translate(-50%,-50%) scale(.96);width:min(720px,94vw);height:min(86vh,820px);
+  display:flex;flex-direction:column;border:1px solid rgba(185,163,227,.35);border-radius:18px;
+  background:linear-gradient(180deg, rgba(13,10,18,.97), rgba(10,8,14,.97)), url('/src/pagina.jpg') center/cover;
+  box-shadow:0 0 60px rgba(150,110,215,.25), 0 30px 80px rgba(0,0,0,.7);opacity:0;pointer-events:none;transition:opacity .45s ease, transform .45s ease}
+#gpan.on{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1)}
+.gp-hd{display:flex;align-items:center;gap:12px;padding:18px 20px 14px;border-bottom:1px solid rgba(185,163,227,.2)}
+.gp-orb{width:34px;height:34px;border-radius:50%;flex-shrink:0;background:radial-gradient(circle at 38% 34%, #fff 0%, #fff 30%, var(--lm-mid) 60%, transparent 80%);box-shadow:0 0 10px 3px var(--lm-g1), 0 0 26px 10px var(--lm-g2);animation:lflick 3.1s ease-in-out infinite}
+.gp-hd h2{font-family:'Cinzel',serif;font-size:21px;font-weight:600;color:#f0eaf6;flex:1}
+.gp-x{background:none;border:1px solid rgba(185,163,227,.4);color:var(--txt-soft);width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:19px}
+.gp-x:hover{color:#fff;border-color:var(--glic-hi)}
+.gp-bd{flex:1;overflow-y:auto;padding:18px 20px 26px;-webkit-overflow-scrolling:touch}
+.gp-bd p{font-size:20px;line-height:1.62;color:var(--txt-soft);margin-bottom:12px}
+.gp-bd p b{color:var(--gold-pale);font-weight:600}
+.gp-giorn{margin-top:18px;padding:14px 16px;border:1px solid rgba(201,168,76,.3);border-radius:14px;background:rgba(40,33,22,.45)}
+.gp-giorn p{margin:0;font-size:19px;color:var(--txt-soft)}
+#mu-mini{margin-bottom:14px}
+.mm-label{font-family:'Cinzel',serif;font-size:12.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--glic);margin-bottom:5px}
+.mm-title{font-size:18px;color:#f0eaf6;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:8px}
+.mm-ctrls{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:8px}
+.mm-btn{background:linear-gradient(180deg,rgba(42,30,62,.82) 0%,rgba(22,14,36,.92) 100%);border:1px solid rgba(185,163,227,.22);border-top-color:rgba(220,205,250,.32);cursor:pointer;color:var(--glic-hi);padding:4px;border-radius:50%;transition:all .18s;width:34px;height:34px;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 8px rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.06)}
+.mm-btn:hover{background:linear-gradient(180deg,rgba(62,44,90,.88) 0%,rgba(38,24,58,.94) 100%)}
+.mm-btn.mm-play{background:radial-gradient(circle at 38% 32%,rgba(220,205,250,.24) 0%,rgba(185,163,227,.16) 45%,rgba(80,50,120,.3) 100%);border:1px solid rgba(185,163,227,.4);border-top-color:rgba(236,223,248,.5);width:38px;height:38px;box-shadow:0 4px 14px rgba(0,0,0,.42),0 0 16px rgba(185,163,227,.18),inset 0 1px 0 rgba(255,255,255,.08)}
+.mm-btn svg{width:16px;height:16px;display:block}
+.mm-btn.mm-play svg{width:18px;height:18px}
+.mm-bar{position:relative;height:5px;border-radius:5px;background:rgba(10,8,16,.75);margin:0 4px;cursor:pointer;touch-action:none;box-shadow:inset 0 2px 4px rgba(0,0,0,.55),0 1px 0 rgba(255,255,255,.04)}
+.mm-bar::before{content:'';position:absolute;left:0;right:0;top:-11px;bottom:-11px}
+.mm-fill{height:100%;border-radius:5px;background:linear-gradient(180deg,var(--glic-hi) 0%,var(--glic) 55%,#9070c8 100%);width:0%;pointer-events:none;box-shadow:0 0 8px rgba(185,163,227,.5),inset 0 1px 0 rgba(255,255,255,.18)}
+
+#saved{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(60px);background:rgba(22,17,28,.96);color:var(--glic-hi);border:1px solid rgba(185,163,227,.5);border-radius:30px;padding:9px 20px;font-family:'Cinzel',serif;font-size:14.5px;letter-spacing:.1em;z-index:70;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none}
+#saved.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media(max-width:520px){
+  .exwrap{padding:6px 13px 0}
+  .fbox{margin:0 13px}.factions{margin-left:13px;margin-right:13px}.medwrap{margin:0 13px}
+  .exic{width:48px;height:48px;font-size:25px}
+}
+
+/* copertina bloccata (Mensili) + popup "passa all'annuale" */
+.llock{position:absolute;inset:0;border-radius:12px;overflow:hidden;background-color:#15101e;background-size:cover;background-position:center;background-repeat:no-repeat}
+.llock::before{content:'';position:absolute;inset:0;background:radial-gradient(120% 120% at 50% 34%,rgba(20,16,30,.5),rgba(8,6,12,.84))}
+.llock-inner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;z-index:1}
+.llock-ic{font-size:22px;opacity:.92;filter:drop-shadow(0 1px 5px rgba(0,0,0,.7))}
+.llock-play{width:58px;height:58px;border-radius:50%;cursor:pointer;border:1px solid rgba(220,205,250,.5);
+  background:radial-gradient(circle at 38% 32%,rgba(220,205,250,.34),rgba(120,90,180,.36));color:#f0eaf6;
+  display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,.5),0 0 18px rgba(185,163,227,.3)}
+.llock-play svg{width:24px;height:24px;margin-left:3px}
+.llock-play:hover{border-color:#dccdf6;transform:scale(1.05)}
+.llock-t{font-family:'Cormorant Garamond',Georgia,serif;font-size:17px;color:#f3eefb;text-align:center;padding:0 22px;text-shadow:0 1px 6px rgba(0,0,0,.8)}
+.flock{margin:0 18px 22px;border:1px solid rgba(201,168,76,.34);border-radius:18px;padding:26px 20px;text-align:center;
+  background:linear-gradient(180deg,rgba(30,24,42,.7),rgba(16,12,22,.8))}
+.flock-ic{font-size:26px;margin-bottom:8px}
+.flock-h{font-family:'Cinzel',serif;font-weight:600;font-size:18px;color:#f0eaf6;margin-bottom:10px}
+.flock-p{font-family:'Cormorant Garamond',Georgia,serif;font-size:18px;line-height:1.5;color:#d7cfe4;margin:0 0 16px}
+.flock-p b{color:#e8d9ae}
+.flock-btn{font-family:'Cinzel',serif;font-size:14px;letter-spacing:.05em;cursor:pointer;color:#0e0b14;border:none;border-radius:22px;
+  padding:11px 22px;background:linear-gradient(180deg,#e8d9ae,#c9a84c)}
+.flock-btn:hover{filter:brightness(1.06)}
+.ups-veil{position:fixed;inset:0;z-index:120;display:none;align-items:center;justify-content:center;padding:22px;background:rgba(8,6,12,.72)}
+.ups-veil.on{display:flex}
+.ups-card{position:relative;max-width:400px;width:100%;max-height:92vh;overflow-y:auto;border:1px solid rgba(201,168,76,.4);border-radius:20px;padding:30px 22px 22px;text-align:center;
+  background:linear-gradient(180deg,rgba(28,22,40,.98),rgba(14,11,20,.98));box-shadow:0 18px 60px rgba(0,0,0,.6)}
+.ups-x{position:absolute;top:10px;right:12px;width:32px;height:32px;border-radius:50%;border:none;background:rgba(255,255,255,.08);
+  color:#fff;font-size:16px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s}
+.ups-x:hover{background:rgba(255,255,255,.2)}
+.ups-ic{font-size:30px;margin-bottom:8px}
+.ups-h{font-family:'Cinzel',serif;font-weight:600;font-size:20px;color:#f0eaf6;line-height:1.3;margin:0 0 12px}
+.ups-p{font-family:'Cormorant Garamond',Georgia,serif;font-size:18px;line-height:1.55;color:#d7cfe4;margin:0 0 14px}
+.ups-p b{color:#e8d9ae}
+.ups-video{margin:2px auto 16px;max-width:215px}
+.ups-vframe{position:relative;width:100%;padding-top:177.78%;border-radius:12px;overflow:hidden;background:#0c0a12;border:1px solid rgba(185,163,227,.2)}
+.ups-vframe iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.ups-vph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#8d8499;font-family:'Cinzel',serif;font-size:13px}
+.ups-btn{display:inline-block;text-decoration:none;font-family:'Cinzel',serif;font-size:16px;letter-spacing:.06em;cursor:pointer;color:#0e0b14;border:none;border-radius:24px;padding:13px 30px;background:linear-gradient(180deg,#e8d9ae,#c9a84c)}
+.ups-btn:hover{filter:brightness(1.06)}
+.ups-info{font-family:'Cormorant Garamond',Georgia,serif;font-size:15px;color:#b7aec4;margin:12px 0 0}
+.ups-info b{color:#e8d9ae}
+
+/* ===== i cinque passi ===== */
+.pnum{font-family:'Cinzel',serif;font-size:24px;font-weight:600;color:var(--gold-pale);background-size:cover;background-position:center}
+.pnum.haspic{font-size:0;border-color:rgba(185,163,227,.45)}
+.exitem.locked{cursor:default}
+.exitem.locked:hover{transform:none;border-color:var(--card-line);box-shadow:0 6px 20px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.05)}
+.exitem.locked .pnum{color:var(--txt-dim);opacity:.7}
+
+/* ===== traccia scritta (la lettera, le frasi) ===== */
+.trac{border:1px solid rgba(185,163,227,.18);border-radius:16px;padding:16px 16px 18px;margin:14px 0;
+  background:linear-gradient(180deg, rgba(36,28,50,.5), rgba(20,16,29,.5))}
+.trac-h{font-family:'Cinzel',serif;font-size:14px;letter-spacing:.16em;color:var(--gold);margin-bottom:9px}
+.trac-h b{color:var(--gold-pale);font-weight:600;letter-spacing:.16em}
+.trac-p{font-size:18px;color:var(--txt-soft);line-height:1.6;margin-bottom:8px}
+.trac-p b{color:var(--gold-pale);font-weight:600}
+.trac-l{margin:10px 0 6px;padding-left:22px}
+.trac-l li{font-size:18.5px;color:#efe7f7;line-height:1.5;margin-bottom:9px}
+.trac-x{color:var(--txt-dim);font-size:16px;font-style:italic}
+.trac-n{font-size:16.5px;color:var(--txt-dim);line-height:1.5;font-style:italic;margin-top:6px}
+.trac-end{border-color:rgba(214,186,122,.3);background:linear-gradient(180deg, rgba(48,38,28,.4), rgba(22,18,14,.45))}
+.trac-frase{font-family:'Cormorant Garamond',serif;font-size:24px;line-height:1.45;color:var(--gold-pale);
+  text-align:center;margin:12px 6px;text-shadow:0 0 18px rgba(214,186,122,.22)}
+.flink{background:none;border:0;padding:0;color:var(--glic);font:inherit;font-style:italic;
+  text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+</head>
+<body>
+
+<button id="back-fab" class="back-fab" type="button" aria-label="Indietro" title="Indietro">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+</button>
+
+<div id="lume" title="Tocca la luce per saperne di più"></div>
+
+<div class="page">
+
+  <header class="hd">
+    <div class="orn"><div class="l"></div><div class="d"></div><div class="l"></div></div>
+    <div class="cap">Esercizi · Mondo Interiore</div>
+    <h1>L'Ombra Interiore</h1>
+    <p class="lead">La parte che hai imparato a non mostrare. Non si combatte: si conosce. Qui la incontriamo in <b>cinque passi</b>, uno alla volta — senza fretta, lasciando passare qualche giorno fra l'uno e l'altro.</p>
+  </header>
+
+  <!-- ===== HUB: i cinque passi ===== -->
+  <section id="hub" class="view on">
+    <div class="exwrap" id="passi"></div>
+    <div class="hubnote"><b>Un passo alla volta.</b> Ogni passo si apre quando hai completato quello prima. Non è una gara: se un passaggio ti è costato, torna indietro e rifallo. E continua ogni giorno il Giornaliero — è ciò che radica tutto.</div>
+  </section>
+
+  <!-- ===== PASSO 1 · L'incontro ===== -->
+  <section id="p1" class="view">
+    <div class="medwrap">
+      <p class="medintro">Oggi la <b>vediamo</b>, e basta. Non siamo qui per combatterla né per capirla: solo per farle conoscenza. Ti accompagno io, con gli occhi chiusi. Se senti paura va bene, è normale: resta e osserva.</p>
+
+      <div class="medcard">
+        <div class="medlbl">Cosa ti serve</div>
+        <ul class="medprep">
+          <li><span class="pi"></span><span>Un posto <b>tranquillo</b>, dove nessuno ti interrompe, e le <b>cuffie</b> se puoi.</span></li>
+          <li><span class="pi"></span><span>Una, due o tre <b>candele</b> accese: servono ad accendere la luce intorno a te.</span></li>
+          <li><span class="pi"></span><span>Se sei in casa, un <b>bicchiere di vetro con acqua e un cucchiaio di sale grosso</b>, accanto a te per tutto il tempo. Alla fine lo svuoti e lo lavi. Non è obbligatorio, ma te lo consiglio.</span></li>
+          <li><span class="pi"></span><span>Una <b>musica</b> di sottofondo, a volume basso, se ti aiuta. La trovi qui sotto.</span></li>
+        </ul>
+      </div>
+
+      <div class="medvideo">
+        <p class="medvintro"><b>La visualizzazione guidata</b> — chiudi gli occhi e lasciati portare. Le domande da scrivere sono qui sotto: sono per dopo.</p>
+        <div class="lframe" data-vid="v1"><div class="ph">Carico il video…</div></div>
+      </div>
+
+      <div class="medmus">
+        <div class="mtitle">Musica per la visualizzazione</div>
+        <div class="mnote">Scegli un brano e lascialo suonare <b>insieme</b> alla mia voce, a volume basso.</div>
+        <div class="medpanel">
+          <div class="medp-title" id="medpTitle">Heteryc</div>
+          <div class="medp-seek" id="medpSeek"><div class="medp-fill" id="medpFill"></div><div class="medp-knob" id="medpKnob"></div></div>
+          <div class="medp-times"><span id="medpCur">0:00</span><span id="medpDur">--:--</span></div>
+          <div class="medp-main">
+            <div class="medp-tracks">
+              <button class="medp-trk on" type="button" data-f="heteryc-1.mp3">Heteryc I</button>
+              <button class="medp-trk" type="button" data-f="celtica-1.mp3">Celtica I</button>
+              <button class="medp-trk" type="button" data-f="natura.mp3">Natura</button>
+            </div>
+            <button class="medp-btn" id="medpPlay" type="button" aria-label="Play/Pausa"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
+          </div>
+          <div class="medp-vol-row"><span class="medp-vol-ic" id="medpVolIc">🔊</span><input class="medp-vol" id="medpVol" type="range" min="0" max="100" value="100" aria-label="Volume musica"></div>
+        </div>
+        <div class="mhint">Puoi gestirla anche dalla <b>luce</b>, da qualunque punto dell'app.</div>
+      </div>
+
+      <button class="med-arrow" type="button" data-to="w1" aria-label="Scendi alla parte da scrivere">
+        <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+
+<!--MONTHLY
+      <div class="flock">
+        <div class="flock-ic">💓</div>
+        <div class="flock-h">Questo esercizio ti aspetta nel Cammino annuale</div>
+        <p class="flock-p">Il lavoro con l'Ombra Interiore fa parte del <b>Cammino annuale</b> della community. Quando senti che è il tuo momento, lo percorriamo insieme.</p>
+        <button class="flock-btn" type="button" onclick="showUpsell()">Scopri come proseguire 💓</button>
+      </div>
+MONTHLY-->
+<!--FULL-->
+      <div class="fbox" id="w1">
+        <p class="fintro">Appena riapri gli occhi, <b>prima che svanisca</b>, scrivi quello che è rimasto. Non spiegarlo: annotalo.</p>
+
+        <div class="fzone" data-zone="o-forma">
+          <div class="fq-n">1 · Com'era</div>
+          <div class="fq-q">Che forma aveva la tua ombra?</div>
+          <p class="fq-help">Poteva avere le tue sembianze, oppure altre. Un animale, una figura umana, qualcosa che non sai nemmeno dire. E come ti è sembrata: arrabbiata, triste, delusa, incompresa? <b>Non giudicarla</b>: descrivila e basta.</p>
+          <div class="fld"><label>L'ho vista così…</label><textarea data-k="o-forma" placeholder="La forma, il volto, l'energia che emanava…"></textarea></div>
+        </div>
+
+        <div class="fzone" data-zone="o-corpo">
+          <div class="fq-n">2 · Nel corpo</div>
+          <div class="fq-q">Cosa hai sentito, e dove?</div>
+          <p class="fq-help">Un formicolio, un peso, un punto che ha fatto più male di un altro, un calore. È normalissimo sentire il corpo reagire. <b>Segna il punto.</b></p>
+          <div class="fld"><label>Ho sentito…</label><textarea data-k="o-corpo" placeholder="Cosa hai sentito nel corpo, e in quale punto…"></textarea></div>
+        </div>
+
+        <div class="fzone" data-zone="o-mano">
+          <div class="fq-n">3 · La mano</div>
+          <div class="fq-q">Sei riuscita/o a prenderle la mano?</div>
+          <p class="fq-help">Se sì, com'è stato. Se no, va bene lo stesso — <b>la prima volta è difficile per quasi tutti</b>, ed è per questo che questa visualizzazione la rifaremo insieme più volte. Scrivi anche solo: «sono rimasta a distanza, con anima».</p>
+          <div class="fld"><label>Quando l'anima ci ha teso la mano…</label><textarea data-k="o-mano" placeholder="Sei riuscita/o a fare quel passo, oppure no…"></textarea></div>
+        </div>
+
+        <p class="fclose">L'hai vista e <b>non l'hai giudicata</b>. È il primo passo verso di lei, e per oggi basta così. Quando te la senti, passa alla <b>Lettera</b> — e se ti è costato troppo, torna qui e rifai l'incontro: non è un errore, è il modo.</p>
+      </div>
+
+      <div class="factions">
+        <button class="fbtn" type="button" data-save>Salva</button>
+        <button class="fbtn gold" type="button" data-done="p1">Segna come completato</button>
+        <div class="fhint">Resta salvato nel tuo account: potrai rileggerlo quando vuoi.</div>
+      </div>
+<!--/FULL-->
+    </div>
+  </section>
+
+  <!-- ===== PASSO 2 · La lettera ===== -->
+  <section id="p2" class="view">
+    <div class="medwrap">
+      <p class="medintro">Adesso le <b>diamo la parola</b>. Non per darle ragione: per capire da dove vengono certe reazioni. Non cercare la verità assoluta e non chiederti se te lo stai inventando — lascia che dalla penna esca quello che c'è.</p>
+
+      <div class="medcard">
+        <div class="medlbl">Cosa ti serve</div>
+        <ul class="medprep">
+          <li><span class="pi"></span><span>Un <b>foglio bianco</b> vero e una penna. Bianco, senza righe né colori: è il simbolo dell'inizio.</span></li>
+          <li><span class="pi"></span><span>Una <b>candela bianca</b> accesa.</span></li>
+          <li><span class="pi"></span><span><b>Tempo.</b> Possono volerci più giorni: non devi fare tutte le domande in una volta sola.</span></li>
+        </ul>
+      </div>
+
+      <div class="medvideo">
+        <p class="medvintro"><b>Ti spiego l'esercizio</b> — poi lo facciamo insieme, tu con il tuo foglio davanti.</p>
+        <div class="lframe" data-vid="v2"><div class="ph">Carico il video…</div></div>
+      </div>
+
+      <button class="med-arrow" type="button" data-to="w2" aria-label="Scendi alla traccia delle domande">
+        <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+
+<!--MONTHLY
+      <div class="flock">
+        <div class="flock-ic">💓</div>
+        <div class="flock-h">Questo esercizio ti aspetta nel Cammino annuale</div>
+        <p class="flock-p">La lettera all'ombra fa parte del <b>Cammino annuale</b> della community. Quando senti che è il tuo momento, lo percorriamo insieme.</p>
+        <button class="flock-btn" type="button" onclick="showUpsell()">Scopri come proseguire 💓</button>
+      </div>
+MONTHLY-->
+<!--FULL-->
+      <div class="fbox" id="w2">
+        <p class="fintro">Questa è la <b>traccia</b> da tenere accanto al foglio. Si scrive <b>a mano</b>: la lettera è tua, va piegata e custodita, non buttata. Qui sotto, alla fine, ti lascio solo due righe per quello che vuoi ricordare.</p>
+
+        <div class="trac">
+          <div class="trac-h">Primo foglio · <b>parla lei</b></div>
+          <p class="trac-p">Immagina che entri dalla porta di casa, che si sieda davanti a te, e sorridile. Poi comincia a scrivere con queste parole: <b>«Io sono la tua ombra e voglio dirti che…»</b>. Poi falle le domande, una alla volta, e scrivi tutto quello che arriva — parole, immagini, colori, anche se sembra insensato.</p>
+          <ol class="trac-l">
+            <li>Chi sei davvero?</li>
+            <li>Cosa provi ogni volta che ti ignoro? <span class="trac-x">— fallo tre volte di seguito</span></li>
+            <li>Da quanto tempo vivi dentro di me?</li>
+            <li>Cosa è successo perché tu nascessi?</li>
+            <li>Da cosa mi stai proteggendo? Da chi? E da quanto tempo?</li>
+            <li>Cosa ti spaventa di più, se ti dessi spazio?</li>
+            <li>Cosa vorresti ricevere, che non hai ricevuto? <span class="trac-x">— anche questa tre volte</span></li>
+          </ol>
+          <p class="trac-n">La stessa domanda ripetuta tre volte non è un errore: la prima risposta è quella di superficie, sotto c'è il resto.</p>
+        </div>
+
+        <div class="trac">
+          <div class="trac-h">Poi rileggi</div>
+          <p class="trac-p">Fermati, fai un respiro profondo e <b>rileggi</b> quello che hai scritto, più volte, con il cuore aperto: l'ha scritto la parte di te che ha sofferto. Alcune cose non le capirai — va bene così, non sforzarti.</p>
+        </div>
+
+        <div class="trac">
+          <div class="trac-h">Secondo foglio · <b>rispondi tu</b></div>
+          <p class="trac-p">Adesso scrivi tu, cominciando da <b>«Cara ombra…»</b>: cosa hai capito di lei, cosa hai provato leggendola, se riesci a perdonarla e a <b>ringraziarla</b> — perché è stato il suo modo di proteggerti fino a oggi. E come vorresti che, da oggi, si prendesse cura di te.</p>
+        </div>
+
+        <div class="trac trac-end">
+          <div class="trac-h">Per chiudere</div>
+          <p class="trac-p">Piega la lettera e <b>tienila</b>: non la stai chiudendo per dimenticarla, la stai custodendo. Poi porta la mano al cuore e ripeti dentro di te:</p>
+          <p class="trac-frase">«Ti vedo, ti ascolto, da oggi possiamo camminare insieme.»</p>
+        </div>
+
+        <div class="fzone" data-zone="o-lettera">
+          <div class="fq-n">Da ricordare</div>
+          <div class="fq-q">Cosa ti è rimasto di questa lettera?</div>
+          <p class="fq-help">Due righe, non di più. Una frase che ti ha colpita/o, una cosa che non sapevi, un'emozione che è arrivata forte. La lettera vera resta sulla carta.</p>
+          <div class="fld"><label>Mi è rimasto…</label><textarea data-k="o-lettera" placeholder="Quello che vuoi ricordare di questo scambio…"></textarea></div>
+        </div>
+
+        <p class="fclose">Questo è il <b>secondo passo</b>. Adesso sai che ferite porta con sé, e non siete più in guerra. <b>L'ombra non è il contrario della luce: è quella parte di luce rimasta troppo tempo nel buio.</b></p>
+      </div>
+
+      <div class="factions">
+        <button class="fbtn" type="button" data-save>Salva</button>
+        <button class="fbtn gold" type="button" data-done="p2">Segna come completato</button>
+        <div class="fhint">Se ti è costato avvicinarti, <button type="button" class="flink" data-go="p1">torna all'incontro</button> e rifallo con calma.</div>
+      </div>
+<!--/FULL-->
+    </div>
+  </section>
+
+  <!-- ===== PASSO 3 · L'accettazione ===== -->
+  <section id="p3" class="view">
+    <div class="medwrap">
+      <p class="medintro">Finora l'abbiamo incontrata in uno spazio protetto. Adesso la portiamo <b>nella vita di tutti i giorni</b>. Questo esercizio non si fa una volta: si fa <b>quando succede</b>, nei giorni che vengono.</p>
+
+      <div class="medvideo">
+        <p class="medvintro"><b>Come si fa</b> — e soprattutto perché pensare una cosa non significa farla.</p>
+        <div class="lframe" data-vid="v3"><div class="ph">Carico il video…</div></div>
+      </div>
+
+      <button class="med-arrow" type="button" data-to="w3" aria-label="Scendi alle domande">
+        <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+
+<!--MONTHLY
+      <div class="flock">
+        <div class="flock-ic">💓</div>
+        <div class="flock-h">Questo esercizio ti aspetta nel Cammino annuale</div>
+        <p class="flock-p">L'accettazione dell'ombra fa parte del <b>Cammino annuale</b> della community. Quando senti che è il tuo momento, lo percorriamo insieme.</p>
+        <button class="flock-btn" type="button" onclick="showUpsell()">Scopri come proseguire 💓</button>
+      </div>
+MONTHLY-->
+<!--FULL-->
+      <div class="fbox" id="w3">
+        <div class="trac trac-end">
+          <p class="trac-frase">«Il pensiero non è azione.»</p>
+          <p class="trac-p">Questo esercizio non ti invita ad <b>agire</b> d'impulso. Ti invita a <b>pensare</b> d'impulso: a lasciar esistere quello che senti, senza censurarlo e senza doverlo fare davvero. Solo dopo scegli.</p>
+        </div>
+
+        <p class="fintro">La prossima volta che senti una reazione forte — rabbia, gelosia, un no che diventa sì — <b>fermati</b> prima di chiederti cosa è giusto fare, e rispondi a queste tre domande. Prendi un foglio, o scrivi qui.</p>
+
+        <div class="fzone" data-zone="o-sento">
+          <div class="fq-n">1 · Cosa sento</div>
+          <div class="fq-q">Qual è l'emozione che sto provando, adesso?</div>
+          <p class="fq-help">Non cosa <i>penso</i> della situazione: cosa <b>sento</b>. Paura, rabbia, frustrazione, tristezza. Chiedilo a te stessa/o <b>tre volte di seguito</b>. Se ti viene, disegnala e coloriscila: basta che esca.</p>
+          <div class="fld"><label>Sento…</label><textarea data-k="o-sento" placeholder="L'emozione, così com'è, senza giudicarla…"></textarea></div>
+        </div>
+
+        <div class="fzone" data-zone="o-direi">
+          <div class="fq-n">2 · Cosa vorrebbe dire</div>
+          <div class="fq-q">Se non avessi paura del giudizio, cosa vorrebbe esprimere questa parte di me?</div>
+          <p class="fq-help">Qui <b>non censurare niente.</b> «Voglio gridare», «voglio andarmene», «avrei voluto dire no». È un pensiero: può esistere.</p>
+          <div class="fld"><label>Vorrebbe dire…</label><textarea data-k="o-direi" placeholder="Quello che diresti se non avessi paura di come suona…"></textarea></div>
+        </div>
+
+        <div class="fzone" data-zone="o-scelgo">
+          <div class="fq-n">3 · Cosa scelgo</div>
+          <div class="fq-q">Ora che l'ho vista e ascoltata, cosa scelgo di fare?</div>
+          <p class="fq-help">Adesso sì, decidi tu — ma <b>dopo aver ascoltato davvero</b>. Una passeggiata, dello sport, il canto, il disegno, un piatto da cucinare. Quell'energia non va soffocata: va fatta uscire in un modo che ti faccia stare bene.</p>
+          <div class="fld"><label>Scelgo di…</label><textarea data-k="o-scelgo" placeholder="Come lasci uscire quell'energia, senza farti male…"></textarea></div>
+        </div>
+
+        <p class="fclose">La differenza è tutta qui: <b>hai scelto dopo aver ascoltato</b>. È questa la libertà — sentire davvero quello che c'è dentro, e poi decidere chi essere.</p>
+      </div>
+
+      <div class="factions">
+        <button class="fbtn" type="button" data-save>Salva</button>
+        <button class="fbtn gold" type="button" data-done="p3">Segna come completato</button>
+        <div class="fhint">Puoi tornare qui tutte le volte che serve: è un esercizio da vita vera.</div>
+      </div>
+<!--/FULL-->
+    </div>
+  </section>
+
+  <!-- ===== PASSO 4 · La trasformazione ===== -->
+  <section id="p4" class="view">
+    <div class="medwrap">
+      <p class="medintro">Non siamo tutti uguali: c'è chi ha bisogno di <b>muovere il corpo</b>, chi di <b>creare</b>, chi di <b>usare la voce</b>, chi di <b>stare in silenzio</b>. Adesso cerchiamo il <b>tuo</b> modo. Non sceglierlo con la testa: provalo.</p>
+
+      <div class="medvideo">
+        <p class="medvintro"><b>Come trovare il tuo canale</b> — e come capire se è davvero il tuo.</p>
+        <div class="lframe" data-vid="v4"><div class="ph">Carico il video…</div></div>
+      </div>
+
+      <button class="med-arrow" type="button" data-to="w4" aria-label="Scendi alle domande">
+        <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+
+<!--MONTHLY
+      <div class="flock">
+        <div class="flock-ic">💓</div>
+        <div class="flock-h">Questo esercizio ti aspetta nel Cammino annuale</div>
+        <p class="flock-p">La trasformazione dell'ombra fa parte del <b>Cammino annuale</b> della community. Quando senti che è il tuo momento, lo percorriamo insieme.</p>
+        <button class="flock-btn" type="button" onclick="showUpsell()">Scopri come proseguire 💓</button>
+      </div>
+MONTHLY-->
+<!--FULL-->
+      <div class="fbox" id="w4">
+        <div class="fzone" data-zone="o-dove">
+          <div class="fq-n">1 · Dove la senti</div>
+          <div class="fq-q">Scegli un'emozione che ti fa sentire accolta/o. Dove si accumula nel corpo?</div>
+          <p class="fq-help">Non deve essere per forza quella dolorosa. Chiudi gli occhi, sentila, e guarda dove va: le gambe, le braccia, il petto, la gola.</p>
+          <div class="fld"><label>L'emozione, e dove la sento…</label><textarea data-k="o-dove" placeholder="Quale emozione hai scelto e in che punto del corpo la senti…"></textarea></div>
+        </div>
+
+        <div class="fzone" data-zone="o-come">
+          <div class="fq-n">2 · Come uscirebbe</div>
+          <div class="fq-q">Se questa energia non dovesse essere trattenuta, come avresti voglia di esprimerla?</div>
+          <p class="fq-help">Chiediltelo <b>tre volte</b>, e non cercare subito la risposta con la mente. Correre, camminare, ballare, gridare, dipingere, scrivere, cantare, impastare, cucire — o stare in silenzio davanti al mare.</p>
+          <div class="fld"><label>Avrei voglia di…</label><textarea data-k="o-come" placeholder="Quello che il corpo ti chiede, anche se ti sembra strano…"></textarea></div>
+        </div>
+
+        <div class="fzone" data-zone="o-canale">
+          <div class="fq-n">3 · La prova</div>
+          <div class="fq-q">Prova. Poi rispondi a queste tre domande.</div>
+          <p class="fq-help">Mi sono sentita/o <b>libera/o</b> mentre lo facevo? Sono riuscita/o a esprimere qualcosa che di solito trattengo? Dopo, mi sento <b>più vicina/o</b> a me stessa/o? Se le risposte sono tre sì, hai trovato <b>uno</b> dei tuoi canali. Non deve essere uno solo, e può cambiare di giorno in giorno.</p>
+          <div class="fld"><label>Ho provato… e mi sono sentita/o…</label><textarea data-k="o-canale" placeholder="Cosa hai provato a fare e come ti ha lasciata/o…"></textarea></div>
+        </div>
+
+        <p class="fclose">Non cercare il modo perfetto: <b>sperimenta</b>. L'obiettivo non è trovare la tecnica giusta, è imparare a chiederti <b>di cosa ha bisogno questa parte di me, oggi</b>.</p>
+      </div>
+
+      <div class="factions">
+        <button class="fbtn" type="button" data-save>Salva</button>
+        <button class="fbtn gold" type="button" data-done="p4">Segna come completato</button>
+        <div class="fhint">Se il primo canale non era il tuo, provane un altro: è proprio così che si scopre.</div>
+      </div>
+<!--/FULL-->
+    </div>
+  </section>
+
+  <!-- ===== PASSO 5 · Ombra e quotidianità ===== -->
+  <section id="p5" class="view">
+    <div class="medwrap">
+      <p class="medintro">C'è una cosa che voglio dirti prima di chiudere. Nell'ombra non abbiamo nascosto <b>soltanto</b> ciò che ci faceva male: abbiamo nascosto anche le <b>parti più belle</b> di noi. Ridere forte, cantare stonati, ballare, vestirci come ci piace. Quelle parti non sono scomparse — sono lì, in sospeso.</p>
+
+      <div class="medvideo">
+        <p class="medvintro"><b>Dare spazio all'ombra nella tua settimana</b> — e riprendersi quello che avevamo lasciato indietro.</p>
+        <div class="lframe" data-vid="v5"><div class="ph">Carico il video…</div></div>
+      </div>
+
+      <button class="med-arrow" type="button" data-to="w5" aria-label="Scendi all'esercizio">
+        <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+
+<!--MONTHLY
+      <div class="flock">
+        <div class="flock-ic">💓</div>
+        <div class="flock-h">Questo esercizio ti aspetta nel Cammino annuale</div>
+        <p class="flock-p">L'ultimo passo del lavoro con l'ombra fa parte del <b>Cammino annuale</b> della community. Quando senti che è il tuo momento, lo percorriamo insieme.</p>
+        <button class="flock-btn" type="button" onclick="showUpsell()">Scopri come proseguire 💓</button>
+      </div>
+MONTHLY-->
+<!--FULL-->
+      <div class="fbox" id="w5">
+        <p class="fintro">Scegli <b>una cosa tua</b> — lo sport, la pittura, la musica, la scrittura, la danza, il teatro, la natura, la cucina, un lavoro con le mani — e almeno <b>una volta a settimana</b> concediti uno spazio in cui non devi dimostrare niente a nessuno. Non devi essere brava/o, non devi produrre, non devi essere perfetta/o.</p>
+
+        <div class="fzone" data-zone="o-spazio">
+          <div class="fq-n">1 · Il tuo spazio</div>
+          <div class="fq-q">Qual è la tua cosa, e quando te la prendi?</div>
+          <p class="fq-help">Venti minuti, mezz'ora, un'ora: quello che riesci. L'importante è che sia <b>tuo</b> e che nessuno lo debba giudicare — nemmeno tu.</p>
+          <div class="fld"><label>La mia cosa è… e me la prendo…</label><textarea data-k="o-spazio" placeholder="Cosa hai scelto e quando riesci a dedicartici…"></textarea></div>
+        </div>
+
+        <div class="fzone" data-zone="o-prima">
+          <div class="fq-n">2 · Prima di iniziare</div>
+          <div class="fq-q">Quale parte di me ha bisogno di avere spazio oggi?</div>
+          <p class="fq-help">È l'unica domanda da farsi <b>prima</b>. Poi la lasci esprimere e non pensi più a niente: se dipingi non chiederti se è bello, se balli non chiederti come appari, se scrivi non censurarti.</p>
+          <div class="fld"><label>Oggi ha bisogno di spazio…</label><textarea data-k="o-prima" placeholder="La parte di te che chiede di uscire…"></textarea></div>
+        </div>
+
+        <div class="fzone" data-zone="o-dopo">
+          <div class="fq-n">3 · Dopo</div>
+          <div class="fq-q">Come ti sei sentita/o?</div>
+          <p class="fq-help">Non analizzare niente. Fermati, respira e chiediti soltanto: come mi sento adesso, dopo un momento in cui non ho dovuto nascondermi? Mi sono sentita/o bene? C'è qualcosa che non va? <b>Rifallo</b> e guarda come cambia.</p>
+          <div class="fld"><label>Dopo mi sono sentita/o…</label><textarea data-k="o-dopo" placeholder="Quello che hai sentito dopo, senza spiegarlo…"></textarea></div>
+        </div>
+
+        <p class="fclose">Integrare la propria ombra non significa diventare qualcun altro: significa <b>tornare chi siamo davvero</b>. Poco alla volta, riprendersi tutte quelle parti che abbiamo sacrificato per essere accettati. Un abbraccio grande 💓</p>
+      </div>
+
+      <div class="factions">
+        <button class="fbtn" type="button" data-save>Salva</button>
+        <button class="fbtn gold" type="button" data-done="p5">Segna come completato</button>
+        <div class="fhint">Questo non si chiude davvero: è uno spazio che ti tieni per sempre.</div>
+      </div>
+<!--/FULL-->
+    </div>
+  </section>
+
+</div>
+
+<!-- pannello GUIDA -->
+<div id="veil"></div>
+<aside id="gpan" role="dialog" aria-label="La voce della Guida">
+  <div class="gp-hd"><div class="gp-orb"></div><h2 id="gpTitle">La Guida del Cammino</h2><button class="gp-x" id="gpX" aria-label="Chiudi">✕</button></div>
+  <div class="gp-bd">
+    <div id="mu-mini" style="display:none">
+      <div class="mm-label">In riproduzione</div>
+      <div class="mm-title" id="mm-title">—</div>
+      <div class="mm-ctrls">
+        <button class="mm-btn" id="mm-prev" aria-label="Precedente"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="5" width="2.5" height="14" rx="1.2"/><path d="M8 12 19 5v14z"/></svg></button>
+        <button class="mm-btn mm-play" id="mm-play" aria-label="Play/Pausa"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
+        <button class="mm-btn" id="mm-next" aria-label="Successiva"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="17.5" y="5" width="2.5" height="14" rx="1.2"/><path d="M16 12 5 5v14z"/></svg></button>
+      </div>
+      <div class="mm-bar" id="mm-bar"><div class="mm-fill" id="mm-fill"></div></div>
+    </div>
+    <div id="gpBody"></div>
+  </div>
+</aside>
+
+<div id="saved"></div>
+
+<div id="upsell" class="ups-veil" role="dialog" aria-modal="true" aria-label="Passa all'annuale">
+  <div class="ups-card">
+    <button class="ups-x" id="upsX" type="button" aria-label="Chiudi">✕</button>
+    <div class="ups-ic">💓</div>
+    <h3 class="ups-h">Questo fa parte del Cammino annuale</h3>
+    <p class="ups-p">Il lavoro con l'Ombra Interiore — cinque passi, dalla visualizzazione alla vita di ogni giorno — ti aspetta qui, nel <b>Cammino annuale</b> della community. Non c'è fretta: quando senti che è il tuo momento, lo proseguiamo insieme. Nel video ti spiego come passare dal mensile all'annuale.</p>
+    <div class="ups-video"><div class="ups-vframe" id="upsVframe"><div class="ups-vph">Carico il video…</div></div></div>
+    <a class="ups-btn" id="upsGo" href="https://www.elisasoulmedium.com/oltreilvelo" target="_blank" rel="noopener">Passa all'annuale →</a>
+    <p class="ups-info">Per info scrivimi a <b>oltreilvelo.elisa@gmail.com</b></p>
+  </div>
+</div>
+
+<script src="https://player.vimeo.com/api/player.js"></script>
+<script src="/app/lume.js?v=4"></script>
+<script src="/app/ovl-cloud.js?v=2"></script>
+<script>
+(function(){
+  var who='';
+  try{ who=(localStorage.getItem('ovl-user')||'').trim().toLowerCase(); }catch(e){}
+  try{ if(window.OVL_LUME){ var _S=OVL_LUME.loadLocal(who); var _md=false; try{_md=localStorage.getItem('ovl-mondo:'+who)==='1';}catch(_e){} OVL_LUME.applyTier(OVL_LUME.allActiveDays(_S.store).length, _md); } }catch(e){}
+
+  var inShell=false; try{ inShell=window.parent && window.parent!==window; }catch(e){}
+
+  /* Gli ID dei video stanno SOLO qui: per i Mensili il server rimuove questo blocco (trailer). */
+<!--FULL-->
+  var VID={v1:'1201483669', v2:'1231633320', v3:'1231633316', v4:'1231633317', v5:'1231633318'};
+<!--/FULL-->
+<!--MONTHLY var VID={}; window.TRAILER=true; MONTHLY-->
+  var TRAILER=!!window.TRAILER;
+
+  /* i cinque passi, in catena: ognuno si apre quando il precedente è completato */
+  var PASSI=[
+    {id:'p1', vid:'v1', n:'1', t:'L’incontro con l’ombra', min:'22 min',
+     d:'La visualizzazione guidata: la vedi per la prima volta, senza giudicarla. Poi scrivi cosa hai sentito.'},
+    {id:'p2', vid:'v2', n:'2', t:'La lettera all’ombra', min:'26 min',
+     d:'Le dai la parola: prima scrive lei, poi le rispondi tu. Su un foglio bianco, a mano.'},
+    {id:'p3', vid:'v3', n:'3', t:'L’accettazione', min:'16 min',
+     d:'La porti nella vita di tutti i giorni. Tre domande da farsi quando arriva un’emozione forte.'},
+    {id:'p4', vid:'v4', n:'4', t:'La trasformazione', min:'10 min',
+     d:'Trovi il tuo modo di far uscire quell’energia: il corpo, la creatività, la voce o il silenzio.'},
+    {id:'p5', vid:'v5', n:'5', t:'Ombra e quotidianità', min:'15 min',
+     d:'L’ultimo passo: riprenderti le parti belle che avevi messo da parte, e darle uno spazio ogni settimana.'}
+  ];
+
+  /* popup "passa all'annuale" (Mensili) */
+  function upsLoadVideo(){
+    var f=document.getElementById('upsVframe'); if(!f || f.getAttribute('data-loaded')==='1') return;
+    f.setAttribute('data-loaded','1');
+    var ifr=document.createElement('iframe');
+    ifr.src='https://player.vimeo.com/video/1202457317?title=0&byline=0&portrait=0&badge=0';
+    ifr.setAttribute('allow','autoplay; fullscreen; picture-in-picture'); ifr.setAttribute('allowfullscreen','');
+    f.innerHTML=''; f.appendChild(ifr);
+  }
+  function showUpsell(){ var u=document.getElementById('upsell'); if(u) u.classList.add('on'); upsLoadVideo(); }
+  function closeUpsell(){ var u=document.getElementById('upsell'); if(u) u.classList.remove('on');
+    var f=document.getElementById('upsVframe'); if(f){ f.innerHTML='<div class="ups-vph">Carico il video…</div>'; f.removeAttribute('data-loaded'); } }
+  window.showUpsell=showUpsell;
+  (function(){ var u=document.getElementById('upsell'), x=document.getElementById('upsX');
+    if(x) x.addEventListener('click', closeUpsell);
+    if(u) u.addEventListener('click', function(e){ if(e.target===u) closeUpsell(); });
+  })();
+
+  /* ===== il foglio + i progressi ===== */
+  var FKEY='ovl-ombra-foglio:'+who;
+  var PKEY='ovl-ombra-prog:'+who;     /* { p1..p5:true, foglio:true quando sono tutti } */
+  var fields=[].slice.call(document.querySelectorAll('[data-k]'));
+  var data={};
+  try{ data=JSON.parse(localStorage.getItem(FKEY)||'{}')||{}; }catch(e){ data={}; }
+  var TOKEN=''; try{ TOKEN=localStorage.getItem('ovl-session')||''; }catch(e){}
+  function mkBucket(lk,ns){ return window.OVL_CLOUD ? OVL_CLOUD.bucket({ email:who, token:TOKEN, localKey:lk, ns:ns, seed:true }) : null; }
+  var cloudF=mkBucket(FKEY,'ofoglio'), cloudP=mkBucket(PKEY,'oprog');
+  var prog={}; try{ prog=JSON.parse(localStorage.getItem(PKEY)||'{}')||{}; }catch(e){ prog={}; }
+
+  function fillFields(){ fields.forEach(function(el){ var k=el.getAttribute('data-k'); if(data[k]==null) return; el.value=data[k]; }); }
+  fillFields();
+  if(cloudF) cloudF.pull(function(ch){ if(!ch) return;
+    try{ data=JSON.parse(localStorage.getItem(FKEY)||'{}')||{}; }catch(e){}
+    fillFields(); try{ growAll(); }catch(e){}
+  });
+  if(cloudP) cloudP.pull(function(ch){ if(!ch) return;
+    try{ prog=JSON.parse(localStorage.getItem(PKEY)||'{}')||{}; }catch(e){}
+    disegnaHub(); refreshProg();
+  });
+
+  function collect(){ var o={}; fields.forEach(function(el){ o[el.getAttribute('data-k')]=el.value; }); return o; }
+  function saveForm(silent){
+    data=collect();
+    try{ localStorage.setItem(FKEY, JSON.stringify(data)); }catch(e){}
+    if(cloudF) cloudF.push();
+    if(!silent) toast('Salvato nel tuo account');
+  }
+  function autogrow(el){ if(!el||el.tagName!=='TEXTAREA')return; el.style.height='auto'; el.style.height=(el.scrollHeight+2)+'px'; }
+  function growAll(){ fields.forEach(autogrow); }
+  var autoT=null;
+  fields.forEach(function(el){
+    el.addEventListener('input', function(){ autogrow(el); clearTimeout(autoT); autoT=setTimeout(function(){ saveForm(true); }, 600); });
+  });
+
+  function saveProg(){
+    /* la parte è completata quando lo sono tutti e cinque: la shell legge prog.foglio */
+    prog.foglio = PASSI.every(function(p){ return !!prog[p.id]; });
+    try{ localStorage.setItem(PKEY, JSON.stringify(prog)); }catch(e){}
+    if(cloudP) cloudP.push();
+  }
+  /* un passo è aperto se è il primo, o se quello prima è completato (o se l'hai già fatto) */
+  function apertoIdx(i){ return i===0 || !!prog[PASSI[i-1].id] || !!prog[PASSI[i].id]; }
+
+  /* ===== l'elenco dei cinque passi ===== */
+  function disegnaHub(){
+    var wrap=document.getElementById('passi'); if(!wrap) return;
+    wrap.innerHTML='';
+    PASSI.forEach(function(p, i){
+      var fatto=!!prog[p.id], aperto=apertoIdx(i);
+      var b=document.createElement('button');
+      b.type='button';
+      b.className='exitem pstep'+(fatto?' seen':'')+(aperto?'':' locked');
+      b.setAttribute('data-p', p.id);
+      b.innerHTML=
+        '<span class="exic pnum">'+(aperto?p.n:'⚿')+'</span>'+
+        '<span class="exmeta">'+
+          '<span class="extag">Passo '+p.n+' · '+p.min+'</span>'+
+          '<h3>'+p.t+'</h3>'+
+          '<p>'+(aperto?p.d:'Si apre quando hai completato il passo precedente.')+'</p>'+
+        '</span>'+
+        '<span class="exstate">'+(fatto?'✓ Fatto':(aperto?'Da fare':'—'))+'</span>'+
+        '<span class="exarrow">→</span>';
+      wrap.appendChild(b);
+    });
+    /* la copertina di ogni passo: la miniatura del suo video su Vimeo */
+    PASSI.forEach(function(p, i){
+      if(!VID[p.vid] || !apertoIdx(i)) return;
+      var ic=document.querySelector('[data-p="'+p.id+'"] .pnum'); if(!ic) return;
+      fetch('https://vimeo.com/api/oembed.json?url=https://vimeo.com/'+VID[p.vid])
+        .then(function(r){ return r.json(); })
+        .then(function(d){ if(d&&d.thumbnail_url){ ic.textContent=''; ic.classList.add('haspic'); ic.style.backgroundImage='url('+d.thumbnail_url+')'; } })
+        .catch(function(){});
+    });
+  }
+
+  /* ===== viste ===== */
+  var view='hub';
+  function tutteLeViste(){ return ['hub'].concat(PASSI.map(function(p){ return p.id; })); }
+  function showView(v){
+    var prima=view; view=v;
+    tutteLeViste().forEach(function(id){ var el=document.getElementById(id); if(el) el.classList.toggle('on', id===v); });
+    window.scrollTo({top:0,behavior:'smooth'});
+    if(prima!==v) scaricaVideo(prima);     /* smonto il player del passo che lascio: libera memoria */
+    if(v!=='hub'){
+      caricaVideo(v); muSend('state');
+      setTimeout(growAll, 30);
+      var z0=document.querySelector('#'+v+' .fzone');
+      if(z0){ setTimeout(function(){ lightUp(z0); }, 420); } else lumeHome();
+    } else { lumeHome(); }
+    refreshProg();
+  }
+  window.goHub=function(){ showView('hub'); };
+
+  document.addEventListener('click', function(e){
+    var st=e.target.closest('[data-p]');
+    if(st){
+      var id=st.getAttribute('data-p'), i=PASSI.map(function(p){return p.id;}).indexOf(id);
+      if(i<0) return;
+      if(!apertoIdx(i)){ toast('Prima completa il passo ' + PASSI[i-1].n); return; }
+      showView(id); return;
+    }
+    var go=e.target.closest('[data-go]');
+    if(go){ showView(go.getAttribute('data-go')); return; }
+    var sv=e.target.closest('[data-save]');
+    if(sv){ saveForm(false); return; }
+    var dn=e.target.closest('[data-done]');
+    if(dn){
+      var pid=dn.getAttribute('data-done');
+      saveForm(true);
+      prog[pid]=!prog[pid]; saveProg(); disegnaHub(); refreshProg();
+      toast(prog[pid]?'Passo completato':'Segno rimosso');
+      return;
+    }
+    var ar=e.target.closest('[data-to]');
+    if(ar){ var t=document.getElementById(ar.getAttribute('data-to')) || document.querySelector('#'+view+' .flock'); if(t) t.scrollIntoView({behavior:'smooth',block:'start'}); return; }
+  });
+
+  function refreshProg(){
+    if(view==='hub') return;
+    var b=document.querySelector('#'+view+' [data-done]'); if(!b) return;
+    var fatto=!!prog[view];
+    b.classList.toggle('done', fatto);
+    b.textContent=fatto?'Completato':'Segna come completato';
+  }
+
+  /* ===== freccetta indietro ===== */
+  function goBack(){
+    if(view!=='hub'){ showView('hub'); return; }
+    if(inShell){ window.parent.postMessage({t:'day:back'}, location.origin); }
+    else { history.back(); }
+  }
+  document.getElementById('back-fab').addEventListener('click', goBack);
+
+  /* ===== i video: copertina finta, il player si carica solo al tocco, e si smonta uscendo ===== */
+  function lockFrame(f, coverUrl){
+    f.setAttribute('data-loaded','1');
+    f.innerHTML='<div class="llock"'+(coverUrl?(' style="background-image:url(\''+coverUrl+'\')"'):'')+'>'+
+      '<div class="llock-inner"><div class="llock-ic">🔒</div>'+
+      '<button class="llock-play" type="button" aria-label="Guarda il video"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>'+
+      '<div class="llock-t">Con il Cammino annuale possiamo guardarlo insieme 💓</div></div></div>';
+    var pb=f.querySelector('.llock-play'); if(pb) pb.addEventListener('click', showUpsell);
+  }
+  function frameDi(v){ return document.querySelector('#'+v+' .lframe'); }
+  function caricaVideo(v){
+    var f=frameDi(v); if(!f || f.getAttribute('data-loaded')==='1') return;
+    f.setAttribute('data-loaded','1');
+    var key=f.getAttribute('data-vid'), id=VID[key];
+    if(!id){ lockFrame(f, '/api/cover?s=ombra&k='+key); return; }   /* Mensile: video bloccato */
+    f.innerHTML='<button class="vfacade" type="button" aria-label="Riproduci il video">'
+      +'<span class="vfacade-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>'
+      +'<span class="vfacade-t">Tocca per guardare</span></button>';
+    var b=f.querySelector('.vfacade');
+    if(b) b.addEventListener('click', function(){
+      var ifr=document.createElement('iframe');
+      ifr.src='https://player.vimeo.com/video/'+id+'?title=0&byline=0&portrait=0&badge=0&autoplay=1';
+      ifr.setAttribute('allow','autoplay; fullscreen; picture-in-picture');
+      ifr.setAttribute('allowfullscreen','');
+      f.innerHTML=''; f.appendChild(ifr);
+    });
+    fetch('https://vimeo.com/api/oembed.json?url=https://vimeo.com/'+id)
+      .then(function(r){ return r.json(); })
+      .then(function(d){ if(d&&d.thumbnail_url){ var bb=f.querySelector('.vfacade'); if(bb) bb.style.backgroundImage='url('+d.thumbnail_url+')'; } })
+      .catch(function(){});
+  }
+  function scaricaVideo(v){
+    if(!v || v==='hub') return;
+    var f=frameDi(v); if(!f) return;
+    f.innerHTML='<div class="ph">Carico il video…</div>';
+    f.removeAttribute('data-loaded');
+  }
+
+  /* ===== musica (solo nel passo 1): comanda la musica della shell ===== */
+  (function(){
+    var play=document.getElementById('medpPlay'); if(!play) return;
+    var title=document.getElementById('medpTitle'), fill=document.getElementById('medpFill'), knob=document.getElementById('medpKnob'),
+        seek=document.getElementById('medpSeek'), curEl=document.getElementById('medpCur'), durEl=document.getElementById('medpDur'),
+        vol=document.getElementById('medpVol'), volIc=document.getElementById('medpVolIc');
+    var active=false, dragS=false;
+    var SVG_PLAY='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
+    var SVG_PAUSE='<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>';
+    var trks=[].slice.call(document.querySelectorAll('.medp-trk')), selF='heteryc-1.mp3';
+    trks.forEach(function(c){ c.addEventListener('click', function(){ selF=c.getAttribute('data-f'); muSend('playf', selF); }); });
+    play.addEventListener('click', function(){ if(active) muSend('toggle'); else muSend('playf', selF); });
+    if(seek){ var sfrac=function(e){ var r=seek.getBoundingClientRect(); return Math.max(0,Math.min(1,(e.clientX-r.left)/r.width)); };
+      var paintF=function(f){ var pct=(f*100).toFixed(2)+'%'; if(fill)fill.style.width=pct; if(knob)knob.style.left=pct; };
+      seek.addEventListener('pointerdown', function(e){ if(!active)return; e.preventDefault();
+        var f=sfrac(e), st=null; dragS=true; paintF(f);
+        var mv=function(ev){ f=sfrac(ev); paintF(f); if(st===null){ st=setTimeout(function(){ st=null; muSend('seek',f); }, 80); } };
+        var up=function(){ if(st!==null){ clearTimeout(st); st=null; } muSend('seek',f); dragS=false; document.removeEventListener('pointermove',mv); document.removeEventListener('pointerup',up); document.removeEventListener('pointercancel',up); };
+        document.addEventListener('pointermove',mv); document.addEventListener('pointerup',up); document.addEventListener('pointercancel',up);
+      }); }
+    var volBusy=false;
+    function paintVol(x){ if(volIc) volIc.textContent = x===0?'🔇':(x<0.5?'🔉':'🔊'); }
+    if(vol){
+      var clrBusy=function(){ volBusy=false; };
+      vol.addEventListener('pointerdown', function(){ volBusy=true; });
+      vol.addEventListener('input', function(){ volBusy=true; muSend('vol', vol.value/100); paintVol(vol.value/100); });
+      vol.addEventListener('pointerup', clrBusy); vol.addEventListener('pointercancel', clrBusy);
+      vol.addEventListener('change', clrBusy); vol.addEventListener('blur', clrBusy);
+    }
+    window.addEventListener('message', function(e){ if(e.origin!==location.origin)return; var m=e.data||{}; if(m.t!=='mu:state')return;
+      active=!!m.active;
+      var pl=!!(m.active&&m.playing);
+      play.innerHTML=pl?SVG_PAUSE:SVG_PLAY; play.classList.toggle('on', pl);
+      if(title) title.textContent=m.title||'Musica';
+      if(m.f){ selF=m.f; trks.forEach(function(c){ c.classList.toggle('on', c.getAttribute('data-f')===m.f); }); }
+      if(!dragS){ var pct=((m.frac||0)*100).toFixed(2)+'%'; if(fill)fill.style.width=pct; if(knob)knob.style.left=pct; }
+      if(curEl)curEl.textContent=m.cur||'0:00'; if(durEl)durEl.textContent=m.dur||'--:--';
+      if(typeof m.vol==='number' && vol && !volBusy){ vol.value=Math.round(m.vol*100); paintVol(m.vol); }
+    });
+  })();
+
+  function toast(m){ var t=document.getElementById('saved'); t.textContent=m; t.classList.add('show'); clearTimeout(toast._t); toast._t=setTimeout(function(){ t.classList.remove('show'); }, 2200); }
+
+  /* ===== luce guida ===== */
+  var lume=document.getElementById('lume');
+  var litZone=null, curZone=null;
+  function isNarrow(){ return innerWidth<760; }
+  function moveLume(x,y){ lume.style.transform='translate3d('+(x|0)+'px,'+(y|0)+'px,0)'; }
+  function docPos(el){ var x=0,y=0; while(el){ x+=el.offsetLeft; y+=el.offsetTop; el=el.offsetParent; } return {x:x,y:y}; }
+  function lumeHome(){ if(litZone)litZone.classList.remove('lit'); litZone=null; curZone=null;
+    var hd=document.querySelector('.hd'); var x=isNarrow()?34:Math.max(34, innerWidth/2-400); moveLume(x, (hd?hd.offsetTop:20)+64); }
+  function lightUp(zone){
+    if(!zone){ lumeHome(); return; }
+    if(litZone && litZone!==zone) litZone.classList.remove('lit');
+    litZone=zone; curZone=zone.getAttribute('data-zone'); zone.classList.add('lit');
+    var p=docPos(zone), w=zone.offsetWidth;
+    if(isNarrow()){
+      var y=p.y-16; if(y<6)y=6;
+      moveLume(p.x + w - 18, y);
+    } else {
+      var lx=p.x-34;
+      if(lx<28){ moveLume(p.x + w - 18, Math.max(6, p.y-16)); }
+      else { moveLume(lx, p.y + 22); }
+    }
+  }
+  document.addEventListener('focusin', function(e){ if(view==='hub')return; var z=e.target.closest('.fzone'); if(z)lightUp(z); });
+  document.addEventListener('click', function(e){ if(view==='hub'||e.target.closest('#lume'))return; var z=e.target.closest('.fzone'); if(z)lightUp(z); });
+  addEventListener('resize', function(){ if(view!=='hub' && litZone) lightUp(litZone); else lumeHome(); });
+
+  var INFO={
+    hub:{t:'L’Ombra Interiore', h:'<p>L’ombra è la parte <b>rifiutata</b>: quella che ha imparato a sopravvivere al male e che abbiamo nascosto agli altri e a noi stessi. Non contiene solo rabbia e paura — dentro ci sono anche <b>forza, creatività, verità</b> che abbiamo imparato a reprimere.</p><p>Più la nascondiamo, più si radica; e prima o poi esce comunque, quando abbassiamo le difese. Per questo non si elimina: si <b>conosce</b>. Qui lo facciamo in <b>cinque passi</b>, uno alla volta, lasciando passare qualche giorno fra l’uno e l’altro.</p>'},
+    p1:{t:'Passo 1 · L’incontro', h:'<p>Il primo passo è solo <b>vederla</b>. Ti accompagno in una visualizzazione: un sentiero di notte, una porta, e lei seduta nell’angolo. Non entrare per combatterla — sei lì per farle conoscenza.</p><p>È normale avere paura: l’ho avuta anch’io. Se senti di voler uscire puoi farlo, ma quello che ti chiedo è di <b>restare e osservare</b>. Poi arriverà anima, e vi tenderà la mano. Se non riesci a prenderla, va bene: questa è l’unica visualizzazione che rifaremo <b>più volte</b> insieme.</p>'},
+    p2:{t:'Passo 2 · La lettera', h:'<p>Adesso le diamo la <b>parola</b>. Non per darle ragione, ma per capire da dove nascono certi comportamenti: dietro la rabbia c’è spesso una richiesta di rispetto, dietro il controllo il bisogno di sentirsi al sicuro, dietro il perfezionismo il timore di non essere abbastanza.</p><p>Si scrive <b>a mano</b>, su un foglio bianco, con una candela bianca: serve un simbolo d’inizio. Prima scrive lei, poi rispondi tu. Alla fine la pieghi e la <b>custodisci</b> — non la butti. Può volerci più di un giorno: non forzare.</p>'},
+    p3:{t:'Passo 3 · L’accettazione', h:'<p>Qui usciamo dallo spazio protetto: l’ombra entra nella <b>vita di tutti i giorni</b>. Quando arriva una reazione forte, fermati <b>prima</b> di chiederti cosa è giusto fare, e guardala.</p><p>La cosa più importante da capire: <b>il pensiero non è azione</b>. Non ti sto invitando ad agire d’impulso, ma a <b>pensare</b> d’impulso, a lasciar esistere quello che senti senza censurarti. Solo dopo scegli — e quella sì che è una scelta libera.</p>'},
+    p4:{t:'Passo 4 · La trasformazione', h:'<p>Quell’energia non può restare dentro: se la soffochi diventa un blocco, e col tempo un macigno. Ma non usciamo tutti allo stesso modo: c’è chi ha bisogno di muovere il corpo, chi di creare, chi di usare la voce, chi di stare in <b>silenzio</b>.</p><p>Non scegliere con la testa: <b>prova</b>. E dopo chiediti se ti sei sentita/o libera/o, se sei riuscita/o a esprimere qualcosa che di solito trattieni, e se ti senti più vicina/o a te stessa/o. Tre sì, e hai trovato un tuo canale — uno dei tanti possibili.</p>'},
+    p5:{t:'Passo 5 · Ombra e quotidianità', h:'<p>Nell’ombra non abbiamo nascosto <b>soltanto</b> ciò che ci faceva male. Abbiamo nascosto anche le parti più belle: ridere forte, cantare senza chiederci se siamo stonati, ballare, vestirci come ci piace. Da bambini eravamo noi stessi in purezza; poi qualcuno ha riso, e abbiamo scelto quali parti mostrare.</p><p>Quelle parti non sono scomparse: sono rimaste lì, in sospeso. Integrare l’ombra non significa diventare qualcun altro — significa <b>tornare chi siamo davvero</b>.</p>'},
+    'o-forma':{t:'Com’era', h:'<p>Scrivi la forma che ha preso: può avere le tue sembianze o altre, può essere un animale o qualcosa che non sai nemmeno dire. E che energia ti emanava. <b>Non giudicarla</b>, descrivila e basta: anche il silenzio comunica.</p>'},
+    'o-corpo':{t:'Nel corpo', h:'<p>Sentire un <b>formicolio</b> in qualche punto è normalissimo, non spaventarti. Segna dove hai sentito di più, e se un punto ha fatto più male di un altro: è un’informazione che ti servirà più avanti, quando cercheremo il tuo canale.</p>'},
+    'o-mano':{t:'La mano', h:'<p>Se non sei riuscita/o a prenderle la mano, <b>non è un fallimento</b>: la prima volta è difficile per quasi tutti. Va benissimo essere rimasta/o a distanza, con anima accanto. Rifai la visualizzazione quando te la senti — è fatta apposta per essere ripetuta.</p>'},
+    'o-lettera':{t:'Da ricordare', h:'<p>Qui bastano <b>due righe</b>: la lettera vera resta sulla carta, piegata e custodita. Scrivi solo quello che vuoi ritrovare tra qualche mese — una frase che ti ha colpita/o, un’emozione arrivata forte. Io ho pianto tantissimo le prime volte: è normale.</p>'},
+    'o-sento':{t:'Cosa sento', h:'<p>Non cosa <i>pensi</i> della situazione: cosa <b>senti</b>. Fattelo <b>tre volte di seguito</b>, perché la prima risposta è di superficie. Se ti aiuta, disegnala e coloriscila: l’importante è che esca.</p>'},
+    'o-direi':{t:'Cosa vorrebbe dire', h:'<p>Qui <b>non censurarti</b>. È un pensiero, non un’azione: può esistere. Spesso scopriamo che al posto di quel sì avremmo voluto dire no, o che siamo arrabbiati invece che felici. Lasciarlo esistere per qualche istante è già tutto.</p>'},
+    'o-scelgo':{t:'Cosa scelgo', h:'<p>Adesso decidi tu — ma <b>dopo aver ascoltato davvero</b>. Quell’energia va fatta uscire in un modo che non faccia male a te né agli altri: una camminata, dello sport, il canto, il disegno, un piatto da cucinare per qualcuno a cui vuoi bene.</p>'},
+    'o-dove':{t:'Dove la senti', h:'<p>Scegli un’emozione che ti faccia sentire <b>accolta/o</b>, non per forza quella più dolorosa. Poi sentila nel corpo: le gambe, le braccia, il petto, la gola. È lì che si è annidato il blocco, ed è da lì che partirà il tuo canale.</p>'},
+    'o-come':{t:'Come uscirebbe', h:'<p>Ripeti la domanda <b>tre volte</b> e non cercare subito la risposta con la mente. Correre, ballare, gridare, dipingere, impastare, cucire, leggere ad alta voce — o stare in silenzio. Non deve essere bello e non deve piacere a nessun altro.</p>'},
+    'o-canale':{t:'La prova', h:'<p>Un canale si riconosce così: mi sono sentita/o <b>libera/o</b>? Sono riuscita/o a esprimere qualcosa che trattengo? Mi sento più <b>vicina/o</b> a me stessa/o? Tre sì, ed è il tuo. Puoi averne tanti, e possono cambiare di giorno in giorno.</p>'},
+    'o-spazio':{t:'Il tuo spazio', h:'<p>Almeno <b>una volta a settimana</b>, uno spazio in cui non devi dimostrare niente a nessuno: non devi essere brava/o, non devi produrre, non devi essere la persona che gli altri si aspettano. Venti minuti bastano.</p>'},
+    'o-prima':{t:'Prima di iniziare', h:'<p>È l’unica domanda da farsi <b>prima</b>: quale parte di me ha bisogno di spazio oggi? Poi la lasci esprimere e non ti chiedi più niente — se dipingi non chiederti se è bello, se balli non chiederti come appari, se scrivi non censurare le parole.</p>'},
+    'o-dopo':{t:'Dopo', h:'<p>Quando hai finito <b>non analizzare nulla</b>. Fermati, respira e chiediti soltanto come ti senti adesso, dopo un momento in cui non ti sei dovuta/o nascondere. Poi rifallo, e guarda come cambia nel tempo.</p>'}
+  };
+  var GIORN='<div class="gp-giorn"><p><b>Mentre fai questo lavoro, non smettere il Giornaliero.</b> La pratica di ogni giorno radica e integra tutto il cammino.</p></div>';
+  var veil=document.getElementById('veil'), gpan=document.getElementById('gpan');
+  function openGuide(){
+    var key=(view!=='hub' && curZone) ? curZone : view;
+    var info=INFO[key]||INFO.hub;
+    document.getElementById('gpTitle').textContent=info.t;
+    document.getElementById('gpBody').innerHTML=info.h+GIORN;
+    var bd=gpan.querySelector('.gp-bd'); if(bd)bd.scrollTop=0;
+    muSend('state');
+    veil.classList.add('on'); gpan.classList.add('on');
+  }
+  function closeGuide(){ veil.classList.remove('on'); gpan.classList.remove('on'); }
+  lume.addEventListener('click', function(e){ e.stopPropagation(); openGuide(); });
+  veil.addEventListener('click', closeGuide);
+  document.getElementById('gpX').addEventListener('click', closeGuide);
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ if(document.getElementById('upsell').classList.contains('on')) closeUpsell(); else if(gpan.classList.contains('on'))closeGuide(); else goBack(); } });
+
+  /* ===== barra audio dentro la luce ===== */
+  function muSend(cmd,v){ try{ if(window.parent&&window.parent!==window) window.parent.postMessage({t:'mu:cmd',cmd:cmd,v:v}, location.origin); }catch(e){} }
+  (function(){
+    var mini=document.getElementById('mu-mini'); if(!mini) return;
+    var embedded=false; try{ embedded=!!(window.parent&&window.parent!==window); }catch(e){}
+    if(!embedded){ mini.style.display='none'; return; }
+    var bP=document.getElementById('mm-prev'), bT=document.getElementById('mm-play'), bN=document.getElementById('mm-next'), bar=document.getElementById('mm-bar');
+    if(bP) bP.addEventListener('click', function(){ muSend('prev'); });
+    if(bT) bT.addEventListener('click', function(){ muSend('toggle'); });
+    if(bN) bN.addEventListener('click', function(){ muSend('next'); });
+    var dragS=false;
+    if(bar){
+      var frac=function(e){ var r=bar.getBoundingClientRect(); return Math.max(0,Math.min(1,(e.clientX-r.left)/r.width)); };
+      var paintF=function(f){ var fl=document.getElementById('mm-fill'); if(fl) fl.style.width=(f*100).toFixed(2)+'%'; };
+      bar.addEventListener('pointerdown', function(e){ e.preventDefault();
+        var f=frac(e), st=null; dragS=true; paintF(f);
+        var mv=function(ev){ f=frac(ev); paintF(f); if(st===null){ st=setTimeout(function(){ st=null; muSend('seek',f); }, 80); } };
+        var up=function(){ if(st!==null){ clearTimeout(st); st=null; } muSend('seek',f); dragS=false; document.removeEventListener('pointermove',mv); document.removeEventListener('pointerup',up); document.removeEventListener('pointercancel',up); };
+        document.addEventListener('pointermove',mv); document.addEventListener('pointerup',up); document.addEventListener('pointercancel',up);
+      });
+    }
+    var SVG_PLAY='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
+    var SVG_PAUSE='<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>';
+    window.addEventListener('message', function(e){
+      if(e.origin!==location.origin) return;
+      var m=e.data||{}; if(m.t!=='mu:state') return;
+      mini.style.display = m.active ? 'block' : 'none';
+      var tt=document.getElementById('mm-title'); if(tt) tt.textContent=m.title||'—';
+      if(bT) bT.innerHTML = m.playing ? SVG_PAUSE : SVG_PLAY;
+      if(!dragS){ var fl=document.getElementById('mm-fill'); if(fl) fl.style.width=((m.frac||0)*100).toFixed(2)+'%'; }
+    });
+    muSend('state');
+  })();
+
+  addEventListener('pagehide', function(){ try{ if(cloudF)cloudF.beacon(); if(cloudP)cloudP.beacon(); }catch(e){} });
+
+  disegnaHub();
+  lumeHome();
+})();
+</script>
+<script src="/app/track.js"></script>
+<script src="/app/trial-gate.js?v=5"></script>
+<script src="/app/wake-lock.js?v=2"></script>
+</body>
+</html>

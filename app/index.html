@@ -1061,7 +1061,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
   var plan='full';
   function savePlan(email, t){ try{ if(email) localStorage.setItem('ovl-plan:'+String(email).trim().toLowerCase(), t||'full'); }catch(e){} }
   function loadPlan(){ try{ var e=(localStorage.getItem(KEY)||'').trim().toLowerCase(); plan=localStorage.getItem('ovl-plan:'+e)||'full'; }catch(e){ plan='full'; } window.OVL_PLAN=plan; return plan; }
-  function isTrailerSection(ex){ return ex && (ex.id==='capitolo2' || ex.id==='bambino' || ex.id==='adulto'); }   /* sezioni "anteprima" per i mensili */
+  function isTrailerSection(ex){ return ex && (ex.id==='capitolo2' || ex.id==='bambino' || ex.id==='adulto' || ex.id==='ombra'); }   /* sezioni "anteprima" per i mensili */
 
   /* ============ IL REGISTRO DEGLI ESERCIZI ============
      ogni nuovo esercizio = una riga qui (la tappa nasce da sola).
@@ -1085,9 +1085,9 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
     {id:'adulto', title:'L\'Adulto Interiore', badge:'Esercizi · 2ª parte', sym:'🌳', route:'/app/adulto/', shell:true,
      desc:'La parte presente e stabile, che contiene ed equilibra. Un esercizio — la visualizzazione con le emozioni e l\'ancoraggio — e, per chiudere, la purificazione.',
      requires:{days:10}, partVideo:true},
-    {id:'ombra', title:'L\'Ombra Interiore', badge:'Esercizi · 3ª parte', sym:'🌑', route:null,
-     desc:'La parte rifiutata, da conoscere e integrare senza paura. Gli esercizi stanno prendendo forma.',
-     requires:{days:10}, soon:true, partVideo:true},
+    {id:'ombra', title:'L\'Ombra Interiore', badge:'Esercizi · 3ª parte', sym:'🌑', route:'/app/ombra/', shell:true,
+     desc:'La parte rifiutata: non si combatte, si conosce. Cinque passi, uno alla volta — l\'incontro, la lettera, l\'accettazione, la trasformazione e lo spazio che le dai ogni settimana.',
+     requires:{days:10}, partVideo:true},
     {id:'padremadre', title:'Il Padre e la Madre', badge:'Esercizi · 4ª parte', sym:'🤲', route:null,
      desc:'Le energie della cura e della protezione. Gli esercizi stanno prendendo forma.',
      requires:{days:10}, soon:true, partVideo:true},
@@ -1118,6 +1118,8 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
       h:'<p>La prima parte da incontrare. Si apre quando avrai <b>completato le otto lezioni</b> del Mondo Interiore. Dentro trovi due esercizi: il <b>foglio delle tre domande</b>, per ascoltare la tua emozione e da dove nasce, e la <b>meditazione</b>, per dare un volto al tuo bambino interiore.</p>'},
     adulto:{t:'L\'Adulto Interiore',
       h:'<p>La <b>seconda parte</b>: la tua parte presente e stabile, quella che ascolta ed equilibra. Si apre dopo aver visto il video <b>«L\'Adulto Interiore»</b> del Mondo Interiore e aver completato il <b>Bambino</b>. Dentro trovi un <b>unico esercizio</b> — la <b>visualizzazione</b> per far incontrare adulto e bambino, con le <b>emozioni</b> e l\'<b>ancoraggio</b> da scrivere — e, per chiudere, <b>la purificazione</b>.</p>'},
+    ombra:{t:'L\'Ombra Interiore',
+      h:'<p>La <b>terza parte</b>: quella che hai imparato a non mostrare. Non contiene solo rabbia e paura: dentro ci sono anche forza, creatività e verità che hai imparato a reprimere. Si apre dopo aver visto il video <b>«L\'Ombra Interiore»</b> del Mondo Interiore e aver completato il <b>Bambino</b> e l\'<b>Adulto</b>.</p><p>Dentro ci sono <b>cinque passi</b>, uno alla volta: l\'<b>incontro</b> nella visualizzazione, la <b>lettera</b> da scrivere a mano, l\'<b>accettazione</b> nella vita di tutti i giorni, la <b>trasformazione</b> per trovare il tuo canale e, per finire, lo <b>spazio</b> che le dai ogni settimana. Prenditi qualche giorno fra l\'uno e l\'altro.</p>'},
     ex2:{t:'Le tappe più avanti',
       h:'<p>Dopo l\'Adulto arriveranno l\'Ombra e le altre parti, una a una. Non c\'è fretta — il sentiero non scappa.</p>'},
     suggest:{t:'I suggerimenti',
@@ -1294,6 +1296,7 @@ html.chat-viva #lume::after{animation:lcuore 1.5s ease-in-out infinite}
   function partDone(id){
     if(id==='bambino'){ try{ var p=JSON.parse(localStorage.getItem('ovl-bambino-prog:'+EMAIL)||'{}'); return !!(p&&p.foglio); }catch(e){ return false; } }
     if(id==='adulto'){ try{ var pa=JSON.parse(localStorage.getItem('ovl-adulto-prog:'+EMAIL)||'{}'); return !!(pa&&pa.foglio); }catch(e){ return false; } }
+    if(id==='ombra'){ try{ var po=JSON.parse(localStorage.getItem('ovl-ombra-prog:'+EMAIL)||'{}'); return !!(po&&po.foglio); }catch(e){ return false; } }
     return false;   /* le altre parti non hanno ancora esercizi: non completabili finché non esistono */
   }
   function prevPartsDone(id){
