@@ -327,12 +327,23 @@ textarea:focus{outline:none;border-color:var(--glic-hi);box-shadow:0 0 0 1px rgb
 .ups-info{font-family:'Cormorant Garamond',Georgia,serif;font-size:15px;color:#b7aec4;margin:12px 0 0}
 .ups-info b{color:#e8d9ae}
 
-/* ===== i cinque passi ===== */
-.pnum{font-family:'Cinzel',serif;font-size:24px;font-weight:600;color:var(--gold-pale);background-size:cover;background-position:center}
-.pnum.haspic{font-size:0;border-color:rgba(185,163,227,.45)}
+/* ===== i cinque passi: scheda con la copertina GRANDE in cima ===== */
+#passi .exitem{flex-direction:column;align-items:stretch;gap:0;padding:0;overflow:hidden}
+#passi .exitem:hover{transform:translateY(-2px)}
+.pcop{display:block;width:100%;aspect-ratio:16/9;background:linear-gradient(180deg, rgba(60,45,92,.6), rgba(30,22,46,.8));position:relative}
+.pcop img{width:100%;height:100%;object-fit:cover;display:block;border:0}
+.pcop .pnum{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-family:'Cinzel',serif;font-size:40px;font-weight:600;color:var(--gold-pale);opacity:.9}
+.pcop.haspic .pnum{display:none}
+#passi .exmeta{padding:16px 18px 0}
+#passi .exitem h3{margin-bottom:6px}
+#passi .exstate{padding:8px 18px 16px;text-align:right;align-self:stretch}
+#passi .exarrow{display:none}
 .exitem.locked{cursor:default}
 .exitem.locked:hover{transform:none;border-color:var(--card-line);box-shadow:0 6px 20px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.05)}
-.exitem.locked .pnum{color:var(--txt-dim);opacity:.7}
+.exitem.locked .pcop img{filter:grayscale(.35) brightness(.55)}
+.exitem.locked .pcop::after{content:'\26bf';position:absolute;right:12px;bottom:10px;font-size:22px;color:var(--gold-pale);opacity:.85;
+  text-shadow:0 2px 8px rgba(0,0,0,.7)}
 
 /* ===== traccia scritta (la lettera, le frasi) ===== */
 .trac{border:1px solid rgba(185,163,227,.18);border-radius:16px;padding:16px 16px 18px;margin:14px 0;
@@ -894,16 +905,20 @@ MONTHLY-->
      Referer del dominio (i video sono privati) e non lascia uscire l'id. Vale anche per i
      mensili: vedono l'immagine, scurita, ma non il video. */
   function urlCopertina(chiave){ return '/app/ombra/cover/'+chiave+'.jpg?v=3'; }   /* il ?v= obbliga il telefono a riprendere le immagini nuove */
-  /* l'HTML della pastiglia con la copertina gia' dentro: si vede subito, senza aspettare */
+  /* la copertina GRANDE della scheda: un <img> vero, cosi' se non arriva me ne accorgo
+     (onerror) e al suo posto resta il numero del passo. */
   function pastiglia(chiave, dentro){
-    return '<span class="exic pnum haspic" data-cop="'+chiave+'" style="background-image:url('+urlCopertina(chiave)+')">'+dentro+'</span>';
+    return '<span class="pcop haspic" data-cop="'+chiave+'">'+
+             '<span class="pnum">'+dentro+'</span>'+
+             '<img src="'+urlCopertina(chiave)+'" alt="" loading="lazy">'+
+           '</span>';
   }
-  /* se per qualche motivo un'immagine non arrivasse, quella pastiglia torna a mostrare il numero */
   function controllaCopertine(){
-    [].slice.call(document.querySelectorAll('.pnum[data-cop]')).forEach(function(ic){
-      var img=new Image();
-      img.onerror=function(){ ic.classList.remove('haspic'); ic.style.backgroundImage=''; };
-      img.src=urlCopertina(ic.getAttribute('data-cop'));
+    [].slice.call(document.querySelectorAll('.pcop[data-cop] img')).forEach(function(im){
+      im.addEventListener('error', function(){
+        var box=im.parentNode; if(box){ box.classList.remove('haspic'); }
+        im.style.display='none';
+      });
     });
   }
 
