@@ -893,7 +893,7 @@ MONTHLY-->
   /* la copertina di un video: la chiede al nostro server, che la recupera da Vimeo con il
      Referer del dominio (i video sono privati) e non lascia uscire l'id. Vale anche per i
      mensili: vedono l'immagine, scurita, ma non il video. */
-  function urlCopertina(chiave){ return '/app/ombra/cover/'+chiave+'.jpg'; }
+  function urlCopertina(chiave){ return '/app/ombra/cover/'+chiave+'.jpg?v=2'; }   /* il ?v= obbliga il telefono a riprendere le immagini nuove */
   function copertina(ic, chiave){
     if(!ic) return;
     var img=new Image();
