@@ -21,3 +21,6 @@ _cmsg.txt
 *.tmp.*
 .DS_Store
 Thumbs.db
+
+# le copertine dell'Ombra stanno nel volume del server, MAI nel repo (che e' pubblico)
+app/ombra/cover/
