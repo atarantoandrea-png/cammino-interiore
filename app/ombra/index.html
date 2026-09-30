@@ -890,6 +890,17 @@ MONTHLY-->
   /* un passo è aperto se è il primo, o se quello prima è completato (o se l'hai già fatto) */
   function apertoIdx(i){ return i===0 || !!prog[PASSI[i-1].id] || !!prog[PASSI[i].id]; }
 
+  /* la copertina di un video: la chiede al nostro server, che la recupera da Vimeo con il
+     Referer del dominio (i video sono privati) e non lascia uscire l'id. Vale anche per i
+     mensili: vedono l'immagine, scurita, ma non il video. */
+  function urlCopertina(chiave){ return '/api/cover?s=ombra&k='+chiave; }
+  function copertina(ic, chiave){
+    if(!ic) return;
+    var img=new Image();
+    img.onload=function(){ ic.textContent=''; ic.classList.add('haspic'); ic.style.backgroundImage='url('+urlCopertina(chiave)+')'; };
+    img.src=urlCopertina(chiave);
+  }
+
   /* ===== l'elenco dei cinque passi ===== */
   function disegnaHub(){
     var wrap=document.getElementById('passi'); if(!wrap) return;
@@ -901,12 +912,7 @@ MONTHLY-->
       '<h3>'+SPIEG.t+'</h3><p>'+SPIEG.d+'</p></span>'+
       '<span class="exarrow">\u2192</span>';
     wrap.appendChild(sp);
-    if(VID[SPIEG.vid]){
-      fetch('https://vimeo.com/api/oembed.json?url=https://vimeo.com/'+VID[SPIEG.vid])
-        .then(function(r){ return r.json(); })
-        .then(function(d){ if(d&&d.thumbnail_url){ var ic=sp.querySelector('.pnum'); if(ic){ ic.textContent=''; ic.classList.add('haspic'); ic.style.backgroundImage='url('+d.thumbnail_url+')'; } } })
-        .catch(function(){});
-    }
+    copertina(sp.querySelector('.pnum'), SPIEG.vid);
     PASSI.forEach(function(p, i){
       var fatto=!!prog[p.id], aperto=apertoIdx(i);
       var b=document.createElement('button');
@@ -924,14 +930,9 @@ MONTHLY-->
         '<span class="exarrow">→</span>';
       wrap.appendChild(b);
     });
-    /* la copertina di ogni passo: la miniatura del suo video su Vimeo */
-    PASSI.forEach(function(p, i){
-      if(!VID[p.vid] || !apertoIdx(i)) return;
-      var ic=document.querySelector('[data-p="'+p.id+'"] .pnum'); if(!ic) return;
-      fetch('https://vimeo.com/api/oembed.json?url=https://vimeo.com/'+VID[p.vid])
-        .then(function(r){ return r.json(); })
-        .then(function(d){ if(d&&d.thumbnail_url){ ic.textContent=''; ic.classList.add('haspic'); ic.style.backgroundImage='url('+d.thumbnail_url+')'; } })
-        .catch(function(){});
+    /* la copertina di ogni passo: quella vera del video, presa dal nostro server */
+    PASSI.forEach(function(p){
+      copertina(document.querySelector('[data-p="'+p.id+'"] .pnum'), p.vid);
     });
   }
 
@@ -1010,7 +1011,7 @@ MONTHLY-->
     f.setAttribute('data-loaded','1');
     var key=f.getAttribute('data-vid'), id=VID[key];
     if(!id){ lockFrame(f, '/api/cover?s=ombra&k='+key); return; }   /* Mensile: video bloccato */
-    f.innerHTML='<button class="vfacade" type="button" aria-label="Riproduci il video">'
+    f.innerHTML='<button class="vfacade" type="button" aria-label="Riproduci il video" style="background-image:url('+urlCopertina(key)+')">'
       +'<span class="vfacade-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>'
       +'<span class="vfacade-t">Tocca per guardare</span></button>';
     var b=f.querySelector('.vfacade');
@@ -1021,10 +1022,6 @@ MONTHLY-->
       ifr.setAttribute('allowfullscreen','');
       f.innerHTML=''; f.appendChild(ifr);
     });
-    fetch('https://vimeo.com/api/oembed.json?url=https://vimeo.com/'+id)
-      .then(function(r){ return r.json(); })
-      .then(function(d){ if(d&&d.thumbnail_url){ var bb=f.querySelector('.vfacade'); if(bb) bb.style.backgroundImage='url('+d.thumbnail_url+')'; } })
-      .catch(function(){});
   }
   function scaricaVideo(v){
     if(!v || v==='hub') return;
