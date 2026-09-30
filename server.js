@@ -1201,6 +1201,19 @@ app.use((req, res, next) => {
   });
 });
 
+/* ── LE COPERTINE DELL'OMBRA ──
+   Sono le immagini disegnate da Andrea. Stanno nel VOLUME (/data/copertine/ombra), NON nel
+   repo, che è pubblico. Le serviamo noi come file veri: prima passavano da /api/cover, che
+   risponde con un rimando (302) alla miniatura di Vimeo, e dentro l'app installata il service
+   worker inciampava su quel rimando — sulle schede restava il numero del passo.
+   Stanno sotto /app, quindi le protegge il cancello qui sopra: senza accesso, niente immagini. */
+app.get('/app/ombra/cover/:file', (req, res) => {
+  const f = String(req.params.file || '');
+  if (!/^v[0-5]\.jpg$/.test(f)) return res.status(404).end();
+  res.set('Cache-Control', 'private, max-age=604800');
+  res.sendFile(path.join(DATA, 'copertine', 'ombra', f), err => { if (err && !res.headersSent) res.status(404).end(); });
+});
+
 /* ── ACCESSO MENSILE ("trailer"): per le sezioni oltre il Giornaliero (Mondo Interiore,
    Bambino) il server serve una versione DEPURATA dell'HTML: rimuove i blocchi
    <!--FULL-->…<!--/FULL--> (ID video, testi degli esercizi) e ATTIVA i blocchi
