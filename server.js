@@ -753,11 +753,12 @@ function adminToken(email) {
 }
 /* ── LETTURA DAL PANNELLO DELLA COMMUNITY (17/9/26) ──
    Andrea vuole questi dati anche nel Pannello di controllo della community «così ho tutto insieme».
-   Il server della community chiede SOLO queste tre GET con un gettone (Authorization: Bearer …)
+   Il server della community chiede SOLO queste GET con un gettone (Authorization: Bearer …)
    salvato in /data/community-stats.token (fuori dal repo pubblico, almeno 32 caratteri).
+   Dal 27/10/26 anche /api/admin/parti: chi ha finito l'Ombra, per i traguardi (vedi lì).
    Nessuna scrittura: le POST (es. eliminare un suggerimento) restano a chi entra con la password. */
 const STATS_TOKEN_FILE = path.join(DATA, 'community-stats.token');
-const STATS_PATHS = ['/api/admin/overview', '/api/admin/chats', '/api/admin/suggestions'];
+const STATS_PATHS = ['/api/admin/overview', '/api/admin/chats', '/api/admin/suggestions', '/api/admin/parti'];
 let _stCache = null, _stAt = 0;
 function statsToken() {
   if (_stCache !== null && Date.now() - _stAt < 60000) return _stCache;
@@ -1077,6 +1078,57 @@ app.get('/api/admin/overview', (req, res) => {
   if (String(req.query.fresh || '') === '1') { ovCache = null; }
   computeOverview((err, data) => {
     if (err) { console.error('overview:', err); return res.status(500).json({ ok:false, reason:'sheets' }); }
+    res.json({ ok:true, data });
+  });
+});
+
+/* ── LE PARTI FINITE, per i traguardi della community (27/10/26) ──
+   Sola lettura: lo stesso gettone del pannello della community (STATS_PATHS) o chi entra da admin.
+   Dice chi ha finito una parte per l'impronta sha1 della mail, la stessa dei nomi dei file
+   (fileFor): non esce mai una mail. La community calcola sha1(mail minuscola) e cerca.
+   Una parte è finita quando il suo archivio dei progressi ha foglio === true: l'Ombra lo mette
+   quando i 5 passi sono segnati (app/ombra/index.html, saveProg). Il valore è meta.foglio, cioè
+   quando è stata finita; 1 se è arrivata dal telefono senza data (ovl-cloud.js, seedLocalOnly).
+   Oggi solo l'Ombra (il bronzo del Cammino nella community). Argento e oro arriveranno con le
+   lezioni nuove: una riga in più in PARTI_FINITE e ogni persona prende una chiave in più
+   ({ ombra, <parte nuova> }); la community legge solo le chiavi che conosce.
+   Risposta: { ok:true, data: { "<sha1 della mail>": { ombra: <ms> } } }, solo chi l'ha finita.
+   Leggera: copia in memoria per 5 minuti, una lettura alla volta, file grandi o in eccesso saltati. */
+const PARTI_FINITE = [ { parte: 'ombra', ns: 'oprog' } ];    /* parte nella risposta ← archivio fileFor(email, ns) */
+const PARTI_MAX_FILE = 5000, PARTI_MAX_BYTE = 64 * 1024;      /* un archivio dei progressi pesa poche centinaia di byte */
+let partiCache = null, partiAt = 0, partiAttesa = null;
+function calcolaParti(cb) {
+  if (partiCache && Date.now() - partiAt < 5 * 60000) return cb(null, partiCache);
+  if (partiAttesa) return partiAttesa.push(cb);              /* c'è già una lettura in corso: si aspetta quella */
+  partiAttesa = [cb];
+  const fine = (err, data) => { const a = partiAttesa; partiAttesa = null; a.forEach(f => f(err, data)); };
+  const parteDi = new Map(PARTI_FINITE.map(p => [p.ns, p.parte]));   /* Map: un ns «constructor» non inganna */
+  fs.readdir(DATA, (err, files) => {
+    if (err) return fine(err);
+    const data = {};
+    try {
+      let letti = 0;
+      for (const f of files) {
+        const m = /^([0-9a-f]{40})\.([a-z0-9]+)\.json$/.exec(f);
+        if (!m || !parteDi.has(m[2])) continue;
+        if (++letti > PARTI_MAX_FILE) { console.warn('parti: più di ' + PARTI_MAX_FILE + ' archivi, gli altri saltati'); break; }
+        const file = path.join(DATA, f);
+        try { if (fs.statSync(file).size > PARTI_MAX_BYTE) continue; } catch(e) { continue; }
+        const s = readJsonFile(file);
+        if (!s || !s.data || s.data.foglio !== true) continue;
+        const t = Math.floor(Number(s.meta && s.meta.foglio));
+        (data[m[1]] || (data[m[1]] = {}))[parteDi.get(m[2])] = t > 0 ? t : 1;
+      }
+    } catch(e) { return fine(e); }                           /* mai una lettura bloccata per sempre */
+    partiCache = data; partiAt = Date.now();
+    fine(null, data);
+  });
+}
+app.get('/api/admin/parti', (req, res) => {
+  if (!adminFromReq(req)) return res.status(403).json({ ok:false });
+  res.set('Cache-Control', 'no-store');
+  calcolaParti((err, data) => {
+    if (err) { console.error('parti:', err); return res.status(500).json({ ok:false }); }
     res.json({ ok:true, data });
   });
 });
