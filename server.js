@@ -403,16 +403,19 @@ const SCHEDA_PROVA = 'Community Temporanea';
 const GIORNI_PROVA = 15;
 const comeScheda = s => String(s == null ? '' : s).trim().toLowerCase();
 if (!MONTHLY_TABS.some(t => comeScheda(t) === comeScheda(SCHEDA_PROVA))) MONTHLY_TABS.push(SCHEDA_PROVA);
-/* la data della riga: se non si legge, la riga vale (decide Zapier togliendola dal foglio) */
+/* la data della riga: se non si legge, la riga vale (decide Zapier togliendola dal foglio).
+   28/10/26 (Andrea: «metti le date all'italiana»): gg/mm/aaaa si legge PRIMA di Date.parse, che la leggeva
+   all'americana («07/04/2026» era il 4 luglio). Anche con . o - e con l'ora; una data che non esiste (31/02) non vale.
+   Il formato di Zapier («2026-10-07 18:30:00») e l'ISO passano da Date.parse come prima. Uguale alla community */
 function quandoDi(valore) {
   const s = String(valore == null ? '' : valore).trim();
   if (!s) return NaN;
-  let t = Date.parse(s.replace(' ', 'T'));
-  if (isNaN(t)) {
-    const m = s.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{4})/);   /* 25/09/2026 */
-    if (m) t = Date.parse(m[3] + '-' + ('0' + m[2]).slice(-2) + '-' + ('0' + m[1]).slice(-2));
+  const m = s.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{4})(?:[ T,]+(\d{1,2})[:.](\d{2})(?:[:.](\d{2}))?)?(?!\d)/);
+  if (m) {
+    const [g, me, a] = [+m[1], +m[2], +m[3]], d = new Date(a, me - 1, g, +(m[4] || 0), +(m[5] || 0), +(m[6] || 0));
+    return d.getFullYear() === a && d.getMonth() === me - 1 && d.getDate() === g ? d.getTime() : NaN;
   }
-  return t;
+  return Date.parse(s.replace(' ', 'T'));
 }
 function provaScaduta(valore) {
   const t = quandoDi(valore);
