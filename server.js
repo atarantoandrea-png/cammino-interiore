@@ -238,6 +238,30 @@ function systemeKey(){
 }
 const SYSTEME_TRIAL_TAG_ID = parseInt(process.env.SYSTEME_TRIAL_TAG_ID || '2060361', 10);
 
+/* AURORA (8/11/26): chi si iscrive alla prova va nel CRM di Aurora. L'indirizzo (con la sua chiave) sta nel file
+   /data/aurora-prova.url oppure nella variabile AURORA_PROVA_URL. Un nuovo tentativo se la prima chiamata non va. */
+const AURORA_URL_FILE = path.join(DATA, 'aurora-prova.url');
+function auroraProvaUrl(){
+  if (process.env.AURORA_PROVA_URL) return process.env.AURORA_PROVA_URL;
+  try { return fs.readFileSync(AURORA_URL_FILE, 'utf8').trim(); } catch(e){ return ''; }
+}
+function avvisaAurora(dati, cb, tentativo){
+  let u; try { u = new URL(auroraProvaUrl()); } catch(e){ return cb(false); }
+  const data = JSON.stringify(dati);
+  const r = https.request({ hostname:u.hostname, path:u.pathname, method:'POST', timeout:12000,
+    headers:{ 'Content-Type':'application/json', 'Content-Length':Buffer.byteLength(data), 'Accept':'application/json' } }, resp => {
+    resp.resume();
+    resp.on('end', () => {
+      if (resp.statusCode >= 200 && resp.statusCode < 300) return cb(true);
+      if (!tentativo) return setTimeout(() => avvisaAurora(dati, cb, 1), 2000);
+      cb(false);
+    });
+  });
+  r.on('timeout', () => r.destroy(new Error('timeout')));
+  r.on('error', () => { if (!tentativo) setTimeout(() => avvisaAurora(dati, cb, 1), 2000); else cb(false); });
+  r.write(data); r.end();
+}
+
 /* chiamata all'API systeme.io (https, header X-API-Key) */
 function systemeApi(method, apiPath, body, cb){
   const key = systemeKey();
@@ -315,7 +339,14 @@ app.post('/api/trial/register', (req, res) => {
     res.json({ ok:true, email, token, tier });   /* il front di /prova li salva in localStorage per entrare in /app */
   });
 
-  /* CRM in background: crea il contatto (o lo trova se già esiste) e assegna il tag */
+  /* CRM in background. Dall'8/11/26 il contatto lo registra AURORA (il CRM nostro), con il tag «App - Prova».
+     systeme resta solo come riserva finché l'indirizzo di Aurora non c'è. */
+  if (auroraProvaUrl()) {
+    avvisaAurora({ nome: name, email, telefono: phone, consenso: true, lead: id }, ok => {
+      if (ok) markLeadCrm(id); else console.error('trial CRM: Aurora non ha risposto per', email);
+    });
+    return;
+  }
   const parts = name.split(' '); const first = parts.shift() || name; const surname = parts.join(' ');
   const fields = [{ slug:'first_name', value:first }];
   if (surname) fields.push({ slug:'surname', value:surname });
